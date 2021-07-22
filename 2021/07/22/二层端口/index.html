@@ -6,14 +6,21 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://example.com">
-  <title>郑林昕的博客</title>
+  <title>深入研究二层端口 | 郑林昕的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="website">
-<meta property="og:title" content="郑林昕的博客">
-<meta property="og:url" content="http://example.com/index.html">
+  <meta name="description" content="OSI模型&amp;emsp;&amp;emsp;OSI 是不同制造商的设备和应用软件在网络中进行通信的标准，此模型已经成为计算机间和网络间进行通信的主要结构模型。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="深入研究二层端口">
+<meta property="og:url" content="http://example.com/2021/07/22/%E4%BA%8C%E5%B1%82%E7%AB%AF%E5%8F%A3/index.html">
 <meta property="og:site_name" content="郑林昕的博客">
+<meta property="og:description" content="OSI模型&amp;emsp;&amp;emsp;OSI 是不同制造商的设备和应用软件在网络中进行通信的标准，此模型已经成为计算机间和网络间进行通信的主要结构模型。">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/2021/07/22/%E4%BA%8C%E5%B1%82%E7%AB%AF%E5%8F%A3/%E4%BA%8C%E5%B1%82%E7%AB%AF%E5%8F%A3/ethernet%E5%B8%A7%E6%A0%BC%E5%BC%8F.png">
+<meta property="og:image" content="http://example.com/2021/07/22/%E4%BA%8C%E5%B1%82%E7%AB%AF%E5%8F%A3/%E4%BA%8C%E5%B1%82%E7%AB%AF%E5%8F%A3/vlan%E5%B8%A7.png">
+<meta property="article:published_time" content="2021-07-22T02:32:44.000Z">
+<meta property="article:modified_time" content="2021-07-22T07:40:19.414Z">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2021/07/22/%E4%BA%8C%E5%B1%82%E7%AB%AF%E5%8F%A3/%E4%BA%8C%E5%B1%82%E7%AB%AF%E5%8F%A3/ethernet%E5%B8%A7%E6%A0%BC%E5%BC%8F.png">
   
     <link rel="alternative" href="/atom.xml" title="郑林昕的博客" type="application/atom+xml">
   
@@ -155,81 +162,14 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-    <article id="post-关于数据平面，控制平面和转发平面的分离问题" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+            <article id="post-二层端口" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
-    <h1 itemprop="name">
-      <a class="article-title" href="/2021/07/22/%E5%85%B3%E4%BA%8E%E6%95%B0%E6%8D%AE%E5%B9%B3%E9%9D%A2%EF%BC%8C%E6%8E%A7%E5%88%B6%E5%B9%B3%E9%9D%A2%E5%92%8C%E8%BD%AC%E5%8F%91%E5%B9%B3%E9%9D%A2%E7%9A%84%E5%88%86%E7%A6%BB%E9%97%AE%E9%A2%98/">交换机数据平面，控制平面和管理平面的分离</a>
-    </h1>
-  
-
-        
-        <a href="/2021/07/22/%E5%85%B3%E4%BA%8E%E6%95%B0%E6%8D%AE%E5%B9%B3%E9%9D%A2%EF%BC%8C%E6%8E%A7%E5%88%B6%E5%B9%B3%E9%9D%A2%E5%92%8C%E8%BD%AC%E5%8F%91%E5%B9%B3%E9%9D%A2%E7%9A%84%E5%88%86%E7%A6%BB%E9%97%AE%E9%A2%98/" class="archive-article-date">
-  	<time datetime="2021-07-22T06:32:54.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-07-22</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p><a href="#jump">三平面分离的详细解析</a></p>
-        
-          <a class="article-more-a" href="/2021/07/22/%E5%85%B3%E4%BA%8E%E6%95%B0%E6%8D%AE%E5%B9%B3%E9%9D%A2%EF%BC%8C%E6%8E%A7%E5%88%B6%E5%B9%B3%E9%9D%A2%E5%92%8C%E8%BD%AC%E5%8F%91%E5%B9%B3%E9%9D%A2%E7%9A%84%E5%88%86%E7%A6%BB%E9%97%AE%E9%A2%98/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2021/07/22/%E5%85%B3%E4%BA%8E%E6%95%B0%E6%8D%AE%E5%B9%B3%E9%9D%A2%EF%BC%8C%E6%8E%A7%E5%88%B6%E5%B9%B3%E9%9D%A2%E5%92%8C%E8%BD%AC%E5%8F%91%E5%B9%B3%E9%9D%A2%E7%9A%84%E5%88%86%E7%A6%BB%E9%97%AE%E9%A2%98/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-二层端口" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2021/07/22/%E4%BA%8C%E5%B1%82%E7%AB%AF%E5%8F%A3/">深入研究二层端口</a>
+    <h1 class="article-title" itemprop="name">
+      深入研究二层端口
     </h1>
   
 
@@ -243,9 +183,38 @@
     <div class="article-entry" itemprop="articleBody">
       
         <h2 id="OSI模型"><a href="#OSI模型" class="headerlink" title="OSI模型"></a>OSI模型</h2><p>&emsp;&emsp;OSI 是不同制造商的设备和应用软件在网络中进行通信的标准，此模型已经成为计算机间和网络间进行通信的主要结构模型。</p>
-        
-          <a class="article-more-a" href="/2021/07/22/%E4%BA%8C%E5%B1%82%E7%AB%AF%E5%8F%A3/#more">more >></a>
-        
+<span id="more"></span>
+<p>&emsp;&emsp;OSI 体系结构定义了一个七层模型用于进行进程间的通信，并作为一个概念性框架来协调各层标准的制定；OSI 的服务定义描述了各层所提供的服务，以及层与层之间的抽象接口和交互用的服务原语；OSI 各层的协议规范精确的定义了应当发送何种控制信息及何种过程来解释该控制信息。下面从上往下介绍OSI七层模型。</p>
+<ul>
+<li>应用层：<strong>为应用程序提供网络服务</strong>。负责对软件提供接口以使程序能享用网络服务。应用层提供的服务包括文件传输、文件管理以及电子邮件的信息处理。</li>
+<li>表示层：<strong>数据格式化，加密，解密</strong>。表示层中数据将按照网络能理解的方案进行格式转化，管理数据的解密与加密，还对图片和文件格式信息进行解码和编码。</li>
+<li>会话层：<strong>建立，维护，管理会话连接</strong>。负责在网络中的两个节点之间建立和维持通信。会话层的功能包括：建立通信链接和保持会话过程通信链接的畅通，同步两个节点之间的对话，决定通信是否被中断以及通信中断时决定从何处重新发送。</li>
+<li>传输层：<strong>建立，维护，管理端到端链接</strong>。负责端到端的可靠传输，实现数据通信中通信子网向资源子网的过渡，传输层传输信息的单位称为报文，负责总体数据的传输和控制。这一层主要定义了两个传输协议，TCP 以及 UDP 协议。</li>
+<li>网络层：<strong>IP寻址和路由选择</strong>。它的任务是在数据链路层提供的两个相邻节点之间的数据帧的传送基础上，选择合适的路由与交换节点，使从源节点传输层得到的数据能准确无误、高效地到达目的节点，并交付给目的节点的传输层，主要功能是路由选择、阻塞控制、网络互联。网络层提供了虚电路服务和数据报服务。</li>
+<li>数据链路层：<strong>控制网络层和物理层之间的通信</strong>。局域网的标准将数据链路层分为两个子层：逻辑链路控制子层(LLC)与介质访问控制子层(MAC)。数据链路层的主要功能是将网络层接收到的数据分割成特定的可被物理层传输的帧。</li>
+<li>物理层：<strong>比特流的传输</strong>。在设备之间传输比特流，规定了电平，速度和电缆针脚。</li>
+</ul>
+<h2 id="以太网帧"><a href="#以太网帧" class="headerlink" title="以太网帧"></a>以太网帧</h2><p>&emsp;&emsp;数据包传输到数据链路层，封装数据链路层报头得到的PDU被称为Frame（数据帧/以太网帧）</p>
+<h3 id="以太网使用两种标准帧格式，现在大多数数据帧使用的是Ethernet-II格式（如下图）"><a href="#以太网使用两种标准帧格式，现在大多数数据帧使用的是Ethernet-II格式（如下图）" class="headerlink" title="以太网使用两种标准帧格式，现在大多数数据帧使用的是Ethernet II格式（如下图）"></a>以太网使用两种标准帧格式，现在大多数数据帧使用的是Ethernet II格式（如下图）</h3><p><img src="%E4%BA%8C%E5%B1%82%E7%AB%AF%E5%8F%A3/ethernet%E5%B8%A7%E6%A0%BC%E5%BC%8F.png" alt="以太网帧"></p>
+<p>前导码：7 个字节，用于数据传输过程中的双方发送与接收的速率的同步。</p>
+<p>SFD：帧开始符，1 个字节，用于标识一个以太网帧的开始。 </p>
+<p>目的 MAC 地址：6 个字节，指明帧的接收者。</p>
+<p>源 MAC 地址：6 个字节，指明帧的发送者。</p>
+<p>长度：2 个字节，指明该帧数据字段的长度，但不代表数据字段长度能够达到 2^16 字节。（以太网帧另一种：IEEE802.3数据链路层帧格式，用长度替换掉类型）</p>
+<p>类型：2 个字节，指明帧中数据的协议类型，比如常见的 IPv4 中的 ip 协议采用 0x0800。</p>
+<p>数据：46~1500 个字节，包含了上层协议传递下来的数据，如果加入数据字段后帧长度不够 64 字节，会在数据字段加入填充字段达到 64 字节。</p>
+<p>校验和：4 个字节，对接收网卡(主要是检测数据与填充字段)提供判断是否传输错误的一种方法，如果发现错误，则丢弃此帧。目前最为流行的用于校验和(FCS)的算法是循环冗余校验(cyclic redundancy check – CRC)。</p>
+<h2 id="VLAN帧格式"><a href="#VLAN帧格式" class="headerlink" title="VLAN帧格式"></a>VLAN帧格式</h2><p>&emsp;&emsp;与标准的以太网帧头相比，VLAN帧格式在源地址后增加了一个4字节的802.1Q标签<br><img src="%E4%BA%8C%E5%B1%82%E7%AB%AF%E5%8F%A3/vlan%E5%B8%A7.png" alt="VLAN"><br>VLAN ID：指明了所属的VLAN，一共有4096个，每个支持802.1Q协议的主机发出来的帧都会保留这个域。</p>
+<p>CFI：规范格式指示符，以太网的值为0。</p>
+<p>priority：指定帧的优先级。</p>
+<h2 id="二层端口"><a href="#二层端口" class="headerlink" title="二层端口"></a>二层端口</h2><h3 id="Access-端口"><a href="#Access-端口" class="headerlink" title="Access 端口"></a>Access 端口</h3><p>&emsp;&emsp;Access端口主要是用来连接用户主机的二层以太网端口。它有一种最主要的特性就是：仅允许一个VLAN的帧通过，反过来也就是Access端口仅可以加入到一个VLAN中，且Access端口发送的以太网帧永远是Untagged（不带标签）的。</p>
+<h3 id="Trunk-端口"><a href="#Trunk-端口" class="headerlink" title="Trunk 端口"></a>Trunk 端口</h3><p>&emsp;&emsp;Trunk端口是用来连接与其他交换机的二层以太网端口。它的最主要特性就是允许多个VLAN的帧通过，并且所发送的以太网帧都是带标签的，除了发送VLAN ID与PVID（Port Default VLAN ID，端口缺省VLAN ID）一致的VLAN帧。</p>
+<h3 id="Hybird-端口"><a href="#Hybird-端口" class="headerlink" title="Hybird 端口"></a>Hybird 端口</h3><p>&emsp;&emsp;Hybrid端口可以说是以上Access端口和Trunk端口的混合体，具有它们共同的特等性，是一种特殊的二层以太网端口。正因如此，Hybrid端口既可以连接用户主机，又可以连接其他交换机、路由器设备。同时Hybrid端口又允许一个，或多个VLAN的帧通过，并可选择以带标签，或者不带标签的方式发送数据帧。</p>
+<h3 id="QinQ-端口"><a href="#QinQ-端口" class="headerlink" title="QinQ 端口"></a>QinQ 端口</h3><p>&emsp;&emsp;QinQ端口是专用于QinQ协议的二层以太网端口。它可以给数据帧加上双层VLAN标签，即在原来标签的基础上，给帧加上一个新的标签，从而可以支持多达4094×4094个VLAN，满足企业用户网络对VLAN数量更高的需求。S1700和S2700SI不支持QinQ类型端口。</p>
+<h2 id="二层端口数据帧处理规则"><a href="#二层端口数据帧处理规则" class="headerlink" title="二层端口数据帧处理规则"></a>二层端口数据帧处理规则</h2><blockquote>
+<p>Access 端口:</p>
+</blockquote>
+
       
 
       
@@ -256,16 +225,84 @@
       
 
       
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2021/07/22/%E4%BA%8C%E5%B1%82%E7%AB%AF%E5%8F%A3/">展开全文 >></a>
-        </p>
-      
 
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
+        </div>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//pan.baidu.com/share/qrcode?url=http://example.com/2021/07/22/%E4%BA%8C%E5%B1%82%E7%AB%AF%E5%8F%A3/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
       
       <div class="clearfix"></div>
     </div>
   </div>
 </article>
+
+  
+<nav id="article-nav">
+  
+    <a href="/2021/07/22/%E5%85%B3%E4%BA%8E%E6%95%B0%E6%8D%AE%E5%B9%B3%E9%9D%A2%EF%BC%8C%E6%8E%A7%E5%88%B6%E5%B9%B3%E9%9D%A2%E5%92%8C%E8%BD%AC%E5%8F%91%E5%B9%B3%E9%9D%A2%E7%9A%84%E5%88%86%E7%A6%BB%E9%97%AE%E9%A2%98/" id="article-nav-newer" class="article-nav-link-wrap">
+      <i class="icon-circle-left"></i>
+      <div class="article-nav-title">
+        
+          交换机数据平面，控制平面和管理平面的分离
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2021/07/21/ARP%E8%A7%A3%E6%9E%90/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">ARP解析</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
 
 <aside class="wrap-side-operation">
     <div class="mod-side-operation">
@@ -280,208 +317,32 @@
         </div>
         
         
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-ARP解析" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2021/07/21/ARP%E8%A7%A3%E6%9E%90/">ARP解析</a>
-    </h1>
-  
-
-        
-        <a href="/2021/07/21/ARP%E8%A7%A3%E6%9E%90/" class="archive-article-date">
-  	<time datetime="2021-07-21T05:54:46.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-07-21</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>&emsp;&emsp;地址解析协议（Address Resolution Protocol），其基本功能为透过目标设备的IP地址，查询目标设备的MAC地址，以保证通信的顺利进行。它是IPv4中网络层必不可少的协议，不过在IPv6中已不再适用，并被邻居发现协议（NDP）所替代。</p>
-        
-          <a class="article-more-a" href="/2021/07/21/ARP%E8%A7%A3%E6%9E%90/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2021/07/21/ARP%E8%A7%A3%E6%9E%90/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
+        <div class="toc-container tooltip-left">
+            <i class="icon-font icon-category"></i>
+            <div class="tooltip tooltip-east">
+                <span class="tooltip-item">
+                </span>
+                <span class="tooltip-content">
+                    <div class="toc-article">
+                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#OSI%E6%A8%A1%E5%9E%8B"><span class="toc-number">1.</span> <span class="toc-text">OSI模型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%A5%E5%A4%AA%E7%BD%91%E5%B8%A7"><span class="toc-number">2.</span> <span class="toc-text">以太网帧</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BD%BF%E7%94%A8%E4%B8%A4%E7%A7%8D%E6%A0%87%E5%87%86%E5%B8%A7%E6%A0%BC%E5%BC%8F%EF%BC%8C%E7%8E%B0%E5%9C%A8%E5%A4%A7%E5%A4%9A%E6%95%B0%E6%95%B0%E6%8D%AE%E5%B8%A7%E4%BD%BF%E7%94%A8%E7%9A%84%E6%98%AFEthernet-II%E6%A0%BC%E5%BC%8F%EF%BC%88%E5%A6%82%E4%B8%8B%E5%9B%BE%EF%BC%89"><span class="toc-number">2.1.</span> <span class="toc-text">以太网使用两种标准帧格式，现在大多数数据帧使用的是Ethernet II格式（如下图）</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#VLAN%E5%B8%A7%E6%A0%BC%E5%BC%8F"><span class="toc-number">3.</span> <span class="toc-text">VLAN帧格式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E5%B1%82%E7%AB%AF%E5%8F%A3"><span class="toc-number">4.</span> <span class="toc-text">二层端口</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Access-%E7%AB%AF%E5%8F%A3"><span class="toc-number">4.1.</span> <span class="toc-text">Access 端口</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Trunk-%E7%AB%AF%E5%8F%A3"><span class="toc-number">4.2.</span> <span class="toc-text">Trunk 端口</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Hybird-%E7%AB%AF%E5%8F%A3"><span class="toc-number">4.3.</span> <span class="toc-text">Hybird 端口</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#QinQ-%E7%AB%AF%E5%8F%A3"><span class="toc-number">4.4.</span> <span class="toc-text">QinQ 端口</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E5%B1%82%E7%AB%AF%E5%8F%A3%E6%95%B0%E6%8D%AE%E5%B8%A7%E5%A4%84%E7%90%86%E8%A7%84%E5%88%99"><span class="toc-number">5.</span> <span class="toc-text">二层端口数据帧处理规则</span></a></li></ol>
+                    </div>
+                </span>
             </div>
         </div>
         
-        
     </div>
 </aside>
 
 
 
-
   
-    <article id="post-VLAN" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
   
-    <h1 itemprop="name">
-      <a class="article-title" href="/2021/07/20/VLAN/">博客文档指南</a>
-    </h1>
   
 
-        
-        <a href="/2021/07/20/VLAN/" class="archive-article-date">
-  	<time datetime="2021-07-20T09:01:29.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-07-20</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>根据<a target="_blank" rel="noopener" href="https://blog.csdn.net/sanallen/article/details/92081911?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522162684851716780274192566%2522%252C%2522scm%2522%253A%252220140713.130102334..%2522%257D&request_id=162684851716780274192566&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~all~sobaiduend~default-1-92081911.first_rank_v2_pc_rank_v29&utm_term=markdown%E6%96%87%E6%A1%A3%E7%BC%96%E5%86%99%E6%8C%87%E5%8D%97&spm=1018.2226.3001.4187">Markdown文档编写指南</a>编写</p>
-        
-          <a class="article-more-a" href="/2021/07/20/VLAN/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2021/07/20/VLAN/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-hello-world" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2021/07/20/hello-world/">Hello World</a>
-    </h1>
   
 
-        
-        <a href="/2021/07/20/hello-world/" class="archive-article-date">
-  	<time datetime="2021-07-20T08:57:15.265Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-07-20</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Welcome to <a target="_blank" rel="noopener" href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a target="_blank" rel="noopener" href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a target="_blank" rel="noopener" href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a target="_blank" rel="noopener" href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
-        
-          <a class="article-more-a" href="/2021/07/20/hello-world/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2021/07/20/hello-world/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
   
+
   
 
 
@@ -504,8 +365,8 @@
     <script>
 	var yiliaConfig = {
 		mathjax: false,
-		isHome: true,
-		isPost: false,
+		isHome: false,
+		isPost: true,
 		isArchive: false,
 		isTag: false,
 		isCategory: false,

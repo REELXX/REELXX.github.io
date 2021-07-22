@@ -8,16 +8,19 @@
   <link rel="dns-prefetch" href="http://example.com">
   <title>ARP解析 | 郑林昕的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="地址解析协议（Address Resolution Protocol），其基本功能为透过目标设备的IP地址，查询目标设备的MAC地址，以保证通信的顺利进行。它是IPv4中网络层必不可少的协议，不过在IPv6中已不再适用，并被邻居发现协议（NDP）所替代。">
+  <meta name="description" content="&amp;emsp;&amp;emsp;地址解析协议（Address Resolution Protocol），其基本功能为透过目标设备的IP地址，查询目标设备的MAC地址，以保证通信的顺利进行。它是IPv4中网络层必不可少的协议，不过在IPv6中已不再适用，并被邻居发现协议（NDP）所替代。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="ARP解析">
 <meta property="og:url" content="http://example.com/2021/07/21/ARP%E8%A7%A3%E6%9E%90/index.html">
 <meta property="og:site_name" content="郑林昕的博客">
-<meta property="og:description" content="地址解析协议（Address Resolution Protocol），其基本功能为透过目标设备的IP地址，查询目标设备的MAC地址，以保证通信的顺利进行。它是IPv4中网络层必不可少的协议，不过在IPv6中已不再适用，并被邻居发现协议（NDP）所替代。">
+<meta property="og:description" content="&amp;emsp;&amp;emsp;地址解析协议（Address Resolution Protocol），其基本功能为透过目标设备的IP地址，查询目标设备的MAC地址，以保证通信的顺利进行。它是IPv4中网络层必不可少的协议，不过在IPv6中已不再适用，并被邻居发现协议（NDP）所替代。">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/2021/07/21/ARP%E8%A7%A3%E6%9E%90/img%5CARP%5CARP%E6%8A%A5%E6%96%871.png">
+<meta property="og:image" content="http://example.com/2021/07/21/ARP%E8%A7%A3%E6%9E%90/%5Cimg%5CARP%5CARP%E6%8A%A5%E6%96%87%E8%AF%A6%E7%BB%86.png">
 <meta property="article:published_time" content="2021-07-21T05:54:46.000Z">
-<meta property="article:modified_time" content="2021-07-21T06:24:19.307Z">
+<meta property="article:modified_time" content="2021-07-22T07:42:02.546Z">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2021/07/21/ARP%E8%A7%A3%E6%9E%90/img%5CARP%5CARP%E6%8A%A5%E6%96%871.png">
   
     <link rel="alternative" href="/atom.xml" title="郑林昕的博客" type="application/atom+xml">
   
@@ -179,17 +182,76 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>地址解析协议（Address Resolution Protocol），其基本功能为透过目标设备的IP地址，查询目标设备的MAC地址，以保证通信的顺利进行。它是IPv4中网络层必不可少的协议，不过在IPv6中已不再适用，并被邻居发现协议（NDP）所替代。</p>
+        <p>&emsp;&emsp;地址解析协议（Address Resolution Protocol），其基本功能为透过目标设备的IP地址，查询目标设备的MAC地址，以保证通信的顺利进行。它是IPv4中网络层必不可少的协议，不过在IPv6中已不再适用，并被邻居发现协议（NDP）所替代。</p>
 <span id="more"></span>
 <h2 id="1-ARP简介"><a href="#1-ARP简介" class="headerlink" title="1. ARP简介"></a>1. ARP简介</h2><p><strong>ARP作用</strong>:</p>
-<p> 把IP地址解析为MAC地址，知道了IP求MAC</p>
+<p>&emsp;&emsp;把IP地址解析为MAC地址，知道了IP求MAC</p>
 <p><strong>对于ARP的理解</strong>：</p>
 <ul>
 <li><p>ARP和DHCP基本上是终端发出的第一个包</p>
 </li>
 <li><p>ARP是很多协议的辅助协议</p>
 <h2 id="2-ARP工作流程"><a href="#2-ARP工作流程" class="headerlink" title="2. ARP工作流程"></a>2. ARP工作流程</h2></li>
+<li><p><em>同网段的通信</em>*</p>
+</li>
 </ul>
+<p>&emsp;&emsp;查看ARP表。如果ARP表中有目标主机的ARP表项，直接将目标主机的MAC地址放入数据帧头中，完成Ethernet Header+IP+CRC的封装，发送出去。</p>
+<p>&emsp;&emsp;如果ARP表中没有目标主机对应的表项，则缓存该数据报文。发送ARP请求(ARP请求的目标MAC是全F的广播地址)</p>
+<p>&emsp;&emsp;同一个广播域的所有主机都会收到ARP请求，只有目标主机才会对请求进行处理并将请求主机的“IP-MAC”对缓存在本地ARP表中，同时发送ARP应答。ARP应答的目标MAC是请求主机的MAC——单播</p>
+<p>&emsp;&emsp;请求主机收到ARP响应报文后，将目标主机的MAC地址加入ARP表，同时将缓冲的数据报文进行封装后发出</p>
+<p><strong>不同网段的通信</strong></p>
+<p>简单来说就是从：</p>
+<ul>
+<li>(同网段)<em>主机————目标主机</em> </li>
+<li>(不同网段)<em>主机————网关 到 网关————目标主机</em></li>
+</ul>
+<p>&emsp;&emsp;两段过程与同网段通信一致</p>
+<h2 id="3-ARP缓存"><a href="#3-ARP缓存" class="headerlink" title="3. ARP缓存"></a>3. ARP缓存</h2><p><strong>动态表项</strong>：</p>
+<p>&emsp;&emsp;通过ARP协议学习，能被更新，缺省老化时间120s</p>
+<p><strong>静态表项</strong>：</p>
+<p>&emsp;&emsp;手工配置的映射关系，不能被更新，无老化时间</p>
+<p>&emsp;&emsp;能够防止ARP欺骗,安全性很高</p>
+<h2 id="4-ARP报文"><a href="#4-ARP报文" class="headerlink" title="4. ARP报文"></a>4. ARP报文</h2><p><img src="img%5CARP%5CARP%E6%8A%A5%E6%96%871.png" alt="ARP报文"></p>
+<p>字段1和2分别是目的MAC和源MAC地址</p>
+<p>字段3表示后面的数据类型，ARP请求和ARP应答为0x0806</p>
+<p>字段4表示硬件地址类型，以太网类型值为1</p>
+<p>字段5表示要映射的协议地址的类型，对IPv4地址映射的值为0x0800</p>
+<p>字段6表示硬件地址长度，字段7表示协议地址长度</p>
+<p>字段8表示操作类型，ARP请求——1；ARP应答——2；RARP请求——3；RARP应答——4</p>
+<h2 id="5-ARP报文分析"><a href="#5-ARP报文分析" class="headerlink" title="5. ARP报文分析"></a>5. ARP报文分析</h2><p><img src="%5Cimg%5CARP%5CARP%E6%8A%A5%E6%96%87%E8%AF%A6%E7%BB%86.png" alt="ARP报文"></p>
+<h2 id="6-免费ARP"><a href="#6-免费ARP" class="headerlink" title="6. 免费ARP"></a>6. 免费ARP</h2><p>&emsp;&emsp;免费ARP指主机发送ARP查找自己的IP地址，通常发生在系统引导期间进行接口配置时。与标准ARP的区别就是免费ARP分组的目的IP地址字段封装的是自己的IP地址，即向所在网络请求自己的MAC地址。</p>
+<p><strong>免费ARP的作用有</strong>：</p>
+<ul>
+<li>一个主机可以通过它来确定另一个主机是否设置了相同的 IP地址。</li>
+</ul>
+<p>&emsp;&emsp;正常情况下发送免费ARP请求不会收到ARP应答，如果收到了一个ARP应答，则说明网络中存在与本机相同的IP地址的主机，发生了地址冲突。</p>
+<ul>
+<li>更新其他主机高速缓存中旧的硬件地址信息。</li>
+</ul>
+<p>&emsp;&emsp;如果发送免费ARP的主机正好改变了硬件地址，如更换了接口卡。</p>
+<p>&emsp;&emsp;其他主机接收到这个ARP请求的时候，发现自己的ARP高速缓存表中存在对应的IP地址，但是MAC地址不匹配，那么就需要利用接收的ARP请求来更新本地的ARP高速缓存表表项。</p>
+<ul>
+<li>网关利用免费ARP防止ARP攻击</li>
+</ul>
+<p>&emsp;&emsp;有些网关设备在一定的时间间隔内向网络主动发送免费ARP报文，让网络内的其他主机更新ARP表项中的网关MAC地址信息，以达到防止或缓解ARP攻击的效果。</p>
+<p><strong>ARP欺骗</strong></p>
+<p>&emsp;&emsp;ARP协议并不只在发送了ARP请求才接收ARP应答，计算机只要接收到ARP应答数据包，就会使用应答中的IP和MAC地址对本地的ARP缓存进行更新。</p>
+<p>&emsp;&emsp;主机可以构造虚假的免费ARP应答，将ARP的源MAC地址设为错误的MAC地址，并把这个虚假的免费ARP应答发送到网络中，那么所有接收到这个免费ARP应答的主机都会更新本地ARP表项中相应IP地址对应的MAC地址。更新成功后，这些主机的数据报文就会被转发到错误的MAC地址，从而实现了ARP欺骗的攻击。</p>
+<h2 id="7-Proxy代理ARP"><a href="#7-Proxy代理ARP" class="headerlink" title="7. Proxy代理ARP"></a>7. Proxy代理ARP</h2><p><strong>概念</strong>：</p>
+<p>&emsp;&emsp;代理ARP是为了分割网络，同时又不想划分网段，中间加设一个路由设备并开启ARP代理功能。这样就能通过router代为回应双方的ARP请求和应答</p>
+<p><strong>工作流程</strong>：</p>
+<p>&emsp;&emsp;两台主机A和B处于同一网段但不同的广播段（不在同一物理网络上）时，主机A发送ARP请求主机B的MAC地址时，因为路由器不转发广播包的原因，ARP请求只能到达路由器。如果路由器启用了代理ARP功能，并知道主机B属于它连接的网络，那么路由器就用自己接口的MAC地址代替主机B的MAC地址来对主机A进行ARP应答。主机A接收ARP应答，但并不知道代理ARP的存在。</p>
+<p><strong>代理ARP优缺点</strong></p>
+<ul>
+<li><p>优点：代理ARP能在不影响路由表的情况下添加一个新的Router，使子网对该主机变得透明化。一般代理ARP应该使用在主机没有配置默认网关或没有任何路由策略的网络上。</p>
+</li>
+<li><p>缺点：从工作过程可以看到，这其实是一种ARP欺骗。而且，通过两个物理网络之间的路由器的代理ARP功能其实互相隐藏了物理网络，这导致无法对网络拓扑进行网络概括。此外，代理ARP增加了使用它的那段网络的ARP流量，主机需要更大的ARP缓存空间，也不会为不使用ARP进行地址解析的网络工作。</p>
+</li>
+</ul>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ol>
+<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/songwenlong/p/6103406.html">songoo的ARP详解</a><h2 id="别的讲的很细的ARP解析"><a href="#别的讲的很细的ARP解析" class="headerlink" title="别的讲的很细的ARP解析"></a>别的讲的很细的ARP解析</h2></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/AI_for_leo/article/details/78200258">财务码农小老板的ARP地址解析协议</a></li>
+</ol>
 
       
 
@@ -262,6 +324,15 @@
   
 <nav id="article-nav">
   
+    <a href="/2021/07/22/%E4%BA%8C%E5%B1%82%E7%AB%AF%E5%8F%A3/" id="article-nav-newer" class="article-nav-link-wrap">
+      <i class="icon-circle-left"></i>
+      <div class="article-nav-title">
+        
+          深入研究二层端口
+        
+      </div>
+    </a>
+  
   
     <a href="/2021/07/20/VLAN/" id="article-nav-older" class="article-nav-link-wrap">
       <div class="article-nav-title">博客文档指南</div>
@@ -291,7 +362,7 @@
                 </span>
                 <span class="tooltip-content">
                     <div class="toc-article">
-                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-ARP%E7%AE%80%E4%BB%8B"><span class="toc-number">1.</span> <span class="toc-text">1. ARP简介</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-ARP%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B"><span class="toc-number">2.</span> <span class="toc-text">2. ARP工作流程</span></a></li></ol>
+                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-ARP%E7%AE%80%E4%BB%8B"><span class="toc-number">1.</span> <span class="toc-text">1. ARP简介</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-ARP%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B"><span class="toc-number">2.</span> <span class="toc-text">2. ARP工作流程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-ARP%E7%BC%93%E5%AD%98"><span class="toc-number">3.</span> <span class="toc-text">3. ARP缓存</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-ARP%E6%8A%A5%E6%96%87"><span class="toc-number">4.</span> <span class="toc-text">4. ARP报文</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-ARP%E6%8A%A5%E6%96%87%E5%88%86%E6%9E%90"><span class="toc-number">5.</span> <span class="toc-text">5. ARP报文分析</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-%E5%85%8D%E8%B4%B9ARP"><span class="toc-number">6.</span> <span class="toc-text">6. 免费ARP</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#7-Proxy%E4%BB%A3%E7%90%86ARP"><span class="toc-number">7.</span> <span class="toc-text">7. Proxy代理ARP</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83"><span class="toc-number">8.</span> <span class="toc-text">参考</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%AB%E7%9A%84%E8%AE%B2%E7%9A%84%E5%BE%88%E7%BB%86%E7%9A%84ARP%E8%A7%A3%E6%9E%90"><span class="toc-number">9.</span> <span class="toc-text">别的讲的很细的ARP解析</span></a></li></ol>
                     </div>
                 </span>
             </div>
