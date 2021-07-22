@@ -16,9 +16,9 @@
 <meta property="og:description" content="&amp;emsp;&amp;emsp;OSI模型：OSI 是不同制造商的设备和应用软件在网络中进行通信的标准，此模型已经成为计算机间和网络间进行通信的主要结构模型。">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://example.com/2021/07/22/%E4%BA%8C%E5%B1%82%E7%AB%AF%E5%8F%A3/ethernet%E5%B8%A7%E6%A0%BC%E5%BC%8F.png">
-<meta property="og:image" content="http://example.com/2021/07/22/%E4%BA%8C%E5%B1%82%E7%AB%AF%E5%8F%A3/vlan%E5%B8%A7.png">
+<meta property="og:image" content="http://example.com/2021/07/22/%E4%BA%8C%E5%B1%82%E7%AB%AF%E5%8F%A3/VLAN%E5%B8%A7.png">
 <meta property="article:published_time" content="2021-07-22T02:32:44.000Z">
-<meta property="article:modified_time" content="2021-07-22T08:02:59.273Z">
+<meta property="article:modified_time" content="2021-07-22T08:15:43.558Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://example.com/2021/07/22/%E4%BA%8C%E5%B1%82%E7%AB%AF%E5%8F%A3/ethernet%E5%B8%A7%E6%A0%BC%E5%BC%8F.png">
   
@@ -205,7 +205,7 @@
 <p>数据：46~1500 个字节，包含了上层协议传递下来的数据，如果加入数据字段后帧长度不够 64 字节，会在数据字段加入填充字段达到 64 字节。</p>
 <p>校验和：4 个字节，对接收网卡(主要是检测数据与填充字段)提供判断是否传输错误的一种方法，如果发现错误，则丢弃此帧。目前最为流行的用于校验和(FCS)的算法是循环冗余校验(cyclic redundancy check – CRC)。</p>
 <h2 id="VLAN帧格式"><a href="#VLAN帧格式" class="headerlink" title="VLAN帧格式"></a>VLAN帧格式</h2><p>与标准的以太网帧头相比，VLAN帧格式在源地址后增加了一个4字节的802.1Q标签</p>
-<p><img src="/2021/07/22/%E4%BA%8C%E5%B1%82%E7%AB%AF%E5%8F%A3/vlan%E5%B8%A7.png" alt="VLAN"></p>
+<p><img src="/2021/07/22/%E4%BA%8C%E5%B1%82%E7%AB%AF%E5%8F%A3/VLAN%E5%B8%A7.png" alt="VLAN"></p>
 <p>VLAN ID：指明了所属的VLAN，一共有4096个，每个支持802.1Q协议的主机发出来的帧都会保留这个域。</p>
 <p>CFI：规范格式指示符，以太网的值为0。</p>
 <p>priority：指定帧的优先级。</p>
