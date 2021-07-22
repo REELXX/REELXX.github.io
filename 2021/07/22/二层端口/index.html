@@ -8,19 +8,19 @@
   <link rel="dns-prefetch" href="http://example.com">
   <title>深入研究二层端口 | 郑林昕的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="OSI模型&amp;emsp;&amp;emsp;OSI 是不同制造商的设备和应用软件在网络中进行通信的标准，此模型已经成为计算机间和网络间进行通信的主要结构模型。">
+  <meta name="description" content="&amp;emsp;&amp;emsp;OSI模型：OSI 是不同制造商的设备和应用软件在网络中进行通信的标准，此模型已经成为计算机间和网络间进行通信的主要结构模型。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="深入研究二层端口">
 <meta property="og:url" content="http://example.com/2021/07/22/%E4%BA%8C%E5%B1%82%E7%AB%AF%E5%8F%A3/index.html">
 <meta property="og:site_name" content="郑林昕的博客">
-<meta property="og:description" content="OSI模型&amp;emsp;&amp;emsp;OSI 是不同制造商的设备和应用软件在网络中进行通信的标准，此模型已经成为计算机间和网络间进行通信的主要结构模型。">
+<meta property="og:description" content="&amp;emsp;&amp;emsp;OSI模型：OSI 是不同制造商的设备和应用软件在网络中进行通信的标准，此模型已经成为计算机间和网络间进行通信的主要结构模型。">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://example.com/2021/07/22/%E4%BA%8C%E5%B1%82%E7%AB%AF%E5%8F%A3/%E4%BA%8C%E5%B1%82%E7%AB%AF%E5%8F%A3/ethernet%E5%B8%A7%E6%A0%BC%E5%BC%8F.png">
-<meta property="og:image" content="http://example.com/2021/07/22/%E4%BA%8C%E5%B1%82%E7%AB%AF%E5%8F%A3/%E4%BA%8C%E5%B1%82%E7%AB%AF%E5%8F%A3/vlan%E5%B8%A7.png">
+<meta property="og:image" content="http://example.com/2021/07/22/%E4%BA%8C%E5%B1%82%E7%AB%AF%E5%8F%A3/ethernet%E5%B8%A7%E6%A0%BC%E5%BC%8F.png">
+<meta property="og:image" content="http://example.com/2021/07/22/%E4%BA%8C%E5%B1%82%E7%AB%AF%E5%8F%A3/vlan%E5%B8%A7.png">
 <meta property="article:published_time" content="2021-07-22T02:32:44.000Z">
-<meta property="article:modified_time" content="2021-07-22T07:40:19.414Z">
+<meta property="article:modified_time" content="2021-07-22T08:02:59.273Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://example.com/2021/07/22/%E4%BA%8C%E5%B1%82%E7%AB%AF%E5%8F%A3/%E4%BA%8C%E5%B1%82%E7%AB%AF%E5%8F%A3/ethernet%E5%B8%A7%E6%A0%BC%E5%BC%8F.png">
+<meta name="twitter:image" content="http://example.com/2021/07/22/%E4%BA%8C%E5%B1%82%E7%AB%AF%E5%8F%A3/ethernet%E5%B8%A7%E6%A0%BC%E5%BC%8F.png">
   
     <link rel="alternative" href="/atom.xml" title="郑林昕的博客" type="application/atom+xml">
   
@@ -182,7 +182,7 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="OSI模型"><a href="#OSI模型" class="headerlink" title="OSI模型"></a>OSI模型</h2><p>&emsp;&emsp;OSI 是不同制造商的设备和应用软件在网络中进行通信的标准，此模型已经成为计算机间和网络间进行通信的主要结构模型。</p>
+        <p>&emsp;&emsp;<strong>OSI模型</strong>：OSI 是不同制造商的设备和应用软件在网络中进行通信的标准，此模型已经成为计算机间和网络间进行通信的主要结构模型。</p>
 <span id="more"></span>
 <p>&emsp;&emsp;OSI 体系结构定义了一个七层模型用于进行进程间的通信，并作为一个概念性框架来协调各层标准的制定；OSI 的服务定义描述了各层所提供的服务，以及层与层之间的抽象接口和交互用的服务原语；OSI 各层的协议规范精确的定义了应当发送何种控制信息及何种过程来解释该控制信息。下面从上往下介绍OSI七层模型。</p>
 <ul>
@@ -194,8 +194,8 @@
 <li>数据链路层：<strong>控制网络层和物理层之间的通信</strong>。局域网的标准将数据链路层分为两个子层：逻辑链路控制子层(LLC)与介质访问控制子层(MAC)。数据链路层的主要功能是将网络层接收到的数据分割成特定的可被物理层传输的帧。</li>
 <li>物理层：<strong>比特流的传输</strong>。在设备之间传输比特流，规定了电平，速度和电缆针脚。</li>
 </ul>
-<h2 id="以太网帧"><a href="#以太网帧" class="headerlink" title="以太网帧"></a>以太网帧</h2><p>&emsp;&emsp;数据包传输到数据链路层，封装数据链路层报头得到的PDU被称为Frame（数据帧/以太网帧）</p>
-<h3 id="以太网使用两种标准帧格式，现在大多数数据帧使用的是Ethernet-II格式（如下图）"><a href="#以太网使用两种标准帧格式，现在大多数数据帧使用的是Ethernet-II格式（如下图）" class="headerlink" title="以太网使用两种标准帧格式，现在大多数数据帧使用的是Ethernet II格式（如下图）"></a>以太网使用两种标准帧格式，现在大多数数据帧使用的是Ethernet II格式（如下图）</h3><p><img src="%E4%BA%8C%E5%B1%82%E7%AB%AF%E5%8F%A3/ethernet%E5%B8%A7%E6%A0%BC%E5%BC%8F.png" alt="以太网帧"></p>
+<h2 id="以太网帧"><a href="#以太网帧" class="headerlink" title="以太网帧"></a>以太网帧</h2><p>数据包传输到数据链路层，封装数据链路层报头得到的PDU被称为Frame（数据帧/以太网帧）</p>
+<h3 id="以太网使用两种标准帧格式，现在大多数数据帧使用的是Ethernet-II格式（如下图）"><a href="#以太网使用两种标准帧格式，现在大多数数据帧使用的是Ethernet-II格式（如下图）" class="headerlink" title="以太网使用两种标准帧格式，现在大多数数据帧使用的是Ethernet II格式（如下图）"></a>以太网使用两种标准帧格式，现在大多数数据帧使用的是Ethernet II格式（如下图）</h3><p><img src="/2021/07/22/%E4%BA%8C%E5%B1%82%E7%AB%AF%E5%8F%A3/ethernet%E5%B8%A7%E6%A0%BC%E5%BC%8F.png" alt="以太网帧"></p>
 <p>前导码：7 个字节，用于数据传输过程中的双方发送与接收的速率的同步。</p>
 <p>SFD：帧开始符，1 个字节，用于标识一个以太网帧的开始。 </p>
 <p>目的 MAC 地址：6 个字节，指明帧的接收者。</p>
@@ -204,7 +204,9 @@
 <p>类型：2 个字节，指明帧中数据的协议类型，比如常见的 IPv4 中的 ip 协议采用 0x0800。</p>
 <p>数据：46~1500 个字节，包含了上层协议传递下来的数据，如果加入数据字段后帧长度不够 64 字节，会在数据字段加入填充字段达到 64 字节。</p>
 <p>校验和：4 个字节，对接收网卡(主要是检测数据与填充字段)提供判断是否传输错误的一种方法，如果发现错误，则丢弃此帧。目前最为流行的用于校验和(FCS)的算法是循环冗余校验(cyclic redundancy check – CRC)。</p>
-<h2 id="VLAN帧格式"><a href="#VLAN帧格式" class="headerlink" title="VLAN帧格式"></a>VLAN帧格式</h2><p>&emsp;&emsp;与标准的以太网帧头相比，VLAN帧格式在源地址后增加了一个4字节的802.1Q标签<br><img src="%E4%BA%8C%E5%B1%82%E7%AB%AF%E5%8F%A3/vlan%E5%B8%A7.png" alt="VLAN"><br>VLAN ID：指明了所属的VLAN，一共有4096个，每个支持802.1Q协议的主机发出来的帧都会保留这个域。</p>
+<h2 id="VLAN帧格式"><a href="#VLAN帧格式" class="headerlink" title="VLAN帧格式"></a>VLAN帧格式</h2><p>与标准的以太网帧头相比，VLAN帧格式在源地址后增加了一个4字节的802.1Q标签</p>
+<p><img src="/2021/07/22/%E4%BA%8C%E5%B1%82%E7%AB%AF%E5%8F%A3/vlan%E5%B8%A7.png" alt="VLAN"></p>
+<p>VLAN ID：指明了所属的VLAN，一共有4096个，每个支持802.1Q协议的主机发出来的帧都会保留这个域。</p>
 <p>CFI：规范格式指示符，以太网的值为0。</p>
 <p>priority：指定帧的优先级。</p>
 <h2 id="二层端口"><a href="#二层端口" class="headerlink" title="二层端口"></a>二层端口</h2><h3 id="Access-端口"><a href="#Access-端口" class="headerlink" title="Access 端口"></a>Access 端口</h3><p>&emsp;&emsp;Access端口主要是用来连接用户主机的二层以太网端口。它有一种最主要的特性就是：仅允许一个VLAN的帧通过，反过来也就是Access端口仅可以加入到一个VLAN中，且Access端口发送的以太网帧永远是Untagged（不带标签）的。</p>
@@ -324,7 +326,7 @@
                 </span>
                 <span class="tooltip-content">
                     <div class="toc-article">
-                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#OSI%E6%A8%A1%E5%9E%8B"><span class="toc-number">1.</span> <span class="toc-text">OSI模型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%A5%E5%A4%AA%E7%BD%91%E5%B8%A7"><span class="toc-number">2.</span> <span class="toc-text">以太网帧</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BD%BF%E7%94%A8%E4%B8%A4%E7%A7%8D%E6%A0%87%E5%87%86%E5%B8%A7%E6%A0%BC%E5%BC%8F%EF%BC%8C%E7%8E%B0%E5%9C%A8%E5%A4%A7%E5%A4%9A%E6%95%B0%E6%95%B0%E6%8D%AE%E5%B8%A7%E4%BD%BF%E7%94%A8%E7%9A%84%E6%98%AFEthernet-II%E6%A0%BC%E5%BC%8F%EF%BC%88%E5%A6%82%E4%B8%8B%E5%9B%BE%EF%BC%89"><span class="toc-number">2.1.</span> <span class="toc-text">以太网使用两种标准帧格式，现在大多数数据帧使用的是Ethernet II格式（如下图）</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#VLAN%E5%B8%A7%E6%A0%BC%E5%BC%8F"><span class="toc-number">3.</span> <span class="toc-text">VLAN帧格式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E5%B1%82%E7%AB%AF%E5%8F%A3"><span class="toc-number">4.</span> <span class="toc-text">二层端口</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Access-%E7%AB%AF%E5%8F%A3"><span class="toc-number">4.1.</span> <span class="toc-text">Access 端口</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Trunk-%E7%AB%AF%E5%8F%A3"><span class="toc-number">4.2.</span> <span class="toc-text">Trunk 端口</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Hybird-%E7%AB%AF%E5%8F%A3"><span class="toc-number">4.3.</span> <span class="toc-text">Hybird 端口</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#QinQ-%E7%AB%AF%E5%8F%A3"><span class="toc-number">4.4.</span> <span class="toc-text">QinQ 端口</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E5%B1%82%E7%AB%AF%E5%8F%A3%E6%95%B0%E6%8D%AE%E5%B8%A7%E5%A4%84%E7%90%86%E8%A7%84%E5%88%99"><span class="toc-number">5.</span> <span class="toc-text">二层端口数据帧处理规则</span></a></li></ol>
+                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%A5%E5%A4%AA%E7%BD%91%E5%B8%A7"><span class="toc-number">1.</span> <span class="toc-text">以太网帧</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BD%BF%E7%94%A8%E4%B8%A4%E7%A7%8D%E6%A0%87%E5%87%86%E5%B8%A7%E6%A0%BC%E5%BC%8F%EF%BC%8C%E7%8E%B0%E5%9C%A8%E5%A4%A7%E5%A4%9A%E6%95%B0%E6%95%B0%E6%8D%AE%E5%B8%A7%E4%BD%BF%E7%94%A8%E7%9A%84%E6%98%AFEthernet-II%E6%A0%BC%E5%BC%8F%EF%BC%88%E5%A6%82%E4%B8%8B%E5%9B%BE%EF%BC%89"><span class="toc-number">1.1.</span> <span class="toc-text">以太网使用两种标准帧格式，现在大多数数据帧使用的是Ethernet II格式（如下图）</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#VLAN%E5%B8%A7%E6%A0%BC%E5%BC%8F"><span class="toc-number">2.</span> <span class="toc-text">VLAN帧格式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E5%B1%82%E7%AB%AF%E5%8F%A3"><span class="toc-number">3.</span> <span class="toc-text">二层端口</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Access-%E7%AB%AF%E5%8F%A3"><span class="toc-number">3.1.</span> <span class="toc-text">Access 端口</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Trunk-%E7%AB%AF%E5%8F%A3"><span class="toc-number">3.2.</span> <span class="toc-text">Trunk 端口</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Hybird-%E7%AB%AF%E5%8F%A3"><span class="toc-number">3.3.</span> <span class="toc-text">Hybird 端口</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#QinQ-%E7%AB%AF%E5%8F%A3"><span class="toc-number">3.4.</span> <span class="toc-text">QinQ 端口</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E5%B1%82%E7%AB%AF%E5%8F%A3%E6%95%B0%E6%8D%AE%E5%B8%A7%E5%A4%84%E7%90%86%E8%A7%84%E5%88%99"><span class="toc-number">4.</span> <span class="toc-text">二层端口数据帧处理规则</span></a></li></ol>
                     </div>
                 </span>
             </div>
