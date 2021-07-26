@@ -1698,7 +1698,7 @@ pre .javascript .function {
 }
 @media (min-width: 992px) {
   .post-body {
-    text-align: center;
+    text-align: justify;
   }
 }
 @media (max-width: 991px) {

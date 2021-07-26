@@ -20,28 +20,22 @@
     var CONFIG = {"hostname":"example.com","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="关于hexo+yilia的左侧替换原始背景方案">
+  <meta name="description" content="Link Aggregation Control Protocol，链路汇聚控制协议基于IEEE802.3ad标准。各厂家均支持的标准协议，LACP协议通过LACPDU（Link Aggregation Control Protocol Data Unit，链路汇聚控制协议数据单元）与对端交互信息,建立聚合端口AP ，处于动态聚合组中的接口会自动使能LACP 协议，该接口将通过发送LACPDU 向">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Hexo+yilia左侧背景图片更换">
-<meta property="og:url" content="http://example.com/2021/07/23/Hexo-yilia%E5%B7%A6%E4%BE%A7%E8%83%8C%E6%99%AF%E5%9B%BE%E7%89%87%E6%9B%B4%E6%8D%A2/index.html">
+<meta property="og:title" content="LACP解析">
+<meta property="og:url" content="http://example.com/2021/07/25/LACP%E8%A7%A3%E6%9E%90/index.html">
 <meta property="og:site_name" content="郑林昕的博客">
-<meta property="og:description" content="关于hexo+yilia的左侧替换原始背景方案">
+<meta property="og:description" content="Link Aggregation Control Protocol，链路汇聚控制协议基于IEEE802.3ad标准。各厂家均支持的标准协议，LACP协议通过LACPDU（Link Aggregation Control Protocol Data Unit，链路汇聚控制协议数据单元）与对端交互信息,建立聚合端口AP ，处于动态聚合组中的接口会自动使能LACP 协议，该接口将通过发送LACPDU 向">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9jZG4uYW55d2F5MTMxNC5jbi9pbWFnZTIwMTkwNzMwMTUwNDQ1LnBuZw?x-oss-process=image/format,png">
-<meta property="og:image" content="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9jZG4uYW55d2F5MTMxNC5jbi9pbWFnZTIwMTkwNzMwMTUxMjMyLnBuZw?x-oss-process=image/format,png">
-<meta property="og:image" content="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9jZG4uYW55d2F5MTMxNC5jbi9pbWFnZTIwMTkwNzMwMTUyMTE2LnBuZw?x-oss-process=image/format,png">
-<meta property="og:image" content="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9jZG4uYW55d2F5MTMxNC5jbi9pbWFnZTIwMTkwNzMwMTUyNDMxLnBuZw?x-oss-process=image/format,png">
-<meta property="og:image" content="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9jZG4uYW55d2F5MTMxNC5jbi9pbWFnZTIwMTkwNzMwMTUyODA0LnBuZw?x-oss-process=image/format,png">
-<meta property="article:published_time" content="2021-07-23T01:41:17.000Z">
-<meta property="article:modified_time" content="2021-07-26T09:11:22.155Z">
+<meta property="article:published_time" content="2021-07-25T14:56:36.000Z">
+<meta property="article:modified_time" content="2021-07-26T09:06:25.255Z">
 <meta property="article:author" content="郑林昕">
-<meta property="article:tag" content="博客自定义">
-<meta property="article:tag" content="yilia">
-<meta property="article:tag" content="经验">
+<meta property="article:tag" content="数据通信">
+<meta property="article:tag" content="数据链路层">
+<meta property="article:tag" content="交换机">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9jZG4uYW55d2F5MTMxNC5jbi9pbWFnZTIwMTkwNzMwMTUwNDQ1LnBuZw?x-oss-process=image/format,png">
 
-<link rel="canonical" href="http://example.com/2021/07/23/Hexo-yilia%E5%B7%A6%E4%BE%A7%E8%83%8C%E6%99%AF%E5%9B%BE%E7%89%87%E6%9B%B4%E6%8D%A2/">
+<link rel="canonical" href="http://example.com/2021/07/25/LACP%E8%A7%A3%E6%9E%90/">
 
 
 <script id="page-configurations">
@@ -54,7 +48,7 @@
   };
 </script>
 
-  <title>Hexo+yilia左侧背景图片更换 | 郑林昕的博客</title>
+  <title>LACP解析 | 郑林昕的博客</title>
   
 
 
@@ -176,7 +170,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/07/23/Hexo-yilia%E5%B7%A6%E4%BE%A7%E8%83%8C%E6%99%AF%E5%9B%BE%E7%89%87%E6%9B%B4%E6%8D%A2/">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/07/25/LACP%E8%A7%A3%E6%9E%90/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/assets/img/touxiang.png">
@@ -189,7 +183,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          Hexo+yilia左侧背景图片更换
+          LACP解析
         </h1>
 
         <div class="post-meta">
@@ -199,14 +193,14 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2021-07-23 09:41:17" itemprop="dateCreated datePublished" datetime="2021-07-23T09:41:17+08:00">2021-07-23</time>
+              <time title="创建时间：2021-07-25 22:56:36" itemprop="dateCreated datePublished" datetime="2021-07-25T22:56:36+08:00">2021-07-25</time>
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-07-26 17:11:22" itemprop="dateModified" datetime="2021-07-26T17:11:22+08:00">2021-07-26</time>
+                <time title="修改时间：2021-07-26 17:06:25" itemprop="dateModified" datetime="2021-07-26T17:06:25+08:00">2021-07-26</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -214,7 +208,11 @@
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E5%8D%9A%E5%AE%A2/" itemprop="url" rel="index"><span itemprop="name">博客</span></a>
+                  <a href="/categories/%E6%95%B0%E6%8D%AE%E9%80%9A%E4%BF%A1/" itemprop="url" rel="index"><span itemprop="name">数据通信</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%95%B0%E6%8D%AE%E9%80%9A%E4%BF%A1/%E7%BD%91%E7%BB%9C/" itemprop="url" rel="index"><span itemprop="name">网络</span></a>
                 </span>
             </span>
 
@@ -224,7 +222,7 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>418</span>
+              <span>1.5k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
@@ -243,25 +241,36 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>关于hexo+yilia的左侧替换原始背景方案</p>
+        <p>Link Aggregation Control Protocol，链路汇聚控制协议基于IEEE802.3ad标准。各厂家均支持的标准协议，LACP协议通过LACPDU（Link Aggregation Control Protocol Data Unit，链路汇聚控制协议数据单元）与对端交互信息,建立聚合端口AP ，<strong>处于动态聚合组中的接口会自动使能LACP 协议，该接口将通过发送LACPDU 向对端通告自己的系统LACP 协议优先级、系统MAC、端口的LACP 协议优先级、端口号和操作Key。</strong>对端接收到LACPDU 后，将其中的信息与其他接口所收到的信息进行比较，以选择能够进行聚合的接口，从而双方可以对接口处于聚合状态达成一致。</p>
 <span id="more"></span>
-<h2 id="修改主题配置"><a href="#修改主题配置" class="headerlink" title="修改主题配置"></a>修改主题配置</h2><h3 id="1-找到themes-yilia目录下的-config-yml-修改配置："><a href="#1-找到themes-yilia目录下的-config-yml-修改配置：" class="headerlink" title="1.找到themes\yilia目录下的_config.yml,修改配置："></a>1.找到<strong>themes\yilia</strong>目录下的_config.yml,修改配置：</h3><p>header 这一项修改为 #00000</p>
-<p><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9jZG4uYW55d2F5MTMxNC5jbi9pbWFnZTIwMTkwNzMwMTUwNDQ1LnBuZw?x-oss-process=image/format,png" alt="config.yml"></p>
-<h3 id="2-把你选好的背景图片放到themes-yilia-source目录下"><a href="#2-把你选好的背景图片放到themes-yilia-source目录下" class="headerlink" title="2.把你选好的背景图片放到themes\yilia\source目录下"></a>2.把你选好的背景图片放到<strong>themes\yilia\source</strong>目录下</h3><p>图像推荐大小：700 x 1200,出来的效果比较好</p>
-<p><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9jZG4uYW55d2F5MTMxNC5jbi9pbWFnZTIwMTkwNzMwMTUxMjMyLnBuZw?x-oss-process=image/format,png" alt="背景文件夹"></p>
-<h3 id="3-打开yilia-source目录下的main-xxxx-css-进行修改"><a href="#3-打开yilia-source目录下的main-xxxx-css-进行修改" class="headerlink" title="3.打开yilia\source目录下的main.xxxx.css,进行修改"></a>3.打开<strong>yilia\source</strong>目录下的main.xxxx.css,进行修改</h3><p>这里的xxxx是不确定的意思，有些人重新build后会和原版的不一样</p>
-<p>Crtl + F搜索 <strong>.left-col{ ，.left-col .overlay{ 以及 #mobile-nav .overlay</strong></p>
-<p><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9jZG4uYW55d2F5MTMxNC5jbi9pbWFnZTIwMTkwNzMwMTUyMTE2LnBuZw?x-oss-process=image/format,png" alt="1"></p>
-<p><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9jZG4uYW55d2F5MTMxNC5jbi9pbWFnZTIwMTkwNzMwMTUyNDMxLnBuZw?x-oss-process=image/format,png" alt="2"></p>
-<p><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9jZG4uYW55d2F5MTMxNC5jbi9pbWFnZTIwMTkwNzMwMTUyODA0LnBuZw?x-oss-process=image/format,png" alt="3"></p>
-<p>分别在括号里面加上属性：</p>
-<pre><code>1. background-image:url(&quot;图片文件名&quot;);
-</code></pre>
-<p>如果你的图片存储在网络上，可以不进行第2步，第3步添加的代码改成:</p>
-<pre><code>1. background-image:url(&quot;图片地址&quot;);
-</code></pre>
-<p>重新部署就行啦。</p>
-<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><p><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_40922859/article/details/102886979?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522162700245216780265456678%2522%252C%2522scm%2522%253A%252220140713.130102334..%2522%257D&request_id=162700245216780265456678&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~all~sobaiduend~default-1-102886979.first_rank_v2_pc_rank_v29&utm_term=yilia%E5%B7%A6%E4%BE%A7&spm=1018.2226.3001.4187">本该如此的博客</a></p>
+<h2 id="链路汇聚控制协议"><a href="#链路汇聚控制协议" class="headerlink" title="链路汇聚控制协议"></a>链路汇聚控制协议</h2><p>增加带宽，增加可靠性，负载均衡，快速收敛</p>
+<h2 id="LACP端口状态"><a href="#LACP端口状态" class="headerlink" title="LACP端口状态"></a>LACP端口状态</h2><ol>
+<li>DOWN：断开</li>
+<li>BNDL：正常聚合</li>
+<li>SUSP：单方面聚合 对面挂了(对方某些数值不匹配或者没有启用LACP)</li>
+</ol>
+<h2 id="动态链路聚合的要求"><a href="#动态链路聚合的要求" class="headerlink" title="动态链路聚合的要求"></a>动态链路聚合的要求</h2><p>动态链路聚合是LACP协议自动地添加和删除聚合组内的端口，两个端口被自动地聚合在一起有一定的要求。</p>
+<ol>
+<li>只有相同的操作key才能被聚合在一起。</li>
+<li>只有和主端口具有相同的速率和双工等基本属性的端口才能被动态聚合在一起。</li>
+<li>端口链路处于UP状态，相连的端口启用LACP，并且端口或者相连端口必须处于主动模式(Active)。</li>
+</ol>
+<h2 id="动态链路聚合优先级关系"><a href="#动态链路聚合优先级关系" class="headerlink" title="动态链路聚合优先级关系"></a>动态链路聚合优先级关系</h2><p>关于<font color="#F4A460">优先级的都是越小越好 </font></p>
+<p>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;—— 系统ID（<font color="#87CEFA">系统优先级+MAC地址</font>），端口ID（<font color="#87CEFA">端口优先级+端口号</font>）</p>
+<p>LACP主端口：聚合组内优先级最高的端口。<font color="#F4A460">只有与主端口属性相同的端口能处于聚合状态，参加数据转发。</font></p>
+<p>LACP协商：系统ID优先级高的系统成为主系统，<font color="#F4A460">主系统的端口状态决定另一个系统的端口状态。</font></p>
+<h2 id="在了解负载均衡前，先了解AP的概念"><a href="#在了解负载均衡前，先了解AP的概念" class="headerlink" title="在了解负载均衡前，先了解AP的概念"></a>在了解负载均衡前，先了解AP的概念</h2><p>将多个物理链接捆绑在一起形成一个逻辑链接，这个逻辑链接称为 Aggregate Port（简称AP）。<font color="#F4A460">用于扩展链路带宽，提供更高的连接可靠性。</font></p>
+<p>AP 功能支持流量平衡，<font color="#F4A460">可以把流量均匀地分配给各成员链路。</font>AP 功能还实现了链路备份，当AP 中的一条成员链路断开时，系统会将该成员链路的流量自动地分配到AP 中的其它有效成员链路上。AP 中一条成员链路收到的广播或者多播报文，将不会被转发到其它成员链路上。</p>
+<h2 id="负载均衡"><a href="#负载均衡" class="headerlink" title="负载均衡"></a>负载均衡</h2><p>我们可以用 aggregateport load-balance设定流量分配方式</p>
+<p>我们要根据不同的网络环境，<font color="#F4A460">设置合适的流量分配模式，</font>以便把流量均匀分布到各个链路上，充分利用带宽。</p>
+<p>为什么要手动设置流量分配模式？<font color="#FF0000">因为每个包的大小不一样，所以AP不可能真正做到平均分配流量，</font><font color="#F4A460">需要人为先做到大致分配流量。</font>比如4台机子ping1台，要做到负载均衡肯定要<font color="#FF0000">基于源IP</font>（4个源IP，人为先将流量分成4份，做到大致的流量分配，再交给AP让它做流量平衡。就好比粗调和细调，我们人为的就是粗调，AP做的就是细调）。</p>
+<h2 id="LACP报文："><a href="#LACP报文：" class="headerlink" title="LACP报文："></a>LACP报文：</h2><p>主要字段介绍</p>
+<p>Actor_Port/Partner_Port：本端/对端接口信息。</p>
+<p>Actor_State/Partner_State：本端/对端状态。</p>
+<p>Actor_System_Priority/Partner_System_Priority：本端/对端系统优先级。</p>
+<p>Actor_System/Partner_System：本端/对端系统ID。</p>
+<p>Actor_Key/Partner_Key：本端/对端操作Key，各接口的该值相同才能够聚合。</p>
+<p>Actor_Port_Priority/Partner_Port_Priority：本端/对端接口优先级。</p>
 
     </div>
 
@@ -271,9 +280,9 @@
 
       <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/%E5%8D%9A%E5%AE%A2%E8%87%AA%E5%AE%9A%E4%B9%89/" rel="tag"># 博客自定义</a>
-              <a href="/tags/yilia/" rel="tag"># yilia</a>
-              <a href="/tags/%E7%BB%8F%E9%AA%8C/" rel="tag"># 经验</a>
+              <a href="/tags/%E6%95%B0%E6%8D%AE%E9%80%9A%E4%BF%A1/" rel="tag"># 数据通信</a>
+              <a href="/tags/%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF%E5%B1%82/" rel="tag"># 数据链路层</a>
+              <a href="/tags/%E4%BA%A4%E6%8D%A2%E6%9C%BA/" rel="tag"># 交换机</a>
           </div>
 
         
@@ -282,12 +291,12 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2021/07/22/%E5%85%B3%E4%BA%8E%E6%95%B0%E6%8D%AE%E5%B9%B3%E9%9D%A2%EF%BC%8C%E6%8E%A7%E5%88%B6%E5%B9%B3%E9%9D%A2%E5%92%8C%E8%BD%AC%E5%8F%91%E5%B9%B3%E9%9D%A2%E7%9A%84%E5%88%86%E7%A6%BB%E9%97%AE%E9%A2%98/" rel="prev" title="交换机数据平面，控制平面和管理平面的分离">
-      <i class="fa fa-chevron-left"></i> 交换机数据平面，控制平面和管理平面的分离
+    <a href="/2021/07/23/ACL%E8%A7%A3%E6%9E%90/" rel="prev" title="ACL解析">
+      <i class="fa fa-chevron-left"></i> ACL解析
     </a></div>
       <div class="post-nav-item">
-    <a href="/2021/07/23/LLDP%E5%8D%8F%E8%AE%AE%E8%A7%A3%E6%9E%90/" rel="next" title="LLDP协议解析">
-      LLDP协议解析 <i class="fa fa-chevron-right"></i>
+    <a href="/2021/07/26/MPLS%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" rel="next" title="MPLS学习笔记">
+      MPLS学习笔记 <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
@@ -347,7 +356,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9%E4%B8%BB%E9%A2%98%E9%85%8D%E7%BD%AE"><span class="nav-number">1.</span> <span class="nav-text">修改主题配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E6%89%BE%E5%88%B0themes-yilia%E7%9B%AE%E5%BD%95%E4%B8%8B%E7%9A%84-config-yml-%E4%BF%AE%E6%94%B9%E9%85%8D%E7%BD%AE%EF%BC%9A"><span class="nav-number">1.1.</span> <span class="nav-text">1.找到themes\yilia目录下的_config.yml,修改配置：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E6%8A%8A%E4%BD%A0%E9%80%89%E5%A5%BD%E7%9A%84%E8%83%8C%E6%99%AF%E5%9B%BE%E7%89%87%E6%94%BE%E5%88%B0themes-yilia-source%E7%9B%AE%E5%BD%95%E4%B8%8B"><span class="nav-number">1.2.</span> <span class="nav-text">2.把你选好的背景图片放到themes\yilia\source目录下</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E6%89%93%E5%BC%80yilia-source%E7%9B%AE%E5%BD%95%E4%B8%8B%E7%9A%84main-xxxx-css-%E8%BF%9B%E8%A1%8C%E4%BF%AE%E6%94%B9"><span class="nav-number">1.3.</span> <span class="nav-text">3.打开yilia\source目录下的main.xxxx.css,进行修改</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">1.4.</span> <span class="nav-text">参考</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%93%BE%E8%B7%AF%E6%B1%87%E8%81%9A%E6%8E%A7%E5%88%B6%E5%8D%8F%E8%AE%AE"><span class="nav-number">1.</span> <span class="nav-text">链路汇聚控制协议</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LACP%E7%AB%AF%E5%8F%A3%E7%8A%B6%E6%80%81"><span class="nav-number">2.</span> <span class="nav-text">LACP端口状态</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8A%A8%E6%80%81%E9%93%BE%E8%B7%AF%E8%81%9A%E5%90%88%E7%9A%84%E8%A6%81%E6%B1%82"><span class="nav-number">3.</span> <span class="nav-text">动态链路聚合的要求</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8A%A8%E6%80%81%E9%93%BE%E8%B7%AF%E8%81%9A%E5%90%88%E4%BC%98%E5%85%88%E7%BA%A7%E5%85%B3%E7%B3%BB"><span class="nav-number">4.</span> <span class="nav-text">动态链路聚合优先级关系</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9C%A8%E4%BA%86%E8%A7%A3%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1%E5%89%8D%EF%BC%8C%E5%85%88%E4%BA%86%E8%A7%A3AP%E7%9A%84%E6%A6%82%E5%BF%B5"><span class="nav-number">5.</span> <span class="nav-text">在了解负载均衡前，先了解AP的概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1"><span class="nav-number">6.</span> <span class="nav-text">负载均衡</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LACP%E6%8A%A5%E6%96%87%EF%BC%9A"><span class="nav-number">7.</span> <span class="nav-text">LACP报文：</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 

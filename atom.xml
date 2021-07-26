@@ -6,7 +6,7 @@
   <link href="http://example.com/atom.xml" rel="self"/>
   
   <link href="http://example.com/"/>
-  <updated>2021-07-23T16:12:45.484Z</updated>
+  <updated>2021-07-26T07:37:02.942Z</updated>
   <id>http://example.com/</id>
   
   <author>
@@ -17,11 +17,51 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>MPLS学习笔记</title>
+    <link href="http://example.com/2021/07/26/MPLS%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+    <id>http://example.com/2021/07/26/MPLS%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/</id>
+    <published>2021-07-26T07:37:02.000Z</published>
+    <updated>2021-07-26T07:37:02.942Z</updated>
+    
+    
+    
+    
+    
+  </entry>
+  
+  <entry>
+    <title>LACP解析</title>
+    <link href="http://example.com/2021/07/25/LACP%E8%A7%A3%E6%9E%90/"/>
+    <id>http://example.com/2021/07/25/LACP%E8%A7%A3%E6%9E%90/</id>
+    <published>2021-07-25T14:56:36.000Z</published>
+    <updated>2021-07-26T09:06:25.255Z</updated>
+    
+    <content type="html"><![CDATA[<p>Link Aggregation Control Protocol，链路汇聚控制协议基于IEEE802.3ad标准。各厂家均支持的标准协议，LACP协议通过LACPDU（Link Aggregation Control Protocol Data Unit，链路汇聚控制协议数据单元）与对端交互信息,建立聚合端口AP ，<strong>处于动态聚合组中的接口会自动使能LACP 协议，该接口将通过发送LACPDU 向对端通告自己的系统LACP 协议优先级、系统MAC、端口的LACP 协议优先级、端口号和操作Key。</strong>对端接收到LACPDU 后，将其中的信息与其他接口所收到的信息进行比较，以选择能够进行聚合的接口，从而双方可以对接口处于聚合状态达成一致。</p><span id="more"></span><h2 id="链路汇聚控制协议"><a href="#链路汇聚控制协议" class="headerlink" title="链路汇聚控制协议"></a>链路汇聚控制协议</h2><p>增加带宽，增加可靠性，负载均衡，快速收敛</p><h2 id="LACP端口状态"><a href="#LACP端口状态" class="headerlink" title="LACP端口状态"></a>LACP端口状态</h2><ol><li>DOWN：断开</li><li>BNDL：正常聚合</li><li>SUSP：单方面聚合 对面挂了(对方某些数值不匹配或者没有启用LACP)</li></ol><h2 id="动态链路聚合的要求"><a href="#动态链路聚合的要求" class="headerlink" title="动态链路聚合的要求"></a>动态链路聚合的要求</h2><p>动态链路聚合是LACP协议自动地添加和删除聚合组内的端口，两个端口被自动地聚合在一起有一定的要求。</p><ol><li>只有相同的操作key才能被聚合在一起。</li><li>只有和主端口具有相同的速率和双工等基本属性的端口才能被动态聚合在一起。</li><li>端口链路处于UP状态，相连的端口启用LACP，并且端口或者相连端口必须处于主动模式(Active)。</li></ol><h2 id="动态链路聚合优先级关系"><a href="#动态链路聚合优先级关系" class="headerlink" title="动态链路聚合优先级关系"></a>动态链路聚合优先级关系</h2><p>关于<font color="#F4A460">优先级的都是越小越好 </font></p><p>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;—— 系统ID（<font color="#87CEFA">系统优先级+MAC地址</font>），端口ID（<font color="#87CEFA">端口优先级+端口号</font>）</p><p>LACP主端口：聚合组内优先级最高的端口。<font color="#F4A460">只有与主端口属性相同的端口能处于聚合状态，参加数据转发。</font></p><p>LACP协商：系统ID优先级高的系统成为主系统，<font color="#F4A460">主系统的端口状态决定另一个系统的端口状态。</font></p><h2 id="在了解负载均衡前，先了解AP的概念"><a href="#在了解负载均衡前，先了解AP的概念" class="headerlink" title="在了解负载均衡前，先了解AP的概念"></a>在了解负载均衡前，先了解AP的概念</h2><p>将多个物理链接捆绑在一起形成一个逻辑链接，这个逻辑链接称为 Aggregate Port（简称AP）。<font color="#F4A460">用于扩展链路带宽，提供更高的连接可靠性。</font></p><p>AP 功能支持流量平衡，<font color="#F4A460">可以把流量均匀地分配给各成员链路。</font>AP 功能还实现了链路备份，当AP 中的一条成员链路断开时，系统会将该成员链路的流量自动地分配到AP 中的其它有效成员链路上。AP 中一条成员链路收到的广播或者多播报文，将不会被转发到其它成员链路上。</p><h2 id="负载均衡"><a href="#负载均衡" class="headerlink" title="负载均衡"></a>负载均衡</h2><p>我们可以用 aggregateport load-balance设定流量分配方式</p><p>我们要根据不同的网络环境，<font color="#F4A460">设置合适的流量分配模式，</font>以便把流量均匀分布到各个链路上，充分利用带宽。</p><p>为什么要手动设置流量分配模式？<font color="#FF0000">因为每个包的大小不一样，所以AP不可能真正做到平均分配流量，</font><font color="#F4A460">需要人为先做到大致分配流量。</font>比如4台机子ping1台，要做到负载均衡肯定要<font color="#FF0000">基于源IP</font>（4个源IP，人为先将流量分成4份，做到大致的流量分配，再交给AP让它做流量平衡。就好比粗调和细调，我们人为的就是粗调，AP做的就是细调）。</p><h2 id="LACP报文："><a href="#LACP报文：" class="headerlink" title="LACP报文："></a>LACP报文：</h2><p>主要字段介绍</p><p>Actor_Port/Partner_Port：本端/对端接口信息。</p><p>Actor_State/Partner_State：本端/对端状态。</p><p>Actor_System_Priority/Partner_System_Priority：本端/对端系统优先级。</p><p>Actor_System/Partner_System：本端/对端系统ID。</p><p>Actor_Key/Partner_Key：本端/对端操作Key，各接口的该值相同才能够聚合。</p><p>Actor_Port_Priority/Partner_Port_Priority：本端/对端接口优先级。</p>]]></content>
+    
+    
+    <summary type="html">&lt;p&gt;Link Aggregation Control Protocol，链路汇聚控制协议基于IEEE802.3ad标准。各厂家均支持的标准协议，LACP协议通过LACPDU（Link Aggregation Control Protocol Data Unit，链路汇聚控制协议数据单元）与对端交互信息,建立聚合端口AP ，&lt;strong&gt;处于动态聚合组中的接口会自动使能LACP 协议，该接口将通过发送LACPDU 向对端通告自己的系统LACP 协议优先级、系统MAC、端口的LACP 协议优先级、端口号和操作Key。&lt;/strong&gt;对端接收到LACPDU 后，将其中的信息与其他接口所收到的信息进行比较，以选择能够进行聚合的接口，从而双方可以对接口处于聚合状态达成一致。&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="数据通信" scheme="http://example.com/categories/%E6%95%B0%E6%8D%AE%E9%80%9A%E4%BF%A1/"/>
+    
+    <category term="网络" scheme="http://example.com/categories/%E6%95%B0%E6%8D%AE%E9%80%9A%E4%BF%A1/%E7%BD%91%E7%BB%9C/"/>
+    
+    
+    <category term="数据通信" scheme="http://example.com/tags/%E6%95%B0%E6%8D%AE%E9%80%9A%E4%BF%A1/"/>
+    
+    <category term="数据链路层" scheme="http://example.com/tags/%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF%E5%B1%82/"/>
+    
+    <category term="交换机" scheme="http://example.com/tags/%E4%BA%A4%E6%8D%A2%E6%9C%BA/"/>
+    
+  </entry>
+  
+  <entry>
     <title>ACL解析</title>
     <link href="http://example.com/2021/07/23/ACL%E8%A7%A3%E6%9E%90/"/>
     <id>http://example.com/2021/07/23/ACL%E8%A7%A3%E6%9E%90/</id>
     <published>2021-07-23T07:48:29.000Z</published>
-    <updated>2021-07-23T16:12:45.484Z</updated>
+    <updated>2021-07-26T09:10:00.876Z</updated>
     
     <content type="html"><![CDATA[<p>接入控制列表<br>Access Control Lists 接入控制列表 俗称防火墙</p><span id="more"></span><h2 id="适用范围分类：安全ACLs和QoS-ACLs"><a href="#适用范围分类：安全ACLs和QoS-ACLs" class="headerlink" title="适用范围分类：安全ACLs和QoS ACLs"></a>适用范围分类：安全ACLs和QoS ACLs</h2><p>安全ACLs——控制哪些数据流允许从网络设备通过</p><p>QoS策略——对数据流进行优先级分类和处理</p><h2 id="组成："><a href="#组成：" class="headerlink" title="组成："></a>组成：</h2><p>ACLs —— 由ACE组成</p><p>ACE接入控制列表表项 —— 申明了满足该表项的匹配条件和行为</p><pre><code>示例：    10 permit ip host 1.1.1.1 any        * 10代表ACE序列号，越小越优先        * permit代表动作——允许 ，deny——拒绝        * Ip host 1.1.1.1 any表明报文必须是IP报文，且源IP必须是1.1.1.1 目的IP没限制</code></pre><h2 id="工作原理："><a href="#工作原理：" class="headerlink" title="工作原理："></a>工作原理：</h2><ol><li>当一个数据报进入一个端口，路由器检查这个数据报是否可路由。如果可以路由，检查这个端口是否有ACL控制进入数据报。如果有，根据ACL中的条件指令，检查数据报。如果数据报被允许的，就查询路由表，决定数据报的目标端口。</li><li>路由器检查目标端口是否存在ACL控制流出的数据报。若不存在，这个数据报直接发送给目标端口。若存在，就再根据ACL进行取舍，再转发到目的端口。</li><li>总结：一个入站数据报，由路由器处理器调入内存，读取数据报包头信息，如目标IP并搜索路由表，如有表项中有，则从路由表的选择接口转发（如果表项中没，丢弃），数据进入该接口的访问控制列表（如果没ACL，直接转发），按条件进行筛选。</li></ol><h2 id="两个方向："><a href="#两个方向：" class="headerlink" title="两个方向："></a>两个方向：</h2><ul><li>出 out ：已经进入路由器，正离开路由器接口的数据包</li><li>进 in ： 已到达路由器接口的数据包，将被路由器处理</li></ul><h2 id="使用："><a href="#使用：" class="headerlink" title="使用："></a>使用：</h2><h3 id="1-“3P”原则"><a href="#1-“3P”原则" class="headerlink" title="1.“3P”原则"></a>1.“3P”原则</h3><p>在路由器上应用ACL时，可以为每种协议（Per Protocol）、每个方向（Per Direction）和每个接口（Per Interface）配置一个ACL，一般称为“3P原则”。</p><ol><li>一个ACL只能基于一种协议，因此每种协议都需要配置单独的ACL。</li><li>经过路由器接口的数据有进（ln）和出（Out）两个方向，因此在接口上配置访问控制列表也有进（In）和出（Out）两个方向。每个接口可以配置进方向的ACL，也可以配置出方向的ACL，或者两者都配置，但是一个ACL只能控制一个方向。</li><li>一个ACL只能控制一个接口上的数据流量，无法同时控制多个接口上的数据流量。</li></ol><h3 id="2-语句顺序决定了对数据的控制顺序"><a href="#2-语句顺序决定了对数据的控制顺序" class="headerlink" title="2.语句顺序决定了对数据的控制顺序"></a>2.语句顺序决定了对数据的控制顺序</h3><p>ACL的语句是一种自上而下的逻辑排列关系。数据匹配过程中是依次对语句进行比较，一旦匹配成功则按照当前语句控制策略处理，不再与之后的语句进行比较。因此，正确的语句顺序才能得到所需的控制效果。</p><h3 id="3-至少有一条允许（Permit）语句"><a href="#3-至少有一条允许（Permit）语句" class="headerlink" title="3.至少有一条允许（Permit）语句"></a>3.至少有一条允许（Permit）语句</h3><p>所有ACL的最后一条语句都是隐式拒绝语句，表示当所有语句都无法匹配时，将拒绝数据通过并自动丢弃数据，以防数据意外进入网络。因此，在写“拒绝（deny）”的ACL时，一定至少要有一条允许（Permit）语句，否则配置ACL的接口将拒绝任何数据通过，影响正常的网络通信。</p><h3 id="4-最有限制性的语句应该放在ACL的靠前位置"><a href="#4-最有限制性的语句应该放在ACL的靠前位置" class="headerlink" title="4.最有限制性的语句应该放在ACL的靠前位置"></a>4.最有限制性的语句应该放在ACL的靠前位置</h3><p>最有限制性的语句放在ACL的靠前位置，可以首先过滤掉很多不符合条件的数据，节省后面语句的比较时间，从而提高路由器的工作效率。</p><h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="https://blog.csdn.net/ck784101777/article/details/97893744?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522162702611116780264055304%2522%252C%2522scm%2522%253A%252220140713.130102334..%2522%257D&request_id=162702611116780264055304&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~all~top_click~default-5-97893744.first_rank_v2_pc_rank_v29&utm_term=ACL&spm=1018.2226.3001.4187">ACL访问控制(华为)</a></p><p><a href="https://blog.csdn.net/gaofei0428/article/details/111874262?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522162702611116780264055304%2522%252C%2522scm%2522%253A%252220140713.130102334..%2522%257D&request_id=162702611116780264055304&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~all~top_click~default-3-111874262.first_rank_v2_pc_rank_v29&utm_term=ACL&spm=1018.2226.3001.4187">ACL访问控制列表</a></p>]]></content>
     
@@ -30,8 +70,12 @@
     
     
     
+    <category term="网络" scheme="http://example.com/categories/%E7%BD%91%E7%BB%9C/"/>
+    
     
     <category term="数据通信" scheme="http://example.com/tags/%E6%95%B0%E6%8D%AE%E9%80%9A%E4%BF%A1/"/>
+    
+    <category term="网络基础" scheme="http://example.com/tags/%E7%BD%91%E7%BB%9C%E5%9F%BA%E7%A1%80/"/>
     
   </entry>
   
@@ -40,7 +84,7 @@
     <link href="http://example.com/2021/07/23/LLDP%E5%8D%8F%E8%AE%AE%E8%A7%A3%E6%9E%90/"/>
     <id>http://example.com/2021/07/23/LLDP%E5%8D%8F%E8%AE%AE%E8%A7%A3%E6%9E%90/</id>
     <published>2021-07-23T07:16:14.000Z</published>
-    <updated>2021-07-23T16:12:43.547Z</updated>
+    <updated>2021-07-26T09:11:47.942Z</updated>
     
     <content type="html"><![CDATA[<p>链路层发现协议基本概念</p><span id="more"></span><h3 id="概述1："><a href="#概述1：" class="headerlink" title="概述1："></a>概述1：</h3><p>LLDP（Link Layer Discovery Protocol，链路层发现协议）就是用于这个目的的协议。LLDP定义在802.1ab中,它是一个二层协议，它提供了一种标准的链路层发现方式。LLDP协议使得接入网络的一台设备可以将其主要的能力，管理地址，设备标识，接口标识等信息发送给接入同一个局域网络的其它设备。当一个设备从网络中接收到其它设备的这些信息时，它就将这些信息以MIB的形式存储起来。<br>这些MIB信息可用于发现设备的物理拓扑结构以及管理配置信息。需要注意的是LLDP仅仅被设计用于进行信息通告，它被用于通告一个设备的信息并可以获得其它设备的信息，进而得到相关的MIB信息。它不是一个配置、控制协议，无法通过该协议对远端设备进行配置，它只是提供了关于网络拓扑以及管理配置的信息，这些信息可以被用于管理、配置的目的，如何用取决于信息的使用者。</p><h3 id="概述2："><a href="#概述2：" class="headerlink" title="概述2："></a>概述2：</h3><p>LLDP（Link Layer Discovery Protocol，链路层发现协议）是由IEEE 802.1AB定义的一种链路层发现协议。通过LLDP协议能够进行拓扑的发现及掌握拓扑的变化情况。LLDP将设备本地的信息组织成TLV的格式（Type/Lenth/Value，类型/长度/值）封装在LLDPDU（LLDP data unit，链路层发现协议数据单元）中发送给邻居设备，同时它将邻居设备发送的LLDPDU以MIB（Management Information Base，管理信息库）的形式存储起来，提供给网络管理系统访问。<br>通过LLDP，网络管理系统可以掌握拓扑的连接情况，比如设备的哪些端口与其它设备相连接，链路连接两端的端口的速率、双工是否匹配等，管理员可以根据这些信息快速地定位及排查故障。</p><h3 id="LLDP工作模式"><a href="#LLDP工作模式" class="headerlink" title="LLDP工作模式"></a>LLDP工作模式</h3><p>LLDP提供了三种工作模式：<br>• TxRx：即发送也接收LLDPDU。<br>• Rx Only：只接收不发送LLDPDU。<br>• Tx Only：只发送不接收LLDPDU。<br>当端口的LLDP工作模式发生变化时，端口将对协议状态机进行初始化操作，通过配置端口初始化的延迟时间，可以避免由于工作模式频繁改变而导致端口不断地进行初始化操作。</p><h2 id="待补充"><a href="#待补充" class="headerlink" title="待补充"></a>待补充</h2><h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><p><a href="https://blog.csdn.net/goodluckwhh/article/details/10948065?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522162702451016780262582058%2522%252C%2522scm%2522%253A%252220140713.130102334..%2522%257D&request_id=162702451016780262582058&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~all~top_positive~default-1-10948065.first_rank_v2_pc_rank_v29&utm_term=lldp&spm=1018.2226.3001.4187">数据链路层学习之LLDP</a></p>]]></content>
     
@@ -49,6 +93,16 @@
     
     
     
+    <category term="数据通信" scheme="http://example.com/categories/%E6%95%B0%E6%8D%AE%E9%80%9A%E4%BF%A1/"/>
+    
+    <category term="网络" scheme="http://example.com/categories/%E6%95%B0%E6%8D%AE%E9%80%9A%E4%BF%A1/%E7%BD%91%E7%BB%9C/"/>
+    
+    
+    <category term="数据通信" scheme="http://example.com/tags/%E6%95%B0%E6%8D%AE%E9%80%9A%E4%BF%A1/"/>
+    
+    <category term="数据链路层" scheme="http://example.com/tags/%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF%E5%B1%82/"/>
+    
+    <category term="网络" scheme="http://example.com/tags/%E7%BD%91%E7%BB%9C/"/>
     
   </entry>
   
@@ -57,7 +111,7 @@
     <link href="http://example.com/2021/07/23/Hexo-yilia%E5%B7%A6%E4%BE%A7%E8%83%8C%E6%99%AF%E5%9B%BE%E7%89%87%E6%9B%B4%E6%8D%A2/"/>
     <id>http://example.com/2021/07/23/Hexo-yilia%E5%B7%A6%E4%BE%A7%E8%83%8C%E6%99%AF%E5%9B%BE%E7%89%87%E6%9B%B4%E6%8D%A2/</id>
     <published>2021-07-23T01:41:17.000Z</published>
-    <updated>2021-07-23T01:52:44.881Z</updated>
+    <updated>2021-07-26T09:11:22.155Z</updated>
     
     <content type="html"><![CDATA[<p>关于hexo+yilia的左侧替换原始背景方案</p><span id="more"></span><h2 id="修改主题配置"><a href="#修改主题配置" class="headerlink" title="修改主题配置"></a>修改主题配置</h2><h3 id="1-找到themes-yilia目录下的-config-yml-修改配置："><a href="#1-找到themes-yilia目录下的-config-yml-修改配置：" class="headerlink" title="1.找到themes\yilia目录下的_config.yml,修改配置："></a>1.找到<strong>themes\yilia</strong>目录下的_config.yml,修改配置：</h3><p>header 这一项修改为 #00000</p><p><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9jZG4uYW55d2F5MTMxNC5jbi9pbWFnZTIwMTkwNzMwMTUwNDQ1LnBuZw?x-oss-process=image/format,png" alt="config.yml"></p><h3 id="2-把你选好的背景图片放到themes-yilia-source目录下"><a href="#2-把你选好的背景图片放到themes-yilia-source目录下" class="headerlink" title="2.把你选好的背景图片放到themes\yilia\source目录下"></a>2.把你选好的背景图片放到<strong>themes\yilia\source</strong>目录下</h3><p>图像推荐大小：700 x 1200,出来的效果比较好</p><p><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9jZG4uYW55d2F5MTMxNC5jbi9pbWFnZTIwMTkwNzMwMTUxMjMyLnBuZw?x-oss-process=image/format,png" alt="背景文件夹"></p><h3 id="3-打开yilia-source目录下的main-xxxx-css-进行修改"><a href="#3-打开yilia-source目录下的main-xxxx-css-进行修改" class="headerlink" title="3.打开yilia\source目录下的main.xxxx.css,进行修改"></a>3.打开<strong>yilia\source</strong>目录下的main.xxxx.css,进行修改</h3><p>这里的xxxx是不确定的意思，有些人重新build后会和原版的不一样</p><p>Crtl + F搜索 <strong>.left-col{ ，.left-col .overlay{ 以及 #mobile-nav .overlay</strong></p><p><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9jZG4uYW55d2F5MTMxNC5jbi9pbWFnZTIwMTkwNzMwMTUyMTE2LnBuZw?x-oss-process=image/format,png" alt="1"></p><p><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9jZG4uYW55d2F5MTMxNC5jbi9pbWFnZTIwMTkwNzMwMTUyNDMxLnBuZw?x-oss-process=image/format,png" alt="2"></p><p><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9jZG4uYW55d2F5MTMxNC5jbi9pbWFnZTIwMTkwNzMwMTUyODA0LnBuZw?x-oss-process=image/format,png" alt="3"></p><p>分别在括号里面加上属性：</p><pre><code>1. background-image:url(&quot;图片文件名&quot;);</code></pre><p>如果你的图片存储在网络上，可以不进行第2步，第3步添加的代码改成:</p><pre><code>1. background-image:url(&quot;图片地址&quot;);</code></pre><p>重新部署就行啦。</p><h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><p><a href="https://blog.csdn.net/qq_40922859/article/details/102886979?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522162700245216780265456678%2522%252C%2522scm%2522%253A%252220140713.130102334..%2522%257D&request_id=162700245216780265456678&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~all~sobaiduend~default-1-102886979.first_rank_v2_pc_rank_v29&utm_term=yilia%E5%B7%A6%E4%BE%A7&spm=1018.2226.3001.4187">本该如此的博客</a></p>]]></content>
     
@@ -66,6 +120,14 @@
     
     
     
+    <category term="博客" scheme="http://example.com/categories/%E5%8D%9A%E5%AE%A2/"/>
+    
+    
+    <category term="博客自定义" scheme="http://example.com/tags/%E5%8D%9A%E5%AE%A2%E8%87%AA%E5%AE%9A%E4%B9%89/"/>
+    
+    <category term="yilia" scheme="http://example.com/tags/yilia/"/>
+    
+    <category term="经验" scheme="http://example.com/tags/%E7%BB%8F%E9%AA%8C/"/>
     
   </entry>
   
@@ -74,7 +136,7 @@
     <link href="http://example.com/2021/07/22/%E5%85%B3%E4%BA%8E%E6%95%B0%E6%8D%AE%E5%B9%B3%E9%9D%A2%EF%BC%8C%E6%8E%A7%E5%88%B6%E5%B9%B3%E9%9D%A2%E5%92%8C%E8%BD%AC%E5%8F%91%E5%B9%B3%E9%9D%A2%E7%9A%84%E5%88%86%E7%A6%BB%E9%97%AE%E9%A2%98/"/>
     <id>http://example.com/2021/07/22/%E5%85%B3%E4%BA%8E%E6%95%B0%E6%8D%AE%E5%B9%B3%E9%9D%A2%EF%BC%8C%E6%8E%A7%E5%88%B6%E5%B9%B3%E9%9D%A2%E5%92%8C%E8%BD%AC%E5%8F%91%E5%B9%B3%E9%9D%A2%E7%9A%84%E5%88%86%E7%A6%BB%E9%97%AE%E9%A2%98/</id>
     <published>2021-07-22T06:32:54.000Z</published>
-    <updated>2021-07-23T16:12:54.845Z</updated>
+    <updated>2021-07-26T09:09:42.053Z</updated>
     
     <content type="html"><![CDATA[<p><a href="#jump">三平面分离的详细解析</a></p><span id="more"></span><p><span id="back"></span></p><h3 id="交换机的工作原理"><a href="#交换机的工作原理" class="headerlink" title="交换机的工作原理"></a>交换机的工作原理</h3><p>目的MAC转发<br>源MAC学习<br>组播广播未知单播泛洪</p><blockquote><h3 id="交换机控制平面："><a href="#交换机控制平面：" class="headerlink" title="交换机控制平面："></a>交换机控制平面：</h3><p>&emsp;&emsp;交换机的控制平面用于控制和管理所有网络协议的运行，比如OSPF协议，RIP协议，BGP协议等。控制平面提供了数据平面数据处理转发前所必须的各种网络信息和转发查询表项。</p></blockquote><blockquote><h3 id="交换机数据平面："><a href="#交换机数据平面：" class="headerlink" title="交换机数据平面："></a>交换机数据平面：</h3><p>&emsp;&emsp;交换机的基本任务是处理和转发交换机各不同端口上各种类型的数据， L2/L3/ACL/QOS/组播/安全防护等各种具体的数据处理转发过程，都属于交换机数据平面的任务范畴 。</p></blockquote><blockquote><h3 id="交换机管理平面："><a href="#交换机管理平面：" class="headerlink" title="交换机管理平面："></a>交换机管理平面：</h3><p>&emsp;&emsp;交换机的管理平面是提供给网络工程师 使用TELNET、WEB、SSH、SNMP、RMON等方式来管理设备，并支持、理解和执行网络工程师对于网络设备各种网络协议的设置命令。管理平面必须预先设置好控制平面中各种协议的相关参数，并支持在必要时刻对控制平面的运行进行干预。</p></blockquote><p><strong>三平面组合就是交换机的基本工作：</strong></p><p>&emsp;&emsp;处理不同接口上各种类型的数据，对于数据处理过程中各种具体的处理转发过程，例如L2/L3/ACL/QOS/组播/安全防护等各种网络功能的具体执行，都划分为交换机的数据平面；而控制平面用于控制各种网络协议的运行，例如控制OSPF、ARP、STP等等协议的正常运行，控制平面提供了对网络环境的准确认识，提供了数据平面数据处理转发前所必须的各种网络信息和转发查询表项；至于管理平面的功能是提供给网络工程师使用TELNET、WEB、SSH、SNMP、RMON等方式管理设备的各种管理接口，并支持、理解和执行网络工程师对于网络设备各种网络功能的设置命令。</p><p><span id="jump"></span><br><a href="#back">查看交换机原理</a></p><p>　　为什么需要对数据平面、控制平面和管理平面进行相互的分离呢?</p><p>&emsp;&emsp;首先三者对于主机资源的消耗为：数据平面&gt;&gt;控制平面&gt;&gt;管理平面</p><p>&emsp;&emsp;假设这几个平面不进行任何的分离，数据平面和控制、管理平面使用共用的主机资源，在大数据流量、复杂应用环境下数据平面由于承担着繁重的日常任务将可能消耗绝大部分资源，这对于整个交换机系统无疑是灾难性的，因为在某些极端的情况下，控制平面将没有充分的资源来保障运行，这就意味网络设备失去了对设备所处网络环境的真实了解，网络设备将立即陷于非正常工作状态甚至瘫痪状态，而网络工程师也没有资源使用管理平面对网络设备的运行进行干预，所以数据平面需要严格地与控制平面、管理平面进行分离。</p><p>&emsp;&emsp;管理平面所要求的系统资源是最低的，分离出一定的系统资源独立运行管理平面并不影响控制平面的运行，反而能保证控制平面的正常运行。假设，当网络环境频繁变动、网络协议剧烈动荡的情况下，控制平面将占用大多数资源，这时候网络已经无法正常运行，出现了问题，需要网络工程师即使对网络进行维护和整改。管理平面的分离让网络工程师可以在控制平面出现异常状况（网络出现异常）的时候依然拥有足够的资源打开设备的管理界面，通过改变或终止某个协议、端口的运行来阻止异常网络环境对网络设备的剧烈影响，最终修复好网络环境，使得控制平面得以正常运行。</p><p>&emsp;&emsp;通过采用数据平面、控制平面、管理平面相互分离的结构模型，保证了大量的数据处理不影响管理和控制，而在路由和环境复杂条件下，控制平面不影响管理平面，高度保证了系统安全稳定性。</p><p>&emsp;&emsp;“三平面分离”技术注重于保护核心设备在病毒和攻击环境下依然提供正常的网络设备管理，满足在线地定位和解决安全问题，在稳定性设计上优于传统的“两平面分离”技术。</p><h2 id="详细参考"><a href="#详细参考" class="headerlink" title="详细参考"></a>详细参考</h2><p><a href="https://blog.csdn.net/chpstudy/article/details/62423072?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522162693636016780255272782%2522%252C%2522scm%2522%253A%252220140713.130102334.pc%255Fall.%2522%257D&request_id=162693636016780255272782&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~all~first_rank_v2~rank_v29-5-62423072.first_rank_v2_pc_rank_v29&utm_term=%E4%BA%A4%E6%8D%A2%E6%9C%BA%E7%9A%84%E4%B8%89%E5%B9%B3%E9%9D%A2%E5%88%86%E7%A6%BB%E6%9E%B6%E6%9E%84&spm=1018.2226.3001.4187">数据平面、控制平面、管理平面</a></p>]]></content>
     
@@ -83,6 +145,14 @@
     
     
     
+    <category term="数据通信" scheme="http://example.com/categories/%E6%95%B0%E6%8D%AE%E9%80%9A%E4%BF%A1/"/>
+    
+    <category term="网络" scheme="http://example.com/categories/%E6%95%B0%E6%8D%AE%E9%80%9A%E4%BF%A1/%E7%BD%91%E7%BB%9C/"/>
+    
+    
+    <category term="三平面" scheme="http://example.com/tags/%E4%B8%89%E5%B9%B3%E9%9D%A2/"/>
+    
+    <category term="交换机工作原理" scheme="http://example.com/tags/%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/"/>
     
   </entry>
   
@@ -91,7 +161,7 @@
     <link href="http://example.com/2021/07/22/%E4%BA%8C%E5%B1%82%E7%AB%AF%E5%8F%A3/"/>
     <id>http://example.com/2021/07/22/%E4%BA%8C%E5%B1%82%E7%AB%AF%E5%8F%A3/</id>
     <published>2021-07-22T02:32:44.000Z</published>
-    <updated>2021-07-23T16:12:49.186Z</updated>
+    <updated>2021-07-26T09:08:48.801Z</updated>
     
     <content type="html"><![CDATA[<p><strong>OSI模型</strong>：OSI 是不同制造商的设备和应用软件在网络中进行通信的标准，此模型已经成为计算机间和网络间进行通信的主要结构模型。</p><span id="more"></span><p>OSI 体系结构定义了一个七层模型用于进行进程间的通信，并作为一个概念性框架来协调各层标准的制定；OSI 的服务定义描述了各层所提供的服务，以及层与层之间的抽象接口和交互用的服务原语；OSI 各层的协议规范精确的定义了应当发送何种控制信息及何种过程来解释该控制信息。下面从上往下介绍OSI七层模型。</p><ul><li>应用层：<strong>为应用程序提供网络服务</strong>。负责对软件提供接口以使程序能享用网络服务。应用层提供的服务包括文件传输、文件管理以及电子邮件的信息处理。</li><li>表示层：<strong>数据格式化，加密，解密</strong>。表示层中数据将按照网络能理解的方案进行格式转化，管理数据的解密与加密，还对图片和文件格式信息进行解码和编码。</li><li>会话层：<strong>建立，维护，管理会话连接</strong>。负责在网络中的两个节点之间建立和维持通信。会话层的功能包括：建立通信链接和保持会话过程通信链接的畅通，同步两个节点之间的对话，决定通信是否被中断以及通信中断时决定从何处重新发送。</li><li>传输层：<strong>建立，维护，管理端到端链接</strong>。负责端到端的可靠传输，实现数据通信中通信子网向资源子网的过渡，传输层传输信息的单位称为报文，负责总体数据的传输和控制。这一层主要定义了两个传输协议，TCP 以及 UDP 协议。</li><li>网络层：<strong>IP寻址和路由选择</strong>。它的任务是在数据链路层提供的两个相邻节点之间的数据帧的传送基础上，选择合适的路由与交换节点，使从源节点传输层得到的数据能准确无误、高效地到达目的节点，并交付给目的节点的传输层，主要功能是路由选择、阻塞控制、网络互联。网络层提供了虚电路服务和数据报服务。</li><li>数据链路层：<strong>控制网络层和物理层之间的通信</strong>。局域网的标准将数据链路层分为两个子层：逻辑链路控制子层(LLC)与介质访问控制子层(MAC)。数据链路层的主要功能是将网络层接收到的数据分割成特定的可被物理层传输的帧。</li><li>物理层：<strong>比特流的传输</strong>。在设备之间传输比特流，规定了电平，速度和电缆针脚。</li></ul><h2 id="以太网帧"><a href="#以太网帧" class="headerlink" title="以太网帧"></a>以太网帧</h2><p>数据包传输到数据链路层，封装数据链路层报头得到的PDU被称为Frame（数据帧/以太网帧）</p><h3 id="以太网使用两种标准帧格式，现在大多数数据帧使用的是Ethernet-II格式（如下图）"><a href="#以太网使用两种标准帧格式，现在大多数数据帧使用的是Ethernet-II格式（如下图）" class="headerlink" title="以太网使用两种标准帧格式，现在大多数数据帧使用的是Ethernet II格式（如下图）"></a>以太网使用两种标准帧格式，现在大多数数据帧使用的是Ethernet II格式（如下图）</h3><p><img src="/2021/07/22/%E4%BA%8C%E5%B1%82%E7%AB%AF%E5%8F%A3/ethernet%E5%B8%A7%E6%A0%BC%E5%BC%8F.png" alt="以太网帧"></p><p>前导码：7 个字节，用于数据传输过程中的双方发送与接收的速率的同步。</p><p>SFD：帧开始符，1 个字节，用于标识一个以太网帧的开始。 </p><p>目的 MAC 地址：6 个字节，指明帧的接收者。</p><p>源 MAC 地址：6 个字节，指明帧的发送者。</p><p>长度：2 个字节，指明该帧数据字段的长度，但不代表数据字段长度能够达到 2^16 字节。（以太网帧另一种：IEEE802.3数据链路层帧格式，用长度替换掉类型）</p><p>类型：2 个字节，指明帧中数据的协议类型，比如常见的 IPv4 中的 ip 协议采用 0x0800。</p><p>数据：46~1500 个字节，包含了上层协议传递下来的数据，如果加入数据字段后帧长度不够 64 字节，会在数据字段加入填充字段达到 64 字节。</p><p>校验和：4 个字节，对接收网卡(主要是检测数据与填充字段)提供判断是否传输错误的一种方法，如果发现错误，则丢弃此帧。目前最为流行的用于校验和(FCS)的算法是循环冗余校验(cyclic redundancy check – CRC)。</p><h2 id="VLAN帧格式"><a href="#VLAN帧格式" class="headerlink" title="VLAN帧格式"></a>VLAN帧格式</h2><p>与标准的以太网帧头相比，VLAN帧格式在源地址后增加了一个4字节的802.1Q标签</p><p><img src="/2021/07/22/%E4%BA%8C%E5%B1%82%E7%AB%AF%E5%8F%A3/VLAN%E5%B8%A7.png" alt="VLAN"></p><p>VLAN ID：指明了所属的VLAN，一共有4096个，每个支持802.1Q协议的主机发出来的帧都会保留这个域。</p><p>CFI：规范格式指示符，以太网的值为0。</p><p>priority：指定帧的优先级。</p><h2 id="二层端口"><a href="#二层端口" class="headerlink" title="二层端口"></a>二层端口</h2><h3 id="Access-端口"><a href="#Access-端口" class="headerlink" title="Access 端口"></a>Access 端口</h3><p>&emsp;&emsp;Access端口主要是用来连接用户主机的二层以太网端口。它有一种最主要的特性就是：仅允许一个VLAN的帧通过，反过来也就是Access端口仅可以加入到一个VLAN中，且Access端口发送的以太网帧永远是Untagged（不带标签）的。</p><h3 id="Trunk-端口"><a href="#Trunk-端口" class="headerlink" title="Trunk 端口"></a>Trunk 端口</h3><p>&emsp;&emsp;Trunk端口是用来连接与其他交换机的二层以太网端口。它的最主要特性就是允许多个VLAN的帧通过，并且所发送的以太网帧都是带标签的，除了发送VLAN ID与PVID（Port Default VLAN ID，端口缺省VLAN ID）一致的VLAN帧。</p><h3 id="Hybird-端口"><a href="#Hybird-端口" class="headerlink" title="Hybird 端口"></a>Hybird 端口</h3><p>&emsp;&emsp;Hybrid端口可以说是以上Access端口和Trunk端口的混合体，具有它们共同的特等性，是一种特殊的二层以太网端口。正因如此，Hybrid端口既可以连接用户主机，又可以连接其他交换机、路由器设备。同时Hybrid端口又允许一个，或多个VLAN的帧通过，并可选择以带标签，或者不带标签的方式发送数据帧。</p><h3 id="QinQ-端口"><a href="#QinQ-端口" class="headerlink" title="QinQ 端口"></a>QinQ 端口</h3><p>&emsp;&emsp;QinQ端口是专用于QinQ协议的二层以太网端口。它可以给数据帧加上双层VLAN标签，即在原来标签的基础上，给帧加上一个新的标签，从而可以支持多达4094×4094个VLAN，满足企业用户网络对VLAN数量更高的需求。S1700和S2700SI不支持QinQ类型端口。</p><h2 id="二层端口数据帧处理规则"><a href="#二层端口数据帧处理规则" class="headerlink" title="二层端口数据帧处理规则"></a>二层端口数据帧处理规则</h2><blockquote><table><thead><tr><th>端口类型</th><th align="left">收到不带TAG的帧时</th><th align="left">收到带TAG的帧时</th><th align="left">发送帧时的处理规则</th><th align="left">用途</th></tr></thead><tbody><tr><td>Access端口</td><td align="left">接受该帧，打上缺省VLAN的tag</td><td align="left">如果VLAN ID和缺省VLAN ID一致，接受；不一致，丢弃</td><td align="left">当VLAN ID和缺省VLAN ID一致，去掉tag发送；不一致，丢弃</td><td align="left">单一VLAN通过，用于设备和主机连接</td></tr><tr><td>Trunk端口</td><td align="left">如果有缺省VLAN，打上缺省VLAN的tag。如果没有缺省VLAN，丢弃</td><td align="left">查看端口VLAN表中是否允许该VLAN通过。允许，接受；不允许，丢弃</td><td align="left">查看端口是否允许此VLAN ID通过。允许的情况下：如果VLAN ID和端口缺省VLAN ID一致，将tag拆除后发送；如果VLAN ID和端口缺省VLAN ID不一致，保留原有tag发送。不允许的情况下：不允许发送</td><td align="left">多VLAN通过，用于设备和设备连接</td></tr><tr><td>Hybird端口</td><td align="left">如果有缺省VLAN，打上缺省VLAN的tag。如果没有缺省VLAN，丢弃</td><td align="left">查看端口VLAN表中是否允许该VLAN通过。允许，接受；不允许，丢弃</td><td align="left">当帧中携带的 VLAN ID 是该端口允许通过的 VLAN ID 时，发送该帧，可以通过命令配置发送时是否携带原有的tag</td><td align="left">多VLAN通过，可以用于设备之间连接，也可以用于设备与主机连接</td></tr></tbody></table></blockquote><h2 id="二层以太网链路"><a href="#二层以太网链路" class="headerlink" title="二层以太网链路"></a>二层以太网链路</h2><p>&emsp;&emsp;上节介绍的Access、Trunk和Hybrid这三种以太网端口所形成的链路又可归纳成两种以太网链路：<strong>接入链路（Access Link）</strong>和<strong>干道链路（Trunk Link）</strong>。它们是根据链路中需要允许通过的VLAN数据帧数量的不同来划分的。</p><ul><li>接入链路（Access Link）：这是交换机直接连接用户主机的链路。通常情况下，主机并不需要知道自己属于哪个VLAN，主机硬件通常也不能识别带有VLAN标签的帧，所以主机通过接入链路发送和接收的数据帧都是Untagged帧。但一定要注意，接入链路不一定只允许来自一个VLAN的数据帧通过，只是Access端口链路才仅允许一个VLAN数据帧通过，在连接用户主机的Hybrid端口链路上同样允许来自多个VLAN的数据帧（不带标签）通过。</li><li>干道链路（Trunk Link）：这是用于交换机间的互连或交换机与路由器之间连接的链路。干道链路可以承载多个不同VLAN数据，数据帧在干道链路传输时，干道链路的两端设备需要能够识别数据帧属于哪个VLAN，所以在干道链路上传输的都是Tagged帧，除了该链路的PVID所属VLAN的帧（默认为VLAN1）。</li></ul><h2 id="相关推荐-参考"><a href="#相关推荐-参考" class="headerlink" title="相关推荐/参考"></a>相关推荐/参考</h2><p><a href="https://blog.csdn.net/lycb_gz/article/details/17216325?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522162701066516780271553482%2522%252C%2522scm%2522%253A%252220140713.130102334.pc%255Fall.%2522%257D&request_id=162701066516780271553482&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~all~first_rank_v2~rank_v29-22-17216325.first_rank_v2_pc_rank_v29&utm_term=%E4%BA%8C%E5%B1%82%E7%AB%AF%E5%8F%A3&spm=1018.2226.3001.4187">用经验诠释二层以太网端口和链路类型</a></p>]]></content>
     
@@ -100,6 +170,18 @@
     
     
     
+    <category term="网络" scheme="http://example.com/categories/%E7%BD%91%E7%BB%9C/"/>
+    
+    <category term="数据通信" scheme="http://example.com/categories/%E7%BD%91%E7%BB%9C/%E6%95%B0%E6%8D%AE%E9%80%9A%E4%BF%A1/"/>
+    
+    
+    <category term="交换机" scheme="http://example.com/tags/%E4%BA%A4%E6%8D%A2%E6%9C%BA/"/>
+    
+    <category term="OSI" scheme="http://example.com/tags/OSI/"/>
+    
+    <category term="以太网帧" scheme="http://example.com/tags/%E4%BB%A5%E5%A4%AA%E7%BD%91%E5%B8%A7/"/>
+    
+    <category term="VLAN" scheme="http://example.com/tags/VLAN/"/>
     
   </entry>
   
@@ -108,7 +190,7 @@
     <link href="http://example.com/2021/07/21/ARP%E8%A7%A3%E6%9E%90/"/>
     <id>http://example.com/2021/07/21/ARP%E8%A7%A3%E6%9E%90/</id>
     <published>2021-07-21T05:54:46.000Z</published>
-    <updated>2021-07-23T16:30:56.584Z</updated>
+    <updated>2021-07-26T09:10:36.035Z</updated>
     
     <content type="html"><![CDATA[<p>&emsp;&emsp;地址解析协议（Address Resolution Protocol），其基本功能为透过目标设备的IP地址，查询目标设备的MAC地址，以保证通信的顺利进行。它是IPv4中网络层必不可少的协议，不过在IPv6中已不再适用，并被邻居发现协议（NDP）所替代。</p><span id="more"></span><h2 id="1-ARP简介"><a href="#1-ARP简介" class="headerlink" title="1. ARP简介"></a>1. ARP简介</h2><p><strong>ARP作用</strong>:</p><p>把IP地址解析为MAC地址，知道了IP求MAC</p><p><strong>对于ARP的理解</strong>：</p><ul><li><p>ARP和DHCP基本上是终端发出的第一个包</p></li><li><p>ARP是很多协议的辅助协议</p><h2 id="2-ARP工作流程"><a href="#2-ARP工作流程" class="headerlink" title="2. ARP工作流程"></a>2. ARP工作流程</h2><h4 id="同网段的通信"><a href="#同网段的通信" class="headerlink" title="同网段的通信"></a>同网段的通信</h4></li></ul><p>查看ARP表。<strong>如果ARP表中有目标主机的ARP表项</strong>，直接将目标主机的MAC地址放入数据帧头中，完成Ethernet Header+IP+CRC的封装，发送出去。</p><p><strong>如果ARP表中没有目标主机对应的表项</strong>，则缓存该数据报文。发送ARP请求(ARP请求的目标MAC是全F的广播地址)。</p><p>同一个广播域的所有主机都会收到ARP请求，只有目标主机才会对请求进行处理并将请求主机的“IP-MAC”对缓存在本地ARP表中，同时发送ARP应答。ARP应答的目标MAC是请求主机的MAC——单播。</p><p>请求主机收到ARP响应报文后，将目标主机的MAC地址加入ARP表，同时将缓冲的数据报文进行封装后发出。</p><h4 id="不同网段的通信"><a href="#不同网段的通信" class="headerlink" title="不同网段的通信"></a>不同网段的通信</h4><p>简单来说就是从：</p><ul><li>(同网段)<em>主机————目标主机</em> </li><li>(不同网段)<em>主机————网关 到 网关————目标主机</em></li></ul><p>两段过程与同网段通信一致</p><h2 id="3-ARP缓存"><a href="#3-ARP缓存" class="headerlink" title="3. ARP缓存"></a>3. ARP缓存</h2><p><strong>动态表项</strong>：</p><p>&emsp;&emsp;通过ARP协议学习，能被更新，缺省老化时间120s</p><p><strong>静态表项</strong>：</p><p>&emsp;&emsp;手工配置的映射关系，不能被更新，无老化时间</p><p>&emsp;&emsp;能够防止ARP欺骗,安全性很高</p><h2 id="4-ARP报文"><a href="#4-ARP报文" class="headerlink" title="4. ARP报文"></a>4. ARP报文</h2><p><img src="/2021/07/21/ARP%E8%A7%A3%E6%9E%90/ARP%E6%8A%A5%E6%96%871.png" alt="ARP报文"></p><p>字段1和2分别是目的MAC和源MAC地址</p><p>字段3表示后面的数据类型，ARP请求和ARP应答为0x0806</p><p>字段4表示硬件地址类型，以太网类型值为1</p><p>字段5表示要映射的协议地址的类型，对IPv4地址映射的值为0x0800</p><p>字段6表示硬件地址长度，字段7表示协议地址长度</p><p>字段8表示操作类型，ARP请求——1；ARP应答——2；RARP请求——3；RARP应答——4</p><h2 id="5-ARP报文分析"><a href="#5-ARP报文分析" class="headerlink" title="5. ARP报文分析"></a>5. ARP报文分析</h2><p><img src="/2021/07/21/ARP%E8%A7%A3%E6%9E%90/ARP%E6%8A%A5%E6%96%87%E8%AF%A6%E7%BB%86.png" alt="ARP报文"></p><h2 id="6-免费ARP"><a href="#6-免费ARP" class="headerlink" title="6. 免费ARP"></a>6. 免费ARP</h2><p>&emsp;&emsp;免费ARP指主机发送ARP查找自己的IP地址，通常发生在系统引导期间进行接口配置时。与标准ARP的区别就是免费ARP分组的目的IP地址字段封装的是自己的IP地址，即向所在网络请求自己的MAC地址。</p><p><strong>免费ARP的作用有</strong>：</p><ul><li>一个主机可以通过它来确定另一个主机是否设置了相同的 IP地址。</li></ul><p>&emsp;&emsp;正常情况下发送免费ARP请求不会收到ARP应答，如果收到了一个ARP应答，则说明网络中存在与本机相同的IP地址的主机，发生了地址冲突。</p><ul><li>更新其他主机高速缓存中旧的硬件地址信息。</li></ul><p>&emsp;&emsp;如果发送免费ARP的主机正好改变了硬件地址，如更换了接口卡。</p><p>&emsp;&emsp;其他主机接收到这个ARP请求的时候，发现自己的ARP高速缓存表中存在对应的IP地址，但是MAC地址不匹配，那么就需要利用接收的ARP请求来更新本地的ARP高速缓存表表项。</p><ul><li>网关利用免费ARP防止ARP攻击</li></ul><p>&emsp;&emsp;有些网关设备在一定的时间间隔内向网络主动发送免费ARP报文，让网络内的其他主机更新ARP表项中的网关MAC地址信息，以达到防止或缓解ARP攻击的效果。</p><p><strong>ARP欺骗</strong></p><p>&emsp;&emsp;ARP协议并不只在发送了ARP请求才接收ARP应答，计算机只要接收到ARP应答数据包，就会使用应答中的IP和MAC地址对本地的ARP缓存进行更新。</p><p>&emsp;&emsp;主机可以构造虚假的免费ARP应答，将ARP的源MAC地址设为错误的MAC地址，并把这个虚假的免费ARP应答发送到网络中，那么所有接收到这个免费ARP应答的主机都会更新本地ARP表项中相应IP地址对应的MAC地址。更新成功后，这些主机的数据报文就会被转发到错误的MAC地址，从而实现了ARP欺骗的攻击。</p><h2 id="7-Proxy代理ARP"><a href="#7-Proxy代理ARP" class="headerlink" title="7. Proxy代理ARP"></a>7. Proxy代理ARP</h2><p><strong>概念</strong>：</p><p>&emsp;&emsp;代理ARP是为了分割网络，同时又不想划分网段，中间加设一个路由设备并开启ARP代理功能。这样就能通过router代为回应双方的ARP请求和应答</p><p><strong>工作流程</strong>：</p><p>&emsp;&emsp;两台主机A和B处于同一网段但不同的广播段（不在同一物理网络上）时，主机A发送ARP请求主机B的MAC地址时，因为路由器不转发广播包的原因，ARP请求只能到达路由器。如果路由器启用了代理ARP功能，并知道主机B属于它连接的网络，那么路由器就用自己接口的MAC地址代替主机B的MAC地址来对主机A进行ARP应答。主机A接收ARP应答，但并不知道代理ARP的存在。</p><p><strong>代理ARP优缺点</strong></p><ul><li><p>优点：代理ARP能在不影响路由表的情况下添加一个新的Router，使子网对该主机变得透明化。一般代理ARP应该使用在主机没有配置默认网关或没有任何路由策略的网络上。</p></li><li><p>缺点：从工作过程可以看到，这其实是一种ARP欺骗。而且，通过两个物理网络之间的路由器的代理ARP功能其实互相隐藏了物理网络，这导致无法对网络拓扑进行网络概括。此外，代理ARP增加了使用它的那段网络的ARP流量，主机需要更大的ARP缓存空间，也不会为不使用ARP进行地址解析的网络工作。</p></li></ul><h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ol><li><a href="https://www.cnblogs.com/songwenlong/p/6103406.html">songoo的ARP详解</a><h2 id="别的讲的很细的ARP解析"><a href="#别的讲的很细的ARP解析" class="headerlink" title="别的讲的很细的ARP解析"></a>别的讲的很细的ARP解析</h2></li><li><a href="https://blog.csdn.net/AI_for_leo/article/details/78200258">财务码农小老板的ARP地址解析协议</a></li></ol>]]></content>
     
@@ -117,6 +199,14 @@
     
     
     
+    <category term="网络" scheme="http://example.com/categories/%E7%BD%91%E7%BB%9C/"/>
+    
+    <category term="数据通信" scheme="http://example.com/categories/%E7%BD%91%E7%BB%9C/%E6%95%B0%E6%8D%AE%E9%80%9A%E4%BF%A1/"/>
+    
+    
+    <category term="网络基础" scheme="http://example.com/tags/%E7%BD%91%E7%BB%9C%E5%9F%BA%E7%A1%80/"/>
+    
+    <category term="数据链路层" scheme="http://example.com/tags/%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF%E5%B1%82/"/>
     
   </entry>
   
@@ -125,7 +215,7 @@
     <link href="http://example.com/2021/07/20/VLAN/"/>
     <id>http://example.com/2021/07/20/VLAN/</id>
     <published>2021-07-20T09:01:29.000Z</published>
-    <updated>2021-07-23T15:27:48.356Z</updated>
+    <updated>2021-07-26T09:12:14.262Z</updated>
     
     <content type="html"><![CDATA[<p>根据<a href="https://blog.csdn.net/sanallen/article/details/92081911?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522162684851716780274192566%2522%252C%2522scm%2522%253A%252220140713.130102334..%2522%257D&request_id=162684851716780274192566&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~all~sobaiduend~default-1-92081911.first_rank_v2_pc_rank_v29&utm_term=markdown%E6%96%87%E6%A1%A3%E7%BC%96%E5%86%99%E6%8C%87%E5%8D%97&spm=1018.2226.3001.4187">Markdown文档编写指南</a>编写</p><span id="more"></span><p>标题使用#一级 ##二级 ###三级 类推</p><h2 id="段落"><a href="#段落" class="headerlink" title="段落"></a>段落</h2><p>两行之间空一行就能划分段落</p><p>第一行段落</p><p>第二行段落</p><h2 id="区块引用"><a href="#区块引用" class="headerlink" title="区块引用"></a>区块引用</h2><blockquote><p>对内容进行强调显示，会被高亮显示</p></blockquote><h2 id="超链接"><a href="#超链接" class="headerlink" title="超链接"></a>超链接</h2><p><a href="https://www.baidu.com/">百度</a></p><h2 id="老婆！！"><a href="#老婆！！" class="headerlink" title="老婆！！"></a>老婆！！</h2><p><img src="https://img1.baidu.com/it/u=3661816073,3507776781&fm=26&fmt=auto&gp=0.jpg" alt="22"></p><h2 id="无序列表"><a href="#无序列表" class="headerlink" title="无序列表"></a>无序列表</h2><ul><li>first</li><li>second</li><li>third<h2 id="有序列表"><a href="#有序列表" class="headerlink" title="有序列表"></a>有序列表</h2></li></ul><ol><li>第一行</li><li>第二行</li><li>第三行<h2 id="锚点"><a href="#锚点" class="headerlink" title="锚点"></a>锚点</h2>使用命名锚记可以在文档中设置标记，这些标记通常放在文档的特定主题处或顶部。然后可以创建到这些命名锚记的链接，这些链接可快速将访问者带到指定位置。</li></ol><p>创建到命名锚记的链接的过程分为两步。</p><ul><li>创建命名锚记</li><li>创建 到该命名锚记的链接。</li></ul><p>反正就是用于文章快速定位，点击目录便可直接跳转到指定位置的。</p><p>在这里我分享一下锚点在MarkDown编辑器中怎么使用：<br>首先是建立一个跳转的连接：</p><p><a href="#jump">说明文字</a></p><p>然后标记要跳转到的位置：</p><p><span id="jump">跳转到的位置</span></p><h2 id="空格是-amp-emsp；"><a href="#空格是-amp-emsp；" class="headerlink" title="空格是 &amp;emsp；"></a>空格是 &amp;emsp；</h2><h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><hr><p>分割线 <em>斜体内容</em>  <strong>加粗内容</strong></p><hr><blockquote><p>ctrl+shift+p 命令输入框<br>    – markdown 侧边阅览</p></blockquote>]]></content>
     
@@ -134,6 +224,12 @@
     
     
     
+    <category term="博客" scheme="http://example.com/categories/%E5%8D%9A%E5%AE%A2/"/>
+    
+    
+    <category term="博客" scheme="http://example.com/tags/%E5%8D%9A%E5%AE%A2/"/>
+    
+    <category term="编写指南" scheme="http://example.com/tags/%E7%BC%96%E5%86%99%E6%8C%87%E5%8D%97/"/>
     
   </entry>
   
