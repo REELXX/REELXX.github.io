@@ -179,6 +179,11 @@
       </tags>
   </entry>
   <entry>
+    <title>MPLS VPN</title>
+    <url>/2021/07/27/MPLS-VPN/</url>
+    <content><![CDATA[]]></content>
+  </entry>
+  <entry>
     <title>LACP解析</title>
     <url>/2021/07/25/LACP%E8%A7%A3%E6%9E%90/</url>
     <content><![CDATA[<p>Link Aggregation Control Protocol，链路汇聚控制协议基于IEEE802.3ad标准。各厂家均支持的标准协议，LACP协议通过LACPDU（Link Aggregation Control Protocol Data Unit，链路汇聚控制协议数据单元）与对端交互信息,建立聚合端口AP ，<strong>处于动态聚合组中的接口会自动使能LACP 协议，该接口将通过发送LACPDU 向对端通告自己的系统LACP 协议优先级、系统MAC、端口的LACP 协议优先级、端口号和操作Key。</strong>对端接收到LACPDU 后，将其中的信息与其他接口所收到的信息进行比较，以选择能够进行聚合的接口，从而双方可以对接口处于聚合状态达成一致。</p>
@@ -223,28 +228,110 @@
       </tags>
   </entry>
   <entry>
-    <title>Hello World</title>
-    <url>/2021/07/20/hello-world/</url>
-    <content><![CDATA[<p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
-<span id="more"></span>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
-]]></content>
-  </entry>
-  <entry>
     <title>MPLS学习笔记</title>
     <url>/2021/07/26/MPLS%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/</url>
-    <content><![CDATA[]]></content>
+    <content><![CDATA[<p>多协议标签交换MPLS（Multiprotocol Label Switching）是一种IP（Internet Protocol）骨干网技术。MPLS在无连接的IP网络上引入面向连接的标签交换概念，将第三层路由技术和第二层交换技术相结合，充分发挥了IP路由的灵活性和二层交换的简捷性。<br>MPLS起源于IPv4（Internet Protocol version 4），其核心技术可扩展到多种网络协议，包括IPv6（Internet Protocol version 6）、IPX（Internet Packet Exchange）和CLNP（Connectionless Network Protocol）等。MPLS中的“Multiprotocol”指的就是支持多种网络协议。</p>
+<span id="more"></span>
+<p>由此可见，MPLS并不是一种业务或者应用，它实际上是一种隧道技术。这种技术不仅支持多种高层协议与业务，而且在一定程度上可以保证信息传输的安全性。</p>
+<h2 id="网络结构"><a href="#网络结构" class="headerlink" title="网络结构"></a>网络结构</h2><pre><code>LSR 标签交换路由器 ———— 进行MPLS标签交换和报文转发
+MPLS 域 ———— 由LSR构成的网络区域
+LER 边缘路由器 ———— 位于MPLS域边缘，连接其他网络的LSR
+LSP 标签交换路径 ———— 单项路径，与数据流方向一致
+</code></pre>
+<p><img src="/2021/07/26/MPLS%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/MPLS%E4%BC%A0%E8%BE%93%E5%9B%BE.png" alt="MPLS传输图">当IP报文进入MPLS网络时，MPLS入口LER分析报文内容并添加标签。当IP报文离开时，标签由出口LER弹出</p>
+<h2 id="体系结构"><a href="#体系结构" class="headerlink" title="体系结构"></a>体系结构</h2><p><img src="/2021/07/26/MPLS%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/%E5%B9%B3%E9%9D%A2%E5%88%86%E5%B8%83.png" alt="平面分布"><br>控制平面：负责产生和维护路由信息以及标签信息</p>
+<p>&emsp;&emsp;路由信息表RIB：由IP路由协议生成，<font color="#F4A460">用于选择路由</font></p>
+<p>&emsp;&emsp;标签分发协议LDP：<font color="#F4A460">负责标签的分配，标签转发信息表的建立，标签交换路径的建立，拆除等工作。</font></p>
+<p>&emsp;&emsp;标签信息表LIB：由标签分发协议生成，<font color="#F4A460">用于管理标签信息</font></p>
+<p>转发平面：就是数据平面。负责IP报文和MPLS标签报文的转发</p>
+<p>&emsp;&emsp;转发信息表FIB：从RIB提取路由信息生成，负责IP报文的转发</p>
+<p>&emsp;&emsp;标签转发信息表LFIB：由标签分发协议在<font color="#F4A460">LSR上建立LFIB，负责带MPLS标签报文的转发</font></p>
+<h2 id="转发等价类FEC："><a href="#转发等价类FEC：" class="headerlink" title="转发等价类FEC："></a>转发等价类FEC：</h2><p>MPLS将具有相同特征的报文归一类，称为<strong>转发等价类FEC</strong>（Forwarding Equivalence Class），属于同FEC的报文在转发过程中被LSR以相同方式处理。</p>
+<h2 id="标签"><a href="#标签" class="headerlink" title="标签"></a>标签</h2><pre><code>标签是只具有本地意义的标识符，用于唯一标识一个分组所属的FEC。
+        ———————— 一个标签代表一个 FEC
+MPLS标签长度为4个字节。封装在链路层和网络层之间，可支持任意链路层协议
+</code></pre>
+<p><img src="/2021/07/26/MPLS%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/%E6%A0%87%E7%AD%BE.png" alt="标签"><br>            Label ： 标签值域 20bit<br>            Exp ： 用于扩展 3bit 常用于做CoS ，当设备阻塞时，优先发送优先级高的报文<br>            S ： 栈底标识 1bit MPLS支持多层标签 S=1 时为最底层标签</p>
+<p>标签栈（Label Stack）是指标签的排序集合。<font color="#F4A460">靠近二层首部的标签称为栈顶</font>MPLS标签或外层MPLS标签（Outer MPLS label）；<font color="#F4A460">靠近IP首部的标签称为栈底</font>MPLS标签或内层MPLS标签（Inner MPLS label）。理论上，MPLS标签可以无限嵌套。目前MPLS标签嵌套主要应用在MPLS VPN、TE FRR（Traffic Engineering Fast ReRoute）中。</p>
+<blockquote>
+<p>标签栈按<font color="#F4A460"><strong>先出后进</strong></font>方式组织标签，从栈顶开始处理标签。</p>
+</blockquote>
+<h2 id="LSP建立"><a href="#LSP建立" class="headerlink" title="LSP建立"></a>LSP建立</h2><p>MPLS需要事先为报文分配好标签，建立一条LSP才能进行报文转发。<br>LSP 分为静态LSP和动态LSP两种。</p>
+<h3 id="静态LSP"><a href="#静态LSP" class="headerlink" title="静态LSP"></a>静态LSP</h3><p>静态LSP是用户通过手工为各个转发等价类分配标签而建立的。由于静态LSP各节点上不能相互感知到整个LSP的情况，因此静态LSP是一个本地的概念。</p>
+<p>静态LSP不使用标签发布协议，不需要交互控制报文，因此消耗资源比较小，适用于拓扑结构简单并且稳定的小型网络。但通过静态方式分配标签建立的LSP不能根据网络拓扑变化动态调整，需要管理员干预。</p>
+<p>配置静态LSP时，管理员需要为各LSR手工分配标签，需要遵循的原则是：前一节点出标签的值等于下一个节点入标签的值。</p>
+<h3 id="动态LSP"><a href="#动态LSP" class="headerlink" title="动态LSP"></a>动态LSP</h3><h4 id="动态LSP的标签发布协议"><a href="#动态LSP的标签发布协议" class="headerlink" title="动态LSP的标签发布协议"></a>动态LSP的标签发布协议</h4><p>动态LSP通过标签发布协议动态建立。标签发布协议是MPLS的控制协议（也可称为信令协议），负责FEC的分类、标签的分发以及LSP的建立和维护等一系列操作。</p>
+<h4 id="动态LSP的基本建立过程"><a href="#动态LSP的基本建立过程" class="headerlink" title="动态LSP的基本建立过程"></a>动态LSP的基本建立过程</h4><p>标签由下游LSR分配，按从下游到上游的方向分发。如下图，由下游LSR在IP路由表的基础上进行FEC的划分，并根据FEC分配标签，通告给上游的LSR，以便建立标签转发表和LSP。</p>
+<h2 id="转发（浅层）"><a href="#转发（浅层）" class="headerlink" title="转发（浅层）"></a>转发（浅层）</h2><h3 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h3><p>标签操作类型包括 标签压入 Push，标签交换 Swap和标签弹出 Pop</p>
+<blockquote>
+<p>   Push：当报文进入MPLS域时，LER在报文二层和IP首部之间插入新标签<br>   Swap：当报文在MPLS域中转发时，根据标签转发表，用下一跳分配的标签，替换MPLS报文的栈顶标签<br>   Pop：当报文离开MPLS域时，将MPLS报文的标签剥掉<br>   PHP：弹出特性PHP penultimate Hop Popping。<font color="#F4A460">在最后一跳节点，标签已经没有使用价值。可以利用倒数第二跳特性PHP，在倒数第二跳节点处将标签弹出，减少最后一跳负担。</font>默认情况下，支持PHP的Egress节点分配给倒数第二跳节点的<font color="#F4A460"><strong>标签值为3</strong></font></p>
+</blockquote>
+<h3 id="转发过程"><a href="#转发过程" class="headerlink" title="转发过程"></a>转发过程</h3><p><img src="/2021/07/26/MPLS%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/%E8%BD%AC%E5%8F%91%E8%BF%87%E7%A8%8B.%E6%B5%85.png" alt="转发过程.浅"><br>    如上图所示，MPLS标签已分发完成，建立了一条LSP，其目的地址为4.4.4.2/32。则MPLS基本转发过程如下：</p>
+<pre><code>    1) Ingress节点收到目的地址为4.4.4.2的IP报文，压入标签Z并转发。
+    2) Transit节点收到该标签报文，进行标签交换，将标签Z换成标签Y。
+    3) 倒数第二跳Transit节点收到带标签Y的报文。因为Egress分给它的标签值为3，所以进行PHP操作，弹出标签Y并转发报文。从倒数第二跳转发给Egress的报文以IP报文形式传输。
+    4) Egress节点收到该IP报文，将其转发给目的地4.4.4.2/32。
+</code></pre>
+<h2 id="转发（深层）"><a href="#转发（深层）" class="headerlink" title="转发（深层）"></a>转发（深层）</h2><h3 id="基本概念-1"><a href="#基本概念-1" class="headerlink" title="基本概念"></a>基本概念</h3><p>在MPLS详细转发过程中涉及的相关概念如下：</p>
+<pre><code>Tunnel ID：
+
+    为了给使用隧道的上层应用（如VPN、路由管理）提供统一的接口，系统自动为隧道分配了一个ID，也称为Tunnel ID。该Tunnel ID的长度为32比特，只是本地有效。
+
+NHLFE：
+
+    下一跳标签转发表项NHLFE（Next Hop Label Forwarding Entry）用于指导MPLS报文的转发。
+
+    NHLFE包括：Tunnel ID、出接口、下一跳、出标签、标签操作类型等信息。
+
+    FEC到一组NHLFE的映射称为FTN（FEC-to-NHLFE）。通过查看FIB表中Tunnel ID值不为0x0的表项，能够获得FTN的详细信息。FTN只在Ingress存在。
+
+ILM
+
+    入标签到一组下一跳标签转发表项的映射称为入标签映射ILM（Incoming Label Map）。
+
+    ILM包括：Tunnel ID、入标签、入接口、标签操作类型等信息。
+
+    ILM在Transit节点的作用是将标签和NHLFE绑定。通过标签索引ILM表，就相当于使用目的IP地址查询FIB，能够得到所有的标签转发信息。
+</code></pre>
+<h3 id="详细转发过程"><a href="#详细转发过程" class="headerlink" title="详细转发过程"></a>详细转发过程</h3><p><img src="/2021/07/26/MPLS%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/%E8%BD%AC%E5%8F%91%E8%BF%87%E7%A8%8B.%E6%B7%B1.png" alt="转发过程.深"></p>
+<pre><code>    当IP报文进入MPLS域时，首先查看FIB表，检查目的IP地址对应的Tunnel ID值是否为0x0。
+
+            1) 如果Tunnel ID值为0x0，则进入正常的IP转发流程。
+            2) 如果Tunnel ID值不为0x0，则进入MPLS转发流程。
+            
+    在MPLS转发过程中，FIB、ILM和NHLFE表项是通过Tunnel ID关联的。
+
+        § Ingress的处理：通过查询FIB表和NHLFE表指导报文的转发。
+
+            1) 查看FIB表，根据目的IP地址找到对应的Tunnel ID。
+            2) 根据FIB表的Tunnel ID找到对应的NHLFE表项，将FIB表项和NHLFE表项关联起来。
+            3) 查看NHLFE表项，可以得到出接口、下一跳、出标签和标签操作类型。
+            4) 在IP报文中压入出标签，同时处理TTL，然后将封装好的MPLS报文发送给下一跳。
+        § Transit的处理：通过查询ILM表和NHLFE表指导MPLS报文的转发。
+
+            1) 根据MPLS的标签值查看对应的ILM表，可以得到Tunnel ID。
+            2) 根据ILM表的Tunnel ID找到对应的NHLFE表项。
+            3) 查看NHLFE表项，可以得到出接口、下一跳、出标签和标签操作类型。
+            4) MPLS报文的处理方式根据不同的标签值而不同。
+                a) 如果标签值&gt;＝16，则用新标签替换MPLS报文中的旧标签，同时处理TTL，然后将替换完标签的MPLS报文发送给下一跳。
+                b) 如果标签值为3，则直接弹出标签，同时处理TTL，然后进行IP转发或下一层标签转发。
+        § Egress的处理：通过查询ILM表指导MPLS报文的转发或查询路由表指导IP报文转发。
+
+            1) 如果Egress收到IP报文，则查看路由表，进行IP转发。
+            2) 如果Egress收到MPLS报文，则查看ILM表获得标签操作类型，同时处理TTL。
+                a) 如果标签中的栈底标识S=1，表明该标签是栈底标签，直接进行IP转发。
+                b) 如果标签中的栈底标识S=0，表明还有下一层标签，继续进行下一层标签转发。
+</code></pre>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="https://blog.csdn.net/qq_38265137/article/details/80503389?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522162737542016780265433996%2522%252C%2522scm%2522%253A%252220140713.130102334..%2522%257D&request_id=162737542016780265433996&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~all~top_positive~default-1-80503389.first_rank_v2_pc_rank_v29&utm_term=MPLS&spm=1018.2226.3001.4187">曹世宏写的太好了，按照他的博客学的MPLS——MPLS基础</a></p>
+]]></content>
+      <categories>
+        <category>网络</category>
+        <category>数据通信</category>
+      </categories>
+      <tags>
+        <tag>数据通信</tag>
+        <tag>网络</tag>
+      </tags>
   </entry>
   <entry>
     <title>博客文档指南</title>
@@ -294,6 +381,25 @@
         <tag>博客</tag>
         <tag>编写指南</tag>
       </tags>
+  </entry>
+  <entry>
+    <title>Hello World</title>
+    <url>/2021/07/20/hello-world/</url>
+    <content><![CDATA[<p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
+<span id="more"></span>
+<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p>
+<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p>
+<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p>
+<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
+]]></content>
   </entry>
   <entry>
     <title>深入研究二层端口</title>
@@ -415,6 +521,145 @@
       <tags>
         <tag>三平面</tag>
         <tag>交换机工作原理</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>网络虚拟化——SDN</title>
+    <url>/2021/07/28/%E7%BD%91%E7%BB%9C%E8%99%9A%E6%8B%9F%E5%8C%96%E2%80%94%E2%80%94SDN/</url>
+    <content><![CDATA[<p>软件定义网络（英语：software-defined networking，缩写作SDN）是一种新型网络构架。它利用OpenFlow协定将路由器的控制平面（control plane）从数据平面（data plane）中分离，改以软件方式实作，从而使得将分散在各个网络装置上的控制平面进行集中化管理成为可能，该构架可使网路管理员在不更动硬件装置的前提下，以中央控制方式用程序重新规划网络，为控制网络流量提供了新方案，也为核心网络和应用创新提供了良好平台。SDN可以按使用领域分为：SD-WAN，SD-LAN，SD-DC，SDN将人工智慧引入到网络系统里来，将是未来几年最热门的网络前沿技术之一。</p>
+<span id="more"></span>
+<p><img src="/2021/07/28/%E7%BD%91%E7%BB%9C%E8%99%9A%E6%8B%9F%E5%8C%96%E2%80%94%E2%80%94SDN/%E4%BA%91%E8%AE%A1%E7%AE%97.png" alt="云计算"></p>
+<h1 id="云计算"><a href="#云计算" class="headerlink" title="云计算"></a>云计算</h1><p>云的概述：<br>云概念是基于“<font size="4" color="#F4A460"> 云计算 </font>” 技术，实现各种终端设备之间的互联互通。</p>
+<p>云计算解决了各种数据管理问题：</p>
+<ul>
+<li>支持随时随地访问组织数据</li>
+<li>通过订购所需的服务来简化组织的IT运营</li>
+<li>消除或减少对现场IT设备，维护和管理的需求</li>
+<li>降低设备、能源、物理设施和人员培训的成本</li>
+<li>快速响应不断增长的数据量要求</li>
+</ul>
+<h2 id="云服务"><a href="#云服务" class="headerlink" title="云服务"></a>云服务</h2><p><img src="/2021/07/28/%E7%BD%91%E7%BB%9C%E8%99%9A%E6%8B%9F%E5%8C%96%E2%80%94%E2%80%94SDN/%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%9B%BE.png" alt="云服务图"></p>
+<table>
+<thead>
+<tr>
+<th align="center">本地</th>
+<th align="center">laaS</th>
+<th align="center">PaaS</th>
+<th align="center">SaaS</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">应用</td>
+<td align="center">应用</td>
+<td align="center">应用</td>
+<td align="center">✅应用</td>
+</tr>
+<tr>
+<td align="center">数据</td>
+<td align="center">数据</td>
+<td align="center">数据</td>
+<td align="center">✅数据</td>
+</tr>
+<tr>
+<td align="center">运行时</td>
+<td align="center">运行时</td>
+<td align="center">✅运行时</td>
+<td align="center">✅运行时</td>
+</tr>
+<tr>
+<td align="center">中间件</td>
+<td align="center">中间件</td>
+<td align="center">✅中间件</td>
+<td align="center">✅中间件</td>
+</tr>
+<tr>
+<td align="center">操作系统</td>
+<td align="center">操作系统</td>
+<td align="center">✅操作系统</td>
+<td align="center">✅操作系统</td>
+</tr>
+<tr>
+<td align="center">虚拟化</td>
+<td align="center">✅虚拟化</td>
+<td align="center">✅虚拟化</td>
+<td align="center">✅虚拟化</td>
+</tr>
+<tr>
+<td align="center">网络</td>
+<td align="center">✅网络</td>
+<td align="center">✅网络</td>
+<td align="center">✅网络</td>
+</tr>
+<tr>
+<td align="center">存储</td>
+<td align="center">✅存储</td>
+<td align="center">✅存储</td>
+<td align="center">✅存储</td>
+</tr>
+<tr>
+<td align="center">服务器</td>
+<td align="center">✅服务器</td>
+<td align="center">✅服务器</td>
+<td align="center">✅服务器</td>
+</tr>
+</tbody></table>
+<p>可以理解为：</p>
+<blockquote>
+<p><strong>本地</strong>：需要有块地自己种“菜”，需要用自己的“厨房”烹饪，需要用自己的“桌子”吃饭</p>
+<p><strong>laaS</strong>：买来了“菜”，需要用自己的“厨房”烹饪，需要用自己的“桌子”吃饭</p>
+<p><strong>PaaS</strong>：叫了外卖（不需要田地和厨房），需要用自己的“桌子”吃饭</p>
+<p><strong>SaaS</strong>：直接去店里吃饭（不需要田地，厨房和桌子了）</p>
+</blockquote>
+<h2 id="云模型："><a href="#云模型：" class="headerlink" title="云模型："></a>云模型：</h2><p><font color="#E9967A" size="4"><strong>公有云</strong></font> : 提供基于云的应用程序和服务可用于一般人群</p>
+<p><font color="#E9967A" size="4"><strong>私有云</strong></font> : 特定组织或实体提供基于云的应用程序或服务</p>
+<p><font color="#E9967A" size="4"><strong>社区云</strong></font> : 提供特定社区专用的服务</p>
+<h2 id="云计算与数据中心"><a href="#云计算与数据中心" class="headerlink" title="云计算与数据中心"></a>云计算与数据中心</h2><p><strong>数据中心</strong> ： 满足云计算服务的计算、网络和存储需求的物理设施</p>
+<p><strong>云计算</strong> ： 通常是一种服务，可按需求访问共享的可配置计算资源池</p>
+<p><img src="/2021/07/28/%E7%BD%91%E7%BB%9C%E8%99%9A%E6%8B%9F%E5%8C%96%E2%80%94%E2%80%94SDN/%E8%99%9A%E6%8B%9F%E5%8C%96.png" alt="虚拟化"></p>
+<h1 id="虚拟化"><a href="#虚拟化" class="headerlink" title="虚拟化"></a>虚拟化</h1><h2 id="云计算和虚拟化"><a href="#云计算和虚拟化" class="headerlink" title="云计算和虚拟化"></a>云计算和虚拟化</h2><p><strong>虚拟化</strong>是支持云计算的基本技术：</p>
+<ul>
+<li>划分物理基础结构以创建多个专用资源的软件</li>
+<li>将操作系统和硬件分开</li>
+<li>虚拟云服务 ———— 根据需要动态配置服务器</li>
+</ul>
+<h2 id="专用服务器"><a href="#专用服务器" class="headerlink" title="专用服务器"></a>专用服务器</h2><h4 id="传统企业服务器："><a href="#传统企业服务器：" class="headerlink" title="传统企业服务器："></a>传统企业服务器：</h4><ul>
+<li>在硬件上安装服务器操作系统（Windows，Linux等）</li>
+<li>服务器的所有RAM，CPU和硬盘空间均专用于所提供的服务（电子邮件，Web等）<h4 id="缺点："><a href="#缺点：" class="headerlink" title="缺点："></a>缺点：</h4></li>
+<li>单点故障</li>
+<li>服务器通常会长时间闲置，浪费资源（内存，机房空间等）</li>
+</ul>
+<h2 id="服务器虚拟化"><a href="#服务器虚拟化" class="headerlink" title="服务器虚拟化"></a>服务器虚拟化</h2><p><img src="/2021/07/28/%E7%BD%91%E7%BB%9C%E8%99%9A%E6%8B%9F%E5%8C%96%E2%80%94%E2%80%94SDN/%E6%9C%8D%E5%8A%A1%E5%99%A8%E8%99%9A%E6%8B%9F%E5%8C%96.png" alt="服务器虚拟化"></p>
+<ul>
+<li>服务器虚拟化利用<font size="4" color="#F4A460">空间资源</font>并且<font size="4" color="#F4A460">整合</font>了所需服务器的数量</li>
+<li>允许在单个硬件平台上存在<font color="#F4A460">多个操作系统</font></li>
+<li>虚拟化的使用通常包括<font color="#F4A460">冗余</font>以防止单点故障</li>
+<li><font color="#F4A460">系统管理程序（hypervisor）</font>是在物理硬件之上添加抽象层的程序、固件或硬件</li>
+<li><font color="#F4A460">抽象层</font>用于创建虚拟机，这些虚拟机可以访问物理机的所有硬件，例如CPU，内存，磁盘控制器和NIC</li>
+</ul>
+<h2 id="虚拟化优势"><a href="#虚拟化优势" class="headerlink" title="虚拟化优势"></a>虚拟化优势</h2><p>通过提高服务器利用率降低成本：<br>    &emsp;&emsp;服务器虚拟化允许中小型企业整合其物理服务器并运行多个虚拟机（vm），每个虚拟机具有不同的工作负载。这可以提高他们的IT效率，并帮助他们获得灵活性，只需增加新硬件的一小部分成本。</p>
+<p>增加正常运行时间和可用性：<br>    &emsp;&emsp;硬件故障是业务中断的常见原因。通过故障转移群集和实时迁移，企业可以在物理服务器之间无缝地移动虚拟机，以最大限度地减少停机时间。</p>
+<p>提高安全性和数据保护：<br>    &emsp;&emsp;通过在单独的vm中隔离不同的工作负载，您的客户可以提高安全性并将恶意软件的影响降到最低。</p>
+<p>简化服务器和应用程序管理：<br>    &emsp;&emsp;员工可以在任何地方、任何时间、任何设备上自由开展业务，并使用单一视图仪表板管理用户、设备、存储、资源和虚拟机。</p>
+<p>实施灾难恢复和业务连续性：<br>    &emsp;&emsp;传统的灾难恢复解决方案可能要花费数万美元！与使用单独的物理服务器相比，客户可以更经济地备份其虚拟化环境。</p>
+<h2 id="类型2-Hypervisors"><a href="#类型2-Hypervisors" class="headerlink" title="类型2 Hypervisors"></a>类型2 Hypervisors</h2><ul>
+<li>类型2 Hypervisors在一台主机操作系统上运行，以提供虚拟化服务</li>
+<li>类型2 Hypervisors的一大优势是不需要管理控制台软件</li>
+<li>常见的类型2 hypervisors 包括：<br>  – Virtual PC（Win）<br>  – VMware Workstation（Win，Linux）<br>  –  Oracle VM VirtualBox（通用）<br>  – VMware Fusion（Mac）<br>  – Mac OS X Parallels（Mac）</li>
+</ul>
+<p><img src="/2021/07/28/%E7%BD%91%E7%BB%9C%E8%99%9A%E6%8B%9F%E5%8C%96%E2%80%94%E2%80%94SDN/%E8%99%9A%E6%8B%9F%E5%8C%96%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87.png" alt="虚拟化网络设备"></p>
+<h1 id="虚拟化网络设备"><a href="#虚拟化网络设备" class="headerlink" title="虚拟化网络设备"></a>虚拟化网络设备</h1><h2 id="类型1-Hypervisors"><a href="#类型1-Hypervisors" class="headerlink" title="类型1 Hypervisors"></a>类型1 Hypervisors</h2><ul>
+<li>类型1 Hypervisors 也称为“裸机”方法，因为管理程序直接安装在硬件上。<br>  –   通常用于企业服务器和数据中心网络设备。<br>  –   可以直接访问硬件资源。<br>  –   加强了可伸缩性、性能和健壮性。<br>  –   类型1 Hypervisors 需要一个“management console”（管理控制台）来进行管理。<br>  –   管理控制台使用同一Hypervisors管理多个服务器。<br>  –   管理控制台可以自动整合服务器，并根据需要打开或关闭服务器电源。<br><img src="/2021/07/28/%E7%BD%91%E7%BB%9C%E8%99%9A%E6%8B%9F%E5%8C%96%E2%80%94%E2%80%94SDN/%E7%B1%BB%E5%9E%8B1.png" alt="类型1"></li>
+</ul>
+<p><img src="/2021/07/28/%E7%BD%91%E7%BB%9C%E8%99%9A%E6%8B%9F%E5%8C%96%E2%80%94%E2%80%94SDN/SDN.png" alt="SDN"></p>
+]]></content>
+      <categories>
+        <category>网络</category>
+      </categories>
+      <tags>
+        <tag>云计算</tag>
+        <tag>虚拟化</tag>
+        <tag>SDN</tag>
+        <tag>控制器</tag>
       </tags>
   </entry>
 </search>
