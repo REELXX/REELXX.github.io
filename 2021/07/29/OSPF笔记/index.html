@@ -20,21 +20,22 @@
     var CONFIG = {"hostname":"example.com","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="三平面分离的详细解析">
+  <meta name="description" content="邻居邻接关系建立建立邻居邻接Down第一步中，希望建立完全OSPF邻居邻接关系的路由器之间交换OSPF HELLO包。双方的OSPF邻居都处于Down状态，这是邻居会话的初始状态。Init当路由器从邻居收到了一个HELLO包，但没有在邻居的HELLO包中看到自己的路由器ID时，它将转换为Init状态。在此状态中，路由器将记录所有的邻居路由器ID，并开始将它们包含在发给邻居的HELLO包中。2-Wa">
 <meta property="og:type" content="article">
-<meta property="og:title" content="交换机数据平面，控制平面和管理平面的分离">
-<meta property="og:url" content="http://example.com/2021/07/22/%E5%85%B3%E4%BA%8E%E6%95%B0%E6%8D%AE%E5%B9%B3%E9%9D%A2%EF%BC%8C%E6%8E%A7%E5%88%B6%E5%B9%B3%E9%9D%A2%E5%92%8C%E8%BD%AC%E5%8F%91%E5%B9%B3%E9%9D%A2%E7%9A%84%E5%88%86%E7%A6%BB%E9%97%AE%E9%A2%98/index.html">
+<meta property="og:title" content="OSPF笔记">
+<meta property="og:url" content="http://example.com/2021/07/29/OSPF%E7%AC%94%E8%AE%B0/index.html">
 <meta property="og:site_name" content="郑林昕的博客">
-<meta property="og:description" content="三平面分离的详细解析">
+<meta property="og:description" content="邻居邻接关系建立建立邻居邻接Down第一步中，希望建立完全OSPF邻居邻接关系的路由器之间交换OSPF HELLO包。双方的OSPF邻居都处于Down状态，这是邻居会话的初始状态。Init当路由器从邻居收到了一个HELLO包，但没有在邻居的HELLO包中看到自己的路由器ID时，它将转换为Init状态。在此状态中，路由器将记录所有的邻居路由器ID，并开始将它们包含在发给邻居的HELLO包中。2-Wa">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2021-07-22T06:32:54.000Z">
-<meta property="article:modified_time" content="2021-07-26T09:09:42.053Z">
+<meta property="og:image" content="http://example.com/2021/07/29/OSPF%E7%AC%94%E8%AE%B0/OSPF%E5%BB%BA%E7%AB%8B%E9%82%BB%E6%8E%A5.png">
+<meta property="og:image" content="http://example.com/2021/07/29/OSPF%E7%AC%94%E8%AE%B0/%E5%90%8C%E6%AD%A5OSPF%E6%95%B0%E6%8D%AE%E5%BA%93.png">
+<meta property="article:published_time" content="2021-07-29T06:56:47.000Z">
+<meta property="article:modified_time" content="2021-07-29T10:13:00.424Z">
 <meta property="article:author" content="郑林昕">
-<meta property="article:tag" content="三平面">
-<meta property="article:tag" content="交换机工作原理">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2021/07/29/OSPF%E7%AC%94%E8%AE%B0/OSPF%E5%BB%BA%E7%AB%8B%E9%82%BB%E6%8E%A5.png">
 
-<link rel="canonical" href="http://example.com/2021/07/22/%E5%85%B3%E4%BA%8E%E6%95%B0%E6%8D%AE%E5%B9%B3%E9%9D%A2%EF%BC%8C%E6%8E%A7%E5%88%B6%E5%B9%B3%E9%9D%A2%E5%92%8C%E8%BD%AC%E5%8F%91%E5%B9%B3%E9%9D%A2%E7%9A%84%E5%88%86%E7%A6%BB%E9%97%AE%E9%A2%98/">
+<link rel="canonical" href="http://example.com/2021/07/29/OSPF%E7%AC%94%E8%AE%B0/">
 
 
 <script id="page-configurations">
@@ -47,7 +48,7 @@
   };
 </script>
 
-  <title>交换机数据平面，控制平面和管理平面的分离 | 郑林昕的博客</title>
+  <title>OSPF笔记 | 郑林昕的博客</title>
   
 
 
@@ -169,7 +170,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/07/22/%E5%85%B3%E4%BA%8E%E6%95%B0%E6%8D%AE%E5%B9%B3%E9%9D%A2%EF%BC%8C%E6%8E%A7%E5%88%B6%E5%B9%B3%E9%9D%A2%E5%92%8C%E8%BD%AC%E5%8F%91%E5%B9%B3%E9%9D%A2%E7%9A%84%E5%88%86%E7%A6%BB%E9%97%AE%E9%A2%98/">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/07/29/OSPF%E7%AC%94%E8%AE%B0/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/assets/img/touxiang.png">
@@ -182,7 +183,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          交换机数据平面，控制平面和管理平面的分离
+          OSPF笔记
         </h1>
 
         <div class="post-meta">
@@ -191,28 +192,9 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
+              
 
-              <time title="创建时间：2021-07-22 14:32:54" itemprop="dateCreated datePublished" datetime="2021-07-22T14:32:54+08:00">2021-07-22</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-07-26 17:09:42" itemprop="dateModified" datetime="2021-07-26T17:09:42+08:00">2021-07-26</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E6%95%B0%E6%8D%AE%E9%80%9A%E4%BF%A1/" itemprop="url" rel="index"><span itemprop="name">数据通信</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E6%95%B0%E6%8D%AE%E9%80%9A%E4%BF%A1/%E7%BD%91%E7%BB%9C/" itemprop="url" rel="index"><span itemprop="name">网络</span></a>
-                </span>
+              <time title="创建时间：2021-07-29 14:56:47 / 修改时间：18:13:00" itemprop="dateCreated datePublished" datetime="2021-07-29T14:56:47+08:00">2021-07-29</time>
             </span>
 
           
@@ -226,29 +208,12 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p><a href="#jump">三平面分离的详细解析</a></p>
+        <h2 id="邻居邻接关系建立"><a href="#邻居邻接关系建立" class="headerlink" title="邻居邻接关系建立"></a>邻居邻接关系建立</h2><h3 id="建立邻居邻接"><a href="#建立邻居邻接" class="headerlink" title="建立邻居邻接"></a>建立邻居邻接</h3><p><font size="8" color="#F4A460">Down</font>第一步中，希望建立完全OSPF邻居邻接关系的路由器之间交换OSPF HELLO包。双方的OSPF邻居都处于Down状态，这是邻居会话的初始状态。<br><font size="8" color="#F4A460">Init</font>当路由器从邻居收到了一个HELLO包，但没有在邻居的HELLO包中看到自己的路由器ID时，它将转换为Init状态。在此状态中，路由器将记录所有的邻居路由器ID，并开始将它们包含在发给邻居的HELLO包中。<br><font size="8" color="#F4A460">2-Way</font>当路由器在从邻居收到的HELLO包中看到自己的路由器ID时，它将转为2-Way状态。这表示已和邻居之间建立了双向通信。在多路访问链路上，在2-Way状态将确定DR（指定路由器）和BDR（备份指定路由器）角色，这会优化广播网段中的信息交换过程。</p>
 <span id="more"></span>
-<p><span id="back"></span></p>
-<h3 id="交换机的工作原理"><a href="#交换机的工作原理" class="headerlink" title="交换机的工作原理"></a>交换机的工作原理</h3><p>目的MAC转发<br>源MAC学习<br>组播广播未知单播泛洪</p>
-<blockquote>
-<h3 id="交换机控制平面："><a href="#交换机控制平面：" class="headerlink" title="交换机控制平面："></a>交换机控制平面：</h3><p>&emsp;&emsp;交换机的控制平面用于控制和管理所有网络协议的运行，比如OSPF协议，RIP协议，BGP协议等。控制平面提供了数据平面数据处理转发前所必须的各种网络信息和转发查询表项。</p>
-</blockquote>
-<blockquote>
-<h3 id="交换机数据平面："><a href="#交换机数据平面：" class="headerlink" title="交换机数据平面："></a>交换机数据平面：</h3><p>&emsp;&emsp;交换机的基本任务是处理和转发交换机各不同端口上各种类型的数据， L2/L3/ACL/QOS/组播/安全防护等各种具体的数据处理转发过程，都属于交换机数据平面的任务范畴 。</p>
-</blockquote>
-<blockquote>
-<h3 id="交换机管理平面："><a href="#交换机管理平面：" class="headerlink" title="交换机管理平面："></a>交换机管理平面：</h3><p>&emsp;&emsp;交换机的管理平面是提供给网络工程师 使用TELNET、WEB、SSH、SNMP、RMON等方式来管理设备，并支持、理解和执行网络工程师对于网络设备各种网络协议的设置命令。管理平面必须预先设置好控制平面中各种协议的相关参数，并支持在必要时刻对控制平面的运行进行干预。</p>
-</blockquote>
-<p><strong>三平面组合就是交换机的基本工作：</strong></p>
-<p>&emsp;&emsp;处理不同接口上各种类型的数据，对于数据处理过程中各种具体的处理转发过程，例如L2/L3/ACL/QOS/组播/安全防护等各种网络功能的具体执行，都划分为交换机的数据平面；而控制平面用于控制各种网络协议的运行，例如控制OSPF、ARP、STP等等协议的正常运行，控制平面提供了对网络环境的准确认识，提供了数据平面数据处理转发前所必须的各种网络信息和转发查询表项；至于管理平面的功能是提供给网络工程师使用TELNET、WEB、SSH、SNMP、RMON等方式管理设备的各种管理接口，并支持、理解和执行网络工程师对于网络设备各种网络功能的设置命令。</p>
-<p><span id="jump"></span><br><a href="#back">查看交换机原理</a></p>
-<p>　　为什么需要对数据平面、控制平面和管理平面进行相互的分离呢?</p>
-<p>&emsp;&emsp;首先三者对于主机资源的消耗为：数据平面&gt;&gt;控制平面&gt;&gt;管理平面</p>
-<p>&emsp;&emsp;假设这几个平面不进行任何的分离，数据平面和控制、管理平面使用共用的主机资源，在大数据流量、复杂应用环境下数据平面由于承担着繁重的日常任务将可能消耗绝大部分资源，这对于整个交换机系统无疑是灾难性的，因为在某些极端的情况下，控制平面将没有充分的资源来保障运行，这就意味网络设备失去了对设备所处网络环境的真实了解，网络设备将立即陷于非正常工作状态甚至瘫痪状态，而网络工程师也没有资源使用管理平面对网络设备的运行进行干预，所以数据平面需要严格地与控制平面、管理平面进行分离。</p>
-<p>&emsp;&emsp;管理平面所要求的系统资源是最低的，分离出一定的系统资源独立运行管理平面并不影响控制平面的运行，反而能保证控制平面的正常运行。假设，当网络环境频繁变动、网络协议剧烈动荡的情况下，控制平面将占用大多数资源，这时候网络已经无法正常运行，出现了问题，需要网络工程师即使对网络进行维护和整改。管理平面的分离让网络工程师可以在控制平面出现异常状况（网络出现异常）的时候依然拥有足够的资源打开设备的管理界面，通过改变或终止某个协议、端口的运行来阻止异常网络环境对网络设备的剧烈影响，最终修复好网络环境，使得控制平面得以正常运行。</p>
-<p>&emsp;&emsp;通过采用数据平面、控制平面、管理平面相互分离的结构模型，保证了大量的数据处理不影响管理和控制，而在路由和环境复杂条件下，控制平面不影响管理平面，高度保证了系统安全稳定性。</p>
-<p>&emsp;&emsp;“三平面分离”技术注重于保护核心设备在病毒和攻击环境下依然提供正常的网络设备管理，满足在线地定位和解决安全问题，在稳定性设计上优于传统的“两平面分离”技术。</p>
-<h2 id="详细参考"><a href="#详细参考" class="headerlink" title="详细参考"></a>详细参考</h2><p><a target="_blank" rel="noopener" href="https://blog.csdn.net/chpstudy/article/details/62423072?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522162693636016780255272782%2522%252C%2522scm%2522%253A%252220140713.130102334.pc%255Fall.%2522%257D&request_id=162693636016780255272782&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~all~first_rank_v2~rank_v29-5-62423072.first_rank_v2_pc_rank_v29&utm_term=%E4%BA%A4%E6%8D%A2%E6%9C%BA%E7%9A%84%E4%B8%89%E5%B9%B3%E9%9D%A2%E5%88%86%E7%A6%BB%E6%9E%B6%E6%9E%84&spm=1018.2226.3001.4187">数据平面、控制平面、管理平面</a></p>
+
+<p><img src="/2021/07/29/OSPF%E7%AC%94%E8%AE%B0/OSPF%E5%BB%BA%E7%AB%8B%E9%82%BB%E6%8E%A5.png" alt="OSPF建立邻接"></p>
+<h3 id="同步OSPF数据库"><a href="#同步OSPF数据库" class="headerlink" title="同步OSPF数据库"></a>同步OSPF数据库</h3><p><font size="8" color="#F4A460">ExStart</font>下一步中，路由器开始交换OSPF数据库（OSPF DATABASE）内容。此过程第一阶段是确定主/从（MASTER/SLAVE）关系，并选择邻接建立的初始序列号。路由器通过交换DBD包来完成此操作。当路由器收到初始的DBD包时，它把发出这个DBD包的邻居状态转为ExStart，使用DBD携带的LSA填充自己的数据库汇总列表，并发送自己的空DBD包。在DBD交换过程中，有更高路由器ID的路由器将成为主路由器，它是唯一可以增加序列号值的路由器。<br><font size="8" color="#F4A460">Exchange</font>主/从关系选择完成后，可以开始交换数据库。此时邻居状态转为Exchange，在此状态通过发送包含数据库汇总列表中所有LSA头部的DBD包，向邻居描述自己的数据库。数据库汇总列表描述了路由器数据库中所有的LSA，但不包含OSPF数据库的具体内容。为了描述数据库内容，OSPF邻居必须交换一个或多个DBD包。<br><font size="8" color="#F4A460">Loading</font>路由器将自己的数据库汇总列表与从邻居收到的列表进行比较，如果有不同，它将缺失的LSA增加到链路状态请求列表中（LSR）。此时，邻居进入Loading状态。发送一个LSR包给邻居，请求LSR列表中缺失LSA的完整内容。邻居使用LSU包进行应答，其中包含缺失LSA的完整版本。<br><font size="8" color="#F4A460">Full</font>最后，当邻居拥有完整版本的LSDB后，两邻居状态都将变成Full，表示路由器上的数据库已同步且邻居完全邻接。P152</p>
+<p><img src="/2021/07/29/OSPF%E7%AC%94%E8%AE%B0/%E5%90%8C%E6%AD%A5OSPF%E6%95%B0%E6%8D%AE%E5%BA%93.png" alt="同步OSPF数据库"></p>
 
     </div>
 
@@ -257,10 +222,6 @@
     
 
       <footer class="post-footer">
-          <div class="post-tags">
-              <a href="/tags/%E4%B8%89%E5%B9%B3%E9%9D%A2/" rel="tag"># 三平面</a>
-              <a href="/tags/%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/" rel="tag"># 交换机工作原理</a>
-          </div>
 
         
 
@@ -268,12 +229,12 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2021/07/22/%E4%BA%8C%E5%B1%82%E7%AB%AF%E5%8F%A3/" rel="prev" title="深入研究二层端口">
-      <i class="fa fa-chevron-left"></i> 深入研究二层端口
+    <a href="/2021/07/28/%E7%BD%91%E7%BB%9C%E8%99%9A%E6%8B%9F%E5%8C%96%E2%80%94%E2%80%94SDN/" rel="prev" title="网络虚拟化——SDN">
+      <i class="fa fa-chevron-left"></i> 网络虚拟化——SDN
     </a></div>
       <div class="post-nav-item">
-    <a href="/2021/07/23/Hexo-yilia%E5%B7%A6%E4%BE%A7%E8%83%8C%E6%99%AF%E5%9B%BE%E7%89%87%E6%9B%B4%E6%8D%A2/" rel="next" title="Hexo+yilia左侧背景图片更换">
-      Hexo+yilia左侧背景图片更换 <i class="fa fa-chevron-right"></i>
+    <a href="/2021/07/29/BGP%E7%AC%94%E8%AE%B0/" rel="next" title="BGP笔记">
+      BGP笔记 <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
@@ -333,7 +294,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%A4%E6%8D%A2%E6%9C%BA%E7%9A%84%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86"><span class="nav-number">1.</span> <span class="nav-text">交换机的工作原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%A4%E6%8D%A2%E6%9C%BA%E6%8E%A7%E5%88%B6%E5%B9%B3%E9%9D%A2%EF%BC%9A"><span class="nav-number">2.</span> <span class="nav-text">交换机控制平面：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%A4%E6%8D%A2%E6%9C%BA%E6%95%B0%E6%8D%AE%E5%B9%B3%E9%9D%A2%EF%BC%9A"><span class="nav-number">3.</span> <span class="nav-text">交换机数据平面：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%A4%E6%8D%A2%E6%9C%BA%E7%AE%A1%E7%90%86%E5%B9%B3%E9%9D%A2%EF%BC%9A"><span class="nav-number">4.</span> <span class="nav-text">交换机管理平面：</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AF%A6%E7%BB%86%E5%8F%82%E8%80%83"><span class="nav-number"></span> <span class="nav-text">详细参考</span></a></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%82%BB%E5%B1%85%E9%82%BB%E6%8E%A5%E5%85%B3%E7%B3%BB%E5%BB%BA%E7%AB%8B"><span class="nav-number">1.</span> <span class="nav-text">邻居邻接关系建立</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BB%BA%E7%AB%8B%E9%82%BB%E5%B1%85%E9%82%BB%E6%8E%A5"><span class="nav-number">1.1.</span> <span class="nav-text">建立邻居邻接</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%90%8C%E6%AD%A5OSPF%E6%95%B0%E6%8D%AE%E5%BA%93"><span class="nav-number">1.2.</span> <span class="nav-text">同步OSPF数据库</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
