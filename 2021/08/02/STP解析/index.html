@@ -20,23 +20,19 @@
     var CONFIG = {"hostname":"example.com","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="根据Markdown文档编写指南编写">
+  <meta name="description" content="基本概念根桥：拥有最小BID的交换机根端口：非根桥交换机上离根桥最近的端口（根路径开销）指定端口：针对于某网段的，每个网段上只有一个指定端口。 传输协议报文BPDU —— 携带根桥BID，累计根路径开销，发送者BID，发送端口PID">
 <meta property="og:type" content="article">
-<meta property="og:title" content="博客文档指南">
-<meta property="og:url" content="http://example.com/2021/07/20/VLAN/index.html">
+<meta property="og:title" content="STP解析">
+<meta property="og:url" content="http://example.com/2021/08/02/STP%E8%A7%A3%E6%9E%90/index.html">
 <meta property="og:site_name" content="郑林昕的博客">
-<meta property="og:description" content="根据Markdown文档编写指南编写">
+<meta property="og:description" content="基本概念根桥：拥有最小BID的交换机根端口：非根桥交换机上离根桥最近的端口（根路径开销）指定端口：针对于某网段的，每个网段上只有一个指定端口。 传输协议报文BPDU —— 携带根桥BID，累计根路径开销，发送者BID，发送端口PID">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://img1.baidu.com/it/u=3661816073,3507776781&fm=26&fmt=auto&gp=0.jpg">
-<meta property="article:published_time" content="2021-07-20T09:01:29.000Z">
-<meta property="article:modified_time" content="2021-07-26T09:12:14.262Z">
+<meta property="article:published_time" content="2021-08-02T09:08:00.000Z">
+<meta property="article:modified_time" content="2021-08-02T09:09:30.493Z">
 <meta property="article:author" content="郑林昕">
-<meta property="article:tag" content="博客">
-<meta property="article:tag" content="编写指南">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://img1.baidu.com/it/u=3661816073,3507776781&fm=26&fmt=auto&gp=0.jpg">
 
-<link rel="canonical" href="http://example.com/2021/07/20/VLAN/">
+<link rel="canonical" href="http://example.com/2021/08/02/STP%E8%A7%A3%E6%9E%90/">
 
 
 <script id="page-configurations">
@@ -49,7 +45,7 @@
   };
 </script>
 
-  <title>博客文档指南 | 郑林昕的博客</title>
+  <title>STP解析 | 郑林昕的博客</title>
   
 
 
@@ -171,7 +167,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/07/20/VLAN/">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/08/02/STP%E8%A7%A3%E6%9E%90/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/assets/img/touxiang.png">
@@ -184,7 +180,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          博客文档指南
+          STP解析
         </h1>
 
         <div class="post-meta">
@@ -193,24 +189,9 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
+              
 
-              <time title="创建时间：2021-07-20 17:01:29" itemprop="dateCreated datePublished" datetime="2021-07-20T17:01:29+08:00">2021-07-20</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-07-26 17:12:14" itemprop="dateModified" datetime="2021-07-26T17:12:14+08:00">2021-07-26</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E5%8D%9A%E5%AE%A2/" itemprop="url" rel="index"><span itemprop="name">博客</span></a>
-                </span>
+              <time title="创建时间：2021-08-02 17:08:00 / 修改时间：17:09:30" itemprop="dateCreated datePublished" datetime="2021-08-02T17:08:00+08:00">2021-08-02</time>
             </span>
 
           
@@ -224,43 +205,17 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>根据<a target="_blank" rel="noopener" href="https://blog.csdn.net/sanallen/article/details/92081911?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522162684851716780274192566%2522%252C%2522scm%2522%253A%252220140713.130102334..%2522%257D&request_id=162684851716780274192566&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~all~sobaiduend~default-1-92081911.first_rank_v2_pc_rank_v29&utm_term=markdown%E6%96%87%E6%A1%A3%E7%BC%96%E5%86%99%E6%8C%87%E5%8D%97&spm=1018.2226.3001.4187">Markdown文档编写指南</a>编写</p>
+        <h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><p>根桥：拥有最小BID的交换机<br>根端口：非根桥交换机上离根桥最近的端口（根路径开销）<br>指定端口：针对于某网段的，每个网段上只有一个指定端口。</p>
+<h2 id="传输协议报文"><a href="#传输协议报文" class="headerlink" title="传输协议报文"></a>传输协议报文</h2><p>BPDU —— 携带根桥BID，累计根路径开销，发送者BID，发送端口PID</p>
 <span id="more"></span>
-<p>标题使用#一级 ##二级 ###三级 类推</p>
-<h2 id="段落"><a href="#段落" class="headerlink" title="段落"></a>段落</h2><p>两行之间空一行就能划分段落</p>
-<p>第一行段落</p>
-<p>第二行段落</p>
-<h2 id="区块引用"><a href="#区块引用" class="headerlink" title="区块引用"></a>区块引用</h2><blockquote>
-<p>对内容进行强调显示，会被高亮显示</p>
-</blockquote>
-<h2 id="超链接"><a href="#超链接" class="headerlink" title="超链接"></a>超链接</h2><p><a target="_blank" rel="noopener" href="https://www.baidu.com/">百度</a></p>
-<h2 id="老婆！！"><a href="#老婆！！" class="headerlink" title="老婆！！"></a>老婆！！</h2><p><img src="https://img1.baidu.com/it/u=3661816073,3507776781&fm=26&fmt=auto&gp=0.jpg" alt="22"></p>
-<h2 id="无序列表"><a href="#无序列表" class="headerlink" title="无序列表"></a>无序列表</h2><ul>
-<li>first</li>
-<li>second</li>
-<li>third<h2 id="有序列表"><a href="#有序列表" class="headerlink" title="有序列表"></a>有序列表</h2></li>
-</ul>
-<ol>
-<li>第一行</li>
-<li>第二行</li>
-<li>第三行<h2 id="锚点"><a href="#锚点" class="headerlink" title="锚点"></a>锚点</h2>使用命名锚记可以在文档中设置标记，这些标记通常放在文档的特定主题处或顶部。然后可以创建到这些命名锚记的链接，这些链接可快速将访问者带到指定位置。</li>
-</ol>
-<p>创建到命名锚记的链接的过程分为两步。</p>
-<ul>
-<li>创建命名锚记</li>
-<li>创建 到该命名锚记的链接。</li>
-</ul>
-<p>反正就是用于文章快速定位，点击目录便可直接跳转到指定位置的。</p>
-<p>在这里我分享一下锚点在MarkDown编辑器中怎么使用：<br>首先是建立一个跳转的连接：</p>
-<p><a href="#jump">说明文字</a></p>
-<p>然后标记要跳转到的位置：</p>
-<p><span id="jump">跳转到的位置</span></p>
-<h2 id="空格是-amp-emsp；"><a href="#空格是-amp-emsp；" class="headerlink" title="空格是 &amp;emsp；"></a>空格是 &amp;emsp；</h2><h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><hr>
-<p>分割线 <em>斜体内容</em>  <strong>加粗内容</strong></p>
-<hr>
-<blockquote>
-<p>ctrl+shift+p 命令输入框<br>    – markdown 侧边阅览</p>
-</blockquote>
+
+<p>交换机端口五种状态<br>forwarding，listening，learning，blocking，disable。<br>Forwarding：<br>在这种状态下，端口才可以转发用户流量。（根端口，指定端口）<br>Learning：<br>这是一种过渡状态。这种状态下交换机会根据收到的流量构建MAC地址表。（不转发流量）<br>Listening：<br>这是一种过渡状态。这种状态下，选举完根桥，根端口，指定端口。<br>Blocking：<br>这种状态下，端口仅仅接收并处理BPDU，不转发用户流量。（阻塞端口）<br>Disable：<br>端口shutdown了。<br>STP选举过程<br>根桥：一开始每个人都以为自己是根桥，将自己的BID填入BPDU中“根桥BID”中，泛洪出去，不停的比较，直到选出最佳BID为止。<br>根端口：累计根路径开销最小的端口。<br>指定端口：1.比较两个STP交换机根端口谁的开销最少，在最低开销的非根交换机那端是指定端口。2.如果开销一样，桥ID越小的那端是指定端口。<br>RSTP<br>增加alternate，backup端口<br>将disable，blocking，listening缩成为discarding<br>快速收敛:<br>Proposal/Agreement快速收敛机制：指定端口-根端口链路可以快速进入转发    状态<br>根端口快速切换机制：如果根端口失效，那么交换机立刻使最好的Alternate    端口成为根端口<br>保护机制:<br>Port Fast，BPDU Guard等<br>BPDU处理变化:<br>触发发送——自主按照每个Hello时间发送<br>更短超时计时：连续三个Hello时间收不到BPDU就直接认为失效<br>STP的根桥计算方法<br>拥有最小BID的STP交换机成为根桥，其中Bridge ID是由8个字节组成，后6个字节为该网桥的MAC地址，前2个字节，前4 bit表示优先级（Priority），后8 bit表示System ID，为以后扩展协议而用。值越小表明桥的优先级越高</p>
+<p>根桥，根端口，指定端口，的选举<br>STP过程——根桥选举<br>前提：网络初始化的时候，所有STP交换机都认为自己是根桥。<br>导致：所有每个端口发出的BPDU中，根桥字段都是自己的BID（2s一个BPDU）。通过交换机不停的交换BPDU，比较各自的BID（每个BPDU携带的都是“当前我认为的root BID”），直到选出最佳BID，达成一致。<br>工作原理：根桥竞选主要依据配置BPDU中的Root BID，值越小优先级越高。BID由8个字节构成——后六位字节MAC地址，前两个字节如图（因此网桥配置优先级要为4096倍数）<br>     优先级                   System ID                                                       <br>Bit    16    15    14    13    12    11    10    9    8    7    6    5    4    3    2    1<br>值    32768    16384    8192    4096    2048    1024    512    256    128    64    32    16    8    4    2    1</p>
+<p>STP过程——根端口选举<br>选举本质：其本质是“距离根桥最近的端口”，这个最近的衡量是靠累计根路径开销来判定的，即累计根路径开销最小的端口就应该是根端口。<br>累计根路径开销的计算方法：端口收到一个BPDU后，抽取该BPDU中累计根路径开销字段的值，加上该端口本身的路径开销。所谓该端口本身的路径开销只体现直连链路的开销，这个值是端口量，可以人为配置的。<br>特殊情况：如果有两个以上的端口计算得到的累计根路径开销相同，那么选择收到发送者BID最小的那个段口作为根端口。<br> <br>STP过程——指定端口选举<br>选举过程：非根交换机与非根交换机之间连接线的两个端口中必定有一个端口为指定端口，此时比较两个非根交换机的根端口到达根桥的最低链路开销，将最低开销的非根交换机为准，其所在的连接线（为上面非根交换机与非根交换机之间连接线）的端口为指定端口，如果链路开销一样最后比较各自的桥ID即可。桥ID越小越好。</p>
+<p>STP的可选特性<br>Port Fast<br>开启后，端口直连PC后将直接进入Forwarding状态，避免握手协商引发的转发延迟<br>BPDU Guard<br>正常情况下，直连PC的端口将不会收到BPDU报文并参与生成树运算。当收到一个BPDU，会发出报错并关闭该端口。此功能保护端口防止有人恶意发送BPDU给PC端口，也防止非法用户增加一台网络设备造成网络拓扑变化，全局开启BPDU G仅对开启了PORT FAST的端口生效<br>BPDU Filter<br>也能防止攻击者在连接PC的端口发送BDPU导致网络震荡。开启BPDU F后，将强制端口不收发BPDU报文，也不参与STP生成树运算，连接PC后将直接进入Forwarding模式。全局开启BPDU  F仅对开启了PORT FAST的端口生效<br>TC-protection<br>交换机收到TC-BPDU报文后（将泛洪），将清空全网的MAC表。可以在RSTP和MSTP模式下通过根口或指派端口上发送，其BPDU的类型为0X02。此功能能防止别人恶意不断删除拓扑内交换机的MAC表，启用后（一般）4s内只删除一次MAC表，如果期间内又收到TC-BPDU报文，则在时间到了之后再删除一次。大幅度减少了恶意删除带来的影响，保证了网络环境的稳定性，保证业务正常运行<br>BPDU 源MAC检查<br>配置后，一个端口只允许配置一个MAC地址，交换机只接受源MAC和配置的MAC地址相匹配的BPDU报文，其他丢弃。防止恶意攻击导致MSTP工作不正常</p>
+<p>Root Guard<br>根桥保护。在端口开启Root Guard功能，可强制其在所有实例上的端口角色为指定端口，一旦该端口收到优先级更高的配置信息时，Root Guard功能会将该端口置为root-inconsistent （Blocked）状态，如果在3倍的Hello time内没有收到更优的配置信息时，端口会恢复成原来的正常状态。在Root Port、Alternate Port或Backup Port上开启Root Guard功能，端口直接置为root-inconsistent （Blocked）状态，视为不应收到优先级更高的配置信息。<br>实例：<br>假设整个网络被划分为服务供应商网络和客户网络，根桥设置在服务供应商网络。当客户网络中出现优先级更高的设备或因人为的恶意攻击，可能导致根桥从原先服务供应商网络迁移到客户网络。为避免此类问题的发生，可以在服务供应商网络和客户网络的连接口开启Root Guard功能。如图8所示，可以端口1和端口2上开启Root Guard功能，这些端口将被强制为指派端口，如果在这些端口上收到优先级更高的配置信息，Root Guard功能会将这些端口置为root-inconsistent (blocked)状态，即将相应链路上的数据流阻断，从而保持核心网络的拓扑信息不变。如果在一定时间内没有收到更优的配置信息时，端口会恢复成原来的正常状态。以图中虚线为界，客户和服务商网络独立地进行生成树的计算。</p>
+<p>Loop Guard<br>交换机的根端口和其他阻塞端口的状态依靠不断接收上游交换机发送的BPDU来维持的。但是由于链路拥塞或者单向链路故障，这些端口会收不到上游交换机的BPDU而变成指派端口，导致网络中产生环路。Loop Guard功能能够抑制这种环路的产生，可以全局或在端口上开启Loop Guard功能，端口因为老化发生端口角色的转换，但是端口状态将一直处于Discarding状态（不会进行转发从而造成环路），从而不会在网络中形成环路。如果该端口再次收到BPDU，将重新进行生成树计算。<br>锐捷独有<br>TC Guard：配置之后，将不会全网泛洪TC-BPDU。只有确定了网络中存在TC攻击时，才对端口或全局开启TC Guard。<br>BPDU 非法长度过滤：BPDU报文的数据长度字段超过1500就丢弃<br>AutoEdge：边缘端口自动识别，3s收不到下游网络发来的BPDU，将直接认为是边缘端口，直接变成Forwarding状态</p>
+<p>C公司独有<br>Uplink Fast：很类似RSTP中的“根端口快速切换机制”。但Uplink Fast功能只在边缘的交换机上使能。<br>BackboneFast：是对UplinkFast一个延伸。该功能可以在整个STP域里的所有交换机上使能。使能该功能的交换机的根端口若收到一个次等BPDU，则会检查该BPDU的发送者BID，如果是上游指定桥发来的，则会认为上游链路失效。</p>
 
     </div>
 
@@ -269,10 +224,6 @@
     
 
       <footer class="post-footer">
-          <div class="post-tags">
-              <a href="/tags/%E5%8D%9A%E5%AE%A2/" rel="tag"># 博客</a>
-              <a href="/tags/%E7%BC%96%E5%86%99%E6%8C%87%E5%8D%97/" rel="tag"># 编写指南</a>
-          </div>
 
         
 
@@ -280,13 +231,10 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2021/07/20/hello-world/" rel="prev" title="Hello World">
-      <i class="fa fa-chevron-left"></i> Hello World
+    <a href="/2021/07/30/OSPF%E6%B7%B1%E5%BA%A6%E8%A7%A3%E6%9E%90/" rel="prev" title="OSPF深度解析之邻居邻接">
+      <i class="fa fa-chevron-left"></i> OSPF深度解析之邻居邻接
     </a></div>
-      <div class="post-nav-item">
-    <a href="/2021/07/21/ARP%E8%A7%A3%E6%9E%90/" rel="next" title="ARP解析">
-      ARP解析 <i class="fa fa-chevron-right"></i>
-    </a></div>
+      <div class="post-nav-item"></div>
     </div>
       </footer>
     
@@ -345,7 +293,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%AE%B5%E8%90%BD"><span class="nav-number">1.</span> <span class="nav-text">段落</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8C%BA%E5%9D%97%E5%BC%95%E7%94%A8"><span class="nav-number">2.</span> <span class="nav-text">区块引用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B6%85%E9%93%BE%E6%8E%A5"><span class="nav-number">3.</span> <span class="nav-text">超链接</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%80%81%E5%A9%86%EF%BC%81%EF%BC%81"><span class="nav-number">4.</span> <span class="nav-text">老婆！！</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%97%A0%E5%BA%8F%E5%88%97%E8%A1%A8"><span class="nav-number">5.</span> <span class="nav-text">无序列表</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%89%E5%BA%8F%E5%88%97%E8%A1%A8"><span class="nav-number">6.</span> <span class="nav-text">有序列表</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%94%9A%E7%82%B9"><span class="nav-number">7.</span> <span class="nav-text">锚点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A9%BA%E6%A0%BC%E6%98%AF-amp-emsp%EF%BC%9B"><span class="nav-number">8.</span> <span class="nav-text">空格是 &amp;emsp；</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%B6%E4%BB%96"><span class="nav-number">9.</span> <span class="nav-text">其他</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5"><span class="nav-number">1.</span> <span class="nav-text">基本概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BC%A0%E8%BE%93%E5%8D%8F%E8%AE%AE%E6%8A%A5%E6%96%87"><span class="nav-number">2.</span> <span class="nav-text">传输协议报文</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
