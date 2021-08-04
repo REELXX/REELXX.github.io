@@ -20,15 +20,15 @@
     var CONFIG = {"hostname":"example.com","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="BGP路径选择步骤一    优选权重最高的路由 weight（Cisco私有）步骤二  如果多条路由拥有相同权重。优选本地优先级最高的路由（Local Preference 用在        一个AS内部）步骤三  如果多条路由拥有相同本地优先级。优选本地路由器初始的路由（本地初始路由在        BGP表中下一跳为0.0.0.0）步骤四  如果没有本地路由器初始路由。优选AS-PATH最短">
+  <meta name="description" content="边界网关协议BGP（Border Gateway Protocol）是一种实现自治系统AS（Autonomous System）之间的路由可达，并选择最佳路由的距离矢量路由协议。 MP-BGP是对BGP-4进行了扩展，来达到在不同网络中应用的目的，BGP-4原有的消息机制和路由机制并没有改变。MP-BGP在IPv6单播网络上的应用称为BGP4+，在IPv4组播网络上的应用称为MBGP（Multic">
 <meta property="og:type" content="article">
 <meta property="og:title" content="BGP笔记">
 <meta property="og:url" content="http://example.com/2021/07/29/BGP%E7%AC%94%E8%AE%B0/index.html">
 <meta property="og:site_name" content="郑林昕的博客">
-<meta property="og:description" content="BGP路径选择步骤一    优选权重最高的路由 weight（Cisco私有）步骤二  如果多条路由拥有相同权重。优选本地优先级最高的路由（Local Preference 用在        一个AS内部）步骤三  如果多条路由拥有相同本地优先级。优选本地路由器初始的路由（本地初始路由在        BGP表中下一跳为0.0.0.0）步骤四  如果没有本地路由器初始路由。优选AS-PATH最短">
+<meta property="og:description" content="边界网关协议BGP（Border Gateway Protocol）是一种实现自治系统AS（Autonomous System）之间的路由可达，并选择最佳路由的距离矢量路由协议。 MP-BGP是对BGP-4进行了扩展，来达到在不同网络中应用的目的，BGP-4原有的消息机制和路由机制并没有改变。MP-BGP在IPv6单播网络上的应用称为BGP4+，在IPv4组播网络上的应用称为MBGP（Multic">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2021-07-29T08:37:17.000Z">
-<meta property="article:modified_time" content="2021-07-29T10:12:30.441Z">
+<meta property="article:modified_time" content="2021-08-04T09:49:26.824Z">
 <meta property="article:author" content="郑林昕">
 <meta name="twitter:card" content="summary">
 
@@ -136,7 +136,7 @@
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">16</span></a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">18</span></a>
 
   </li>
   </ul>
@@ -189,10 +189,16 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              
 
-              <time title="创建时间：2021-07-29 16:37:17 / 修改时间：18:12:30" itemprop="dateCreated datePublished" datetime="2021-07-29T16:37:17+08:00">2021-07-29</time>
+              <time title="创建时间：2021-07-29 16:37:17" itemprop="dateCreated datePublished" datetime="2021-07-29T16:37:17+08:00">2021-07-29</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-08-04 17:49:26" itemprop="dateModified" datetime="2021-08-04T17:49:26+08:00">2021-08-04</time>
+              </span>
 
           
 
@@ -205,13 +211,261 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>BGP路径选择<br>步骤一    优选权重最高的路由 weight（Cisco私有）<br>步骤二  如果多条路由拥有相同权重。优选本地优先级最高的路由（Local Preference 用在        一个AS内部）<br>步骤三  如果多条路由拥有相同本地优先级。优选本地路由器初始的路由（本地初始路由在        BGP表中下一跳为0.0.0.0）<br>步骤四  如果没有本地路由器初始路由。优选AS-PATH最短的路由<br>步骤五  如果多条路由拥有相同长短的AS-PATH。<br>优选源代码最小的路由（Origin Code：IGP&lt;EGP&lt;Incomplete）<br>步骤六    如果多条路由拥有相同源代码。优选MED最低的路由（路由器在AS之间交换MED）<br>步骤七    如果多条路由拥有相同MED。优选外部路由（eBGP）而不是内部路由（iBGP）<br>步骤八    如果只剩内部路由，优选穿越最近IGP邻居的路径（去往BGP下一跳的最短路径）<br>步骤九    对于eBGP路径，优选最老的路由（减少路由反复启动和禁用的风险）<br>步骤十    优选邻居BGP路由器ID值最低的路由<br>步骤十一    如果BGP路由器ID都相同。优选邻居IP地址最小的路由</p>
+        <p>边界网关协议BGP（Border Gateway Protocol）是一种实现自治系统AS（Autonomous System）之间的路由可达，并选择最佳路由的距离矢量路由协议。</p>
+<p>MP-BGP是对BGP-4进行了扩展，来达到在不同网络中应用的目的，BGP-4原有的消息机制和路由机制并没有改变。MP-BGP在IPv6单播网络上的应用称为BGP4+，在IPv4组播网络上的应用称为MBGP（Multicast BGP）</p>
 <span id="more"></span>
 
-<p>通过十一个步骤，最终只有一条路径会被放入路由表并传播给路由器的其他BGP邻居。如果没有修改路由的话，最常见的路由选择因素是路由选择中的步骤四：优选最短的AS-PATH。<br>步骤一 对比权重，非源于本地路由器的路由，默认权重为0<br>步骤二 对比本地优先级，所有网络的本地优先级默认为100。只有当网络管理员手动配置过，步骤一和步骤二才会生效<br>步骤三 查看这个AS拥有的网络。如果其中一条是由本地路由器注入到BGP表中的，那么优选本地路由器提供的路由，而不是通过其他BGP路由器收到的路由<br>步骤四 优选跨越最少AS的路径。这是BGP中路径选择最常见的结果<br>步骤五 查看的是网络进入BGP的方式。通常网络是由命令network（源代码为i）或者通过重分布（源代码为？）进入BGP的<br>步骤六 通过查看MED，判断邻居AS希望本地AS向哪里发送指定网络的数据包<br>步骤七 这是BGP路径选择第二常见的最终结果。从eBGP邻居学到的外部路径优于从iBGP邻居学到的内部路径。一个AS内的路由器会优选使用ISP（网络服务商）的带宽资源，来去往某个网络，而不是优选本地AS中另一台iBGP邻居并占用内部带宽资源<br>如果AS路径长度相等，并且这个AS中只有iBGP提供了路径，BGP就会选择去往最近出口的路径。步骤八就会查找最近的iBGP邻居（“最近”决定于IGP中的度量，比如RIP条数，OSPF最小开销等）<br>如果AS路径长度相等，穿越所有iBGP邻居的开销也相等，或者所有去往这个网络的邻居都是eBGP邻居，那么下一步就是选择最老路径（步骤九），因为它建立时间最长，可以<br>认为它最稳定<br>如果上述都相等，优选BGP路由ID最低的路由（步骤十）<br>如果BGP路由器ID也相同（比如所有路径都去往同一台BGP路由器），那么选择邻居IP地址最小的路由（步骤十一）</p>
-<p>BGP属性<br>公认：所有BGP都能识别的属性<br>公认必遵属性 （必须包含）<br>As-Path<br>Next-Hop 下一跳<br>Origin 源<br>公认自决属性 （都能识别，但不一定携带）<br>Local Perference 本地优先级<br>Atomic Aggregate 路由聚合<br>可选：BGP路由器先要实施可选属性，才能传递属性<br>可选传递属性 （没有实施这种属性的BGP路由器，也要完好无损的传递这个属性）<br> （并标记为部分属性）<br>Aggregator 聚合器<br>Community 团体<br>可选非传递属性 （没有实施这个属性的BGP路由器，应该删除这个属性）<br>（不能传输这个属性）<br>MED</p>
+<h2 id="BGP分类"><a href="#BGP分类" class="headerlink" title="BGP分类"></a>BGP分类</h2><p>BGP按照运行方式分为EBGP（External/Exterior BGP）和IBGP（Internal/Interior BGP）。</p>
+<p>EBGP：<br>运行于不同AS之间的BGP称为EBGP。为了防止AS间产生环路，当BGP设备接收EBGP对等体发送的路由时，会将带有本地AS号的路由丢弃。从EBGP对等体获得的路由会向它的所有BGP对等体通告</p>
+<p>IBGP：<br>运行于同一AS内部的BGP称为IBGP。为了防止AS内产生环路，BGP设备不将从IBGP对等体学到的路由通告给其他IBGP对等体，并与所有IBGP对等体建立全连接。从IBGP获得的路由是否通告给它的EBGP对等体要依IGP和BGP同步的情况来决定。为了解决IBGP对等体的连接数量太多的问题，BGP设计了路由反射器和BGP联盟。</p>
+<h2 id="BGP报文作用"><a href="#BGP报文作用" class="headerlink" title="BGP报文作用"></a>BGP报文作用</h2><table>
+<thead>
+<tr>
+<th>报文名称</th>
+<th>作用</th>
+<th>什么时候发</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>OPEN</td>
+<td>协商BGP邻居参数，建立邻居关系</td>
+<td>通过TCP建立BGP连接，发送open报文</td>
+</tr>
+<tr>
+<td>UPDATE</td>
+<td>进行路由信息交换</td>
+<td>连接建立后，有路由需要发送或路由变化时，发送UPDATE通告对端路由信息</td>
+</tr>
+<tr>
+<td>NOTIFICATION</td>
+<td>报告错误，中断邻居关系</td>
+<td>当BGP在运行中发现错误时，要发送NOTIFICATION报文通告BGP对端</td>
+</tr>
+<tr>
+<td>KEEPALIVE</td>
+<td>保活，维持邻居关系</td>
+<td>定时发送KEEPALIVE报文以保持BGP邻居关系的有效性</td>
+</tr>
+<tr>
+<td>ROUTE-REFRESH</td>
+<td>保证网络稳定，触发更新路由的机制</td>
+<td>当路由策略发生变化时，触发请求邻居重新通告路由</td>
+</tr>
+</tbody></table>
+<h2 id="BGP邻居状态机"><a href="#BGP邻居状态机" class="headerlink" title="BGP邻居状态机"></a>BGP邻居状态机</h2><table>
+<thead>
+<tr>
+<th>状态名称</th>
+<th>发什么包</th>
+<th>在做什么</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Idle</td>
+<td>尝试建立TCP连接</td>
+<td>开始准备TCP的连接并监视远程peer启动TCP连接，启用BGP时，要准备足够的资源</td>
+</tr>
+<tr>
+<td>Connect</td>
+<td>TCP包</td>
+<td>正在进行TCP连接，等待完成中，认证都是在TCP建立期间完成的。如果TCP连接不上则进入Active状态，反复尝试连接</td>
+</tr>
+<tr>
+<td>Active</td>
+<td>TCP包</td>
+<td>反复尝试和对方建立TCP连接</td>
+</tr>
+<tr>
+<td>OpenSent</td>
+<td>Open包</td>
+<td>TCP连接建立已经成功，开始发送Open包，Open包携带参数协商对等体的建立</td>
+</tr>
+<tr>
+<td>OpenConfirm</td>
+<td>KeepAlive包</td>
+<td>参数、能力特性协商成功，自己开始发送Keepalive包，等待对方的Keepalive包</td>
+</tr>
+<tr>
+<td>Established</td>
+<td>Update包</td>
+<td>已经收到对方的Keepalive包，双方能力特性一致，开始使用Update通告路由信息</td>
+</tr>
+</tbody></table>
+<h2 id="BGP路径选择"><a href="#BGP路径选择" class="headerlink" title="BGP路径选择"></a>BGP路径选择</h2><h3 id="BGP路径选择-1"><a href="#BGP路径选择-1" class="headerlink" title="BGP路径选择"></a>BGP路径选择</h3><p>步骤一    优选权重最高的路由 weight（Cisco私有）<br>步骤二  如果多条路由拥有相同权重。优选本地优先级最高的路由（Local Preference 用在一个AS内部）<br>步骤三  如果多条路由拥有相同本地优先级。优选本地路由器初始的路由（本地初始路由在BGP表中下一跳为0.0.0.0）<br>步骤四  如果没有本地路由器初始路由。优选AS-PATH最短的路由<br>步骤五  如果多条路由拥有相同长短的AS-PATH。<br>优选源代码最小的路由（Origin Code：IGP&lt;EGP&lt;Incomplete）<br>步骤六    如果多条路由拥有相同源代码。优选MED最低的路由（路由器在AS之间交换MED）<br>步骤七    如果多条路由拥有相同MED。优选外部路由（eBGP）而不是内部路由（iBGP）<br>步骤八    如果只剩内部路由，优选穿越最近IGP邻居的路径（去往BGP下一跳的最短路径）<br>步骤九    对于eBGP路径，优选最老的路由（减少路由反复启动和禁用的风险）<br>步骤十    优选邻居BGP路由器ID值最低的路由<br>步骤十一    如果BGP路由器ID都相同。优选邻居IP地址最小的路由</p>
+<h3 id="实例"><a href="#实例" class="headerlink" title="实例"></a>实例</h3><p>通过十一个步骤，最终只有一条路径会被放入路由表并传播给路由器的其他BGP邻居。如果没有修改路由的话，最常见的路由选择因素是路由选择中的步骤四：优选最短的AS-PATH。<br><strong>步骤一</strong> 对比权重，非源于本地路由器的路由，默认权重为0<br><strong>步骤二</strong> 对比本地优先级，所有网络的本地优先级默认为100。只有当网络管理员手动配置过，步骤一和步骤二才会生效<br><strong>步骤三</strong> 查看这个AS拥有的网络。如果其中一条是由本地路由器注入到BGP表中的，那么优选本地路由器提供的路由，而不是通过其他BGP路由器收到的路由<br><strong>步骤四</strong> 优选跨越最少AS的路径。这是BGP中路径选择最常见的结果<br><strong>步骤五</strong> 查看的是网络进入BGP的方式。通常网络是由命令network（源代码为i）或者通过重分布（源代码为？）进入BGP的<br><strong>步骤六</strong> 通过查看MED，判断邻居AS希望本地AS向哪里发送指定网络的数据包<br><strong>步骤七</strong> 这是BGP路径选择第二常见的最终结果。从eBGP邻居学到的外部路径优于从iBGP邻居学到的内部路径。一个AS内的路由器会优选使用ISP（网络服务商）的带宽资源，来去往某个网络，而不是优选本地AS中另一台iBGP邻居并占用内部带宽资源<br>如果AS路径长度相等，并且这个AS中只有iBGP提供了路径，BGP就会选择去往最近出口的路径。<strong>步骤八</strong>就会查找最近的iBGP邻居（“最近”决定于IGP中的度量，比如RIP条数，OSPF最小开销等）<br>如果AS路径长度相等，穿越所有iBGP邻居的开销也相等，或者所有去往这个网络的邻居都是eBGP邻居，那么下一步就是选择最老路径（<strong>步骤九</strong>），因为它建立时间最长，可以<br>认为它最稳定<br>如果上述都相等，优选BGP路由ID最低的路由（<strong>步骤十</strong>）<br>如果BGP路由器ID也相同（比如所有路径都去往同一台BGP路由器），那么选择邻居IP地址最小的路由（<strong>步骤十一</strong>）</p>
+<h2 id="BGP属性"><a href="#BGP属性" class="headerlink" title="BGP属性"></a>BGP属性</h2><table>
+<thead>
+<tr>
+<th>类型名</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>公认必须遵循（Well-known mandatory）</td>
+<td>所有BGP设备都可以识别此类属性，且必须存在于Update报文中。如果缺少这类属性，路由信息就会出错。</td>
+</tr>
+<tr>
+<td>公认自决（Well-known discretionary）</td>
+<td>所有BGP设备都可以识别此类属性，但不要求必须存在于Update报文中，即就算缺少这类属性，路由信息也不会出错。</td>
+</tr>
+<tr>
+<td>可选传递（Optional transitive）</td>
+<td>BGP设备可以不识别此类属性，如果BGP设备不识别此类属性，但它仍然会接收这类属性，并通告给其他对等体。</td>
+</tr>
+<tr>
+<td>可选非传递（Optional non-transitive）</td>
+<td>BGP设备可以不识别此类属性，如果BGP设备不识别此类属性，则会被忽略该属性，且不会通告给其他对等体。</td>
+</tr>
+</tbody></table>
+<table>
+<thead>
+<tr>
+<th>属性名</th>
+<th>类型</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Origin属性</td>
+<td>公认必遵</td>
+</tr>
+<tr>
+<td>AS_Path属性</td>
+<td>公认必遵</td>
+</tr>
+<tr>
+<td>Next_Hop属性</td>
+<td>公认必遵</td>
+</tr>
+<tr>
+<td>Local_Pref属性</td>
+<td>公认自决</td>
+</tr>
+<tr>
+<td>Atomic Aggregate路由聚合</td>
+<td>公认自决</td>
+</tr>
+<tr>
+<td>Community 团体</td>
+<td>可选传递</td>
+</tr>
+<tr>
+<td>Aggregator 聚合器</td>
+<td>可选传递</td>
+</tr>
+<tr>
+<td>MED属性</td>
+<td>可选非传递</td>
+</tr>
+<tr>
+<td>Originator_ID属性</td>
+<td>可选非传递</td>
+</tr>
+<tr>
+<td>Cluster_List属性</td>
+<td>可选非传递</td>
+</tr>
+</tbody></table>
+<blockquote>
 <p>一条BGP路由缺省携带的属性是 origin next-hop as-path以及 local-pref＝100 MED＝0属性</p>
-<p>As-Path<br>描述到达目标网络所要经过的AS序列<br>向EBGP peer通告路由时，在AS属性的最左边添加自己的AS号。<br>最左边的是刚经过的AS，最右边的是起源AS<br>环路避免<br>从EBGP对等体收到的路由，检查AS-Path属性，如果发现自己的AS号，则丢弃<br>路由决策时优选as-path最短的路由<br>可以通过人为增加as号影响路由决策<br>可以基于AS-Path属性挑选路由<br>Next-Hop<br>Next-Hop-Self<br>eBGP使用对等体作为自己的下一跳<br>iBGP缺省情况下不改变下一跳，导致iBGP学到的是eBGP对接的其他AS的接口地址，而这个地址只有eBGP自己知道（eBGP并不会通告iBGP怎么去它的邻居eBGP），导致    没有这个路由，导致学来的路由是 下一跳不可达，导致不加入路由表<br>在iBGP之间启用next-hop-self特性，这样内部AS的BGP路由学来的其他AS的路由下一跳就会指向自己AS内部BGP的边界BGP路由器，这个地址在IGP内是可达的。</p>
+</blockquote>
+<h3 id="Origin属性："><a href="#Origin属性：" class="headerlink" title="Origin属性："></a>Origin属性：</h3><p>Origin属性用来定义路径信息的来源，标记一条路由是怎么成为BGP路由的。它有以下3种类型：</p>
+<pre><code>IGP：具有最高的优先级。通过network命令注入到BGP路由表的路由，其Origin属性为IGP。
+EGP：优先级次之。通过EGP得到的路由信息，其Origin属性为EGP。
+Incomplete：优先级最低。通过其他方式学习到的路由信息。比如BGP通过import-route命令引入的路由，其Origin属性为Incomplete。
+</code></pre>
+<h3 id="AS-Path属性："><a href="#AS-Path属性：" class="headerlink" title="AS_Path属性："></a>AS_Path属性：</h3><p>AS_Path属性按矢量顺序记录了某条路由从本地到目的地址所要经过的所有AS编号。在接收路由时，设备如果发现AS_Path列表中有本AS号，则不接收该路由，从而避免了AS间的路由环路。</p>
+<p>当BGP Speaker传播自身引入的路由时：</p>
+<pre><code> 当BGP Speaker将这条路由通告到EBGP对等体时，便会在Update报文中创建一个携带本地AS号的AS_Path列表。
+ 当BGP Speaker将这条路由通告给IBGP对等体时，便会在Update报文中创建一个空的AS_Path列表。
+</code></pre>
+<p>当BGP Speaker传播从其他BGP Speaker的Update报文中学习到的路由时：</p>
+<pre><code> 当BGP Speaker将这条路由通告给EBGP对等体时，便会把本地AS编号添加在AS_Path列表的最前面（最左面）。收到此路由的BGP设备根据AS_Path属性就可以知道去目的地址所要经过的AS。离本地AS最近的相邻AS号排在前面，其他AS号按顺序依次排列。
+ 当BGP Speaker将这条路由通告给IBGP对等体时，不会改变这条路由相关的AS_Path属性。
+</code></pre>
+<h3 id="Next-hop属性："><a href="#Next-hop属性：" class="headerlink" title="Next_hop属性："></a>Next_hop属性：</h3><p>Next_Hop属性记录了路由的下一跳信息。BGP的下一跳属性和IGP的有所不同，不一定就是邻居设备的IP地址。通常情况下，Next_Hop属性遵循下面的规则：</p>
+<pre><code>BGP Speaker在向EBGP对等体发布某条路由时，会把该路由信息的下一跳属性设置为本地与对端建立BGP邻居关系的接口地址。
+BGP Speaker将本地始发路由发布给IBGP对等体时，会把该路由信息的下一跳属性设置为本地与对端建立BGP邻居关系的接口地址。
+BGP Speaker在向IBGP对等体发布从EBGP对等体学来的路由时，并不改变该路由信息的下一跳属性。
+</code></pre>
+<p><font color="#FF0000"><strong>Next-Hop-Self</strong></font><br>eBGP使用对等体作为自己的下一跳<br>iBGP缺省情况下不改变下一跳，导致iBGP学到的是eBGP对接的其他AS的接口地址，而这个地址只有eBGP自己知道（eBGP并不会通告iBGP怎么去它的邻居eBGP），导致没有这个路由，导致学来的路由是下一跳不可达，导致不加入路由表<br>在iBGP之间启用next-hop-self特性，这样内部AS的BGP路由学来的其他AS的路由下一跳就会指向自己AS内部BGP的边界BGP路由器，这个地址在IGP内是可达的。</p>
+<h3 id="Local-pref属性："><a href="#Local-pref属性：" class="headerlink" title="Local_pref属性："></a>Local_pref属性：</h3><p>Local_Pref属性表明路由器的BGP优先级，用于判断流量离开AS时的最佳路由。当BGP的设备通过不同的IBGP对等体得到目的地址相同但下一跳不同的多条路由时，将优先选择Local_Pref属性值较高的路由。Local_Pref属性仅在IBGP对等体之间有效，不通告给其他AS。Local_Pref属性可以手动配置，如果路由没有配置Local_Pref属性，BGP选路时将该路由的Local_Pref值按缺省值100来处理。</p>
+<h3 id="MED属性："><a href="#MED属性：" class="headerlink" title="MED属性："></a>MED属性：</h3><p>MED（Multi-Exit Discriminator）属性用于判断流量进入AS时的最佳路由，当一个运行BGP的设备通过不同的EBGP对等体得到目的地址相同但下一跳不同的多条路由时，在其它条件相同的情况下，将优先选择MED值较小者作为最佳路由。</p>
+<p>MED属性仅在相邻两个AS之间传递，收到此属性的AS一方不会再将其通告给任何其他第三方AS。MED属性可以手动配置，如果路由没有配置MED属性，BGP选路时将该路由的MED值按缺省值0来处理。</p>
+<h3 id="团体属性："><a href="#团体属性：" class="headerlink" title="团体属性："></a>团体属性：</h3><p>团体属性（Community）用于标识具有相同特征的BGP路由，使路由策略的应用更加灵活，同时降低了维护管理的难度。</p>
+<p>团体属性分为自定义团体属性和公认团体属性。公认团体属性如下所示：</p>
+<table>
+<thead>
+<tr>
+<th>属性名</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>No_advertise</td>
+<td>不通告给任何BGP对等体</td>
+</tr>
+<tr>
+<td>No_export</td>
+<td>不通告给EBGP对等体</td>
+</tr>
+<tr>
+<td>Internet</td>
+<td>可以通告给所有其他BGP对等体</td>
+</tr>
+<tr>
+<td>Local-AS</td>
+<td>表示本路径不发布到本AS外部</td>
+</tr>
+</tbody></table>
+<h3 id="Originator-ID属性和Cluster-List属性："><a href="#Originator-ID属性和Cluster-List属性：" class="headerlink" title="Originator_ID属性和Cluster_List属性："></a>Originator_ID属性和Cluster_List属性：</h3><p>Originator_ID属性和Cluster_List属性用于解决路由反射器场景中的环路问题。</p>
+<h2 id="路由反射器"><a href="#路由反射器" class="headerlink" title="路由反射器"></a>路由反射器</h2><p>为保证IBGP对等体之间的连通性，需要在IBGP对等体之间建立全连接关系。假设在一个AS内部有n台设备，那么建立的IBGP连接数就为n(n-1)/2。当设备数目很多时，设备配置将十分复杂，而且配置后网络资源和CPU资源的消耗都很大。在IBGP对等体间使用路由反射器可以解决以上问题。</p>
+<h4 id="路由反射器相关角色："><a href="#路由反射器相关角色：" class="headerlink" title="路由反射器相关角色："></a>路由反射器相关角色：</h4><p>在一个AS内部关于路由反射器有以下几种角色：</p>
+<p>路由反射器RR（Route Reflector）：<br>允许把从IBGP对等体学到的路由反射到其他IBGP对等体的BGP设备，类似OSPF网络中的DR。</p>
+<p>客户机（Client）：<br>与RR形成反射邻居关系的IBGP设备。在AS内部客户机只需要与RR直连。</p>
+<p>非客户机（Non-Client）：<br>既不是RR也不是客户机的IBGP设备。在AS内部非客户机与RR之间，以及所有的非客户机之间仍然必须建立全连接关系。</p>
+<p>始发者（Originator）：<br>在AS内部始发路由的设备。Originator_ID属性用于防止集群内产生路由环路。</p>
+<p>集群（Cluster）：<br>路由反射器及其客户机的集合。Cluster_List属性用于防止集群间产生路由环路。</p>
+<h4 id="路由反射器原理："><a href="#路由反射器原理：" class="headerlink" title="路由反射器原理："></a>路由反射器原理：</h4><p>同一集群内的客户机只需要与该集群的RR直接交换路由信息，因此客户机只需要与RR之间建立IBGP连接，不需要与其他客户机建立IBGP连接，从而减少了IBGP连接数量。</p>
+<p>RR突破了“从IBGP对等体获得的BGP路由，BGP设备只发布给它的EBGP对等体。”的限制，并采用独有的Cluster_List属性和Originator_ID属性防止路由环路。RR向IBGP邻居发布路由规则如下：</p>
+<pre><code>从非客户机学到的路由，发布给所有客户机。
+从客户机学到的路由，发布给所有非客户机和客户机（发起此路由的客户机除外）。
+从EBGP对等体学到的路由，发布给所有的非客户机和客户机。
+</code></pre>
+<h4 id="Cluster-List属性："><a href="#Cluster-List属性：" class="headerlink" title="Cluster_List属性："></a>Cluster_List属性：</h4><p>路由反射器和它的客户机组成一个集群（Cluster），使用AS内唯一的Cluster ID作为标识。为了防止集群间产生路由环路，路由反射器使用Cluster_List属性，记录路由经过的所有集群的Cluster ID。</p>
+<p>当一条路由第一次被RR反射的时候，RR会把本地Cluster ID添加到Cluster List的前面。如果没有Cluster_List属性，RR就创建一个。<br>当RR接收到一条更新路由时，RR会检查Cluster List。如果Cluster List中已经有本地Cluster ID，丢弃该路由；如果没有本地Cluster ID，将其加入Cluster List，然后反射该更新路由。</p>
+<h4 id="Originator-ID属性："><a href="#Originator-ID属性：" class="headerlink" title="Originator_ID属性："></a>Originator_ID属性：</h4><p>Originator ID由RR产生，使用的Router ID的值标识路由的始发者，用于防止集群内产生路由环路。</p>
+<p>当一条路由第一次被RR反射的时候，RR将Originator_ID属性加入这条路由，标识这条路由的发起设备。如果一条路由中已经存在了Originator_ID属性，则RR将不会创建新的Originator_ID属性。<br>当设备接收到这条路由的时候，将比较收到的Originator ID和本地的Router ID，如果两个ID相同，则不接收此路由。</p>
+<h2 id="BGP联盟"><a href="#BGP联盟" class="headerlink" title="BGP联盟"></a>BGP联盟</h2><p>解决AS内部的IBGP网络连接激增问题，除了使用路由反射器之外，还可以使用联盟（Confederation）。联盟将一个AS划分为若干个子AS。每个子AS内部建立IBGP全连接关系，子AS之间建立联盟EBGP连接关系，但联盟外部AS仍认为联盟是一个AS。配置联盟后，原AS号将作为每个路由器的联盟ID。</p>
+<p>这样有两个好处：</p>
+<pre><code>一是可以保留原有的IBGP属性，包括Local Preference属性、MED属性和NEXT_HOP属性等；
+二是联盟相关的属性在传出联盟时会自动被删除，即管理员无需在联盟的出口处配置过滤子AS号等信息的操作。
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>路由反射器</th>
+<th>联盟</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>不需要更改现有的网络拓扑，兼容性好。</td>
+<td>需要改变逻辑拓扑。</td>
+</tr>
+<tr>
+<td>配置方便，只需要对作为反射器的设备进行配置，客户机并不需要知道自己是客户机。</td>
+<td>所有设备需要重新进行配置。</td>
+</tr>
+<tr>
+<td>集群与集群之间仍然需要全连接。</td>
+<td>联盟的子AS之间是特殊的EBGP连接，不需要全连接。</td>
+</tr>
+<tr>
+<td>适用于中、大规模网络。</td>
+<td>适用于大规模网络。</td>
+</tr>
+</tbody></table>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_38265137/article/details/80439561?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522162805887716780357234295%2522%252C%2522scm%2522%253A%252220140713.130102334..%2522%257D&request_id=162805887716780357234295&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~all~top_positive~default-1-80439561.first_rank_v2_pc_rank_v29&utm_term=BGP&spm=1018.2226.3001.4187">曹世宏的博客——BGP基础知识</a></p>
+<p><font color="#E9976A" size="3.5"><strong>CCNP ROUTE</strong></font><br><font color="#E9976A" size="3.5"><strong>BGP原理与配置（锐捷）</strong></font></p>
 
     </div>
 
@@ -292,6 +546,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#BGP%E5%88%86%E7%B1%BB"><span class="nav-number">1.</span> <span class="nav-text">BGP分类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#BGP%E6%8A%A5%E6%96%87%E4%BD%9C%E7%94%A8"><span class="nav-number">2.</span> <span class="nav-text">BGP报文作用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#BGP%E9%82%BB%E5%B1%85%E7%8A%B6%E6%80%81%E6%9C%BA"><span class="nav-number">3.</span> <span class="nav-text">BGP邻居状态机</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#BGP%E8%B7%AF%E5%BE%84%E9%80%89%E6%8B%A9"><span class="nav-number">4.</span> <span class="nav-text">BGP路径选择</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#BGP%E8%B7%AF%E5%BE%84%E9%80%89%E6%8B%A9-1"><span class="nav-number">4.1.</span> <span class="nav-text">BGP路径选择</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9E%E4%BE%8B"><span class="nav-number">4.2.</span> <span class="nav-text">实例</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#BGP%E5%B1%9E%E6%80%A7"><span class="nav-number">5.</span> <span class="nav-text">BGP属性</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Origin%E5%B1%9E%E6%80%A7%EF%BC%9A"><span class="nav-number">5.1.</span> <span class="nav-text">Origin属性：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#AS-Path%E5%B1%9E%E6%80%A7%EF%BC%9A"><span class="nav-number">5.2.</span> <span class="nav-text">AS_Path属性：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Next-hop%E5%B1%9E%E6%80%A7%EF%BC%9A"><span class="nav-number">5.3.</span> <span class="nav-text">Next_hop属性：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Local-pref%E5%B1%9E%E6%80%A7%EF%BC%9A"><span class="nav-number">5.4.</span> <span class="nav-text">Local_pref属性：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MED%E5%B1%9E%E6%80%A7%EF%BC%9A"><span class="nav-number">5.5.</span> <span class="nav-text">MED属性：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9B%A2%E4%BD%93%E5%B1%9E%E6%80%A7%EF%BC%9A"><span class="nav-number">5.6.</span> <span class="nav-text">团体属性：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Originator-ID%E5%B1%9E%E6%80%A7%E5%92%8CCluster-List%E5%B1%9E%E6%80%A7%EF%BC%9A"><span class="nav-number">5.7.</span> <span class="nav-text">Originator_ID属性和Cluster_List属性：</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B7%AF%E7%94%B1%E5%8F%8D%E5%B0%84%E5%99%A8"><span class="nav-number">6.</span> <span class="nav-text">路由反射器</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%B7%AF%E7%94%B1%E5%8F%8D%E5%B0%84%E5%99%A8%E7%9B%B8%E5%85%B3%E8%A7%92%E8%89%B2%EF%BC%9A"><span class="nav-number">6.0.1.</span> <span class="nav-text">路由反射器相关角色：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%B7%AF%E7%94%B1%E5%8F%8D%E5%B0%84%E5%99%A8%E5%8E%9F%E7%90%86%EF%BC%9A"><span class="nav-number">6.0.2.</span> <span class="nav-text">路由反射器原理：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Cluster-List%E5%B1%9E%E6%80%A7%EF%BC%9A"><span class="nav-number">6.0.3.</span> <span class="nav-text">Cluster_List属性：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Originator-ID%E5%B1%9E%E6%80%A7%EF%BC%9A"><span class="nav-number">6.0.4.</span> <span class="nav-text">Originator_ID属性：</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#BGP%E8%81%94%E7%9B%9F"><span class="nav-number">7.</span> <span class="nav-text">BGP联盟</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number"></span> <span class="nav-text">参考</span></a></div>
       </div>
       <!--/noindex-->
 
@@ -307,7 +562,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">16</span>
+          <span class="site-state-item-count">18</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -377,7 +632,7 @@
       <i class="fa fa-chart-area"></i>
     </span>
       <span class="post-meta-item-text">站点总字数：</span>
-    <span title="站点总字数">32k</span>
+    <span title="站点总字数">50k</span>
 </div>
 
         

@@ -134,7 +134,7 @@
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">16</span></a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">18</span></a>
 
   </li>
   </ul>
@@ -164,6 +164,208 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/08/04/%E6%8E%A7%E5%88%B6%E8%B7%AF%E7%94%B1%E6%9B%B4%E6%96%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/assets/img/touxiang.png">
+      <meta itemprop="name" content="郑林昕">
+      <meta itemprop="description" content="队长"可能"">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="郑林昕的博客">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/08/04/%E6%8E%A7%E5%88%B6%E8%B7%AF%E7%94%B1%E6%9B%B4%E6%96%B0/" class="post-title-link" itemprop="url">控制路由更新</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-08-04 15:55:09 / 修改时间：16:23:58" itemprop="dateCreated datePublished" datetime="2021-08-04T15:55:09+08:00">2021-08-04</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>关于OSPF的路由更新</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2021/08/04/%E6%8E%A7%E5%88%B6%E8%B7%AF%E7%94%B1%E6%9B%B4%E6%96%B0/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/08/03/VXLAN/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/assets/img/touxiang.png">
+      <meta itemprop="name" content="郑林昕">
+      <meta itemprop="description" content="队长"可能"">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="郑林昕的博客">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/08/03/VXLAN/" class="post-title-link" itemprop="url">VXLAN</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-08-03 17:54:45" itemprop="dateCreated datePublished" datetime="2021-08-03T17:54:45+08:00">2021-08-03</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-08-04 17:59:33" itemprop="dateModified" datetime="2021-08-04T17:59:33+08:00">2021-08-04</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="Vxlan"><a href="#Vxlan" class="headerlink" title="Vxlan"></a>Vxlan</h1><p>VXLAN（Virtual eXtensible Local Area Network，虚拟扩展局域网），是由IETF定义的NVO3（Network Virtualization over Layer 3）标准技术之一，是对传统VLAN协议的一种扩展。VXLAN的<font color="#FF0000"><strong>特点是将L2的以太帧封装到UDP报文（即L2 over L4）中，并在L3网络中传输</strong></font>。VXLAN本质上是一种隧道技术，在源网络设备与目的网络设备之间的IP网络上，建立一条逻辑隧道，将用户侧报文经过特定的封装后通过这条隧道转发。<font color="#FF0000"><strong>从用户的角度来看，接入网络的服务器就像是连接到了一个虚拟的二层交换机的不同端口上</strong></font>（可把蓝色虚框表示的数据中心VXLAN网络看成一个二层虚拟交换机），可以方便地通信。</p>
+<p><img src="/2021/08/03/VXLAN/VXLAN%E5%9B%BE%E7%A4%BA.png" alt="VXLAN图示"></p>
+<h2 id="为什么需要Vxlan"><a href="#为什么需要Vxlan" class="headerlink" title="为什么需要Vxlan"></a>为什么需要Vxlan</h2><p>1.服务器虚拟化出现了虚拟化动态迁移，这个要求提供一个无障碍接入的网络<br>2.数据中心规模庞大，租户数量激增，需要网络提供隔离海量租户的能力</p>
+<h3 id="虚拟化动态迁移，这个要求提供一个无障碍接入的网络"><a href="#虚拟化动态迁移，这个要求提供一个无障碍接入的网络" class="headerlink" title="虚拟化动态迁移，这个要求提供一个无障碍接入的网络"></a>虚拟化动态迁移，这个要求提供一个无障碍接入的网络</h3><h4 id="什么是服务器虚拟化技术"><a href="#什么是服务器虚拟化技术" class="headerlink" title="什么是服务器虚拟化技术"></a>什么是服务器虚拟化技术</h4><p>服务器虚拟化技术是把一台物理服务器虚拟化成多台逻辑服务器，这种逻辑服务器被称为虚拟机（VM）。每个VM都可以独立运行，有自己的操作系统、APP，当然也有自己独立的MAC地址和IP地址，它们通过服务器内部的虚拟交换机（vSwitch）与外部实体网络连接。</p>
+<p><img src="/2021/08/03/VXLAN/%E6%9C%8D%E5%8A%A1%E5%99%A8%E8%99%9A%E6%8B%9F%E5%8C%96%E6%8A%80%E6%9C%AF.png" alt="服务器虚拟化技术"></p>
+<h4 id="什么是虚拟机动态迁移"><a href="#什么是虚拟机动态迁移" class="headerlink" title="什么是虚拟机动态迁移"></a>什么是虚拟机动态迁移</h4><p>所谓虚拟机动态迁移，就是在保证虚拟机上服务正常运行的同时，将一个虚拟机系统从一个物理服务器移动到另一个物理服务器的过程。<br>为了保证迁移时业务不中断，要求在虚拟机迁移时，不仅虚拟机IP地址不变，而且虚拟机的运行状态也必须保持原状——动态迁移只能在同一个二层域中，不能跨二层域<br>传统的二三层网络限制了虚拟机的动态迁移范围，让应用收到了极大限制</p>
+<p><img src="/2021/08/03/VXLAN/%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%8A%A8%E6%80%81%E8%BF%81%E7%A7%BB.png" alt="虚拟机动态迁移"></p>
+<h4 id="Vxlan如何满足虚拟机动态迁移时对网络的要求"><a href="#Vxlan如何满足虚拟机动态迁移时对网络的要求" class="headerlink" title="Vxlan如何满足虚拟机动态迁移时对网络的要求"></a>Vxlan如何满足虚拟机动态迁移时对网络的要求</h4><p>众所周知，同一台二层交换机可以实现下挂服务器之间的二层通信，而且服务器从该二层交换机的一个端口迁移到另一个端口时，IP地址是可以保持不变的。这样就可以满足虚拟机动态迁移的需求了。VXLAN的设计理念和目标正是由此而来的。<br>通过建立全互联的Vxlan隧道，保证任意两点之间都能通过隧道来通信，并忽略底侧网络和细节。<font color="#FF0000"><strong>从服务器角度来看，Vxlan将整个数据中心基础网络虚拟成了一台巨大的二层交换机。</strong></font></p>
+<p><img src="/2021/08/03/VXLAN/Vxlan%E5%A6%82%E4%BD%95%E6%BB%A1%E8%B6%B3%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%8A%A8%E6%80%81%E8%BF%81%E7%A7%BB%E6%97%B6%E5%AF%B9%E7%BD%91%E7%BB%9C%E7%9A%84%E8%A6%81%E6%B1%82.png" alt="Vxlan如何满足虚拟机动态迁移时对网络的要求"></p>
+<p>基于这种“二层交换机”模型，就很容易理解Vxlan可以实现VM动态迁移了：将虚拟机从“二层交换机”的一个端口换到另一个端口，完全无需变更IP地址</p>
+<h3 id="数据中心租户数量激增，要求提供一个可隔离海量租户的网络"><a href="#数据中心租户数量激增，要求提供一个可隔离海量租户的网络" class="headerlink" title="数据中心租户数量激增，要求提供一个可隔离海量租户的网络"></a>数据中心租户数量激增，要求提供一个可隔离海量租户的网络</h3><p>传统的VLAN网络中，所支持的VLAN数量只有4000个左右，当服务器虚拟化后，一台物理服务器中承载了多台虚拟机，相当于接入数据中心的服务器成倍增长。另外，公有云或其它大型虚拟化云数据中心动辄需容纳上万甚至更多租户，VLAN的能力显然已经力不从心。<br>VXLAN如何来解决上述问题呢？VXLAN在VXLAN帧头中引入了类似VLAN ID的网络标识，称为VXLAN网络标识VNI（VXLAN Network ID），由24比特组成，理论上可支持多达16M的VXLAN段，从而满足了大规模不同网络之间的标识、隔离需求。</p>
+<h2 id="Vxlan和VLAN之间的不同"><a href="#Vxlan和VLAN之间的不同" class="headerlink" title="Vxlan和VLAN之间的不同"></a>Vxlan和VLAN之间的不同</h2><p>VLAN作为传统的网络隔离技术，在标准定义中VLAN的数量只有4000个左右，无法满足大型数据中心的租户间隔离需求。另外，VLAN的二层范围一般较小且固定，无法支持虚拟机大范围的动态迁移。<br>VXLAN完美地弥补了VLAN的上述不足，一方面通过VXLAN中的24比特VNI字段，提供多达16M租户的标识能力，远大于VLAN的4000；另一方面，VXLAN本质上在两台交换机之间构建了一条穿越数据中心基础IP网络的虚拟隧道，将数据中心网络虚拟成一个巨型“二层交换机”，满足虚拟机大范围动态迁移的需求。</p>
+<p><img src="/2021/08/03/VXLAN/VXLAN%E6%8A%A5%E6%96%87%E6%A0%BC%E5%BC%8F.png" alt="VXLAN报文格式"></p>
+<p>如上图所示，VTEP对VM发送的原始以太帧（Original L2 Frame）进行了以下“包装”：<br>VXLAN Header<br>增加VXLAN头（8字节），其中<font color="#FF0000"><strong>包含24比特的VNI字段</strong>，用来定义VXLAN网络中不同的租户。此外，还包含VXLAN Flags（8比特，取值为00001000）和两个保留字段（分别为24比特和8比特）。</font></p>
+<p>UDP Header<br>VXLAN头和原始以太帧一起作为UDP的数据。UDP头中，目的端口号（VXLAN Port）固定为4789，源端口号（UDP Src. Port）是原始以太帧通过哈希算法计算后的值。</p>
+<p>Outer IP Header<br>封装外层IP头。其中，<font color="#FF0000"><strong>源IP地址（Outer Src. IP）为<font color="#87CEFA">源VM所属VTEP的IP地址，目的IP地址（Outer Dst. IP）为<font color="#87CEFA">目的VM所属VTEP的IP地址</font></font></strong>。</font></p>
+<p>Outer MAC Header<br>封装外层以太头。其中，<font color="#FF0000"><strong>源MAC地址（Src. MAC Addr.）为<font color="#87CEFA">源VM所属VTEP的MAC地址，目的MAC地址（Dst. MAC Addr.）为到达<font color="#87CEFA">目的VTEP的路径中下一跳设备的MAC地址<br>（一般就叫做下一跳MAC，具体数据中心的转发路径不用知道）</font></font></strong>。</font></p>
+<p>具体案例：转发过程</p>
+<h2 id="VXLAN隧道是如何建立的"><a href="#VXLAN隧道是如何建立的" class="headerlink" title="VXLAN隧道是如何建立的"></a>VXLAN隧道是如何建立的</h2><h3 id="VTEP和VNI"><a href="#VTEP和VNI" class="headerlink" title="VTEP和VNI"></a>VTEP和VNI</h3><p><img src="/2021/08/03/VXLAN/VXLAN%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%9E%8B%E7%A4%BA%E6%84%8F%E5%9B%BE.png" alt="VXLAN网络模型示意图"></p>
+<p>从上图中可以发现，VXLAN在两台TOR交换机之间建立了一条隧道，将服务器发出的原始数据帧加以“包装”，好让原始报文可以在承载网络（比如IP网络）上传输。当到达目的服务器所连接的TOR交换机后，离开VXLAN隧道，并将原始数据帧恢复出来，继续转发给目的服务器。</p>
+<h4 id="什么是VTEP"><a href="#什么是VTEP" class="headerlink" title="什么是VTEP"></a>什么是VTEP</h4><p>VXLAN Tunnel Endpoints，VXLAN 隧道端点。<font color="#FF0000"><strong>是VXLAN隧道的起点和终点，VXLAN对用户原始数据帧的封装和解封装均在VTEP上进行</strong></font></p>
+<p>VTEP可以是一台独立的网络设备，也可以是服务器中的虚拟交换机。源服务器发出的原始数据帧，在VTEP上被封装成VXLAN格式的报文，并在IP网络中传递到另外一个VTEP上，并经过解封转还原出原始的数据帧，最后转发给目的服务器。</p>
+<h4 id="什么是VNI"><a href="#什么是VNI" class="headerlink" title="什么是VNI"></a>什么是VNI</h4><p>VXLAN Network Identifier，VXLAN网络标识符。VNI是一种类似于VLAN ID的用户标识，<font color="#FF0000"><strong>一个VNI代表一个租户，属于不同VNI的虚拟机之间不能直接进行二层通信</strong></font></p>
+<p>另外，在<font color="#FF0000"><strong>分布式网关</strong></font>部署场景下，VNI还可分为二层VNI和三层VNI，它们的作用不同：</p>
+<pre><code>二层VNI是普通的VNI，以1：1方式映射到广播域BD，实现VXLAN报文同子网的转发（详情可参见下文的什么是“同一大二层域”）。
+三层VNI和VPN实例进行关联，用于VXLAN报文跨子网的转发（三层VNI的工作详情将在另外一篇EVPN相关的文档中展开描述）。
+</code></pre>
+<h3 id="哪些VTEP之间需要建立VXLAN隧道"><a href="#哪些VTEP之间需要建立VXLAN隧道" class="headerlink" title="哪些VTEP之间需要建立VXLAN隧道"></a>哪些VTEP之间需要建立VXLAN隧道</h3><h4 id="哪些VTEP之间需要建立VXLAN隧道-1"><a href="#哪些VTEP之间需要建立VXLAN隧道-1" class="headerlink" title="哪些VTEP之间需要建立VXLAN隧道"></a>哪些VTEP之间需要建立VXLAN隧道</h4><p><img src="/2021/08/03/VXLAN/%E5%BB%BA%E7%AB%8BVXLAN%E9%9A%A7%E9%81%93%E7%A4%BA%E6%84%8F%E5%9B%BE.png" alt="建立VXLAN隧道示意图"></p>
+<p>如前所述，通过VXLAN隧道，“二层域”可以突破物理上的界限，实现大二层网络中VM之间的通信。所以，连接在不同VTEP上的VM之间如果有“大二层”互通的需求，这两个VTEP之间就需要建立VXLAN隧道。换言之，<font color="#FF0000"><strong>同一大二层域内的VTEP之间都需要建立VXLAN隧道</strong></font>。</p>
+<p>例如，假设图1-7中VTEP_1连接的VM、VTEP_2连接的VM以及VTEP_3连接的VM之间需要“大二层”互通，那VTEP_1、VTEP_2和VTEP_3之间就需要两两建立VXLAN隧道，如图1-8所示。</p>
+<p><img src="/2021/08/03/VXLAN/%E5%9B%BE1-8.png" alt="图1-8"></p>
+<h4 id="什么是-同一大二层域"><a href="#什么是-同一大二层域" class="headerlink" title="什么是 同一大二层域"></a>什么是 同一大二层域</h4><p>“同一大二层域”，就类似于传统网络中VLAN（虚拟局域网）的概念，只不过在VXLAN网络中，它有另外一个名字，<font color="#FF0000"><strong>叫做Bridge-Domain，简称BD</strong></font>。<br>我们知道，不同的VLAN是通过VLAN ID来进行区分的，那不同的BD是如何进行区分的呢？其实前面已经提到了，就是通过VNI来区分的。<font color="#FF0000"><strong>BD与VNI是1：1的映射关系，这种映射关系是通过在VTEP设备上配置命令行建立起来</strong></font>的</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">bridge</span>-domain <span class="number">10</span>   //表示创建一个“大二层广播域”BD，其编号为<span class="number">10</span></span><br><span class="line"> <span class="attribute">vxlan</span> vni <span class="number">5000</span>  //表示在BD <span class="number">10</span>下，指定与之关联的VNI为<span class="number">5000</span></span><br><span class="line"><span class="comment">#</span></span><br></pre></td></tr></table></figure>
+<p>VTEP设备会根据以上配置生成BD与VNI的映射关系表，该映射表可以通过命令行查看，如下所示：</p>
+<figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="symbol">&lt;HUAWEI&gt;</span> <span class="keyword">display</span> vxlan vni</span><br><span class="line">Number of vxlan vni : <span class="number">1</span> </span><br><span class="line">VNI            BD-ID            State  </span><br><span class="line">--------------------------------------- </span><br><span class="line"><span class="number">5000</span>           <span class="number">10</span>               <span class="keyword">up</span>  </span><br></pre></td></tr></table></figure>
+
+<p>建立起来BD与VNI的映射表后，进入VTEP的报文就可以根据自己所属的BD来确定报文进行VXLAN封装时，添加哪个VNI标识</p>
+<p><font color="#87CEFA">!  !  根据BD ———— 添加对应VNI 标识 !  ! </font></p>
+<h4 id="如何确定报文属于哪个BD"><a href="#如何确定报文属于哪个BD" class="headerlink" title="如何确定报文属于哪个BD"></a>如何确定报文属于哪个BD</h4><p>这里要先澄清下，VTEP只是交换机承担的一个角色而已，只是交换机功能的一部分。也就是说，并非所有进入到交换机的报文都会走VXLAN隧道（也可能报文就是走普通的二三层转发流程）。所以，我们在回答“如何确定报文属于哪个BD”之前，必须先要回答“哪些报文要进入VXLAN隧道”。</p>
+<h4 id="哪些报文要进入VXLAN隧道"><a href="#哪些报文要进入VXLAN隧道" class="headerlink" title="哪些报文要进入VXLAN隧道"></a>哪些报文要进入VXLAN隧道</h4><p>让我们回想一下VLAN技术中，交换机对于接收和发送的报文是如何进行处理的。报文要进入交换机进行下一步处理，首先得先过接口这一关，可以说接口掌控着对报文的“生杀大权”。传统网络中定义了三种不同类型的接口：Access、Trunk、Hybrid。这三种类型的接口虽然应用场景不同，但它们的最终目的是一样的：一是根据配置来检查哪些报文是允许通过的；二是判断对检查通过的报文做怎样的处理。<br>其实在VXLAN网络中，VTEP上的接口也承担着类似的任务，<font color="#FF000">只不过这里的接口不是物理接口，而是一个叫做“二层子接口”的逻辑接口。类似的，二层子接口主要做两件事：<font color="#87CEFA">一是根据配置来检查哪些报文需要进入VXLAN隧道；二是判断对检查通过的报文做怎样的处理。</font></font></p>
+<p><font color="#87CEFA" size="5">总结：在VTEP上创建二层子接口，配置限制条件，符合的报文进入通往到 BD ??（根据配置） 的VXLAN隧道：<br>比如携带vlan10的报文进入通往BD 20的VXLAN隧道，然后根据BD获取对应的VNI值</font></p>
+<p>在二层子接口上，可以根据需要定义不同的流封装类型（类似于传统网络中不同的接口类型）。流封装类型有dot1q、untag、qinq和default四种类型：</p>
+<p>dot1q：<br>对于带有一层VLAN Tag的报文，该类型接口只接收与指定VLAN Tag匹配的报文；    对于带有两层VLAN Tag的报文，该类型接口只接收外层VLAN Tag与指定VLAN     Tag匹配的报文。<br>untag：<br>该类型接口只接收不带VLAN Tag的报文。<br>qinq：<br>该类型接口只接收带有指定两层VLAN Tag的报文。<br>default：<br>允许接口接收所有报文，不区分报文中是否带VLAN Tag。不论是对原始报文进行    VXLAN封装，还是解封装VXLAN报文，该类型接口都不会对原始报文进行任何    VLAN Tag处理，包括添加、替换或剥离。</p>
+<p>除二层子接口外，还可以将VLAN作为业务接入点。将VLAN绑定到广播域BD后，加入该VLAN的接口即为VXLAN业务接入点，进入接口的报文由VXLAN隧道处理。</p>
+<h4 id="确定报文属于哪个BD"><a href="#确定报文属于哪个BD" class="headerlink" title="确定报文属于哪个BD"></a>确定报文属于哪个BD</h4><p>现在“如何确定报文属于哪个BD”就非常简单了。其实，只要将二层子接口加入指定的BD，然后根据二层子接口上的配置，设备就可以确定报文属于哪个BD啦！</p>
+<p>比如图1-9所示的组网，一台虚拟化服务器中有两个不同VLAN的虚拟机VM1（VLAN 10）和VM2（VLAN 20），它们与其他虚拟机通信时需要接入VXLAN网络。此时我们可以分别在VTEP的物理接口10GE 1/0/1上，分别针对VM1和VM2封装不同的二层子接口，并将其分别加入不同的BD。这样后续VM1和VM2的流量将会进入不同的VXLAN隧道继续转发。<br>在这个举例中，<font color="#87CEFA">vSwitch的上行口配置成Trunk模式</font>，且PVID为20。这样vSwitch发给VTEP的报文中，既有带tag的VM1流量，又有untag的VM2流量，此时在VTEP的接入口上创建两个二层子接口，分别配置为dot1q和untag的封装类型。</p>
+<p><img src="/2021/08/03/VXLAN/%E5%9B%BE%E7%89%871-9.png" alt="图片1-9"></p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">interface</span> <span class="number">10</span>GE<span class="number">1</span>/<span class="number">0</span>/<span class="number">1</span>.<span class="number">1</span> mode l<span class="number">2</span>   //创建二层子接口<span class="number">10</span>GE<span class="number">1</span>/<span class="number">0</span>/<span class="number">1</span>.<span class="number">1</span></span><br><span class="line"> <span class="attribute">encapsulation</span> dot<span class="number">1</span>q vid <span class="number">10</span>   //只允许携带VLAN Tag <span class="number">10</span>的报文进入VXLAN隧道</span><br><span class="line"> <span class="attribute">bridge</span>-domain <span class="number">10</span>   //指定报文进入的是BD <span class="number">10</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="attribute">interface</span> <span class="number">10</span>GE<span class="number">1</span>/<span class="number">0</span>/<span class="number">1</span>.<span class="number">2</span> mode l<span class="number">2</span>   //创建二层子接口<span class="number">10</span>GE<span class="number">1</span>/<span class="number">0</span>/<span class="number">1</span>.<span class="number">2</span></span><br><span class="line"> <span class="attribute">encapsulation</span> untag   //只允许不携带VLAN Tag的报文进入VXLAN隧道</span><br><span class="line"> <span class="attribute">bridge</span>-domain <span class="number">20</span>   //指定报文进入的是BD <span class="number">20</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="vxlan隧道如何建立"><a href="#vxlan隧道如何建立" class="headerlink" title="vxlan隧道如何建立"></a>vxlan隧道如何建立</h3><p>手工建立和自动建立</p>
+<h4 id="手工建立"><a href="#手工建立" class="headerlink" title="手工建立"></a>手工建立</h4><p>这种方式需要用户手动指定VXLAN隧道的源IP为本端VTEP的IP、目的IP为对端VTEP的IP，也就是人为地在本端VTEP和对端VTEP之间建立静态VXLAN隧道。<br>对于CloudEngine系列交换机，以上配置是在NVE（Network Virtualization Edge）接口下完成的，配置举例如下：</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">interface</span> Nve<span class="number">1</span>   //创建逻辑接口NVE <span class="number">1</span></span><br><span class="line"> <span class="attribute">source</span> <span class="number">1.1.1.1</span>   //配置源VTEP的IP地址（推荐使用Loopback接口的IP地址）</span><br><span class="line"> <span class="attribute">vni</span> <span class="number">5000</span> head-end peer-list <span class="number">2.2.2.2</span>   </span><br><span class="line"> <span class="attribute">vni</span> <span class="number">5000</span> head-end peer-list <span class="number">2.2.2.3</span>   </span><br><span class="line"><span class="comment">#</span></span><br></pre></td></tr></table></figure>
+<p>其中，vni 5000 head-end peer-list 2.2.2.2和vni 5000 head-end peer-list 2.2.2.3的配置，表示属于VNI 5000的对端VTEP有两个，IP地址分别为2.2.2.2和2.2.2.3。根据这两条配置，VTEP上会生成如下所示的一张表：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">&lt;HUAWEI&gt;</span> <span class="string">display</span> <span class="string">vxlan</span> <span class="string">vni</span> <span class="number">5000 </span><span class="string">verbose</span></span><br><span class="line">    <span class="attr">BD ID                 :</span> <span class="number">10</span> </span><br><span class="line">    <span class="attr">State                  :</span> <span class="string">up</span> </span><br><span class="line">    <span class="attr">NVE                    :</span> <span class="number">288</span></span><br><span class="line">    <span class="attr">Source Address      :</span> <span class="number">1.1</span><span class="number">.1</span><span class="number">.1</span></span><br><span class="line">    <span class="attr">Source IPv6 Address    :</span> <span class="bullet">-</span></span><br><span class="line">    <span class="attr">UDP Port               :</span> <span class="number">4789</span> </span><br><span class="line">    <span class="attr">BUM Mode               :</span> <span class="string">head-end</span></span><br><span class="line">    <span class="attr">Group Address          :</span> <span class="bullet">-</span>  </span><br><span class="line">    <span class="attr">Peer List            :</span> <span class="number">2.2</span><span class="number">.2</span><span class="number">.2</span>    <span class="number">2.2</span><span class="number">.2</span><span class="number">.3</span>  </span><br><span class="line">    <span class="attr">IPv6 Peer List         :</span> <span class="bullet">-</span></span><br></pre></td></tr></table></figure>
+<p>根据上表中的Peer List，本端VTEP就可以知道属于同一BD（或同一VNI）的对端VTEP都有哪些，这也就决定了同一大二层广播域的范围。当VTEP收到BUM（Broadcast&amp;Unknown-unicast&amp;Multicast，广播&amp;未知单播&amp;组播）报文时，会将报文复制并发送给Peer List中所列的所有对端VTEP（这就好比广播报文在VLAN内广播）。因此，这张表也被称为“头端复制列表”。当VTEP收到已知单播报文时，会根据VTEP上的MAC表来确定报文要从哪条VXLAN隧道走。而此时Peer List中所列的对端，则充当了MAC表中“出接口”的角色。<br>在后面的报文转发流程中，你将会看到头端复制列表是如何在VXLAN网络中指导报文进行转发的。</p>
+<h4 id="自动建立"><a href="#自动建立" class="headerlink" title="自动建立"></a>自动建立</h4><p>自动建立VXLAN隧道需要借助EVPN（Ethernet VPN）协议，跳转EVPN</p>
+<h4 id="如何确定报文进哪条隧道"><a href="#如何确定报文进哪条隧道" class="headerlink" title="如何确定报文进哪条隧道"></a>如何确定报文进哪条隧道</h4><p>属于同一BD的VXLAN隧道可能不止一条，比如上文的头端复制列表中，同一个源端VTEP（1.1.1.1）对应了两个对端VTEP（2.2.2.2和2.2.2.3）。那就带来了另一个问题，报文到底应该走哪一条隧道呢？<br>我们知道，基本的二三层转发中，二层转发依赖的是MAC表，如果没有对应的MAC条目，则主机发送ARP广播报文请求对端的MAC地址；三层转发依赖的是FIB表。在VXLAN中，其实也是同样的道理。在下一小节中，将介绍VXLAN网络中报文的转发流程，相信看完下面的内容，关于“如何确定报文要进哪条隧道”的疑惑也就迎刃而解了。</p>
+<h2 id="VXLAN网关有哪些种类"><a href="#VXLAN网关有哪些种类" class="headerlink" title="VXLAN网关有哪些种类"></a>VXLAN网关有哪些种类</h2><h3 id="VXLAN二层网关和三层网关"><a href="#VXLAN二层网关和三层网关" class="headerlink" title="VXLAN二层网关和三层网关"></a>VXLAN二层网关和三层网关</h3><p>和VLAN类似，不同VNI之间的主机，以及VXLAN网络和非VXLAN网络中的主机不能直接相互通信。为了满足这些通信需求，VXLAN引入了VXLAN网关的概念。VXLAN网关分为二层网关和三层网关：</p>
+<pre><code>VXLAN二层网关：用于终端接入VXLAN网络，也可用于同一VXLAN网络的子网通信。
+VXLAN三层网关：用于VXLAN网络中跨子网通信以及访问外部网络。
+</code></pre>
+<h3 id="VXLAN集中式网关和分布式网关"><a href="#VXLAN集中式网关和分布式网关" class="headerlink" title="VXLAN集中式网关和分布式网关"></a>VXLAN集中式网关和分布式网关</h3><h4 id="集中式网关"><a href="#集中式网关" class="headerlink" title="集中式网关"></a>集中式网关</h4><p>集中式网关是指将三层网关集中部署在一台设备上，如下图所示，所有跨子网的流量都经过这个三层网关转发，实现流量的集中管理。</p>
+<p><img src="/2021/08/03/VXLAN/VXLAN%E9%9B%86%E4%B8%AD%E5%BC%8F%E7%BD%91%E5%85%B3.png" alt="VXLAN集中式网关"></p>
+<p>部署集中式网关的优点和缺点如下：<br>优点：<br>对跨子网流量进行集中管理，网关的部署和管理比较简单。<br>缺点：<br>转发路径不是最优：同一二层网关下跨子网的数据中心三层流量都需要经过集中三层网    关绕行转发（如图中蓝色虚线所示）。<br>ARP表项规格瓶颈：由于采用集中三层网关，通过三层网关转发的终端的ARP表项都需    要在三层网关上生成，而三层网关上的ARP表项规格有限，这不利于数据中心网络的    扩展。<br>分布式网关<br>通过部署分布式网关可以解决集中式网关部署的缺点。VXLAN分布式网关是指在典型的“Spine-Leaf”组网结构下，将Leaf节点作为VXLAN隧道端点VTEP，每个Leaf节点都可作为VXLAN三层网关（同时也是VXLAN二层网关），Spine节点不感知VXLAN隧道，只作为VXLAN报文的转发节点。如下图所示，Server1和Server2不在同一个网段，但是都连接到同一个Leaf节点。Server1和Server2通信时，流量只需要在该Leaf节点上转发，不再需要经过Spine节点。<br>部署分布式网关时：<br>Spine节点：<br>关注于高速IP转发，强调的是设备的高速转发能力。<br>Leaf节点：<br>作为VXLAN网络中的二层网关设备，与物理服务器或VM对接，用于解决终端租户接入VXLAN虚拟网络的问题。<br>作为VXLAN网络中的三层网关设备，进行VXLAN报文封装/解封装，实现跨子网的终端租户通信，以及外部网络的访问。</p>
+<p>VXLAN分布式网关具有如下特点：<br>同一个Leaf节点既可以做VXLAN二层网关，也可以做VXLAN三层网关，部署灵活。<br>Leaf节点只需要学习自身连接服务器的ARP表项，而不必像集中三层网关一样，需要学习所有服务器的ARP表项，解决了集中式三层网关带来的ARP表项瓶颈问题，网络规模扩展能力强。</p>
+<p>VXLAN报文是如何转发的<br>以集中式VXLAN网络为例，分布式看EVPN去（EVPN）<br>集中式VXLAN内同子网互通流程</p>
+<p>ARP请求报文转发流程</p>
+<p>ARP应答报文转发流程</p>
+<p>1.由于此时VM_C上已经学习到了VM_A的MAC地址，所以ARP应答报文为单播报文。报文源MAC为MAC_C，目的MAC为MAC_A，源IP为IP_C、目的IP为IP_A。<br>2.VTEP_3接收到VM_C发送的ARP应答报文后，识别报文所属的VNI（识别过程与步骤②类似）。同时，VTEP_3学习MAC_C、VNI和报文入接口（Port_3）的对应关系，并记录在本地MAC表中。之后，VTEP_3对报文进行封装。<br>3.可以看到，这里封装的外层源IP地址为本地VTEP（VTEP_3）的IP地址，外层目的IP地址为对端VTEP（VTEP_1）的IP地址；外层源MAC地址为本地VTEP的MAC地址，而外层目的MAC地址为去往目的IP的网络中下一跳设备的MAC地址。<br>4.封装后的报文，根据外层MAC和IP信息，在IP网络中进行传输，直至到达对端VTEP。<br>5.报文到达VTEP_1后，VTEP_1对报文进行解封装，得到VM_C发送的原始报文。同时，VTEP_1学习VM_C的MAC地址、VNI和远端VTEP的IP地址（IP_3）的对应关系，并记录在本地MAC表中。之后，VTEP_1将解封装后的报文发送给VM_A。<br>6.至此，VM_A和VM_C均已学习到了对方的MAC地址。之后，VM_A和VM_C将采用单播方式进行通信。</p>
+<p>集中式VXLAN中不同子网互通流程</p>
+<p>在经过ARP请求后，流程</p>
+<p>1.VM_A先将数据报文发送给网关。报文的源MAC为MAC_A，目的MAC为网关BDIF 10的MAC_10，源IP地址为IP_A，目的IP为IP_B。<br>2.VTEP_1收到数据报文后，识别此报文所属的VNI（VNI 5000），并根据MAC表项对报文进行封装。可以看到，这里封装的外层源IP地址为本地VTEP的IP地址（IP_1），外层目的IP地址为对端VTEP的IP地址（IP_3）；外层源MAC地址为本地VTEP的MAC地址（MAC_1），而外层目的MAC地址为去往目的IP的网络中下一跳设备的MAC地址。<br>3.封装后的报文，根据外层MAC和IP信息，在IP网络中进行传输，直至到达对端VTEP。<br>4.报文进入VTEP_3，VTEP_3对报文进行解封装，得到VM_A发送的原始报文。然后，VTEP_3会对报文做如下处理：<br>VTEP_3发现该报文的目的MAC为本机BDIF 10接口的MAC，而目的IP地址为IP_B（10.1.20.1），所以会根据路由表查找到IP_B的下一跳。<br>发现下一跳为10.1.20.10，出接口为BDIF 20。此时VTEP_3查询ARP表项，并将原始报文的源MAC修改为BDIF 20接口的MAC（MAC_20），将目的MAC修改为VM_B的MAC（MAC_B）。<br>报文到BDIF 20接口时，识别到需要进入VXLAN隧道（VNI 6000），所以根据MAC表对报文进行封装。这里封装的外层源IP地址为本地VTEP的IP地址（IP_3），外层目的IP地址为对端VTEP的IP地址（IP_2）；外层源MAC地址为本地VTEP的MAC地址（MAC_3），而外层目的MAC地址为去往目的IP的网络中下一跳设备的MAC地址。<br>5.封装后的报文，根据外层MAC和IP信息，在IP网络中进行传输，直至到达对端VTEP。<br>6.报文到达VTEP_2后，VTEP_2对报文进行解封装，得到内层的数据报文，并将其发送给VM_B。</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://example.com/2021/08/02/STP%E8%A7%A3%E6%9E%90/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -187,10 +389,16 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              
 
-              <time title="创建时间：2021-08-02 17:08:00 / 修改时间：17:09:30" itemprop="dateCreated datePublished" datetime="2021-08-02T17:08:00+08:00">2021-08-02</time>
+              <time title="创建时间：2021-08-02 17:08:00" itemprop="dateCreated datePublished" datetime="2021-08-02T17:08:00+08:00">2021-08-02</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-08-04 15:44:10" itemprop="dateModified" datetime="2021-08-04T15:44:10+08:00">2021-08-04</time>
+              </span>
 
           
 
@@ -203,8 +411,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><p>根桥：拥有最小BID的交换机<br>根端口：非根桥交换机上离根桥最近的端口（根路径开销）<br>指定端口：针对于某网段的，每个网段上只有一个指定端口。</p>
-<h2 id="传输协议报文"><a href="#传输协议报文" class="headerlink" title="传输协议报文"></a>传输协议报文</h2><p>BPDU —— 携带根桥BID，累计根路径开销，发送者BID，发送端口PID</p>
+          <p>生成树协议STP（Spanning Tree Protocol）将环形网络修剪成为一个无环的树型网络，避免报文在环形网络中的增生和无限循环。<br>在一个复杂的网络环境中，难免会出现环路。由于冗余备份的需要，网络设计者都倾向于在设备之间部署多条物理链路，其中一条作主用链路，其他链路作备份，这样都有可能会导致环路产生。<br>环路会产生广播风暴，最终导致整个网络资源被耗尽，网络瘫痪不可用。环路还会引起MAC地址表震荡导致MAC地址表项被破坏。<br>为了破除环路，可以采用数据链路层协议STP，运行该协议的设备通过彼此交互信息发现网络中的环路，并有选择的对某个端口进行阻塞，最终将环形网络结构修剪成无环路的树形网络结构，从而防止报文在环形网络中不断循环，避免设备由于重复接收相同的报文造成处理能力下降。</p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2021/08/02/STP%E8%A7%A3%E6%9E%90/#more" rel="contents">
@@ -332,10 +539,16 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              
 
-              <time title="创建时间：2021-07-29 16:37:17 / 修改时间：18:12:30" itemprop="dateCreated datePublished" datetime="2021-07-29T16:37:17+08:00">2021-07-29</time>
+              <time title="创建时间：2021-07-29 16:37:17" itemprop="dateCreated datePublished" datetime="2021-07-29T16:37:17+08:00">2021-07-29</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-08-04 17:49:26" itemprop="dateModified" datetime="2021-08-04T17:49:26+08:00">2021-08-04</time>
+              </span>
 
           
 
@@ -348,7 +561,8 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>BGP路径选择<br>步骤一    优选权重最高的路由 weight（Cisco私有）<br>步骤二  如果多条路由拥有相同权重。优选本地优先级最高的路由（Local Preference 用在        一个AS内部）<br>步骤三  如果多条路由拥有相同本地优先级。优选本地路由器初始的路由（本地初始路由在        BGP表中下一跳为0.0.0.0）<br>步骤四  如果没有本地路由器初始路由。优选AS-PATH最短的路由<br>步骤五  如果多条路由拥有相同长短的AS-PATH。<br>优选源代码最小的路由（Origin Code：IGP&lt;EGP&lt;Incomplete）<br>步骤六    如果多条路由拥有相同源代码。优选MED最低的路由（路由器在AS之间交换MED）<br>步骤七    如果多条路由拥有相同MED。优选外部路由（eBGP）而不是内部路由（iBGP）<br>步骤八    如果只剩内部路由，优选穿越最近IGP邻居的路径（去往BGP下一跳的最短路径）<br>步骤九    对于eBGP路径，优选最老的路由（减少路由反复启动和禁用的风险）<br>步骤十    优选邻居BGP路由器ID值最低的路由<br>步骤十一    如果BGP路由器ID都相同。优选邻居IP地址最小的路由</p>
+          <p>边界网关协议BGP（Border Gateway Protocol）是一种实现自治系统AS（Autonomous System）之间的路由可达，并选择最佳路由的距离矢量路由协议。</p>
+<p>MP-BGP是对BGP-4进行了扩展，来达到在不同网络中应用的目的，BGP-4原有的消息机制和路由机制并没有改变。MP-BGP在IPv6单播网络上的应用称为BGP4+，在IPv4组播网络上的应用称为MBGP（Multicast BGP）</p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2021/07/29/BGP%E7%AC%94%E8%AE%B0/#more" rel="contents">
@@ -406,7 +620,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-07-30 14:13:02" itemprop="dateModified" datetime="2021-07-30T14:13:02+08:00">2021-07-30</time>
+                <time title="修改时间：2021-08-04 15:55:48" itemprop="dateModified" datetime="2021-08-04T15:55:48+08:00">2021-08-04</time>
               </span>
 
           
@@ -420,7 +634,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h2 id="邻居邻接关系建立"><a href="#邻居邻接关系建立" class="headerlink" title="邻居邻接关系建立"></a>邻居邻接关系建立</h2><h3 id="建立邻居邻接"><a href="#建立邻居邻接" class="headerlink" title="建立邻居邻接"></a>建立邻居邻接</h3><p><font size="8" color="#F4A460">Down</font>第一步中，希望建立完全OSPF邻居邻接关系的路由器之间交换OSPF HELLO包。双方的OSPF邻居都处于Down状态，这是邻居会话的初始状态。<br><font size="8" color="#F4A460">Init</font>当路由器从邻居收到了一个HELLO包，但没有在邻居的HELLO包中看到自己的路由器ID时，它将转换为Init状态。在此状态中，路由器将记录所有的邻居路由器ID，并开始将它们包含在发给邻居的HELLO包中。<br><font size="8" color="#F4A460">2-Way</font>当路由器在从邻居收到的HELLO包中看到自己的路由器ID时，它将转为2-Way状态。这表示已和邻居之间建立了双向通信。在多路访问链路上，在2-Way状态将确定DR（指定路由器）和BDR（备份指定路由器）角色，这会优化广播网段中的信息交换过程。</p>
+          <p>OSPF基本理解</p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2021/07/29/OSPF%E7%AC%94%E8%AE%B0/#more" rel="contents">
@@ -554,6 +768,13 @@
 
               <time title="创建时间：2021-07-27 17:32:22" itemprop="dateCreated datePublished" datetime="2021-07-27T17:32:22+08:00">2021-07-27</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-08-04 17:32:16" itemprop="dateModified" datetime="2021-08-04T17:32:16+08:00">2021-08-04</time>
+              </span>
 
           
 
@@ -566,7 +787,15 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          
+          <h3 id="BGP-MPLS-IP-VPN简介"><a href="#BGP-MPLS-IP-VPN简介" class="headerlink" title="BGP/MPLS IP VPN简介"></a>BGP/MPLS IP VPN简介</h3><p>BGP/MPLS IP VPN是一种L3VPN（Layer 3 Virtual Private Network）。它使用BGP（Border Gateway Protocol）在服务提供商骨干网上发布VPN路由，使用MPLS（Multiprotocol Label Switch）在服务提供商骨干网上转发VPN报文。这里的IP是指VPN承载的是IP（Internet Protocol）报文。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2021/07/27/MPLS-VPN/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -751,172 +980,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/07/23/ACL%E8%A7%A3%E6%9E%90/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/assets/img/touxiang.png">
-      <meta itemprop="name" content="郑林昕">
-      <meta itemprop="description" content="队长"可能"">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="郑林昕的博客">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/07/23/ACL%E8%A7%A3%E6%9E%90/" class="post-title-link" itemprop="url">ACL解析</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2021-07-23 15:48:29" itemprop="dateCreated datePublished" datetime="2021-07-23T15:48:29+08:00">2021-07-23</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-07-26 17:10:00" itemprop="dateModified" datetime="2021-07-26T17:10:00+08:00">2021-07-26</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E7%BD%91%E7%BB%9C/" itemprop="url" rel="index"><span itemprop="name">网络</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>接入控制列表<br>Access Control Lists 接入控制列表 俗称防火墙</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2021/07/23/ACL%E8%A7%A3%E6%9E%90/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/07/23/LLDP%E5%8D%8F%E8%AE%AE%E8%A7%A3%E6%9E%90/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/assets/img/touxiang.png">
-      <meta itemprop="name" content="郑林昕">
-      <meta itemprop="description" content="队长"可能"">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="郑林昕的博客">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/07/23/LLDP%E5%8D%8F%E8%AE%AE%E8%A7%A3%E6%9E%90/" class="post-title-link" itemprop="url">LLDP协议解析</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2021-07-23 15:16:14" itemprop="dateCreated datePublished" datetime="2021-07-23T15:16:14+08:00">2021-07-23</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-07-26 17:11:47" itemprop="dateModified" datetime="2021-07-26T17:11:47+08:00">2021-07-26</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E6%95%B0%E6%8D%AE%E9%80%9A%E4%BF%A1/" itemprop="url" rel="index"><span itemprop="name">数据通信</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E6%95%B0%E6%8D%AE%E9%80%9A%E4%BF%A1/%E7%BD%91%E7%BB%9C/" itemprop="url" rel="index"><span itemprop="name">网络</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>链路层发现协议基本概念</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2021/07/23/LLDP%E5%8D%8F%E8%AE%AE%E8%A7%A3%E6%9E%90/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -988,7 +1051,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">16</span>
+          <span class="site-state-item-count">18</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -1058,7 +1121,7 @@
       <i class="fa fa-chart-area"></i>
     </span>
       <span class="post-meta-item-text">站点总字数：</span>
-    <span title="站点总字数">32k</span>
+    <span title="站点总字数">50k</span>
 </div>
 
         
