@@ -1,6 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>ACL解析</title>
+    <url>/2021/07/23/ACL%E8%A7%A3%E6%9E%90/</url>
+    <content><![CDATA[<p>接入控制列表<br>Access Control Lists 接入控制列表 俗称防火墙</p>
+<span id="more"></span>
+
+<h1 id="ACL学习"><a href="#ACL学习" class="headerlink" title="ACL学习"></a>ACL学习</h1><h2 id="适用范围分类：安全ACLs和QoS-ACLs"><a href="#适用范围分类：安全ACLs和QoS-ACLs" class="headerlink" title="适用范围分类：安全ACLs和QoS ACLs"></a>适用范围分类：安全ACLs和QoS ACLs</h2><p>安全ACLs——控制哪些数据流允许从网络设备通过</p>
+<p>QoS策略——对数据流进行优先级分类和处理</p>
+<h2 id="组成："><a href="#组成：" class="headerlink" title="组成："></a>组成：</h2><p>ACLs —— 由ACE组成</p>
+<p>ACE接入控制列表表项 —— 申明了满足该表项的匹配条件和行为</p>
+<pre><code>示例：
+    10 permit ip host 1.1.1.1 any
+        * 10代表ACE序列号，越小越优先
+        * permit代表动作——允许 ，deny——拒绝
+        * Ip host 1.1.1.1 any表明报文必须是IP报文，且源IP必须是1.1.1.1 目的IP没限制
+</code></pre>
+<h2 id="工作原理："><a href="#工作原理：" class="headerlink" title="工作原理："></a>工作原理：</h2><ol>
+<li>当一个数据报进入一个端口，路由器检查这个数据报是否可路由。如果可以路由，检查这个端口是否有ACL控制进入数据报。如果有，根据ACL中的条件指令，检查数据报。如果数据报被允许的，就查询路由表，决定数据报的目标端口。</li>
+<li>路由器检查目标端口是否存在ACL控制流出的数据报。若不存在，这个数据报直接发送给目标端口。若存在，就再根据ACL进行取舍，再转发到目的端口。</li>
+<li>总结：一个入站数据报，由路由器处理器调入内存，读取数据报包头信息，如目标IP并搜索路由表，如有表项中有，则从路由表的选择接口转发（如果表项中没，丢弃），数据进入该接口的访问控制列表（如果没ACL，直接转发），按条件进行筛选。</li>
+</ol>
+<h2 id="两个方向："><a href="#两个方向：" class="headerlink" title="两个方向："></a>两个方向：</h2><ul>
+<li>出 out ：已经进入路由器，正离开路由器接口的数据包</li>
+<li>进 in ： 已到达路由器接口的数据包，将被路由器处理</li>
+</ul>
+<h2 id="使用："><a href="#使用：" class="headerlink" title="使用："></a>使用：</h2><h3 id="1-“3P”原则"><a href="#1-“3P”原则" class="headerlink" title="1.“3P”原则"></a>1.“3P”原则</h3><p>在路由器上应用ACL时，可以为每种协议（Per Protocol）、每个方向（Per Direction）和每个接口（Per Interface）配置一个ACL，一般称为“3P原则”。</p>
+<ol>
+<li>一个ACL只能基于一种协议，因此每种协议都需要配置单独的ACL。</li>
+<li>经过路由器接口的数据有进（ln）和出（Out）两个方向，因此在接口上配置访问控制列表也有进（In）和出（Out）两个方向。每个接口可以配置进方向的ACL，也可以配置出方向的ACL，或者两者都配置，但是一个ACL只能控制一个方向。</li>
+<li>一个ACL只能控制一个接口上的数据流量，无法同时控制多个接口上的数据流量。</li>
+</ol>
+<h3 id="2-语句顺序决定了对数据的控制顺序"><a href="#2-语句顺序决定了对数据的控制顺序" class="headerlink" title="2.语句顺序决定了对数据的控制顺序"></a>2.语句顺序决定了对数据的控制顺序</h3><p>ACL的语句是一种自上而下的逻辑排列关系。数据匹配过程中是依次对语句进行比较，一旦匹配成功则按照当前语句控制策略处理，不再与之后的语句进行比较。因此，正确的语句顺序才能得到所需的控制效果。</p>
+<h3 id="3-至少有一条允许（Permit）语句"><a href="#3-至少有一条允许（Permit）语句" class="headerlink" title="3.至少有一条允许（Permit）语句"></a>3.至少有一条允许（Permit）语句</h3><p>所有ACL的最后一条语句都是隐式拒绝语句，表示当所有语句都无法匹配时，将拒绝数据通过并自动丢弃数据，以防数据意外进入网络。因此，在写“拒绝（deny）”的ACL时，一定至少要有一条允许（Permit）语句，否则配置ACL的接口将拒绝任何数据通过，影响正常的网络通信。</p>
+<h3 id="4-最有限制性的语句应该放在ACL的靠前位置"><a href="#4-最有限制性的语句应该放在ACL的靠前位置" class="headerlink" title="4.最有限制性的语句应该放在ACL的靠前位置"></a>4.最有限制性的语句应该放在ACL的靠前位置</h3><p>最有限制性的语句放在ACL的靠前位置，可以首先过滤掉很多不符合条件的数据，节省后面语句的比较时间，从而提高路由器的工作效率。</p>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p><a href="https://blog.csdn.net/ck784101777/article/details/97893744?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522162702611116780264055304%2522%252C%2522scm%2522%253A%252220140713.130102334..%2522%257D&request_id=162702611116780264055304&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~all~top_click~default-5-97893744.first_rank_v2_pc_rank_v29&utm_term=ACL&spm=1018.2226.3001.4187">ACL访问控制(华为)</a></p>
+<p><a href="https://blog.csdn.net/gaofei0428/article/details/111874262?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522162702611116780264055304%2522%252C%2522scm%2522%253A%252220140713.130102334..%2522%257D&request_id=162702611116780264055304&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~all~top_click~default-3-111874262.first_rank_v2_pc_rank_v29&utm_term=ACL&spm=1018.2226.3001.4187">ACL访问控制列表</a></p>
+]]></content>
+      <categories>
+        <category>网络</category>
+      </categories>
+      <tags>
+        <tag>数据通信</tag>
+        <tag>网络基础</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>ARP解析</title>
     <url>/2021/07/21/ARP%E8%A7%A3%E6%9E%90/</url>
     <content><![CDATA[<p>&emsp;&emsp;地址解析协议（Address Resolution Protocol），其基本功能为透过目标设备的IP地址，查询目标设备的MAC地址，以保证通信的顺利进行。它是IPv4中网络层必不可少的协议，不过在IPv6中已不再适用，并被邻居发现协议（NDP）所替代。</p>
@@ -80,51 +125,6 @@
       </tags>
   </entry>
   <entry>
-    <title>ACL解析</title>
-    <url>/2021/07/23/ACL%E8%A7%A3%E6%9E%90/</url>
-    <content><![CDATA[<p>接入控制列表<br>Access Control Lists 接入控制列表 俗称防火墙</p>
-<span id="more"></span>
-
-<h1 id="ACL学习"><a href="#ACL学习" class="headerlink" title="ACL学习"></a>ACL学习</h1><h2 id="适用范围分类：安全ACLs和QoS-ACLs"><a href="#适用范围分类：安全ACLs和QoS-ACLs" class="headerlink" title="适用范围分类：安全ACLs和QoS ACLs"></a>适用范围分类：安全ACLs和QoS ACLs</h2><p>安全ACLs——控制哪些数据流允许从网络设备通过</p>
-<p>QoS策略——对数据流进行优先级分类和处理</p>
-<h2 id="组成："><a href="#组成：" class="headerlink" title="组成："></a>组成：</h2><p>ACLs —— 由ACE组成</p>
-<p>ACE接入控制列表表项 —— 申明了满足该表项的匹配条件和行为</p>
-<pre><code>示例：
-    10 permit ip host 1.1.1.1 any
-        * 10代表ACE序列号，越小越优先
-        * permit代表动作——允许 ，deny——拒绝
-        * Ip host 1.1.1.1 any表明报文必须是IP报文，且源IP必须是1.1.1.1 目的IP没限制
-</code></pre>
-<h2 id="工作原理："><a href="#工作原理：" class="headerlink" title="工作原理："></a>工作原理：</h2><ol>
-<li>当一个数据报进入一个端口，路由器检查这个数据报是否可路由。如果可以路由，检查这个端口是否有ACL控制进入数据报。如果有，根据ACL中的条件指令，检查数据报。如果数据报被允许的，就查询路由表，决定数据报的目标端口。</li>
-<li>路由器检查目标端口是否存在ACL控制流出的数据报。若不存在，这个数据报直接发送给目标端口。若存在，就再根据ACL进行取舍，再转发到目的端口。</li>
-<li>总结：一个入站数据报，由路由器处理器调入内存，读取数据报包头信息，如目标IP并搜索路由表，如有表项中有，则从路由表的选择接口转发（如果表项中没，丢弃），数据进入该接口的访问控制列表（如果没ACL，直接转发），按条件进行筛选。</li>
-</ol>
-<h2 id="两个方向："><a href="#两个方向：" class="headerlink" title="两个方向："></a>两个方向：</h2><ul>
-<li>出 out ：已经进入路由器，正离开路由器接口的数据包</li>
-<li>进 in ： 已到达路由器接口的数据包，将被路由器处理</li>
-</ul>
-<h2 id="使用："><a href="#使用：" class="headerlink" title="使用："></a>使用：</h2><h3 id="1-“3P”原则"><a href="#1-“3P”原则" class="headerlink" title="1.“3P”原则"></a>1.“3P”原则</h3><p>在路由器上应用ACL时，可以为每种协议（Per Protocol）、每个方向（Per Direction）和每个接口（Per Interface）配置一个ACL，一般称为“3P原则”。</p>
-<ol>
-<li>一个ACL只能基于一种协议，因此每种协议都需要配置单独的ACL。</li>
-<li>经过路由器接口的数据有进（ln）和出（Out）两个方向，因此在接口上配置访问控制列表也有进（In）和出（Out）两个方向。每个接口可以配置进方向的ACL，也可以配置出方向的ACL，或者两者都配置，但是一个ACL只能控制一个方向。</li>
-<li>一个ACL只能控制一个接口上的数据流量，无法同时控制多个接口上的数据流量。</li>
-</ol>
-<h3 id="2-语句顺序决定了对数据的控制顺序"><a href="#2-语句顺序决定了对数据的控制顺序" class="headerlink" title="2.语句顺序决定了对数据的控制顺序"></a>2.语句顺序决定了对数据的控制顺序</h3><p>ACL的语句是一种自上而下的逻辑排列关系。数据匹配过程中是依次对语句进行比较，一旦匹配成功则按照当前语句控制策略处理，不再与之后的语句进行比较。因此，正确的语句顺序才能得到所需的控制效果。</p>
-<h3 id="3-至少有一条允许（Permit）语句"><a href="#3-至少有一条允许（Permit）语句" class="headerlink" title="3.至少有一条允许（Permit）语句"></a>3.至少有一条允许（Permit）语句</h3><p>所有ACL的最后一条语句都是隐式拒绝语句，表示当所有语句都无法匹配时，将拒绝数据通过并自动丢弃数据，以防数据意外进入网络。因此，在写“拒绝（deny）”的ACL时，一定至少要有一条允许（Permit）语句，否则配置ACL的接口将拒绝任何数据通过，影响正常的网络通信。</p>
-<h3 id="4-最有限制性的语句应该放在ACL的靠前位置"><a href="#4-最有限制性的语句应该放在ACL的靠前位置" class="headerlink" title="4.最有限制性的语句应该放在ACL的靠前位置"></a>4.最有限制性的语句应该放在ACL的靠前位置</h3><p>最有限制性的语句放在ACL的靠前位置，可以首先过滤掉很多不符合条件的数据，节省后面语句的比较时间，从而提高路由器的工作效率。</p>
-<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p><a href="https://blog.csdn.net/ck784101777/article/details/97893744?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522162702611116780264055304%2522%252C%2522scm%2522%253A%252220140713.130102334..%2522%257D&request_id=162702611116780264055304&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~all~top_click~default-5-97893744.first_rank_v2_pc_rank_v29&utm_term=ACL&spm=1018.2226.3001.4187">ACL访问控制(华为)</a></p>
-<p><a href="https://blog.csdn.net/gaofei0428/article/details/111874262?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522162702611116780264055304%2522%252C%2522scm%2522%253A%252220140713.130102334..%2522%257D&request_id=162702611116780264055304&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~all~top_click~default-3-111874262.first_rank_v2_pc_rank_v29&utm_term=ACL&spm=1018.2226.3001.4187">ACL访问控制列表</a></p>
-]]></content>
-      <categories>
-        <category>网络</category>
-      </categories>
-      <tags>
-        <tag>网络基础</tag>
-        <tag>数据通信</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>EVPN VXLAN</title>
     <url>/2021/08/05/EVPN-VXLAN/</url>
     <content><![CDATA[]]></content>
@@ -159,27 +159,6 @@
         <tag>博客自定义</tag>
         <tag>yilia</tag>
         <tag>经验</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>LLDP协议解析</title>
-    <url>/2021/07/23/LLDP%E5%8D%8F%E8%AE%AE%E8%A7%A3%E6%9E%90/</url>
-    <content><![CDATA[<p>链路层发现协议基本概念</p>
-<span id="more"></span>
-
-<h1 id="链路层发现协议"><a href="#链路层发现协议" class="headerlink" title="链路层发现协议"></a>链路层发现协议</h1><h2 id="概述1："><a href="#概述1：" class="headerlink" title="概述1："></a>概述1：</h2><p>LLDP（Link Layer Discovery Protocol，链路层发现协议）就是用于这个目的的协议。LLDP定义在802.1ab中,它是一个二层协议，它提供了一种标准的链路层发现方式。LLDP协议使得接入网络的一台设备可以将其主要的能力，管理地址，设备标识，接口标识等信息发送给接入同一个局域网络的其它设备。当一个设备从网络中接收到其它设备的这些信息时，它就将这些信息以MIB的形式存储起来。<br>这些MIB信息可用于发现设备的物理拓扑结构以及管理配置信息。需要注意的是LLDP仅仅被设计用于进行信息通告，它被用于通告一个设备的信息并可以获得其它设备的信息，进而得到相关的MIB信息。它不是一个配置、控制协议，无法通过该协议对远端设备进行配置，它只是提供了关于网络拓扑以及管理配置的信息，这些信息可以被用于管理、配置的目的，如何用取决于信息的使用者。</p>
-<h2 id="概述2："><a href="#概述2：" class="headerlink" title="概述2："></a>概述2：</h2><p>LLDP（Link Layer Discovery Protocol，链路层发现协议）是由IEEE 802.1AB定义的一种链路层发现协议。通过LLDP协议能够进行拓扑的发现及掌握拓扑的变化情况。LLDP将设备本地的信息组织成TLV的格式（Type/Lenth/Value，类型/长度/值）封装在LLDPDU（LLDP data unit，链路层发现协议数据单元）中发送给邻居设备，同时它将邻居设备发送的LLDPDU以MIB（Management Information Base，管理信息库）的形式存储起来，提供给网络管理系统访问。<br>通过LLDP，网络管理系统可以掌握拓扑的连接情况，比如设备的哪些端口与其它设备相连接，链路连接两端的端口的速率、双工是否匹配等，管理员可以根据这些信息快速地定位及排查故障。</p>
-<h2 id="LLDP工作模式"><a href="#LLDP工作模式" class="headerlink" title="LLDP工作模式"></a>LLDP工作模式</h2><p>LLDP提供了三种工作模式：<br>• TxRx：即发送也接收LLDPDU。<br>• Rx Only：只接收不发送LLDPDU。<br>• Tx Only：只发送不接收LLDPDU。<br>当端口的LLDP工作模式发生变化时，端口将对协议状态机进行初始化操作，通过配置端口初始化的延迟时间，可以避免由于工作模式频繁改变而导致端口不断地进行初始化操作。</p>
-<h2 id="待补充"><a href="#待补充" class="headerlink" title="待补充"></a>待补充</h2><h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><p><a href="https://blog.csdn.net/goodluckwhh/article/details/10948065?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522162702451016780262582058%2522%252C%2522scm%2522%253A%252220140713.130102334..%2522%257D&request_id=162702451016780262582058&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~all~top_positive~default-1-10948065.first_rank_v2_pc_rank_v29&utm_term=lldp&spm=1018.2226.3001.4187">数据链路层学习之LLDP</a></p>
-]]></content>
-      <categories>
-        <category>数据通信</category>
-        <category>网络</category>
-      </categories>
-      <tags>
-        <tag>数据链路层</tag>
-        <tag>数据通信</tag>
-        <tag>网络</tag>
       </tags>
   </entry>
   <entry>
@@ -222,47 +201,31 @@
         <category>网络</category>
       </categories>
       <tags>
-        <tag>数据链路层</tag>
         <tag>数据通信</tag>
+        <tag>数据链路层</tag>
         <tag>交换机</tag>
       </tags>
   </entry>
   <entry>
-    <title>MPLS VPN</title>
-    <url>/2021/07/27/MPLS-VPN/</url>
-    <content><![CDATA[<p>BGP/MPLS IP VPN是一种L3VPN（Layer 3 Virtual Private Network）。它使用BGP（Border Gateway Protocol）在服务提供商骨干网上发布VPN路由，使用MPLS（Multiprotocol Label Switch）在服务提供商骨干网上转发VPN报文。这里的IP是指VPN承载的是IP（Internet Protocol）报文。</p>
+    <title>LLDP协议解析</title>
+    <url>/2021/07/23/LLDP%E5%8D%8F%E8%AE%AE%E8%A7%A3%E6%9E%90/</url>
+    <content><![CDATA[<p>链路层发现协议基本概念</p>
 <span id="more"></span>
 
-<p><img src="/2021/07/27/MPLS-VPN/VPN%E6%A8%A1%E5%9E%8B.png" alt="MPLS IP VPN模型"><br>图：BGP/MPLS IP VPN模型</p>
-<p>BGP/MPLS IP VPN的基本模型由三部分组成：CE、PE和P。</p>
-<pre><code>• CE（Customer Edge）：用户网络边缘设备，有接口直接与服务提供商网络相连。CE可以是路由器或交换机，也可以是一台主机。通常情况下，CE“感知”不到VPN的存在，也不需要支持MPLS。
-• PE（Provider Edge）：是服务提供商网络的边缘设备，与CE直接相连。在MPLS网络中，对VPN的所有处理都发生在PE上，对PE性能要求较高。
-• P（Provider）：服务提供商网络中的骨干设备，不与CE直接相连。P设备只需要具备基本MPLS转发能力，不维护VPN信息。
-</code></pre>
-<p>PE和P设备仅由服务提供商管理；CE设备仅由用户管理，除非用户把管理权委托给服务提供商。</p>
-<p>一台PE设备可以接入多台CE设备。一台CE设备也可以连接属于相同或不同服务提供商的多台PE设备。</p>
-<h1 id="MPLS-VPN的原理描述"><a href="#MPLS-VPN的原理描述" class="headerlink" title="MPLS VPN的原理描述"></a>MPLS VPN的原理描述</h1><h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念:"></a>基本概念:</h2><h3 id="Site"><a href="#Site" class="headerlink" title="Site:"></a>Site:</h3><pre><code>• Site是指相互之间具备IP连通性的一组IP系统，并且，这组IP系统的IP连通性不需通过运营商网络实现。
-• Site的划分是根据设备的拓扑关系，而不是地理位置，尽管在大多数情况下一个Site中的设备地理位置相邻。地理位置隔离的两组IP系统，如果它们使用专线互联，不需要通过运营商网络就可以互通，这两组IP系统也组成一个Site。
-• 一个Site中的设备可以属于多个VPN，换言之，一个Site可以属于多个VPN。
-• Site通过CE连接到运营商网络，一个Site可以包含多个CE，但一个CE只属于一个Site。
-    根据Site的情况，建议CE设备选择方案如下：
-    如果Site只是一台主机，则这台主机就作为CE设备；
-    如果Site是单个子网，则使用交换机作为CE设备；
-    如果Site是多个子网，则使用路由器作为CE设备。
-    对于多个连接到同一运营商网络的Site，通过制定策略，可以将它们划分为不同的集合（set），只有属于相同集合的Site之间才能通过运营商网络互访，这种集合就是VPN。
-</code></pre>
-<h3 id="地址空间重叠："><a href="#地址空间重叠：" class="headerlink" title="地址空间重叠："></a>地址空间重叠：</h3><p>VPN是一种私有网络，不同的VPN独立管理自己的地址范围，也称为地址空间（address space）。不同VPN的地址空间可能会在一定范围内重合，例如，VPN1和VPN2都使用10.110.10.0/24网段地址，这就发生了地址空间的重叠（address spaces overlapping）。</p>
-<p>以下两种情况允许VPN使用重叠的地址空间：</p>
-<pre><code>• 两个VPN没有共同的Site
-• 两个VPN有共同的Site，但此Site中的设备不与两个VPN中使用重叠地址空间的设备互访
-</code></pre>
-<h3 id="VPN示例："><a href="#VPN示例：" class="headerlink" title="VPN示例："></a>VPN示例：</h3><p>在BGP/MPLS IP VPN中，不同VPN之间的路由隔离通过VPN实例（VPN-instance）实现。<br>PE为每个直接相连的Site建立并维护专门的VPN实例，VPN实例中包含对应Site的VPN成员关系和路由规则。具体来说，VPN实例中的信息包括：IP路由表、标签转发表、与VPN实例绑定的接口以及VPN实例的管理信息。VPN实例的管理信息包括RD（Route Distinguisher，路由标识符）、路由过滤策略、成员接口列表等。</p>
-<h3 id="VPN、Site、VPN实例之间的关系如下："><a href="#VPN、Site、VPN实例之间的关系如下：" class="headerlink" title="VPN、Site、VPN实例之间的关系如下："></a>VPN、Site、VPN实例之间的关系如下：</h3><pre><code>• VPN是多个Site的组合。一个Site可以属于多个VPN。
-• 每一个Site在PE上都关联一个VPN实例。VPN实例综合了它所关联的Site的VPN成员关系和路由规则。多个Site根据VPN实例的规则组合成一个VPN。
-• VPN实例与VPN不是一一对应的关系，VPN实例与Site之间存在一一对应的关系。
-</code></pre>
-<p><font color="#E99">VPN实例也称为VPN路由转发表VRF（VPN Routing and Forwarding table）。PE上存在多个路由转发表，包括一个公网路由转发表，以及一个或多个VPN路由转发表。</font></p>
+<h1 id="链路层发现协议"><a href="#链路层发现协议" class="headerlink" title="链路层发现协议"></a>链路层发现协议</h1><h2 id="概述1："><a href="#概述1：" class="headerlink" title="概述1："></a>概述1：</h2><p>LLDP（Link Layer Discovery Protocol，链路层发现协议）就是用于这个目的的协议。LLDP定义在802.1ab中,它是一个二层协议，它提供了一种标准的链路层发现方式。LLDP协议使得接入网络的一台设备可以将其主要的能力，管理地址，设备标识，接口标识等信息发送给接入同一个局域网络的其它设备。当一个设备从网络中接收到其它设备的这些信息时，它就将这些信息以MIB的形式存储起来。<br>这些MIB信息可用于发现设备的物理拓扑结构以及管理配置信息。需要注意的是LLDP仅仅被设计用于进行信息通告，它被用于通告一个设备的信息并可以获得其它设备的信息，进而得到相关的MIB信息。它不是一个配置、控制协议，无法通过该协议对远端设备进行配置，它只是提供了关于网络拓扑以及管理配置的信息，这些信息可以被用于管理、配置的目的，如何用取决于信息的使用者。</p>
+<h2 id="概述2："><a href="#概述2：" class="headerlink" title="概述2："></a>概述2：</h2><p>LLDP（Link Layer Discovery Protocol，链路层发现协议）是由IEEE 802.1AB定义的一种链路层发现协议。通过LLDP协议能够进行拓扑的发现及掌握拓扑的变化情况。LLDP将设备本地的信息组织成TLV的格式（Type/Lenth/Value，类型/长度/值）封装在LLDPDU（LLDP data unit，链路层发现协议数据单元）中发送给邻居设备，同时它将邻居设备发送的LLDPDU以MIB（Management Information Base，管理信息库）的形式存储起来，提供给网络管理系统访问。<br>通过LLDP，网络管理系统可以掌握拓扑的连接情况，比如设备的哪些端口与其它设备相连接，链路连接两端的端口的速率、双工是否匹配等，管理员可以根据这些信息快速地定位及排查故障。</p>
+<h2 id="LLDP工作模式"><a href="#LLDP工作模式" class="headerlink" title="LLDP工作模式"></a>LLDP工作模式</h2><p>LLDP提供了三种工作模式：<br>• TxRx：即发送也接收LLDPDU。<br>• Rx Only：只接收不发送LLDPDU。<br>• Tx Only：只发送不接收LLDPDU。<br>当端口的LLDP工作模式发生变化时，端口将对协议状态机进行初始化操作，通过配置端口初始化的延迟时间，可以避免由于工作模式频繁改变而导致端口不断地进行初始化操作。</p>
+<h2 id="待补充"><a href="#待补充" class="headerlink" title="待补充"></a>待补充</h2><h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><p><a href="https://blog.csdn.net/goodluckwhh/article/details/10948065?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522162702451016780262582058%2522%252C%2522scm%2522%253A%252220140713.130102334..%2522%257D&request_id=162702451016780262582058&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~all~top_positive~default-1-10948065.first_rank_v2_pc_rank_v29&utm_term=lldp&spm=1018.2226.3001.4187">数据链路层学习之LLDP</a></p>
 ]]></content>
+      <categories>
+        <category>数据通信</category>
+        <category>网络</category>
+      </categories>
+      <tags>
+        <tag>数据通信</tag>
+        <tag>数据链路层</tag>
+        <tag>网络</tag>
+      </tags>
   </entry>
   <entry>
     <title>MPLS学习笔记</title>
@@ -369,6 +332,43 @@ ILM
         <tag>数据通信</tag>
         <tag>网络</tag>
       </tags>
+  </entry>
+  <entry>
+    <title>MPLS VPN</title>
+    <url>/2021/07/27/MPLS-VPN/</url>
+    <content><![CDATA[<p>BGP/MPLS IP VPN是一种L3VPN（Layer 3 Virtual Private Network）。它使用BGP（Border Gateway Protocol）在服务提供商骨干网上发布VPN路由，使用MPLS（Multiprotocol Label Switch）在服务提供商骨干网上转发VPN报文。这里的IP是指VPN承载的是IP（Internet Protocol）报文。</p>
+<span id="more"></span>
+
+<p><img src="/2021/07/27/MPLS-VPN/VPN%E6%A8%A1%E5%9E%8B.png" alt="MPLS IP VPN模型"><br>图：BGP/MPLS IP VPN模型</p>
+<p>BGP/MPLS IP VPN的基本模型由三部分组成：CE、PE和P。</p>
+<pre><code>• CE（Customer Edge）：用户网络边缘设备，有接口直接与服务提供商网络相连。CE可以是路由器或交换机，也可以是一台主机。通常情况下，CE“感知”不到VPN的存在，也不需要支持MPLS。
+• PE（Provider Edge）：是服务提供商网络的边缘设备，与CE直接相连。在MPLS网络中，对VPN的所有处理都发生在PE上，对PE性能要求较高。
+• P（Provider）：服务提供商网络中的骨干设备，不与CE直接相连。P设备只需要具备基本MPLS转发能力，不维护VPN信息。
+</code></pre>
+<p>PE和P设备仅由服务提供商管理；CE设备仅由用户管理，除非用户把管理权委托给服务提供商。</p>
+<p>一台PE设备可以接入多台CE设备。一台CE设备也可以连接属于相同或不同服务提供商的多台PE设备。</p>
+<h1 id="MPLS-VPN的原理描述"><a href="#MPLS-VPN的原理描述" class="headerlink" title="MPLS VPN的原理描述"></a>MPLS VPN的原理描述</h1><h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念:"></a>基本概念:</h2><h3 id="Site"><a href="#Site" class="headerlink" title="Site:"></a>Site:</h3><pre><code>• Site是指相互之间具备IP连通性的一组IP系统，并且，这组IP系统的IP连通性不需通过运营商网络实现。
+• Site的划分是根据设备的拓扑关系，而不是地理位置，尽管在大多数情况下一个Site中的设备地理位置相邻。地理位置隔离的两组IP系统，如果它们使用专线互联，不需要通过运营商网络就可以互通，这两组IP系统也组成一个Site。
+• 一个Site中的设备可以属于多个VPN，换言之，一个Site可以属于多个VPN。
+• Site通过CE连接到运营商网络，一个Site可以包含多个CE，但一个CE只属于一个Site。
+    根据Site的情况，建议CE设备选择方案如下：
+    如果Site只是一台主机，则这台主机就作为CE设备；
+    如果Site是单个子网，则使用交换机作为CE设备；
+    如果Site是多个子网，则使用路由器作为CE设备。
+    对于多个连接到同一运营商网络的Site，通过制定策略，可以将它们划分为不同的集合（set），只有属于相同集合的Site之间才能通过运营商网络互访，这种集合就是VPN。
+</code></pre>
+<h3 id="地址空间重叠："><a href="#地址空间重叠：" class="headerlink" title="地址空间重叠："></a>地址空间重叠：</h3><p>VPN是一种私有网络，不同的VPN独立管理自己的地址范围，也称为地址空间（address space）。不同VPN的地址空间可能会在一定范围内重合，例如，VPN1和VPN2都使用10.110.10.0/24网段地址，这就发生了地址空间的重叠（address spaces overlapping）。</p>
+<p>以下两种情况允许VPN使用重叠的地址空间：</p>
+<pre><code>• 两个VPN没有共同的Site
+• 两个VPN有共同的Site，但此Site中的设备不与两个VPN中使用重叠地址空间的设备互访
+</code></pre>
+<h3 id="VPN示例："><a href="#VPN示例：" class="headerlink" title="VPN示例："></a>VPN示例：</h3><p>在BGP/MPLS IP VPN中，不同VPN之间的路由隔离通过VPN实例（VPN-instance）实现。<br>PE为每个直接相连的Site建立并维护专门的VPN实例，VPN实例中包含对应Site的VPN成员关系和路由规则。具体来说，VPN实例中的信息包括：IP路由表、标签转发表、与VPN实例绑定的接口以及VPN实例的管理信息。VPN实例的管理信息包括RD（Route Distinguisher，路由标识符）、路由过滤策略、成员接口列表等。</p>
+<h3 id="VPN、Site、VPN实例之间的关系如下："><a href="#VPN、Site、VPN实例之间的关系如下：" class="headerlink" title="VPN、Site、VPN实例之间的关系如下："></a>VPN、Site、VPN实例之间的关系如下：</h3><pre><code>• VPN是多个Site的组合。一个Site可以属于多个VPN。
+• 每一个Site在PE上都关联一个VPN实例。VPN实例综合了它所关联的Site的VPN成员关系和路由规则。多个Site根据VPN实例的规则组合成一个VPN。
+• VPN实例与VPN不是一一对应的关系，VPN实例与Site之间存在一一对应的关系。
+</code></pre>
+<p><font color="#E99">VPN实例也称为VPN路由转发表VRF（VPN Routing and Forwarding table）。PE上存在多个路由转发表，包括一个公网路由转发表，以及一个或多个VPN路由转发表。</font></p>
+]]></content>
   </entry>
   <entry>
     <title>OSPF笔记</title>

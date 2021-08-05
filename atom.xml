@@ -226,9 +226,9 @@
     <category term="网络" scheme="http://example.com/categories/%E6%95%B0%E6%8D%AE%E9%80%9A%E4%BF%A1/%E7%BD%91%E7%BB%9C/"/>
     
     
-    <category term="数据链路层" scheme="http://example.com/tags/%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF%E5%B1%82/"/>
-    
     <category term="数据通信" scheme="http://example.com/tags/%E6%95%B0%E6%8D%AE%E9%80%9A%E4%BF%A1/"/>
+    
+    <category term="数据链路层" scheme="http://example.com/tags/%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF%E5%B1%82/"/>
     
     <category term="交换机" scheme="http://example.com/tags/%E4%BA%A4%E6%8D%A2%E6%9C%BA/"/>
     
@@ -251,9 +251,9 @@
     <category term="网络" scheme="http://example.com/categories/%E7%BD%91%E7%BB%9C/"/>
     
     
-    <category term="网络基础" scheme="http://example.com/tags/%E7%BD%91%E7%BB%9C%E5%9F%BA%E7%A1%80/"/>
-    
     <category term="数据通信" scheme="http://example.com/tags/%E6%95%B0%E6%8D%AE%E9%80%9A%E4%BF%A1/"/>
+    
+    <category term="网络基础" scheme="http://example.com/tags/%E7%BD%91%E7%BB%9C%E5%9F%BA%E7%A1%80/"/>
     
   </entry>
   
@@ -276,9 +276,9 @@
     <category term="网络" scheme="http://example.com/categories/%E6%95%B0%E6%8D%AE%E9%80%9A%E4%BF%A1/%E7%BD%91%E7%BB%9C/"/>
     
     
-    <category term="数据链路层" scheme="http://example.com/tags/%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF%E5%B1%82/"/>
-    
     <category term="数据通信" scheme="http://example.com/tags/%E6%95%B0%E6%8D%AE%E9%80%9A%E4%BF%A1/"/>
+    
+    <category term="数据链路层" scheme="http://example.com/tags/%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF%E5%B1%82/"/>
     
     <category term="网络" scheme="http://example.com/tags/%E7%BD%91%E7%BB%9C/"/>
     
