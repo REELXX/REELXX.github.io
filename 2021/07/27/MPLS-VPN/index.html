@@ -20,16 +20,16 @@
     var CONFIG = {"hostname":"example.com","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="BGP&#x2F;MPLS IP VPN简介BGP&#x2F;MPLS IP VPN是一种L3VPN（Layer 3 Virtual Private Network）。它使用BGP（Border Gateway Protocol）在服务提供商骨干网上发布VPN路由，使用MPLS（Multiprotocol Label Switch）在服务提供商骨干网上转发VPN报文。这里的IP是指VPN承载的是IP（Internet">
+  <meta name="description" content="BGP&#x2F;MPLS IP VPN是一种L3VPN（Layer 3 Virtual Private Network）。它使用BGP（Border Gateway Protocol）在服务提供商骨干网上发布VPN路由，使用MPLS（Multiprotocol Label Switch）在服务提供商骨干网上转发VPN报文。这里的IP是指VPN承载的是IP（Internet Protocol）报文。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="MPLS VPN">
 <meta property="og:url" content="http://example.com/2021/07/27/MPLS-VPN/index.html">
 <meta property="og:site_name" content="郑林昕的博客">
-<meta property="og:description" content="BGP&#x2F;MPLS IP VPN简介BGP&#x2F;MPLS IP VPN是一种L3VPN（Layer 3 Virtual Private Network）。它使用BGP（Border Gateway Protocol）在服务提供商骨干网上发布VPN路由，使用MPLS（Multiprotocol Label Switch）在服务提供商骨干网上转发VPN报文。这里的IP是指VPN承载的是IP（Internet">
+<meta property="og:description" content="BGP&#x2F;MPLS IP VPN是一种L3VPN（Layer 3 Virtual Private Network）。它使用BGP（Border Gateway Protocol）在服务提供商骨干网上发布VPN路由，使用MPLS（Multiprotocol Label Switch）在服务提供商骨干网上转发VPN报文。这里的IP是指VPN承载的是IP（Internet Protocol）报文。">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://example.com/2021/07/27/MPLS-VPN/VPN%E6%A8%A1%E5%9E%8B.png">
 <meta property="article:published_time" content="2021-07-27T09:32:22.000Z">
-<meta property="article:modified_time" content="2021-08-04T09:32:16.752Z">
+<meta property="article:modified_time" content="2021-08-05T02:04:29.178Z">
 <meta property="article:author" content="郑林昕">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://example.com/2021/07/27/MPLS-VPN/VPN%E6%A8%A1%E5%9E%8B.png">
@@ -199,7 +199,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-08-04 17:32:16" itemprop="dateModified" datetime="2021-08-04T17:32:16+08:00">2021-08-04</time>
+                <time title="修改时间：2021-08-05 10:04:29" itemprop="dateModified" datetime="2021-08-05T10:04:29+08:00">2021-08-05</time>
               </span>
 
           
@@ -213,7 +213,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h3 id="BGP-MPLS-IP-VPN简介"><a href="#BGP-MPLS-IP-VPN简介" class="headerlink" title="BGP/MPLS IP VPN简介"></a>BGP/MPLS IP VPN简介</h3><p>BGP/MPLS IP VPN是一种L3VPN（Layer 3 Virtual Private Network）。它使用BGP（Border Gateway Protocol）在服务提供商骨干网上发布VPN路由，使用MPLS（Multiprotocol Label Switch）在服务提供商骨干网上转发VPN报文。这里的IP是指VPN承载的是IP（Internet Protocol）报文。</p>
+        <p>BGP/MPLS IP VPN是一种L3VPN（Layer 3 Virtual Private Network）。它使用BGP（Border Gateway Protocol）在服务提供商骨干网上发布VPN路由，使用MPLS（Multiprotocol Label Switch）在服务提供商骨干网上转发VPN报文。这里的IP是指VPN承载的是IP（Internet Protocol）报文。</p>
 <span id="more"></span>
 
 <p><img src="/2021/07/27/MPLS-VPN/VPN%E6%A8%A1%E5%9E%8B.png" alt="MPLS IP VPN模型"><br>图：BGP/MPLS IP VPN模型</p>
@@ -224,7 +224,7 @@
 </code></pre>
 <p>PE和P设备仅由服务提供商管理；CE设备仅由用户管理，除非用户把管理权委托给服务提供商。</p>
 <p>一台PE设备可以接入多台CE设备。一台CE设备也可以连接属于相同或不同服务提供商的多台PE设备。</p>
-<h2 id="MPLS-VPN的原理描述"><a href="#MPLS-VPN的原理描述" class="headerlink" title="MPLS VPN的原理描述"></a>MPLS VPN的原理描述</h2><h3 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念:"></a>基本概念:</h3><h4 id="Site"><a href="#Site" class="headerlink" title="Site:"></a>Site:</h4><pre><code>• Site是指相互之间具备IP连通性的一组IP系统，并且，这组IP系统的IP连通性不需通过运营商网络实现。
+<h1 id="MPLS-VPN的原理描述"><a href="#MPLS-VPN的原理描述" class="headerlink" title="MPLS VPN的原理描述"></a>MPLS VPN的原理描述</h1><h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念:"></a>基本概念:</h2><h3 id="Site"><a href="#Site" class="headerlink" title="Site:"></a>Site:</h3><pre><code>• Site是指相互之间具备IP连通性的一组IP系统，并且，这组IP系统的IP连通性不需通过运营商网络实现。
 • Site的划分是根据设备的拓扑关系，而不是地理位置，尽管在大多数情况下一个Site中的设备地理位置相邻。地理位置隔离的两组IP系统，如果它们使用专线互联，不需要通过运营商网络就可以互通，这两组IP系统也组成一个Site。
 • 一个Site中的设备可以属于多个VPN，换言之，一个Site可以属于多个VPN。
 • Site通过CE连接到运营商网络，一个Site可以包含多个CE，但一个CE只属于一个Site。
@@ -234,13 +234,13 @@
     如果Site是多个子网，则使用路由器作为CE设备。
     对于多个连接到同一运营商网络的Site，通过制定策略，可以将它们划分为不同的集合（set），只有属于相同集合的Site之间才能通过运营商网络互访，这种集合就是VPN。
 </code></pre>
-<h4 id="地址空间重叠："><a href="#地址空间重叠：" class="headerlink" title="地址空间重叠："></a>地址空间重叠：</h4><p>VPN是一种私有网络，不同的VPN独立管理自己的地址范围，也称为地址空间（address space）。不同VPN的地址空间可能会在一定范围内重合，例如，VPN1和VPN2都使用10.110.10.0/24网段地址，这就发生了地址空间的重叠（address spaces overlapping）。</p>
+<h3 id="地址空间重叠："><a href="#地址空间重叠：" class="headerlink" title="地址空间重叠："></a>地址空间重叠：</h3><p>VPN是一种私有网络，不同的VPN独立管理自己的地址范围，也称为地址空间（address space）。不同VPN的地址空间可能会在一定范围内重合，例如，VPN1和VPN2都使用10.110.10.0/24网段地址，这就发生了地址空间的重叠（address spaces overlapping）。</p>
 <p>以下两种情况允许VPN使用重叠的地址空间：</p>
 <pre><code>• 两个VPN没有共同的Site
 • 两个VPN有共同的Site，但此Site中的设备不与两个VPN中使用重叠地址空间的设备互访
 </code></pre>
-<h4 id="VPN示例："><a href="#VPN示例：" class="headerlink" title="VPN示例："></a>VPN示例：</h4><p>在BGP/MPLS IP VPN中，不同VPN之间的路由隔离通过VPN实例（VPN-instance）实现。<br>PE为每个直接相连的Site建立并维护专门的VPN实例，VPN实例中包含对应Site的VPN成员关系和路由规则。具体来说，VPN实例中的信息包括：IP路由表、标签转发表、与VPN实例绑定的接口以及VPN实例的管理信息。VPN实例的管理信息包括RD（Route Distinguisher，路由标识符）、路由过滤策略、成员接口列表等。</p>
-<h4 id="VPN、Site、VPN实例之间的关系如下："><a href="#VPN、Site、VPN实例之间的关系如下：" class="headerlink" title="VPN、Site、VPN实例之间的关系如下："></a>VPN、Site、VPN实例之间的关系如下：</h4><pre><code>• VPN是多个Site的组合。一个Site可以属于多个VPN。
+<h3 id="VPN示例："><a href="#VPN示例：" class="headerlink" title="VPN示例："></a>VPN示例：</h3><p>在BGP/MPLS IP VPN中，不同VPN之间的路由隔离通过VPN实例（VPN-instance）实现。<br>PE为每个直接相连的Site建立并维护专门的VPN实例，VPN实例中包含对应Site的VPN成员关系和路由规则。具体来说，VPN实例中的信息包括：IP路由表、标签转发表、与VPN实例绑定的接口以及VPN实例的管理信息。VPN实例的管理信息包括RD（Route Distinguisher，路由标识符）、路由过滤策略、成员接口列表等。</p>
+<h3 id="VPN、Site、VPN实例之间的关系如下："><a href="#VPN、Site、VPN实例之间的关系如下：" class="headerlink" title="VPN、Site、VPN实例之间的关系如下："></a>VPN、Site、VPN实例之间的关系如下：</h3><pre><code>• VPN是多个Site的组合。一个Site可以属于多个VPN。
 • 每一个Site在PE上都关联一个VPN实例。VPN实例综合了它所关联的Site的VPN成员关系和路由规则。多个Site根据VPN实例的规则组合成一个VPN。
 • VPN实例与VPN不是一一对应的关系，VPN实例与Site之间存在一一对应的关系。
 </code></pre>
@@ -264,8 +264,8 @@
       <i class="fa fa-chevron-left"></i> MPLS学习笔记
     </a></div>
       <div class="post-nav-item">
-    <a href="/2021/07/28/%E7%BD%91%E7%BB%9C%E8%99%9A%E6%8B%9F%E5%8C%96%E2%80%94%E2%80%94SDN/" rel="next" title="网络虚拟化——SDN">
-      网络虚拟化——SDN <i class="fa fa-chevron-right"></i>
+    <a href="/2021/07/28/%E7%BD%91%E7%BB%9C%E8%99%9A%E6%8B%9F%E5%8C%96%E2%80%94%E2%80%94SDN/" rel="next" title="网络虚拟化">
+      网络虚拟化 <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
@@ -325,7 +325,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#BGP-MPLS-IP-VPN%E7%AE%80%E4%BB%8B"><span class="nav-number">1.</span> <span class="nav-text">BGP&#x2F;MPLS IP VPN简介</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MPLS-VPN%E7%9A%84%E5%8E%9F%E7%90%86%E6%8F%8F%E8%BF%B0"><span class="nav-number"></span> <span class="nav-text">MPLS VPN的原理描述</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5"><span class="nav-number">1.</span> <span class="nav-text">基本概念:</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Site"><span class="nav-number">1.1.</span> <span class="nav-text">Site:</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%9C%B0%E5%9D%80%E7%A9%BA%E9%97%B4%E9%87%8D%E5%8F%A0%EF%BC%9A"><span class="nav-number">1.2.</span> <span class="nav-text">地址空间重叠：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#VPN%E7%A4%BA%E4%BE%8B%EF%BC%9A"><span class="nav-number">1.3.</span> <span class="nav-text">VPN示例：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#VPN%E3%80%81Site%E3%80%81VPN%E5%AE%9E%E4%BE%8B%E4%B9%8B%E9%97%B4%E7%9A%84%E5%85%B3%E7%B3%BB%E5%A6%82%E4%B8%8B%EF%BC%9A"><span class="nav-number">1.4.</span> <span class="nav-text">VPN、Site、VPN实例之间的关系如下：</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#MPLS-VPN%E7%9A%84%E5%8E%9F%E7%90%86%E6%8F%8F%E8%BF%B0"><span class="nav-number">1.</span> <span class="nav-text">MPLS VPN的原理描述</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5"><span class="nav-number">1.1.</span> <span class="nav-text">基本概念:</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Site"><span class="nav-number">1.1.1.</span> <span class="nav-text">Site:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9C%B0%E5%9D%80%E7%A9%BA%E9%97%B4%E9%87%8D%E5%8F%A0%EF%BC%9A"><span class="nav-number">1.1.2.</span> <span class="nav-text">地址空间重叠：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#VPN%E7%A4%BA%E4%BE%8B%EF%BC%9A"><span class="nav-number">1.1.3.</span> <span class="nav-text">VPN示例：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#VPN%E3%80%81Site%E3%80%81VPN%E5%AE%9E%E4%BE%8B%E4%B9%8B%E9%97%B4%E7%9A%84%E5%85%B3%E7%B3%BB%E5%A6%82%E4%B8%8B%EF%BC%9A"><span class="nav-number">1.1.4.</span> <span class="nav-text">VPN、Site、VPN实例之间的关系如下：</span></a></li></ol></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -411,7 +411,7 @@
       <i class="fa fa-chart-area"></i>
     </span>
       <span class="post-meta-item-text">站点总字数：</span>
-    <span title="站点总字数">50k</span>
+    <span title="站点总字数">51k</span>
 </div>
 
         

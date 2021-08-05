@@ -30,7 +30,7 @@
 <meta property="og:image" content="http://example.com/2021/07/22/%E4%BA%8C%E5%B1%82%E7%AB%AF%E5%8F%A3/ethernet%E5%B8%A7%E6%A0%BC%E5%BC%8F.png">
 <meta property="og:image" content="http://example.com/2021/07/22/%E4%BA%8C%E5%B1%82%E7%AB%AF%E5%8F%A3/VLAN%E5%B8%A7.png">
 <meta property="article:published_time" content="2021-07-22T02:32:44.000Z">
-<meta property="article:modified_time" content="2021-07-26T09:08:48.801Z">
+<meta property="article:modified_time" content="2021-08-05T02:08:44.027Z">
 <meta property="article:author" content="郑林昕">
 <meta property="article:tag" content="交换机">
 <meta property="article:tag" content="OSI">
@@ -204,7 +204,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-07-26 17:08:48" itemprop="dateModified" datetime="2021-07-26T17:08:48+08:00">2021-07-26</time>
+                <time title="修改时间：2021-08-05 10:08:44" itemprop="dateModified" datetime="2021-08-05T10:08:44+08:00">2021-08-05</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -233,7 +233,8 @@
       
         <p><strong>OSI模型</strong>：OSI 是不同制造商的设备和应用软件在网络中进行通信的标准，此模型已经成为计算机间和网络间进行通信的主要结构模型。</p>
 <span id="more"></span>
-<p>OSI 体系结构定义了一个七层模型用于进行进程间的通信，并作为一个概念性框架来协调各层标准的制定；OSI 的服务定义描述了各层所提供的服务，以及层与层之间的抽象接口和交互用的服务原语；OSI 各层的协议规范精确的定义了应当发送何种控制信息及何种过程来解释该控制信息。下面从上往下介绍OSI七层模型。</p>
+
+<h1 id="二层端口"><a href="#二层端口" class="headerlink" title="二层端口"></a>二层端口</h1><p>OSI 体系结构定义了一个七层模型用于进行进程间的通信，并作为一个概念性框架来协调各层标准的制定；OSI 的服务定义描述了各层所提供的服务，以及层与层之间的抽象接口和交互用的服务原语；OSI 各层的协议规范精确的定义了应当发送何种控制信息及何种过程来解释该控制信息。下面从上往下介绍OSI七层模型。</p>
 <ul>
 <li>应用层：<strong>为应用程序提供网络服务</strong>。负责对软件提供接口以使程序能享用网络服务。应用层提供的服务包括文件传输、文件管理以及电子邮件的信息处理。</li>
 <li>表示层：<strong>数据格式化，加密，解密</strong>。表示层中数据将按照网络能理解的方案进行格式转化，管理数据的解密与加密，还对图片和文件格式信息进行解码和编码。</li>
@@ -258,7 +259,7 @@
 <p>VLAN ID：指明了所属的VLAN，一共有4096个，每个支持802.1Q协议的主机发出来的帧都会保留这个域。</p>
 <p>CFI：规范格式指示符，以太网的值为0。</p>
 <p>priority：指定帧的优先级。</p>
-<h2 id="二层端口"><a href="#二层端口" class="headerlink" title="二层端口"></a>二层端口</h2><h3 id="Access-端口"><a href="#Access-端口" class="headerlink" title="Access 端口"></a>Access 端口</h3><p>&emsp;&emsp;Access端口主要是用来连接用户主机的二层以太网端口。它有一种最主要的特性就是：仅允许一个VLAN的帧通过，反过来也就是Access端口仅可以加入到一个VLAN中，且Access端口发送的以太网帧永远是Untagged（不带标签）的。</p>
+<h2 id="二层端口-1"><a href="#二层端口-1" class="headerlink" title="二层端口"></a>二层端口</h2><h3 id="Access-端口"><a href="#Access-端口" class="headerlink" title="Access 端口"></a>Access 端口</h3><p>&emsp;&emsp;Access端口主要是用来连接用户主机的二层以太网端口。它有一种最主要的特性就是：仅允许一个VLAN的帧通过，反过来也就是Access端口仅可以加入到一个VLAN中，且Access端口发送的以太网帧永远是Untagged（不带标签）的。</p>
 <h3 id="Trunk-端口"><a href="#Trunk-端口" class="headerlink" title="Trunk 端口"></a>Trunk 端口</h3><p>&emsp;&emsp;Trunk端口是用来连接与其他交换机的二层以太网端口。它的最主要特性就是允许多个VLAN的帧通过，并且所发送的以太网帧都是带标签的，除了发送VLAN ID与PVID（Port Default VLAN ID，端口缺省VLAN ID）一致的VLAN帧。</p>
 <h3 id="Hybird-端口"><a href="#Hybird-端口" class="headerlink" title="Hybird 端口"></a>Hybird 端口</h3><p>&emsp;&emsp;Hybrid端口可以说是以上Access端口和Trunk端口的混合体，具有它们共同的特等性，是一种特殊的二层以太网端口。正因如此，Hybrid端口既可以连接用户主机，又可以连接其他交换机、路由器设备。同时Hybrid端口又允许一个，或多个VLAN的帧通过，并可选择以带标签，或者不带标签的方式发送数据帧。</p>
 <h3 id="QinQ-端口"><a href="#QinQ-端口" class="headerlink" title="QinQ 端口"></a>QinQ 端口</h3><p>&emsp;&emsp;QinQ端口是专用于QinQ协议的二层以太网端口。它可以给数据帧加上双层VLAN标签，即在原来标签的基础上，给帧加上一个新的标签，从而可以支持多达4094×4094个VLAN，满足企业用户网络对VLAN数量更高的需求。S1700和S2700SI不支持QinQ类型端口。</p>
@@ -388,7 +389,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%A5%E5%A4%AA%E7%BD%91%E5%B8%A7"><span class="nav-number">1.</span> <span class="nav-text">以太网帧</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BD%BF%E7%94%A8%E4%B8%A4%E7%A7%8D%E6%A0%87%E5%87%86%E5%B8%A7%E6%A0%BC%E5%BC%8F%EF%BC%8C%E7%8E%B0%E5%9C%A8%E5%A4%A7%E5%A4%9A%E6%95%B0%E6%95%B0%E6%8D%AE%E5%B8%A7%E4%BD%BF%E7%94%A8%E7%9A%84%E6%98%AFEthernet-II%E6%A0%BC%E5%BC%8F%EF%BC%88%E5%A6%82%E4%B8%8B%E5%9B%BE%EF%BC%89"><span class="nav-number">1.1.</span> <span class="nav-text">以太网使用两种标准帧格式，现在大多数数据帧使用的是Ethernet II格式（如下图）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#VLAN%E5%B8%A7%E6%A0%BC%E5%BC%8F"><span class="nav-number">2.</span> <span class="nav-text">VLAN帧格式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E5%B1%82%E7%AB%AF%E5%8F%A3"><span class="nav-number">3.</span> <span class="nav-text">二层端口</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Access-%E7%AB%AF%E5%8F%A3"><span class="nav-number">3.1.</span> <span class="nav-text">Access 端口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Trunk-%E7%AB%AF%E5%8F%A3"><span class="nav-number">3.2.</span> <span class="nav-text">Trunk 端口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Hybird-%E7%AB%AF%E5%8F%A3"><span class="nav-number">3.3.</span> <span class="nav-text">Hybird 端口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#QinQ-%E7%AB%AF%E5%8F%A3"><span class="nav-number">3.4.</span> <span class="nav-text">QinQ 端口</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E5%B1%82%E7%AB%AF%E5%8F%A3%E6%95%B0%E6%8D%AE%E5%B8%A7%E5%A4%84%E7%90%86%E8%A7%84%E5%88%99"><span class="nav-number">4.</span> <span class="nav-text">二层端口数据帧处理规则</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E5%B1%82%E4%BB%A5%E5%A4%AA%E7%BD%91%E9%93%BE%E8%B7%AF"><span class="nav-number">5.</span> <span class="nav-text">二层以太网链路</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9B%B8%E5%85%B3%E6%8E%A8%E8%8D%90-%E5%8F%82%E8%80%83"><span class="nav-number">6.</span> <span class="nav-text">相关推荐&#x2F;参考</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BA%8C%E5%B1%82%E7%AB%AF%E5%8F%A3"><span class="nav-number">1.</span> <span class="nav-text">二层端口</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%A5%E5%A4%AA%E7%BD%91%E5%B8%A7"><span class="nav-number">1.1.</span> <span class="nav-text">以太网帧</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BD%BF%E7%94%A8%E4%B8%A4%E7%A7%8D%E6%A0%87%E5%87%86%E5%B8%A7%E6%A0%BC%E5%BC%8F%EF%BC%8C%E7%8E%B0%E5%9C%A8%E5%A4%A7%E5%A4%9A%E6%95%B0%E6%95%B0%E6%8D%AE%E5%B8%A7%E4%BD%BF%E7%94%A8%E7%9A%84%E6%98%AFEthernet-II%E6%A0%BC%E5%BC%8F%EF%BC%88%E5%A6%82%E4%B8%8B%E5%9B%BE%EF%BC%89"><span class="nav-number">1.1.1.</span> <span class="nav-text">以太网使用两种标准帧格式，现在大多数数据帧使用的是Ethernet II格式（如下图）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#VLAN%E5%B8%A7%E6%A0%BC%E5%BC%8F"><span class="nav-number">1.2.</span> <span class="nav-text">VLAN帧格式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E5%B1%82%E7%AB%AF%E5%8F%A3-1"><span class="nav-number">1.3.</span> <span class="nav-text">二层端口</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Access-%E7%AB%AF%E5%8F%A3"><span class="nav-number">1.3.1.</span> <span class="nav-text">Access 端口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Trunk-%E7%AB%AF%E5%8F%A3"><span class="nav-number">1.3.2.</span> <span class="nav-text">Trunk 端口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Hybird-%E7%AB%AF%E5%8F%A3"><span class="nav-number">1.3.3.</span> <span class="nav-text">Hybird 端口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#QinQ-%E7%AB%AF%E5%8F%A3"><span class="nav-number">1.3.4.</span> <span class="nav-text">QinQ 端口</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E5%B1%82%E7%AB%AF%E5%8F%A3%E6%95%B0%E6%8D%AE%E5%B8%A7%E5%A4%84%E7%90%86%E8%A7%84%E5%88%99"><span class="nav-number">1.4.</span> <span class="nav-text">二层端口数据帧处理规则</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E5%B1%82%E4%BB%A5%E5%A4%AA%E7%BD%91%E9%93%BE%E8%B7%AF"><span class="nav-number">1.5.</span> <span class="nav-text">二层以太网链路</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9B%B8%E5%85%B3%E6%8E%A8%E8%8D%90-%E5%8F%82%E8%80%83"><span class="nav-number">1.6.</span> <span class="nav-text">相关推荐&#x2F;参考</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -474,7 +475,7 @@
       <i class="fa fa-chart-area"></i>
     </span>
       <span class="post-meta-item-text">站点总字数：</span>
-    <span title="站点总字数">50k</span>
+    <span title="站点总字数">51k</span>
 </div>
 
         
