@@ -125,6 +125,11 @@
       </tags>
   </entry>
   <entry>
+    <title>EVPN VXLAN</title>
+    <url>/2021/08/05/EVPN-VXLAN/</url>
+    <content><![CDATA[]]></content>
+  </entry>
+  <entry>
     <title>Hexo+yilia左侧背景图片更换</title>
     <url>/2021/07/23/Hexo-yilia%E5%B7%A6%E4%BE%A7%E8%83%8C%E6%99%AF%E5%9B%BE%E7%89%87%E6%9B%B4%E6%8D%A2/</url>
     <content><![CDATA[<p>关于hexo+yilia的左侧替换原始背景方案</p>
@@ -154,27 +159,6 @@
         <tag>博客自定义</tag>
         <tag>yilia</tag>
         <tag>经验</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>LLDP协议解析</title>
-    <url>/2021/07/23/LLDP%E5%8D%8F%E8%AE%AE%E8%A7%A3%E6%9E%90/</url>
-    <content><![CDATA[<p>链路层发现协议基本概念</p>
-<span id="more"></span>
-
-<h1 id="链路层发现协议"><a href="#链路层发现协议" class="headerlink" title="链路层发现协议"></a>链路层发现协议</h1><h2 id="概述1："><a href="#概述1：" class="headerlink" title="概述1："></a>概述1：</h2><p>LLDP（Link Layer Discovery Protocol，链路层发现协议）就是用于这个目的的协议。LLDP定义在802.1ab中,它是一个二层协议，它提供了一种标准的链路层发现方式。LLDP协议使得接入网络的一台设备可以将其主要的能力，管理地址，设备标识，接口标识等信息发送给接入同一个局域网络的其它设备。当一个设备从网络中接收到其它设备的这些信息时，它就将这些信息以MIB的形式存储起来。<br>这些MIB信息可用于发现设备的物理拓扑结构以及管理配置信息。需要注意的是LLDP仅仅被设计用于进行信息通告，它被用于通告一个设备的信息并可以获得其它设备的信息，进而得到相关的MIB信息。它不是一个配置、控制协议，无法通过该协议对远端设备进行配置，它只是提供了关于网络拓扑以及管理配置的信息，这些信息可以被用于管理、配置的目的，如何用取决于信息的使用者。</p>
-<h2 id="概述2："><a href="#概述2：" class="headerlink" title="概述2："></a>概述2：</h2><p>LLDP（Link Layer Discovery Protocol，链路层发现协议）是由IEEE 802.1AB定义的一种链路层发现协议。通过LLDP协议能够进行拓扑的发现及掌握拓扑的变化情况。LLDP将设备本地的信息组织成TLV的格式（Type/Lenth/Value，类型/长度/值）封装在LLDPDU（LLDP data unit，链路层发现协议数据单元）中发送给邻居设备，同时它将邻居设备发送的LLDPDU以MIB（Management Information Base，管理信息库）的形式存储起来，提供给网络管理系统访问。<br>通过LLDP，网络管理系统可以掌握拓扑的连接情况，比如设备的哪些端口与其它设备相连接，链路连接两端的端口的速率、双工是否匹配等，管理员可以根据这些信息快速地定位及排查故障。</p>
-<h2 id="LLDP工作模式"><a href="#LLDP工作模式" class="headerlink" title="LLDP工作模式"></a>LLDP工作模式</h2><p>LLDP提供了三种工作模式：<br>• TxRx：即发送也接收LLDPDU。<br>• Rx Only：只接收不发送LLDPDU。<br>• Tx Only：只发送不接收LLDPDU。<br>当端口的LLDP工作模式发生变化时，端口将对协议状态机进行初始化操作，通过配置端口初始化的延迟时间，可以避免由于工作模式频繁改变而导致端口不断地进行初始化操作。</p>
-<h2 id="待补充"><a href="#待补充" class="headerlink" title="待补充"></a>待补充</h2><h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><p><a href="https://blog.csdn.net/goodluckwhh/article/details/10948065?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522162702451016780262582058%2522%252C%2522scm%2522%253A%252220140713.130102334..%2522%257D&request_id=162702451016780262582058&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~all~top_positive~default-1-10948065.first_rank_v2_pc_rank_v29&utm_term=lldp&spm=1018.2226.3001.4187">数据链路层学习之LLDP</a></p>
-]]></content>
-      <categories>
-        <category>数据通信</category>
-        <category>网络</category>
-      </categories>
-      <tags>
-        <tag>数据通信</tag>
-        <tag>数据链路层</tag>
-        <tag>网络</tag>
       </tags>
   </entry>
   <entry>
@@ -220,6 +204,27 @@
         <tag>数据通信</tag>
         <tag>数据链路层</tag>
         <tag>交换机</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>LLDP协议解析</title>
+    <url>/2021/07/23/LLDP%E5%8D%8F%E8%AE%AE%E8%A7%A3%E6%9E%90/</url>
+    <content><![CDATA[<p>链路层发现协议基本概念</p>
+<span id="more"></span>
+
+<h1 id="链路层发现协议"><a href="#链路层发现协议" class="headerlink" title="链路层发现协议"></a>链路层发现协议</h1><h2 id="概述1："><a href="#概述1：" class="headerlink" title="概述1："></a>概述1：</h2><p>LLDP（Link Layer Discovery Protocol，链路层发现协议）就是用于这个目的的协议。LLDP定义在802.1ab中,它是一个二层协议，它提供了一种标准的链路层发现方式。LLDP协议使得接入网络的一台设备可以将其主要的能力，管理地址，设备标识，接口标识等信息发送给接入同一个局域网络的其它设备。当一个设备从网络中接收到其它设备的这些信息时，它就将这些信息以MIB的形式存储起来。<br>这些MIB信息可用于发现设备的物理拓扑结构以及管理配置信息。需要注意的是LLDP仅仅被设计用于进行信息通告，它被用于通告一个设备的信息并可以获得其它设备的信息，进而得到相关的MIB信息。它不是一个配置、控制协议，无法通过该协议对远端设备进行配置，它只是提供了关于网络拓扑以及管理配置的信息，这些信息可以被用于管理、配置的目的，如何用取决于信息的使用者。</p>
+<h2 id="概述2："><a href="#概述2：" class="headerlink" title="概述2："></a>概述2：</h2><p>LLDP（Link Layer Discovery Protocol，链路层发现协议）是由IEEE 802.1AB定义的一种链路层发现协议。通过LLDP协议能够进行拓扑的发现及掌握拓扑的变化情况。LLDP将设备本地的信息组织成TLV的格式（Type/Lenth/Value，类型/长度/值）封装在LLDPDU（LLDP data unit，链路层发现协议数据单元）中发送给邻居设备，同时它将邻居设备发送的LLDPDU以MIB（Management Information Base，管理信息库）的形式存储起来，提供给网络管理系统访问。<br>通过LLDP，网络管理系统可以掌握拓扑的连接情况，比如设备的哪些端口与其它设备相连接，链路连接两端的端口的速率、双工是否匹配等，管理员可以根据这些信息快速地定位及排查故障。</p>
+<h2 id="LLDP工作模式"><a href="#LLDP工作模式" class="headerlink" title="LLDP工作模式"></a>LLDP工作模式</h2><p>LLDP提供了三种工作模式：<br>• TxRx：即发送也接收LLDPDU。<br>• Rx Only：只接收不发送LLDPDU。<br>• Tx Only：只发送不接收LLDPDU。<br>当端口的LLDP工作模式发生变化时，端口将对协议状态机进行初始化操作，通过配置端口初始化的延迟时间，可以避免由于工作模式频繁改变而导致端口不断地进行初始化操作。</p>
+<h2 id="待补充"><a href="#待补充" class="headerlink" title="待补充"></a>待补充</h2><h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><p><a href="https://blog.csdn.net/goodluckwhh/article/details/10948065?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522162702451016780262582058%2522%252C%2522scm%2522%253A%252220140713.130102334..%2522%257D&request_id=162702451016780262582058&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~all~top_positive~default-1-10948065.first_rank_v2_pc_rank_v29&utm_term=lldp&spm=1018.2226.3001.4187">数据链路层学习之LLDP</a></p>
+]]></content>
+      <categories>
+        <category>数据通信</category>
+        <category>网络</category>
+      </categories>
+      <tags>
+        <tag>数据通信</tag>
+        <tag>数据链路层</tag>
+        <tag>网络</tag>
       </tags>
   </entry>
   <entry>
@@ -447,6 +452,55 @@ ILM
 ]]></content>
   </entry>
   <entry>
+    <title>博客文档指南</title>
+    <url>/2021/07/20/VLAN/</url>
+    <content><![CDATA[<p>根据<a href="https://blog.csdn.net/sanallen/article/details/92081911?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522162684851716780274192566%2522%252C%2522scm%2522%253A%252220140713.130102334..%2522%257D&request_id=162684851716780274192566&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~all~sobaiduend~default-1-92081911.first_rank_v2_pc_rank_v29&utm_term=markdown%E6%96%87%E6%A1%A3%E7%BC%96%E5%86%99%E6%8C%87%E5%8D%97&spm=1018.2226.3001.4187">Markdown文档编写指南</a>编写</p>
+<span id="more"></span>
+<p>标题使用#一级 ##二级 ###三级 类推</p>
+<h2 id="段落"><a href="#段落" class="headerlink" title="段落"></a>段落</h2><p>两行之间空一行就能划分段落</p>
+<p>第一行段落</p>
+<p>第二行段落</p>
+<h2 id="区块引用"><a href="#区块引用" class="headerlink" title="区块引用"></a>区块引用</h2><blockquote>
+<p>对内容进行强调显示，会被高亮显示</p>
+</blockquote>
+<h2 id="超链接"><a href="#超链接" class="headerlink" title="超链接"></a>超链接</h2><p><a href="https://www.baidu.com/">百度</a></p>
+<h2 id="老婆！！"><a href="#老婆！！" class="headerlink" title="老婆！！"></a>老婆！！</h2><p><img src="https://img1.baidu.com/it/u=3661816073,3507776781&fm=26&fmt=auto&gp=0.jpg" alt="22"></p>
+<h2 id="无序列表"><a href="#无序列表" class="headerlink" title="无序列表"></a>无序列表</h2><ul>
+<li>first</li>
+<li>second</li>
+<li>third<h2 id="有序列表"><a href="#有序列表" class="headerlink" title="有序列表"></a>有序列表</h2></li>
+</ul>
+<ol>
+<li>第一行</li>
+<li>第二行</li>
+<li>第三行<h2 id="锚点"><a href="#锚点" class="headerlink" title="锚点"></a>锚点</h2>使用命名锚记可以在文档中设置标记，这些标记通常放在文档的特定主题处或顶部。然后可以创建到这些命名锚记的链接，这些链接可快速将访问者带到指定位置。</li>
+</ol>
+<p>创建到命名锚记的链接的过程分为两步。</p>
+<ul>
+<li>创建命名锚记</li>
+<li>创建 到该命名锚记的链接。</li>
+</ul>
+<p>反正就是用于文章快速定位，点击目录便可直接跳转到指定位置的。</p>
+<p>在这里我分享一下锚点在MarkDown编辑器中怎么使用：<br>首先是建立一个跳转的连接：</p>
+<p><a href="#jump">说明文字</a></p>
+<p>然后标记要跳转到的位置：</p>
+<p><span id="jump">跳转到的位置</span></p>
+<h2 id="空格是-amp-emsp；"><a href="#空格是-amp-emsp；" class="headerlink" title="空格是 &amp;emsp；"></a>空格是 &amp;emsp；</h2><h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><hr>
+<p>分割线 <em>斜体内容</em>  <strong>加粗内容</strong></p>
+<hr>
+<blockquote>
+<p>ctrl+shift+p 命令输入框<br>    – markdown 侧边阅览</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>博客</category>
+      </categories>
+      <tags>
+        <tag>博客</tag>
+        <tag>编写指南</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>STP解析</title>
     <url>/2021/08/02/STP%E8%A7%A3%E6%9E%90/</url>
     <content><![CDATA[<p>生成树协议STP（Spanning Tree Protocol）将环形网络修剪成为一个无环的树型网络，避免报文在环形网络中的增生和无限循环。<br>在一个复杂的网络环境中，难免会出现环路。由于冗余备份的需要，网络设计者都倾向于在设备之间部署多条物理链路，其中一条作主用链路，其他链路作备份，这样都有可能会导致环路产生。<br>环路会产生广播风暴，最终导致整个网络资源被耗尽，网络瘫痪不可用。环路还会引起MAC地址表震荡导致MAC地址表项被破坏。<br>为了破除环路，可以采用数据链路层协议STP，运行该协议的设备通过彼此交互信息发现网络中的环路，并有选择的对某个端口进行阻塞，最终将环形网络结构修剪成无环路的树形网络结构，从而防止报文在环形网络中不断循环，避免设备由于重复接收相同的报文造成处理能力下降。</p>
@@ -567,55 +621,6 @@ BPDU处理变化:
 <p>Uplink Fast：很类似RSTP中的“根端口快速切换机制”。但Uplink Fast功能只在边缘的交换机上使能。<br>BackboneFast：是对UplinkFast一个延伸。该功能可以在整个STP域里的所有交换机上使能。使能该功能的交换机的根端口若收到一个次等BPDU，则会检查该BPDU的发送者BID，如果是上游指定桥发来的，则会认为上游链路失效。</p>
 </blockquote>
 ]]></content>
-  </entry>
-  <entry>
-    <title>博客文档指南</title>
-    <url>/2021/07/20/VLAN/</url>
-    <content><![CDATA[<p>根据<a href="https://blog.csdn.net/sanallen/article/details/92081911?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522162684851716780274192566%2522%252C%2522scm%2522%253A%252220140713.130102334..%2522%257D&request_id=162684851716780274192566&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~all~sobaiduend~default-1-92081911.first_rank_v2_pc_rank_v29&utm_term=markdown%E6%96%87%E6%A1%A3%E7%BC%96%E5%86%99%E6%8C%87%E5%8D%97&spm=1018.2226.3001.4187">Markdown文档编写指南</a>编写</p>
-<span id="more"></span>
-<p>标题使用#一级 ##二级 ###三级 类推</p>
-<h2 id="段落"><a href="#段落" class="headerlink" title="段落"></a>段落</h2><p>两行之间空一行就能划分段落</p>
-<p>第一行段落</p>
-<p>第二行段落</p>
-<h2 id="区块引用"><a href="#区块引用" class="headerlink" title="区块引用"></a>区块引用</h2><blockquote>
-<p>对内容进行强调显示，会被高亮显示</p>
-</blockquote>
-<h2 id="超链接"><a href="#超链接" class="headerlink" title="超链接"></a>超链接</h2><p><a href="https://www.baidu.com/">百度</a></p>
-<h2 id="老婆！！"><a href="#老婆！！" class="headerlink" title="老婆！！"></a>老婆！！</h2><p><img src="https://img1.baidu.com/it/u=3661816073,3507776781&fm=26&fmt=auto&gp=0.jpg" alt="22"></p>
-<h2 id="无序列表"><a href="#无序列表" class="headerlink" title="无序列表"></a>无序列表</h2><ul>
-<li>first</li>
-<li>second</li>
-<li>third<h2 id="有序列表"><a href="#有序列表" class="headerlink" title="有序列表"></a>有序列表</h2></li>
-</ul>
-<ol>
-<li>第一行</li>
-<li>第二行</li>
-<li>第三行<h2 id="锚点"><a href="#锚点" class="headerlink" title="锚点"></a>锚点</h2>使用命名锚记可以在文档中设置标记，这些标记通常放在文档的特定主题处或顶部。然后可以创建到这些命名锚记的链接，这些链接可快速将访问者带到指定位置。</li>
-</ol>
-<p>创建到命名锚记的链接的过程分为两步。</p>
-<ul>
-<li>创建命名锚记</li>
-<li>创建 到该命名锚记的链接。</li>
-</ul>
-<p>反正就是用于文章快速定位，点击目录便可直接跳转到指定位置的。</p>
-<p>在这里我分享一下锚点在MarkDown编辑器中怎么使用：<br>首先是建立一个跳转的连接：</p>
-<p><a href="#jump">说明文字</a></p>
-<p>然后标记要跳转到的位置：</p>
-<p><span id="jump">跳转到的位置</span></p>
-<h2 id="空格是-amp-emsp；"><a href="#空格是-amp-emsp；" class="headerlink" title="空格是 &amp;emsp；"></a>空格是 &amp;emsp；</h2><h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><hr>
-<p>分割线 <em>斜体内容</em>  <strong>加粗内容</strong></p>
-<hr>
-<blockquote>
-<p>ctrl+shift+p 命令输入框<br>    – markdown 侧边阅览</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>博客</category>
-      </categories>
-      <tags>
-        <tag>博客</tag>
-        <tag>编写指南</tag>
-      </tags>
   </entry>
   <entry>
     <title>Hello World</title>
