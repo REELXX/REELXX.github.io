@@ -28,10 +28,10 @@
 <meta property="og:description" content="Link Aggregation Control Protocol，链路汇聚控制协议基于IEEE802.3ad标准。各厂家均支持的标准协议，LACP协议通过LACPDU（Link Aggregation Control Protocol Data Unit，链路汇聚控制协议数据单元）与对端交互信息,建立聚合端口AP ，处于动态聚合组中的接口会自动使能LACP 协议，该接口将通过发送LACPDU 向">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2021-07-25T14:56:36.000Z">
-<meta property="article:modified_time" content="2021-08-05T02:05:43.192Z">
+<meta property="article:modified_time" content="2021-08-05T09:33:24.536Z">
 <meta property="article:author" content="郑林昕">
-<meta property="article:tag" content="数据通信">
 <meta property="article:tag" content="数据链路层">
+<meta property="article:tag" content="数据通信">
 <meta property="article:tag" content="交换机">
 <meta name="twitter:card" content="summary">
 
@@ -139,7 +139,7 @@
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">19</span></a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">21</span></a>
 
   </li>
   </ul>
@@ -200,7 +200,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-08-05 10:05:43" itemprop="dateModified" datetime="2021-08-05T10:05:43+08:00">2021-08-05</time>
+                <time title="修改时间：2021-08-05 17:33:24" itemprop="dateModified" datetime="2021-08-05T17:33:24+08:00">2021-08-05</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -248,9 +248,28 @@
 <p>LACP协商：系统ID优先级高的系统成为主系统，<font color="#F4A460">主系统的端口状态决定另一个系统的端口状态。</font></p>
 <h2 id="在了解负载均衡前，先了解AP的概念"><a href="#在了解负载均衡前，先了解AP的概念" class="headerlink" title="在了解负载均衡前，先了解AP的概念"></a>在了解负载均衡前，先了解AP的概念</h2><p>将多个物理链接捆绑在一起形成一个逻辑链接，这个逻辑链接称为 Aggregate Port（简称AP）。<font color="#F4A460">用于扩展链路带宽，提供更高的连接可靠性。</font></p>
 <p>AP 功能支持流量平衡，<font color="#F4A460">可以把流量均匀地分配给各成员链路。</font>AP 功能还实现了链路备份，当AP 中的一条成员链路断开时，系统会将该成员链路的流量自动地分配到AP 中的其它有效成员链路上。AP 中一条成员链路收到的广播或者多播报文，将不会被转发到其它成员链路上。</p>
+<h2 id="聚合口的静态模式与动态模式的区别"><a href="#聚合口的静态模式与动态模式的区别" class="headerlink" title="聚合口的静态模式与动态模式的区别"></a>聚合口的静态模式与动态模式的区别</h2><p><strong>静态模式</strong>：<br>静态 LACP 模式链路聚合简介静态 LACP 模式下，Eth-Trunk 接口的建立，成员接口的加入，都是由手工配置完成的。但活动端口还是由LACP协议报文协商得出，禁止关闭LACP协议<br><strong>动态模式</strong>：<br>动态 LACP 模式链路聚合简介动态 LACP 模式下，Eth-Trunk 接口的建立，成员接口的加入，活动接口的选择完全由LACP 协议通过协商完成。所有配置都由协议完成，不需要用户人为干涉</p>
+<h2 id="聚合的静态模块与动态模式的配置"><a href="#聚合的静态模块与动态模式的配置" class="headerlink" title="聚合的静态模块与动态模式的配置"></a>聚合的静态模块与动态模式的配置</h2><p>lacp建立时，不建议先配置冗余线路，会导致二层环路<br>对于二层AP，AP口不会继承源端口属性，退出AP口后，源端口属性会恢复</p>
+<h3 id="静态配置"><a href="#静态配置" class="headerlink" title="静态配置"></a>静态配置</h3><p>二层</p>
+<pre><code>创建L2AP
+向AP添加成员口
+</code></pre>
+<p>三层</p>
+<pre><code>创建L3AP
+向AP加入成员口（三层接口）
+</code></pre>
+<h3 id="动态配置"><a href="#动态配置" class="headerlink" title="动态配置"></a>动态配置</h3><p>动态协商的过程：</p>
+<pre><code>1．通过LACP的报文交互，确定哪台交换机为“主子”，比较原则为：lacp system-priority （越小越优先，二层比小原则）
+2．确定“主子”之后，再确定交换机上的哪个端口为“大臣”，比较原则：lacp port-priority
+（越小越优先），以此端口为参考，表明可以加入聚合组（准入）
+3．确定参考端口后，本机的其他端口如果配置了使能LACP且属性和参考端口一致，也可以加入聚合组。
+4．对端收到LACP报文后，按照主子定义的规矩选择可以成为聚合组的成员。
+</code></pre>
+<h2 id="删除聚合口要注意什么"><a href="#删除聚合口要注意什么" class="headerlink" title="删除聚合口要注意什么"></a>删除聚合口要注意什么</h2><p>建立与删除之前，最好先断开一条冗余链路。否则可能导致LACP删除后，形成二层环路，导致网络异常。</p>
 <h2 id="负载均衡"><a href="#负载均衡" class="headerlink" title="负载均衡"></a>负载均衡</h2><p>我们可以用 aggregateport load-balance设定流量分配方式</p>
 <p>我们要根据不同的网络环境，<font color="#F4A460">设置合适的流量分配模式，</font>以便把流量均匀分布到各个链路上，充分利用带宽。</p>
 <p>为什么要手动设置流量分配模式？<font color="#FF0000">因为每个包的大小不一样，所以AP不可能真正做到平均分配流量，</font><font color="#F4A460">需要人为先做到大致分配流量。</font>比如4台机子ping1台，要做到负载均衡肯定要<font color="#FF0000">基于源IP</font>（4个源IP，人为先将流量分成4份，做到大致的流量分配，再交给AP让它做流量平衡。就好比粗调和细调，我们人为的就是粗调，AP做的就是细调）。</p>
+<h3 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h3><p>aggregateport load-balance {dst-mac |src-mac | src-dst-mac |                                                 dst-ip | src-ip | src-dst-ip }<br>dst-mac：根据输入报文的目的 MAC 地址进行流量分配。<br>src-mac：根据输入报文的源 MAC 地址进行流量分配。<br>src-dst-ip：根据源 IP 与目的 IP 进行流量分配。<br>dst-ip：根据输入报文的目的 IP 地址进行流量分配。<br>src-ip：根据输入报文的源 IP 地址进行流量分配。<br>src-dst-mac：根据源 MAC 与目的 MAC 进行流量分配。</p>
 <h2 id="LACP报文："><a href="#LACP报文：" class="headerlink" title="LACP报文："></a>LACP报文：</h2><p>主要字段介绍</p>
 <p>Actor_Port/Partner_Port：本端/对端接口信息。</p>
 <p>Actor_State/Partner_State：本端/对端状态。</p>
@@ -267,8 +286,8 @@
 
       <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/%E6%95%B0%E6%8D%AE%E9%80%9A%E4%BF%A1/" rel="tag"># 数据通信</a>
               <a href="/tags/%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF%E5%B1%82/" rel="tag"># 数据链路层</a>
+              <a href="/tags/%E6%95%B0%E6%8D%AE%E9%80%9A%E4%BF%A1/" rel="tag"># 数据通信</a>
               <a href="/tags/%E4%BA%A4%E6%8D%A2%E6%9C%BA/" rel="tag"># 交换机</a>
           </div>
 
@@ -343,7 +362,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%93%BE%E8%B7%AF%E6%B1%87%E8%81%9A%E6%8E%A7%E5%88%B6%E5%8D%8F%E8%AE%AE"><span class="nav-number">1.</span> <span class="nav-text">链路汇聚控制协议</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#LACP%E7%9A%84%E7%9B%AE%E7%9A%84"><span class="nav-number">1.1.</span> <span class="nav-text">LACP的目的</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LACP%E7%AB%AF%E5%8F%A3%E7%8A%B6%E6%80%81"><span class="nav-number">1.2.</span> <span class="nav-text">LACP端口状态</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8A%A8%E6%80%81%E9%93%BE%E8%B7%AF%E8%81%9A%E5%90%88%E7%9A%84%E8%A6%81%E6%B1%82"><span class="nav-number">1.3.</span> <span class="nav-text">动态链路聚合的要求</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8A%A8%E6%80%81%E9%93%BE%E8%B7%AF%E8%81%9A%E5%90%88%E4%BC%98%E5%85%88%E7%BA%A7%E5%85%B3%E7%B3%BB"><span class="nav-number">1.4.</span> <span class="nav-text">动态链路聚合优先级关系</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9C%A8%E4%BA%86%E8%A7%A3%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1%E5%89%8D%EF%BC%8C%E5%85%88%E4%BA%86%E8%A7%A3AP%E7%9A%84%E6%A6%82%E5%BF%B5"><span class="nav-number">1.5.</span> <span class="nav-text">在了解负载均衡前，先了解AP的概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1"><span class="nav-number">1.6.</span> <span class="nav-text">负载均衡</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LACP%E6%8A%A5%E6%96%87%EF%BC%9A"><span class="nav-number">1.7.</span> <span class="nav-text">LACP报文：</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%93%BE%E8%B7%AF%E6%B1%87%E8%81%9A%E6%8E%A7%E5%88%B6%E5%8D%8F%E8%AE%AE"><span class="nav-number">1.</span> <span class="nav-text">链路汇聚控制协议</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#LACP%E7%9A%84%E7%9B%AE%E7%9A%84"><span class="nav-number">1.1.</span> <span class="nav-text">LACP的目的</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LACP%E7%AB%AF%E5%8F%A3%E7%8A%B6%E6%80%81"><span class="nav-number">1.2.</span> <span class="nav-text">LACP端口状态</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8A%A8%E6%80%81%E9%93%BE%E8%B7%AF%E8%81%9A%E5%90%88%E7%9A%84%E8%A6%81%E6%B1%82"><span class="nav-number">1.3.</span> <span class="nav-text">动态链路聚合的要求</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8A%A8%E6%80%81%E9%93%BE%E8%B7%AF%E8%81%9A%E5%90%88%E4%BC%98%E5%85%88%E7%BA%A7%E5%85%B3%E7%B3%BB"><span class="nav-number">1.4.</span> <span class="nav-text">动态链路聚合优先级关系</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9C%A8%E4%BA%86%E8%A7%A3%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1%E5%89%8D%EF%BC%8C%E5%85%88%E4%BA%86%E8%A7%A3AP%E7%9A%84%E6%A6%82%E5%BF%B5"><span class="nav-number">1.5.</span> <span class="nav-text">在了解负载均衡前，先了解AP的概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%81%9A%E5%90%88%E5%8F%A3%E7%9A%84%E9%9D%99%E6%80%81%E6%A8%A1%E5%BC%8F%E4%B8%8E%E5%8A%A8%E6%80%81%E6%A8%A1%E5%BC%8F%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="nav-number">1.6.</span> <span class="nav-text">聚合口的静态模式与动态模式的区别</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%81%9A%E5%90%88%E7%9A%84%E9%9D%99%E6%80%81%E6%A8%A1%E5%9D%97%E4%B8%8E%E5%8A%A8%E6%80%81%E6%A8%A1%E5%BC%8F%E7%9A%84%E9%85%8D%E7%BD%AE"><span class="nav-number">1.7.</span> <span class="nav-text">聚合的静态模块与动态模式的配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%9D%99%E6%80%81%E9%85%8D%E7%BD%AE"><span class="nav-number">1.7.1.</span> <span class="nav-text">静态配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8A%A8%E6%80%81%E9%85%8D%E7%BD%AE"><span class="nav-number">1.7.2.</span> <span class="nav-text">动态配置</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%A0%E9%99%A4%E8%81%9A%E5%90%88%E5%8F%A3%E8%A6%81%E6%B3%A8%E6%84%8F%E4%BB%80%E4%B9%88"><span class="nav-number">1.8.</span> <span class="nav-text">删除聚合口要注意什么</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1"><span class="nav-number">1.9.</span> <span class="nav-text">负载均衡</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE"><span class="nav-number">1.9.1.</span> <span class="nav-text">配置</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LACP%E6%8A%A5%E6%96%87%EF%BC%9A"><span class="nav-number">1.10.</span> <span class="nav-text">LACP报文：</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -359,7 +378,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">19</span>
+          <span class="site-state-item-count">21</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -426,7 +445,7 @@
       <i class="fa fa-chart-area"></i>
     </span>
       <span class="post-meta-item-text">站点总字数：</span>
-    <span title="站点总字数">51k</span>
+    <span title="站点总字数">64k</span>
 </div>
 
         
