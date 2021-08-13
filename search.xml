@@ -683,6 +683,27 @@ BPDU处理变化:
 ]]></content>
   </entry>
   <entry>
+    <title>openstack</title>
+    <url>/2021/08/12/openstack/</url>
+    <content><![CDATA[<p>云操作系统（OpenStack），用于联动计算、存储、网络资源，OpenStack和控制器以及网络增值设备如负载均衡设备或防火墙设备采用plugin对接。</p>
+<span id="more"></span>
+
+<h1 id="OPENSTACK"><a href="#OPENSTACK" class="headerlink" title="OPENSTACK"></a>OPENSTACK</h1><h2 id="基础"><a href="#基础" class="headerlink" title="基础"></a>基础</h2><p><img src="/2021/08/12/openstack/%E6%95%B4%E4%BD%93%E6%9E%B6%E6%9E%84.png" alt="整体架构"></p>
+<h3 id="Openstack架构分布特点"><a href="#Openstack架构分布特点" class="headerlink" title="Openstack架构分布特点"></a>Openstack架构分布特点</h3><p>Openstack采用模块化的设计，每个功能由单一的模块组件提供，模块与模块之间使用标准的RPC远程过程调用机制，接口为Restful API。</p>
+<h3 id="RPC"><a href="#RPC" class="headerlink" title="RPC"></a>RPC</h3><p>RPC定义：Remote Procedure Call（远程过程调用），是从远程主机调用一个过程/函数的机制。<br>RPC目标：让远程过程（服务）调用透明化；Openstack整体组件间的通信机制采用的就是RPC的方式。</p>
+<p><img src="/2021/08/12/openstack/RPC.png" alt="RPC"></p>
+<h3 id="Restful-API"><a href="#Restful-API" class="headerlink" title="Restful API"></a>Restful API</h3><p>Restful api 是openstack各服务调用的接口，简单理解为可以通过网络去调用的函数。<br>⚫ 它是一种通过使用URL链接，通过HTTP协议里面，四个表示操作方式的动词：POST、GET、PUT、DELETE来对资源进行统一的操作。<br>⚫ Restful api的四大特点<br>➢ 使用HTTP方法；调用命令的CRUD(Create, Read, Update, Delete)，对应着HTTP的四个动作。<br>➢ 无状态；无需关注服务端对会话的保存，更易于实现集群、负载均衡等功能，实现组件间的松耦合。<br>➢ URI命名/组织采用类似目录结构；通过目录的方式，对资源进行管理。<br>➢ 采用XML、JSON传输信息；易于编程解读。</p>
+<h3 id="openstack的重要组件"><a href="#openstack的重要组件" class="headerlink" title="openstack的重要组件"></a>openstack的重要组件</h3><p>Nova —— 提供计算，按需响应包括生成，调度，回收虚拟机等<br>Neutron —— 提供网络连接<br>Cinder —— 提供块存储<br>Keystone —— 提供认证和授权<br>Glance —— 存储和检索虚拟机磁盘镜像</p>
+<h3 id="各组件关联关系"><a href="#各组件关联关系" class="headerlink" title="各组件关联关系"></a>各组件关联关系</h3><p><img src="/2021/08/12/openstack/%E9%87%8D%E8%A6%81%E7%BB%84%E4%BB%B6%E5%85%B3%E8%81%94%E5%85%B3%E7%B3%BB.png" alt="重要组件关联关系"></p>
+<h3 id="MQ"><a href="#MQ" class="headerlink" title="MQ"></a>MQ</h3><p>⚫ MQ全称为Message Queue，应用程序通过读写出入队列的消息（针对应用程序的数据）来通信，而无需专用连接来链接它们。<br>⚫ 服务内组件之间的消息全部通过MQ来进行转发，包括控制、查询、监控指标等。<br><img src="/2021/08/12/openstack/MQ%E4%BC%A0%E8%BE%93.png" alt="MQ传输"></p>
+<h4 id="RabbitMQ"><a href="#RabbitMQ" class="headerlink" title="RabbitMQ"></a>RabbitMQ</h4><p><strong>RabbitMQ的特点</strong><br>➢ 健壮的message（可靠性、灵活的routing、集群）<br>➢ 使用简单<br>➢ 支持所有主流操作系统<br>➢ 支持大量的平台</p>
+<p><img src="/2021/08/12/openstack/RMQ%E7%89%B9%E7%82%B9.png" alt="RMQ特点"></p>
+<p><strong>RabbitMQ中的角色</strong><br>➢ Producer：消息生产者，就是投递消息的程序。<br>➢ Consumer：消息消费者，就是接受消息的程序。<br><strong>RabbitMQ的工作流程</strong><br>RabbitMQ工作中有一下几个概念需要理解：<br>➢ Exchange：消息交换机制，它指定消息按什么规则，路由到哪个队列。<br>➢ Queue：消息队列载体，每个消息都会被投入到一个或多个队列。<br>➢ Binding：绑定，它的作用就是把exchange和queue按照路由规则绑定起来。<br>➢ Routing Key：路由关键字，exchange根据这个关键字进行消息投递。<br>➢ Connection： 就是一个TCP连接。Producer和Consumer都是通过TCP连接到RabbitMQ Server的。以后我们可以看到，程序的起始就是建立这个TCP连接。<br>➢ Channel：消息通道，是在TCP连接中的虚拟连接，在客户端的每个TCP连接里，可建立多个channel，每个channel代表一个会话任务</p>
+<p><strong>RabbitMQ高可用模式</strong><br>RabbitMQ作为整个openstack通讯的载体平台，如服务出现问题则会造成整个系统的瘫痪，所以现网对RabbitMQ基本是以集群的模式进行，常用集群分普通集群和镜像集群两种。</p>
+<p><img src="/2021/08/12/openstack/RabbitMQ%E9%AB%98%E5%8F%AF%E7%94%A8%E6%A8%A1%E5%BC%8F.png" alt="RabbitMQ高可用模式"></p>
+]]></content>
+  </entry>
+  <entry>
     <title>深入研究二层端口</title>
     <url>/2021/07/22/%E4%BA%8C%E5%B1%82%E7%AB%AF%E5%8F%A3/</url>
     <content><![CDATA[<p><strong>OSI模型</strong>：OSI 是不同制造商的设备和应用软件在网络中进行通信的标准，此模型已经成为计算机间和网络间进行通信的主要结构模型。</p>
@@ -770,6 +791,42 @@ BPDU处理变化:
       </tags>
   </entry>
   <entry>
+    <title>交换机数据平面，控制平面和管理平面的分离</title>
+    <url>/2021/07/22/%E5%85%B3%E4%BA%8E%E6%95%B0%E6%8D%AE%E5%B9%B3%E9%9D%A2%EF%BC%8C%E6%8E%A7%E5%88%B6%E5%B9%B3%E9%9D%A2%E5%92%8C%E8%BD%AC%E5%8F%91%E5%B9%B3%E9%9D%A2%E7%9A%84%E5%88%86%E7%A6%BB%E9%97%AE%E9%A2%98/</url>
+    <content><![CDATA[<p><a href="#jump">三平面分离的详细解析</a></p>
+<span id="more"></span>
+<p><span id="back"></span></p>
+<h1 id="交换机数据平面，控制平面和管理平面的分离"><a href="#交换机数据平面，控制平面和管理平面的分离" class="headerlink" title="交换机数据平面，控制平面和管理平面的分离"></a>交换机数据平面，控制平面和管理平面的分离</h1><h2 id="交换机的工作原理"><a href="#交换机的工作原理" class="headerlink" title="交换机的工作原理"></a>交换机的工作原理</h2><p>目的MAC转发<br>源MAC学习<br>组播广播未知单播泛洪</p>
+<blockquote>
+<h2 id="交换机控制平面："><a href="#交换机控制平面：" class="headerlink" title="交换机控制平面："></a>交换机控制平面：</h2><p>&emsp;&emsp;交换机的控制平面用于控制和管理所有网络协议的运行，比如OSPF协议，RIP协议，BGP协议等。控制平面提供了数据平面数据处理转发前所必须的各种网络信息和转发查询表项。</p>
+</blockquote>
+<blockquote>
+<h2 id="交换机数据平面："><a href="#交换机数据平面：" class="headerlink" title="交换机数据平面："></a>交换机数据平面：</h2><p>&emsp;&emsp;交换机的基本任务是处理和转发交换机各不同端口上各种类型的数据， L2/L3/ACL/QOS/组播/安全防护等各种具体的数据处理转发过程，都属于交换机数据平面的任务范畴 。</p>
+</blockquote>
+<blockquote>
+<h2 id="交换机管理平面："><a href="#交换机管理平面：" class="headerlink" title="交换机管理平面："></a>交换机管理平面：</h2><p>&emsp;&emsp;交换机的管理平面是提供给网络工程师 使用TELNET、WEB、SSH、SNMP、RMON等方式来管理设备，并支持、理解和执行网络工程师对于网络设备各种网络协议的设置命令。管理平面必须预先设置好控制平面中各种协议的相关参数，并支持在必要时刻对控制平面的运行进行干预。</p>
+</blockquote>
+<p><strong>三平面组合就是交换机的基本工作：</strong></p>
+<p>&emsp;&emsp;处理不同接口上各种类型的数据，对于数据处理过程中各种具体的处理转发过程，例如L2/L3/ACL/QOS/组播/安全防护等各种网络功能的具体执行，都划分为交换机的数据平面；而控制平面用于控制各种网络协议的运行，例如控制OSPF、ARP、STP等等协议的正常运行，控制平面提供了对网络环境的准确认识，提供了数据平面数据处理转发前所必须的各种网络信息和转发查询表项；至于管理平面的功能是提供给网络工程师使用TELNET、WEB、SSH、SNMP、RMON等方式管理设备的各种管理接口，并支持、理解和执行网络工程师对于网络设备各种网络功能的设置命令。</p>
+<p><span id="jump"></span><br><a href="#back">查看交换机原理</a></p>
+<p>　　为什么需要对数据平面、控制平面和管理平面进行相互的分离呢?</p>
+<p>&emsp;&emsp;首先三者对于主机资源的消耗为：数据平面&gt;&gt;控制平面&gt;&gt;管理平面</p>
+<p>&emsp;&emsp;假设这几个平面不进行任何的分离，数据平面和控制、管理平面使用共用的主机资源，在大数据流量、复杂应用环境下数据平面由于承担着繁重的日常任务将可能消耗绝大部分资源，这对于整个交换机系统无疑是灾难性的，因为在某些极端的情况下，控制平面将没有充分的资源来保障运行，这就意味网络设备失去了对设备所处网络环境的真实了解，网络设备将立即陷于非正常工作状态甚至瘫痪状态，而网络工程师也没有资源使用管理平面对网络设备的运行进行干预，所以数据平面需要严格地与控制平面、管理平面进行分离。</p>
+<p>&emsp;&emsp;管理平面所要求的系统资源是最低的，分离出一定的系统资源独立运行管理平面并不影响控制平面的运行，反而能保证控制平面的正常运行。假设，当网络环境频繁变动、网络协议剧烈动荡的情况下，控制平面将占用大多数资源，这时候网络已经无法正常运行，出现了问题，需要网络工程师即使对网络进行维护和整改。管理平面的分离让网络工程师可以在控制平面出现异常状况（网络出现异常）的时候依然拥有足够的资源打开设备的管理界面，通过改变或终止某个协议、端口的运行来阻止异常网络环境对网络设备的剧烈影响，最终修复好网络环境，使得控制平面得以正常运行。</p>
+<p>&emsp;&emsp;通过采用数据平面、控制平面、管理平面相互分离的结构模型，保证了大量的数据处理不影响管理和控制，而在路由和环境复杂条件下，控制平面不影响管理平面，高度保证了系统安全稳定性。</p>
+<p>&emsp;&emsp;“三平面分离”技术注重于保护核心设备在病毒和攻击环境下依然提供正常的网络设备管理，满足在线地定位和解决安全问题，在稳定性设计上优于传统的“两平面分离”技术。</p>
+<h1 id="详细参考"><a href="#详细参考" class="headerlink" title="详细参考"></a>详细参考</h1><p><a href="https://blog.csdn.net/chpstudy/article/details/62423072?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522162693636016780255272782%2522%252C%2522scm%2522%253A%252220140713.130102334.pc%255Fall.%2522%257D&request_id=162693636016780255272782&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~all~first_rank_v2~rank_v29-5-62423072.first_rank_v2_pc_rank_v29&utm_term=%E4%BA%A4%E6%8D%A2%E6%9C%BA%E7%9A%84%E4%B8%89%E5%B9%B3%E9%9D%A2%E5%88%86%E7%A6%BB%E6%9E%B6%E6%9E%84&spm=1018.2226.3001.4187">数据平面、控制平面、管理平面</a></p>
+]]></content>
+      <categories>
+        <category>数据通信</category>
+        <category>网络</category>
+      </categories>
+      <tags>
+        <tag>三平面</tag>
+        <tag>交换机工作原理</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>博客文档指南</title>
     <url>/2021/07/20/%E5%8D%9A%E5%AE%A2%E7%BC%96%E5%86%99%E6%8C%87%E5%8D%97/</url>
     <content><![CDATA[<p>根据<a href="https://blog.csdn.net/sanallen/article/details/92081911?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522162684851716780274192566%2522%252C%2522scm%2522%253A%252220140713.130102334..%2522%257D&request_id=162684851716780274192566&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~all~sobaiduend~default-1-92081911.first_rank_v2_pc_rank_v29&utm_term=markdown%E6%96%87%E6%A1%A3%E7%BC%96%E5%86%99%E6%8C%87%E5%8D%97&spm=1018.2226.3001.4187">Markdown文档编写指南</a>编写</p>
@@ -819,82 +876,17 @@ BPDU处理变化:
       </tags>
   </entry>
   <entry>
-    <title>交换机数据平面，控制平面和管理平面的分离</title>
-    <url>/2021/07/22/%E5%85%B3%E4%BA%8E%E6%95%B0%E6%8D%AE%E5%B9%B3%E9%9D%A2%EF%BC%8C%E6%8E%A7%E5%88%B6%E5%B9%B3%E9%9D%A2%E5%92%8C%E8%BD%AC%E5%8F%91%E5%B9%B3%E9%9D%A2%E7%9A%84%E5%88%86%E7%A6%BB%E9%97%AE%E9%A2%98/</url>
-    <content><![CDATA[<p><a href="#jump">三平面分离的详细解析</a></p>
-<span id="more"></span>
-<p><span id="back"></span></p>
-<h1 id="交换机数据平面，控制平面和管理平面的分离"><a href="#交换机数据平面，控制平面和管理平面的分离" class="headerlink" title="交换机数据平面，控制平面和管理平面的分离"></a>交换机数据平面，控制平面和管理平面的分离</h1><h2 id="交换机的工作原理"><a href="#交换机的工作原理" class="headerlink" title="交换机的工作原理"></a>交换机的工作原理</h2><p>目的MAC转发<br>源MAC学习<br>组播广播未知单播泛洪</p>
-<blockquote>
-<h2 id="交换机控制平面："><a href="#交换机控制平面：" class="headerlink" title="交换机控制平面："></a>交换机控制平面：</h2><p>&emsp;&emsp;交换机的控制平面用于控制和管理所有网络协议的运行，比如OSPF协议，RIP协议，BGP协议等。控制平面提供了数据平面数据处理转发前所必须的各种网络信息和转发查询表项。</p>
-</blockquote>
-<blockquote>
-<h2 id="交换机数据平面："><a href="#交换机数据平面：" class="headerlink" title="交换机数据平面："></a>交换机数据平面：</h2><p>&emsp;&emsp;交换机的基本任务是处理和转发交换机各不同端口上各种类型的数据， L2/L3/ACL/QOS/组播/安全防护等各种具体的数据处理转发过程，都属于交换机数据平面的任务范畴 。</p>
-</blockquote>
-<blockquote>
-<h2 id="交换机管理平面："><a href="#交换机管理平面：" class="headerlink" title="交换机管理平面："></a>交换机管理平面：</h2><p>&emsp;&emsp;交换机的管理平面是提供给网络工程师 使用TELNET、WEB、SSH、SNMP、RMON等方式来管理设备，并支持、理解和执行网络工程师对于网络设备各种网络协议的设置命令。管理平面必须预先设置好控制平面中各种协议的相关参数，并支持在必要时刻对控制平面的运行进行干预。</p>
-</blockquote>
-<p><strong>三平面组合就是交换机的基本工作：</strong></p>
-<p>&emsp;&emsp;处理不同接口上各种类型的数据，对于数据处理过程中各种具体的处理转发过程，例如L2/L3/ACL/QOS/组播/安全防护等各种网络功能的具体执行，都划分为交换机的数据平面；而控制平面用于控制各种网络协议的运行，例如控制OSPF、ARP、STP等等协议的正常运行，控制平面提供了对网络环境的准确认识，提供了数据平面数据处理转发前所必须的各种网络信息和转发查询表项；至于管理平面的功能是提供给网络工程师使用TELNET、WEB、SSH、SNMP、RMON等方式管理设备的各种管理接口，并支持、理解和执行网络工程师对于网络设备各种网络功能的设置命令。</p>
-<p><span id="jump"></span><br><a href="#back">查看交换机原理</a></p>
-<p>　　为什么需要对数据平面、控制平面和管理平面进行相互的分离呢?</p>
-<p>&emsp;&emsp;首先三者对于主机资源的消耗为：数据平面&gt;&gt;控制平面&gt;&gt;管理平面</p>
-<p>&emsp;&emsp;假设这几个平面不进行任何的分离，数据平面和控制、管理平面使用共用的主机资源，在大数据流量、复杂应用环境下数据平面由于承担着繁重的日常任务将可能消耗绝大部分资源，这对于整个交换机系统无疑是灾难性的，因为在某些极端的情况下，控制平面将没有充分的资源来保障运行，这就意味网络设备失去了对设备所处网络环境的真实了解，网络设备将立即陷于非正常工作状态甚至瘫痪状态，而网络工程师也没有资源使用管理平面对网络设备的运行进行干预，所以数据平面需要严格地与控制平面、管理平面进行分离。</p>
-<p>&emsp;&emsp;管理平面所要求的系统资源是最低的，分离出一定的系统资源独立运行管理平面并不影响控制平面的运行，反而能保证控制平面的正常运行。假设，当网络环境频繁变动、网络协议剧烈动荡的情况下，控制平面将占用大多数资源，这时候网络已经无法正常运行，出现了问题，需要网络工程师即使对网络进行维护和整改。管理平面的分离让网络工程师可以在控制平面出现异常状况（网络出现异常）的时候依然拥有足够的资源打开设备的管理界面，通过改变或终止某个协议、端口的运行来阻止异常网络环境对网络设备的剧烈影响，最终修复好网络环境，使得控制平面得以正常运行。</p>
-<p>&emsp;&emsp;通过采用数据平面、控制平面、管理平面相互分离的结构模型，保证了大量的数据处理不影响管理和控制，而在路由和环境复杂条件下，控制平面不影响管理平面，高度保证了系统安全稳定性。</p>
-<p>&emsp;&emsp;“三平面分离”技术注重于保护核心设备在病毒和攻击环境下依然提供正常的网络设备管理，满足在线地定位和解决安全问题，在稳定性设计上优于传统的“两平面分离”技术。</p>
-<h1 id="详细参考"><a href="#详细参考" class="headerlink" title="详细参考"></a>详细参考</h1><p><a href="https://blog.csdn.net/chpstudy/article/details/62423072?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522162693636016780255272782%2522%252C%2522scm%2522%253A%252220140713.130102334.pc%255Fall.%2522%257D&request_id=162693636016780255272782&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~all~first_rank_v2~rank_v29-5-62423072.first_rank_v2_pc_rank_v29&utm_term=%E4%BA%A4%E6%8D%A2%E6%9C%BA%E7%9A%84%E4%B8%89%E5%B9%B3%E9%9D%A2%E5%88%86%E7%A6%BB%E6%9E%B6%E6%9E%84&spm=1018.2226.3001.4187">数据平面、控制平面、管理平面</a></p>
-]]></content>
-      <categories>
-        <category>数据通信</category>
-        <category>网络</category>
-      </categories>
-      <tags>
-        <tag>三平面</tag>
-        <tag>交换机工作原理</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>控制路由更新</title>
-    <url>/2021/08/04/%E6%8E%A7%E5%88%B6%E8%B7%AF%E7%94%B1%E6%9B%B4%E6%96%B0/</url>
-    <content><![CDATA[<p>关于OSPF的路由更新</p>
+    <title>各种接口</title>
+    <url>/2021/08/13/%E5%90%84%E7%A7%8D%E6%8E%A5%E5%8F%A3/</url>
+    <content><![CDATA[<p>交换机上的各种接口</p>
 <span id="more"></span>
 
-<h1 id="OSPF的路由汇总、重分布和过滤"><a href="#OSPF的路由汇总、重分布和过滤" class="headerlink" title="OSPF的路由汇总、重分布和过滤"></a>OSPF的路由汇总、重分布和过滤</h1><h2 id="OSPF路由汇总"><a href="#OSPF路由汇总" class="headerlink" title="OSPF路由汇总"></a>OSPF路由汇总</h2><p>区域间：<br>基于三类LSA，在<font color="#E9967A" size="3.5">ABR上汇总本区域向其他区域通告的区域间路由</font></p>
-<p><img src="/2021/08/04/%E6%8E%A7%E5%88%B6%E8%B7%AF%E7%94%B1%E6%9B%B4%E6%96%B0/%E6%B1%87%E6%80%BB%E5%8C%BA%E5%9F%9F%E9%97%B41.png" alt="汇总区域间1"><br><img src="/2021/08/04/%E6%8E%A7%E5%88%B6%E8%B7%AF%E7%94%B1%E6%9B%B4%E6%96%B0/%E6%B1%87%E6%80%BB%E5%8C%BA%E5%9F%9F%E9%97%B42.png" alt="汇总区域间2"></p>
-<p>区域外：<br>在<font color="#E9967A" size="3.5">ASBR上汇总本设备引入的外部路由</font></p>
-<p><img src="/2021/08/04/%E6%8E%A7%E5%88%B6%E8%B7%AF%E7%94%B1%E6%9B%B4%E6%96%B0/%E6%B1%87%E6%80%BB%E5%8C%BA%E5%9F%9F%E5%A4%961.png" alt="汇总区域外1"><br><img src="/2021/08/04/%E6%8E%A7%E5%88%B6%E8%B7%AF%E7%94%B1%E6%9B%B4%E6%96%B0/%E6%B1%87%E6%80%BB%E5%8C%BA%E5%9F%9F%E5%A4%962.png" alt="汇总区域外2"></p>
-<p>对引入的路由有以下几种情况：</p>
-<pre><code>如果ASBR，处于普通区域（不是处在stub等等特殊区域）将执行LSA5聚合路由
-如果ASBR处在NSSA区域，将会对聚合地址范围内所有LSA5，LSA7执行聚合。
-如果处在NSSA区域，且既是ASBR，又是ABR。那么除了执行第二点操作外，还会将7转5LSA也进行聚合。
-</code></pre>
-<p>#################################################################</p>
-<ol>
-<li>缺省不会自动汇总，使用汇总命令，只通告汇总路由，不通告细化路由。</li>
-<li><font color="#228B22">ABR上汇总本区域向其他区域通告的区域间路由，<font color="#8B008B">ASBR上汇总本设备引入的外部路由。</font></font></li>
-<li>加not-advertise参数，连汇总路由都不通告。</li>
-<li>加cost参数可以改变通告路由的cost。</li>
-</ol>
-<p>#################################################################</p>
-<h2 id="OSPF路由重分布"><a href="#OSPF路由重分布" class="headerlink" title="OSPF路由重分布"></a>OSPF路由重分布</h2><p>重分布总是向外执行的。这意味着执行重分布的路由器不改变其路由表，只有收到重分布路由的下行路由器会把路由添加到各自路由表中。</p>
-<p><img src="/2021/08/04/%E6%8E%A7%E5%88%B6%E8%B7%AF%E7%94%B1%E6%9B%B4%E6%96%B0/OSPF%E8%B7%AF%E7%94%B1%E9%87%8D%E5%88%86%E5%B8%831.png" alt="OSPF路由重分布1"></p>
-<p>所以重分布到RIP,EIGRP 的路由需要指定种子度量，否者路由不会被重分布。</p>
-<p><img src="/2021/08/04/%E6%8E%A7%E5%88%B6%E8%B7%AF%E7%94%B1%E6%9B%B4%E6%96%B0/OSPF%E8%B7%AF%E7%94%B1%E9%87%8D%E5%88%86%E5%B8%832.png" alt="OSPF路由重分布2"></p>
-<p><img src="/2021/08/04/%E6%8E%A7%E5%88%B6%E8%B7%AF%E7%94%B1%E6%9B%B4%E6%96%B0/OSPF%E8%B7%AF%E7%94%B1%E9%87%8D%E5%88%86%E5%B8%833.png" alt="OSPF路由重分布3"></p>
-<h2 id="OSPF路由过滤"><a href="#OSPF路由过滤" class="headerlink" title="OSPF路由过滤"></a>OSPF路由过滤</h2><h3 id="分发列表"><a href="#分发列表" class="headerlink" title="分发列表"></a>分发列表</h3><p>概念：把ACL应用在路由更新上</p>
-<p>distribute-list分发列表是用于控制路由更新的一个工具，<font color="#FF0000" size="3.5"><strong>只能过滤路由信息，不能过滤LSA</strong></font>。(所以说对距离矢量路由协议比较适用，如：RIP、EIGRP。 像OSPF链路状态路由协议，IN方向(影响本地路由表，但LSDB里是有的)，OUT方向不起作用; 但对本地始发路由可以过滤，原因是通过路由的重分发，而不是LSA传递。)</p>
-<p>缺陷：该命令只会干掉核心路由表，但是LSA依然会存储在路由器的ram里面。如果在area内用分发列表，此时LSDB已经同步完成。只有用了分发列表的交换机会进行路由过滤，别的交换机不会进行路由过滤</p>
-<p><img src="/2021/08/04/%E6%8E%A7%E5%88%B6%E8%B7%AF%E7%94%B1%E6%9B%B4%E6%96%B0/OSPF%E5%88%86%E5%8F%91%E5%88%97%E8%A1%A81.png" alt="OSPF分发列表1"></p>
-<h3 id="前缀列表"><a href="#前缀列表" class="headerlink" title="前缀列表"></a>前缀列表</h3><p>prefix-list：专门用于抓取控制层面流量–只能为发布列表、route-map服务；<br>特点：</p>
-<pre><code>前缀列表的可控性比访问列表高得多，支持增量修改，更为灵活
-前缀列表包含序列号，从最小的开始匹配，默认序列为8，以5增加可以使用序号插入
-判断路由前缀与前缀列表中的前缀是否匹配
-    匹配规则：至上而下逐一匹配，上条匹配按上条执行，不查看小条；末尾隐含拒绝所有
-</code></pre>
-<p><img src="/2021/08/04/%E6%8E%A7%E5%88%B6%E8%B7%AF%E7%94%B1%E6%9B%B4%E6%96%B0/OSPF%E5%89%8D%E7%BC%80%E5%88%97%E8%A1%A81.png" alt="OSPF前缀列表1"><br><img src="/2021/08/04/%E6%8E%A7%E5%88%B6%E8%B7%AF%E7%94%B1%E6%9B%B4%E6%96%B0/OSPF%E5%89%8D%E7%BC%80%E5%88%97%E8%A1%A82.png" alt="OSPF前缀列表2"></p>
-<p><font color="#FF0000"><strong>################################# 前缀列表示例！###################################</strong><br><img src="/2021/08/04/%E6%8E%A7%E5%88%B6%E8%B7%AF%E7%94%B1%E6%9B%B4%E6%96%B0/OSPF%E5%89%8D%E7%BC%80%E5%88%97%E8%A1%A83.png" alt="OSPF前缀列表3"><br><strong>###################################################################################</strong></font></p>
+<h1 id="MGMT口"><a href="#MGMT口" class="headerlink" title="MGMT口"></a>MGMT口</h1><p>MGMT是网络管理端口，可以直接用网线连接，登陆进防火墙以网页模式管理<br>1） 用户可以通过Ping、Tracert等命令探测MGMT 口上配置的IP地址是否可达，并在MGMT 口上通过Ping、Tracert命令探测远程IP是否可达，因此MGMT 口支持ICMP应用。<br>2）用户可以通过Telnet/SSH/SNMP/WEB等方式登录到MGMT 口对设备进行管理，并且登录时支持AAA验证（包括Radius 和Tacacs+这两种服务器认证方式），甚至在执行命令行时还需要支持Tacacs+授权。<br>3）设备的日志、告警等信息也可以通过MGMT 口发送到网管的日志服务器上。<br>4）MGMT 口支持Telnet Client，TFTP Client。<br>5）MGMT 口支持NTP/SNTP报文的收发以实现网络时间同步。<br>6）MGMT 口支持静态ARP绑定。 </p>
+<h1 id="IPMI口"><a href="#IPMI口" class="headerlink" title="IPMI口"></a>IPMI口</h1><p>IPMI，即智能平台管理接口（Intelligent Platform Management Interface），IPMI的核心是一个专用芯片/控制器(BMC)，独立于操作系统、BIOS和处理器，因此属于带外管理设备。正是因为如此，我们可以通过BMC来控制或者获取系统的各种信息，而不需要关注系统是否正常。比如，系统卡住了，可以通过ipmi reset系统，而不需要跑到机房断电；系统无法登录也可以远程屏幕查看是什么问题。</p>
 ]]></content>
+      <tags>
+        <tag>接口</tag>
+      </tags>
   </entry>
   <entry>
     <title>网络虚拟化</title>
@@ -1185,6 +1177,48 @@ BPDU处理变化:
         <tag>SDN</tag>
         <tag>控制器</tag>
       </tags>
+  </entry>
+  <entry>
+    <title>控制路由更新</title>
+    <url>/2021/08/04/%E6%8E%A7%E5%88%B6%E8%B7%AF%E7%94%B1%E6%9B%B4%E6%96%B0/</url>
+    <content><![CDATA[<p>关于OSPF的路由更新</p>
+<span id="more"></span>
+
+<h1 id="OSPF的路由汇总、重分布和过滤"><a href="#OSPF的路由汇总、重分布和过滤" class="headerlink" title="OSPF的路由汇总、重分布和过滤"></a>OSPF的路由汇总、重分布和过滤</h1><h2 id="OSPF路由汇总"><a href="#OSPF路由汇总" class="headerlink" title="OSPF路由汇总"></a>OSPF路由汇总</h2><p>区域间：<br>基于三类LSA，在<font color="#E9967A" size="3.5">ABR上汇总本区域向其他区域通告的区域间路由</font></p>
+<p><img src="/2021/08/04/%E6%8E%A7%E5%88%B6%E8%B7%AF%E7%94%B1%E6%9B%B4%E6%96%B0/%E6%B1%87%E6%80%BB%E5%8C%BA%E5%9F%9F%E9%97%B41.png" alt="汇总区域间1"><br><img src="/2021/08/04/%E6%8E%A7%E5%88%B6%E8%B7%AF%E7%94%B1%E6%9B%B4%E6%96%B0/%E6%B1%87%E6%80%BB%E5%8C%BA%E5%9F%9F%E9%97%B42.png" alt="汇总区域间2"></p>
+<p>区域外：<br>在<font color="#E9967A" size="3.5">ASBR上汇总本设备引入的外部路由</font></p>
+<p><img src="/2021/08/04/%E6%8E%A7%E5%88%B6%E8%B7%AF%E7%94%B1%E6%9B%B4%E6%96%B0/%E6%B1%87%E6%80%BB%E5%8C%BA%E5%9F%9F%E5%A4%961.png" alt="汇总区域外1"><br><img src="/2021/08/04/%E6%8E%A7%E5%88%B6%E8%B7%AF%E7%94%B1%E6%9B%B4%E6%96%B0/%E6%B1%87%E6%80%BB%E5%8C%BA%E5%9F%9F%E5%A4%962.png" alt="汇总区域外2"></p>
+<p>对引入的路由有以下几种情况：</p>
+<pre><code>如果ASBR，处于普通区域（不是处在stub等等特殊区域）将执行LSA5聚合路由
+如果ASBR处在NSSA区域，将会对聚合地址范围内所有LSA5，LSA7执行聚合。
+如果处在NSSA区域，且既是ASBR，又是ABR。那么除了执行第二点操作外，还会将7转5LSA也进行聚合。
+</code></pre>
+<p>#################################################################</p>
+<ol>
+<li>缺省不会自动汇总，使用汇总命令，只通告汇总路由，不通告细化路由。</li>
+<li><font color="#228B22">ABR上汇总本区域向其他区域通告的区域间路由，<font color="#8B008B">ASBR上汇总本设备引入的外部路由。</font></font></li>
+<li>加not-advertise参数，连汇总路由都不通告。</li>
+<li>加cost参数可以改变通告路由的cost。</li>
+</ol>
+<p>#################################################################</p>
+<h2 id="OSPF路由重分布"><a href="#OSPF路由重分布" class="headerlink" title="OSPF路由重分布"></a>OSPF路由重分布</h2><p>重分布总是向外执行的。这意味着执行重分布的路由器不改变其路由表，只有收到重分布路由的下行路由器会把路由添加到各自路由表中。</p>
+<p><img src="/2021/08/04/%E6%8E%A7%E5%88%B6%E8%B7%AF%E7%94%B1%E6%9B%B4%E6%96%B0/OSPF%E8%B7%AF%E7%94%B1%E9%87%8D%E5%88%86%E5%B8%831.png" alt="OSPF路由重分布1"></p>
+<p>所以重分布到RIP,EIGRP 的路由需要指定种子度量，否者路由不会被重分布。</p>
+<p><img src="/2021/08/04/%E6%8E%A7%E5%88%B6%E8%B7%AF%E7%94%B1%E6%9B%B4%E6%96%B0/OSPF%E8%B7%AF%E7%94%B1%E9%87%8D%E5%88%86%E5%B8%832.png" alt="OSPF路由重分布2"></p>
+<p><img src="/2021/08/04/%E6%8E%A7%E5%88%B6%E8%B7%AF%E7%94%B1%E6%9B%B4%E6%96%B0/OSPF%E8%B7%AF%E7%94%B1%E9%87%8D%E5%88%86%E5%B8%833.png" alt="OSPF路由重分布3"></p>
+<h2 id="OSPF路由过滤"><a href="#OSPF路由过滤" class="headerlink" title="OSPF路由过滤"></a>OSPF路由过滤</h2><h3 id="分发列表"><a href="#分发列表" class="headerlink" title="分发列表"></a>分发列表</h3><p>概念：把ACL应用在路由更新上</p>
+<p>distribute-list分发列表是用于控制路由更新的一个工具，<font color="#FF0000" size="3.5"><strong>只能过滤路由信息，不能过滤LSA</strong></font>。(所以说对距离矢量路由协议比较适用，如：RIP、EIGRP。 像OSPF链路状态路由协议，IN方向(影响本地路由表，但LSDB里是有的)，OUT方向不起作用; 但对本地始发路由可以过滤，原因是通过路由的重分发，而不是LSA传递。)</p>
+<p>缺陷：该命令只会干掉核心路由表，但是LSA依然会存储在路由器的ram里面。如果在area内用分发列表，此时LSDB已经同步完成。只有用了分发列表的交换机会进行路由过滤，别的交换机不会进行路由过滤</p>
+<p><img src="/2021/08/04/%E6%8E%A7%E5%88%B6%E8%B7%AF%E7%94%B1%E6%9B%B4%E6%96%B0/OSPF%E5%88%86%E5%8F%91%E5%88%97%E8%A1%A81.png" alt="OSPF分发列表1"></p>
+<h3 id="前缀列表"><a href="#前缀列表" class="headerlink" title="前缀列表"></a>前缀列表</h3><p>prefix-list：专门用于抓取控制层面流量–只能为发布列表、route-map服务；<br>特点：</p>
+<pre><code>前缀列表的可控性比访问列表高得多，支持增量修改，更为灵活
+前缀列表包含序列号，从最小的开始匹配，默认序列为8，以5增加可以使用序号插入
+判断路由前缀与前缀列表中的前缀是否匹配
+    匹配规则：至上而下逐一匹配，上条匹配按上条执行，不查看小条；末尾隐含拒绝所有
+</code></pre>
+<p><img src="/2021/08/04/%E6%8E%A7%E5%88%B6%E8%B7%AF%E7%94%B1%E6%9B%B4%E6%96%B0/OSPF%E5%89%8D%E7%BC%80%E5%88%97%E8%A1%A81.png" alt="OSPF前缀列表1"><br><img src="/2021/08/04/%E6%8E%A7%E5%88%B6%E8%B7%AF%E7%94%B1%E6%9B%B4%E6%96%B0/OSPF%E5%89%8D%E7%BC%80%E5%88%97%E8%A1%A82.png" alt="OSPF前缀列表2"></p>
+<p><font color="#FF0000"><strong>################################# 前缀列表示例！###################################</strong><br><img src="/2021/08/04/%E6%8E%A7%E5%88%B6%E8%B7%AF%E7%94%B1%E6%9B%B4%E6%96%B0/OSPF%E5%89%8D%E7%BC%80%E5%88%97%E8%A1%A83.png" alt="OSPF前缀列表3"><br><strong>###################################################################################</strong></font></p>
+]]></content>
   </entry>
   <entry>
     <title>BGP笔记</title>

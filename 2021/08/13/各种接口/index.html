@@ -20,17 +20,20 @@
     var CONFIG = {"hostname":"example.com","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"b2t":true,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="正确的目标，简化，优化，加速，自动化">
-<meta property="og:type" content="website">
-<meta property="og:title" content="郑林昕的博客">
-<meta property="og:url" content="http://example.com/tags/%E7%BB%8F%E9%AA%8C/index.html">
+  <meta name="description" content="交换机上的各种接口">
+<meta property="og:type" content="article">
+<meta property="og:title" content="各种接口">
+<meta property="og:url" content="http://example.com/2021/08/13/%E5%90%84%E7%A7%8D%E6%8E%A5%E5%8F%A3/index.html">
 <meta property="og:site_name" content="郑林昕的博客">
-<meta property="og:description" content="正确的目标，简化，优化，加速，自动化">
+<meta property="og:description" content="交换机上的各种接口">
 <meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-08-13T03:42:06.000Z">
+<meta property="article:modified_time" content="2021-08-13T03:46:30.336Z">
 <meta property="article:author" content="郑林昕">
+<meta property="article:tag" content="接口">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="http://example.com/tags/%E7%BB%8F%E9%AA%8C/">
+<link rel="canonical" href="http://example.com/2021/08/13/%E5%90%84%E7%A7%8D%E6%8E%A5%E5%8F%A3/">
 
 
 <script id="page-configurations">
@@ -38,12 +41,12 @@
   CONFIG.page = {
     sidebar: "",
     isHome : false,
-    isPost : false,
+    isPost : true,
     lang   : 'zh-CN'
   };
 </script>
 
-  <title>标签: 经验 | 郑林昕的博客</title>
+  <title>各种接口 | 郑林昕的博客</title>
   
 
 
@@ -158,51 +161,84 @@
         <div class="content-wrap">
           
 
-          <div class="content tag">
+          <div class="content post posts-expand">
             
 
+    
   
   
-  
-  <div class="post-block">
-    <div class="posts-collapse">
-      <div class="collection-title">
-        <h2 class="collection-header">经验
-          <small>标签</small>
-        </h2>
-      </div>
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/08/13/%E5%90%84%E7%A7%8D%E6%8E%A5%E5%8F%A3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/assets/img/touxiang.png">
+      <meta itemprop="name" content="郑林昕">
+      <meta itemprop="description" content="正确的目标，简化，优化，加速，自动化">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="郑林昕的博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          各种接口
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-08-13 11:42:06 / 修改时间：11:46:30" itemprop="dateCreated datePublished" datetime="2021-08-13T11:42:06+08:00">2021-08-13</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
 
       
-    <div class="collection-year">
-      <span class="collection-header">2021</span>
+        <p>交换机上的各种接口</p>
+<span id="more"></span>
+
+<h1 id="MGMT口"><a href="#MGMT口" class="headerlink" title="MGMT口"></a>MGMT口</h1><p>MGMT是网络管理端口，可以直接用网线连接，登陆进防火墙以网页模式管理<br>1） 用户可以通过Ping、Tracert等命令探测MGMT 口上配置的IP地址是否可达，并在MGMT 口上通过Ping、Tracert命令探测远程IP是否可达，因此MGMT 口支持ICMP应用。<br>2）用户可以通过Telnet/SSH/SNMP/WEB等方式登录到MGMT 口对设备进行管理，并且登录时支持AAA验证（包括Radius 和Tacacs+这两种服务器认证方式），甚至在执行命令行时还需要支持Tacacs+授权。<br>3）设备的日志、告警等信息也可以通过MGMT 口发送到网管的日志服务器上。<br>4）MGMT 口支持Telnet Client，TFTP Client。<br>5）MGMT 口支持NTP/SNTP报文的收发以实现网络时间同步。<br>6）MGMT 口支持静态ARP绑定。 </p>
+<h1 id="IPMI口"><a href="#IPMI口" class="headerlink" title="IPMI口"></a>IPMI口</h1><p>IPMI，即智能平台管理接口（Intelligent Platform Management Interface），IPMI的核心是一个专用芯片/控制器(BMC)，独立于操作系统、BIOS和处理器，因此属于带外管理设备。正是因为如此，我们可以通过BMC来控制或者获取系统的各种信息，而不需要关注系统是否正常。比如，系统卡住了，可以通过ipmi reset系统，而不需要跑到机房断电；系统无法登录也可以远程屏幕查看是什么问题。</p>
+
     </div>
 
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
+    
+    
+    
 
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2021-07-23T09:41:17+08:00"
-              content="2021-07-23">
-          07-23
-        </time>
-      </div>
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E6%8E%A5%E5%8F%A3/" rel="tag"># 接口</a>
+          </div>
 
-      <div class="post-title">
-          <a class="post-title-link" href="/2021/07/23/Hexo-yilia%E5%B7%A6%E4%BE%A7%E8%83%8C%E6%99%AF%E5%9B%BE%E7%89%87%E6%9B%B4%E6%8D%A2/" itemprop="url">
-            <span itemprop="name">Hexo+yilia左侧背景图片更换</span>
-          </a>
-      </div>
+        
 
-    </header>
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/08/12/openstack/" rel="prev" title="openstack">
+      <i class="fa fa-chevron-left"></i> openstack
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
   </article>
-
-    </div>
-  </div>
   
   
-  
-
   
 
 
@@ -255,6 +291,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#MGMT%E5%8F%A3"><span class="nav-number">1.</span> <span class="nav-text">MGMT口</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#IPMI%E5%8F%A3"><span class="nav-number">2.</span> <span class="nav-text">IPMI口</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
