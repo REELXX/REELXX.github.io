@@ -28,10 +28,10 @@
 <meta property="og:description" content="三平面分离的详细解析">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2021-07-22T06:32:54.000Z">
-<meta property="article:modified_time" content="2021-08-05T02:08:16.523Z">
+<meta property="article:modified_time" content="2021-08-17T08:39:34.619Z">
 <meta property="article:author" content="郑林昕">
-<meta property="article:tag" content="三平面">
-<meta property="article:tag" content="交换机工作原理">
+<meta property="article:tag" content="交换机">
+<meta property="article:tag" content="交换机原理">
 <meta name="twitter:card" content="summary">
 
 <link rel="canonical" href="http://example.com/2021/07/22/%E5%85%B3%E4%BA%8E%E6%95%B0%E6%8D%AE%E5%B9%B3%E9%9D%A2%EF%BC%8C%E6%8E%A7%E5%88%B6%E5%B9%B3%E9%9D%A2%E5%92%8C%E8%BD%AC%E5%8F%91%E5%B9%B3%E9%9D%A2%E7%9A%84%E5%88%86%E7%A6%BB%E9%97%AE%E9%A2%98/">
@@ -199,7 +199,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-08-05 10:08:16" itemprop="dateModified" datetime="2021-08-05T10:08:16+08:00">2021-08-05</time>
+                <time title="修改时间：2021-08-17 16:39:34" itemprop="dateModified" datetime="2021-08-17T16:39:34+08:00">2021-08-17</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -207,11 +207,7 @@
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E6%95%B0%E6%8D%AE%E9%80%9A%E4%BF%A1/" itemprop="url" rel="index"><span itemprop="name">数据通信</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E6%95%B0%E6%8D%AE%E9%80%9A%E4%BF%A1/%E7%BD%91%E7%BB%9C/" itemprop="url" rel="index"><span itemprop="name">网络</span></a>
+                  <a href="/categories/%E4%BA%A4%E6%8D%A2%E6%9C%BA/" itemprop="url" rel="index"><span itemprop="name">交换机</span></a>
                 </span>
             </span>
 
@@ -229,7 +225,7 @@
         <p><a href="#jump">三平面分离的详细解析</a></p>
 <span id="more"></span>
 <p><span id="back"></span></p>
-<h1 id="交换机数据平面，控制平面和管理平面的分离"><a href="#交换机数据平面，控制平面和管理平面的分离" class="headerlink" title="交换机数据平面，控制平面和管理平面的分离"></a>交换机数据平面，控制平面和管理平面的分离</h1><h2 id="交换机的工作原理"><a href="#交换机的工作原理" class="headerlink" title="交换机的工作原理"></a>交换机的工作原理</h2><p>目的MAC转发<br>源MAC学习<br>组播广播未知单播泛洪</p>
+<h1 id="交换机数据平面，控制平面和管理平面的分离"><a href="#交换机数据平面，控制平面和管理平面的分离" class="headerlink" title="交换机数据平面，控制平面和管理平面的分离"></a>交换机数据平面，控制平面和管理平面的分离</h1><h2 id="交换机的工作原理"><a href="#交换机的工作原理" class="headerlink" title="交换机的工作原理"></a>交换机的工作原理</h2><p>目的MAC转发<br>源MAC学习<br>BUM泛洪</p>
 <blockquote>
 <h2 id="交换机控制平面："><a href="#交换机控制平面：" class="headerlink" title="交换机控制平面："></a>交换机控制平面：</h2><p>&emsp;&emsp;交换机的控制平面用于控制和管理所有网络协议的运行，比如OSPF协议，RIP协议，BGP协议等。控制平面提供了数据平面数据处理转发前所必须的各种网络信息和转发查询表项。</p>
 </blockquote>
@@ -241,6 +237,29 @@
 </blockquote>
 <p><strong>三平面组合就是交换机的基本工作：</strong></p>
 <p>&emsp;&emsp;处理不同接口上各种类型的数据，对于数据处理过程中各种具体的处理转发过程，例如L2/L3/ACL/QOS/组播/安全防护等各种网络功能的具体执行，都划分为交换机的数据平面；而控制平面用于控制各种网络协议的运行，例如控制OSPF、ARP、STP等等协议的正常运行，控制平面提供了对网络环境的准确认识，提供了数据平面数据处理转发前所必须的各种网络信息和转发查询表项；至于管理平面的功能是提供给网络工程师使用TELNET、WEB、SSH、SNMP、RMON等方式管理设备的各种管理接口，并支持、理解和执行网络工程师对于网络设备各种网络功能的设置命令。</p>
+<h2 id="三个层面划分的报文"><a href="#三个层面划分的报文" class="headerlink" title="三个层面划分的报文"></a>三个层面划分的报文</h2><blockquote>
+<p>对于交换机设备，数据的路由和交换过程主要由硬件完成；CPU主要对控制流、管理流和部分硬件无法处理的数据流进行处理，同时提供交互界面提供用户进行本地管理配置</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>层面</th>
+<th>报文类型</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>管理面</td>
+<td>ip4-packet-local,ip6-packet-local</td>
+</tr>
+<tr>
+<td>数据面</td>
+<td>unknown-ipmc,unknown-ipmcv6,ttl,ip4-packet-other,ip6-packet-other…</td>
+</tr>
+<tr>
+<td>控制面</td>
+<td>tp-guard,dot1x,rldp,rerp,bpdu,isis dhcps,gvrp,ripng,igmp,mpls,ospf…</td>
+</tr>
+</tbody></table>
 <p><span id="jump"></span><br><a href="#back">查看交换机原理</a></p>
 <p>　　为什么需要对数据平面、控制平面和管理平面进行相互的分离呢?</p>
 <p>&emsp;&emsp;首先三者对于主机资源的消耗为：数据平面&gt;&gt;控制平面&gt;&gt;管理平面</p>
@@ -258,8 +277,8 @@
 
       <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/%E4%B8%89%E5%B9%B3%E9%9D%A2/" rel="tag"># 三平面</a>
-              <a href="/tags/%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/" rel="tag"># 交换机工作原理</a>
+              <a href="/tags/%E4%BA%A4%E6%8D%A2%E6%9C%BA/" rel="tag"># 交换机</a>
+              <a href="/tags/%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%8E%9F%E7%90%86/" rel="tag"># 交换机原理</a>
           </div>
 
         
@@ -333,7 +352,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BA%A4%E6%8D%A2%E6%9C%BA%E6%95%B0%E6%8D%AE%E5%B9%B3%E9%9D%A2%EF%BC%8C%E6%8E%A7%E5%88%B6%E5%B9%B3%E9%9D%A2%E5%92%8C%E7%AE%A1%E7%90%86%E5%B9%B3%E9%9D%A2%E7%9A%84%E5%88%86%E7%A6%BB"><span class="nav-number">1.</span> <span class="nav-text">交换机数据平面，控制平面和管理平面的分离</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%A4%E6%8D%A2%E6%9C%BA%E7%9A%84%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86"><span class="nav-number">1.1.</span> <span class="nav-text">交换机的工作原理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%A4%E6%8D%A2%E6%9C%BA%E6%8E%A7%E5%88%B6%E5%B9%B3%E9%9D%A2%EF%BC%9A"><span class="nav-number">1.2.</span> <span class="nav-text">交换机控制平面：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%A4%E6%8D%A2%E6%9C%BA%E6%95%B0%E6%8D%AE%E5%B9%B3%E9%9D%A2%EF%BC%9A"><span class="nav-number">1.3.</span> <span class="nav-text">交换机数据平面：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%A4%E6%8D%A2%E6%9C%BA%E7%AE%A1%E7%90%86%E5%B9%B3%E9%9D%A2%EF%BC%9A"><span class="nav-number">1.4.</span> <span class="nav-text">交换机管理平面：</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%AF%A6%E7%BB%86%E5%8F%82%E8%80%83"><span class="nav-number">2.</span> <span class="nav-text">详细参考</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BA%A4%E6%8D%A2%E6%9C%BA%E6%95%B0%E6%8D%AE%E5%B9%B3%E9%9D%A2%EF%BC%8C%E6%8E%A7%E5%88%B6%E5%B9%B3%E9%9D%A2%E5%92%8C%E7%AE%A1%E7%90%86%E5%B9%B3%E9%9D%A2%E7%9A%84%E5%88%86%E7%A6%BB"><span class="nav-number">1.</span> <span class="nav-text">交换机数据平面，控制平面和管理平面的分离</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%A4%E6%8D%A2%E6%9C%BA%E7%9A%84%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86"><span class="nav-number">1.1.</span> <span class="nav-text">交换机的工作原理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%A4%E6%8D%A2%E6%9C%BA%E6%8E%A7%E5%88%B6%E5%B9%B3%E9%9D%A2%EF%BC%9A"><span class="nav-number">1.2.</span> <span class="nav-text">交换机控制平面：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%A4%E6%8D%A2%E6%9C%BA%E6%95%B0%E6%8D%AE%E5%B9%B3%E9%9D%A2%EF%BC%9A"><span class="nav-number">1.3.</span> <span class="nav-text">交换机数据平面：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%A4%E6%8D%A2%E6%9C%BA%E7%AE%A1%E7%90%86%E5%B9%B3%E9%9D%A2%EF%BC%9A"><span class="nav-number">1.4.</span> <span class="nav-text">交换机管理平面：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%89%E4%B8%AA%E5%B1%82%E9%9D%A2%E5%88%92%E5%88%86%E7%9A%84%E6%8A%A5%E6%96%87"><span class="nav-number">1.5.</span> <span class="nav-text">三个层面划分的报文</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%AF%A6%E7%BB%86%E5%8F%82%E8%80%83"><span class="nav-number">2.</span> <span class="nav-text">详细参考</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -349,20 +368,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">25</span>
+          <span class="site-state-item-count">29</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-count">8</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">20</span>
+        <span class="site-state-item-count">31</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -435,7 +454,7 @@
       <i class="fa fa-chart-area"></i>
     </span>
       <span class="post-meta-item-text">站点总字数：</span>
-    <span title="站点总字数">73k</span>
+    <span title="站点总字数">79k</span>
 </div>
 
         
