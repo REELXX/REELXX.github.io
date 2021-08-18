@@ -171,6 +171,32 @@ BFD通知本地OSPF进程BFD邻居不可达。
 ]]></content>
   </entry>
   <entry>
+    <title>Django框架下，用sqlite3实现登录系统</title>
+    <url>/2021/08/17/Django%E6%A1%86%E6%9E%B6%E4%B8%8B%EF%BC%8C%E7%94%A8sqlite3%E5%AE%9E%E7%8E%B0%E7%99%BB%E5%BD%95%E7%B3%BB%E7%BB%9F/</url>
+    <content><![CDATA[<p>在Django框架下，自带sqlite3数据库。在21年的比赛中用sqlite3库实现了用户登录注册</p>
+<span id="more"></span>
+
+<p>一开始我想直接使用 models.[model名].objects.的方法从数据库中获取对应数据在后端进行账号密码匹对<br><img src="/2021/08/17/Django%E6%A1%86%E6%9E%B6%E4%B8%8B%EF%BC%8C%E7%94%A8sqlite3%E5%AE%9E%E7%8E%B0%E7%99%BB%E5%BD%95%E7%B3%BB%E7%BB%9F/modelsobject.png" alt="modelsobject"></p>
+<p>曾经用这个方法返回表单给前端，显示用户数据</p>
+<p>但这个方法在后端得到的数据是NULL<br>所以使用了sqlite3在Python的库</p>
+<blockquote>
+<p>获取用户信息</p>
+</blockquote>
+<figure class="highlight vim"><table><tr><td class="code"><pre><span class="line">import sqlite3</span><br><span class="line"></span><br><span class="line"><span class="keyword">con</span> = sqlite3.connect(<span class="string">&#x27;db.sqlite3&#x27;</span>)</span><br><span class="line">cur = <span class="keyword">con</span>.<span class="built_in">cursor</span>()</span><br><span class="line">sql = <span class="string">&#x27;select * from [数据库名：在DB Changes中看]&#x27;</span></span><br><span class="line"><span class="keyword">try</span>:</span><br><span class="line">    cur.<span class="keyword">execute</span>(sql)</span><br><span class="line">    # 获取所有数据</span><br><span class="line">    person_all = cur.fetchall()</span><br><span class="line">    # <span class="keyword">print</span>(person_all)</span><br><span class="line">    # 遍历</span><br><span class="line">    <span class="keyword">for</span> <span class="keyword">p</span> in person_al<span class="variable">l:</span></span><br><span class="line">        # 创建一组组新的用户信息字典 放入peopleInfo 用户名:密码</span><br><span class="line">        peopleInfo = &#123;<span class="keyword">p</span>[<span class="number">1</span>]: <span class="keyword">p</span>[<span class="number">3</span>]&#125;</span><br><span class="line">        # 创建用户名:邮箱</span><br><span class="line">        peopleEmail = &#123;<span class="keyword">p</span>[<span class="number">1</span>]: <span class="keyword">p</span>[<span class="number">2</span>]&#125;</span><br><span class="line">        # 将每个字典更新到nameAndPasswd 做成所有用户信息合集</span><br><span class="line">        nameAndPasswd.<span class="keyword">update</span>(peopleInfo)</span><br><span class="line">        nameAndEmail.<span class="keyword">update</span>(peopleEmail)</span><br><span class="line">        # <span class="keyword">print</span>(<span class="keyword">p</span>)</span><br><span class="line">except Exception <span class="keyword">as</span> <span class="keyword">e</span>:</span><br><span class="line">    <span class="keyword">print</span>(<span class="keyword">e</span>)</span><br><span class="line">    <span class="keyword">print</span>(<span class="string">&#x27;查询失败&#x27;</span>)</span><br><span class="line"><span class="keyword">finally</span>:</span><br><span class="line">    # 关闭游标</span><br><span class="line">    cur.<span class="keyword">close</span>()</span><br><span class="line">    # 关闭连接</span><br><span class="line">    <span class="keyword">con</span>.<span class="keyword">close</span>()</span><br></pre></td></tr></table></figure>
+<p>因为我建立的数据库是（pk，用户名，邮箱，密码），用for循环遍历每一组<br>将每一组的<strong>p[1]——用户名</strong>，<strong>p[3]——密码</strong><font color="#E974">组成一个新的字典</font>再<font color="#E974A">更新到信息合集nameAndPasswd中</font>，当for遍历完的时候，nameAndPasswd中就会有所有用户的账号密码键值对了</p>
+<blockquote>
+<p>登录<br>使用了字典的内置方法 <font color="#E9764A">dict.get(key,default=None)返回指定键的值</font>，用此方法获得的数据库指定账号的<strong>密码</strong>，拿来和输入的密码做比较</p>
+</blockquote>
+<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="meta"># 获得页面填写的账号信息</span></span><br><span class="line">nameSignIN = request.POST.<span class="keyword">get</span>(<span class="string">&#x27;accountSignIn&#x27;</span>)</span><br><span class="line">passwordSignIN = request.POST.<span class="keyword">get</span>(<span class="string">&#x27;passwordSignIn&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> nameAndPasswd.<span class="keyword">get</span>(nameSignIN) == passwordSignIN:</span><br><span class="line">    <span class="keyword">return</span> render(request, <span class="string">&#x27;???.html&#x27;</span>)</span><br><span class="line">    <span class="meta"># 密码正确</span></span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">    <span class="meta"># 密码错误</span></span><br></pre></td></tr></table></figure>]]></content>
+      <categories>
+        <category>Python</category>
+      </categories>
+      <tags>
+        <tag>Django</tag>
+        <tag>Python</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Hexo+yilia左侧背景图片更换</title>
     <url>/2021/07/23/Hexo-yilia%E5%B7%A6%E4%BE%A7%E8%83%8C%E6%99%AF%E5%9B%BE%E7%89%87%E6%9B%B4%E6%8D%A2/</url>
     <content><![CDATA[<p>关于hexo+yilia的左侧替换原始背景方案</p>
@@ -527,6 +553,25 @@ ILM
         <tag>网络</tag>
         <tag>路由</tag>
         <tag>OSPF</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Python——pipreqs</title>
+    <url>/2021/08/18/Python%E2%80%94%E2%80%94pipreqs/</url>
+    <content><![CDATA[<p>解决Python项目在不同环境没法运行的问题，通过pipreqs库导出所需要的包</p>
+<span id="more"></span>
+
+<figure class="highlight jboss-cli"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 安装</span></span><br><span class="line">pip install pipreqs</span><br><span class="line"><span class="comment"># 在项目下运行</span></span><br><span class="line">pipreqs <span class="string">./</span> <span class="params">--encoding=utf8</span></span><br></pre></td></tr></table></figure>
+<p>执行完后，在项目下会生成<font color="#E9764A">requirements.txt</font>文件，项目中的组件和包都会在其中<br><img src="/2021/08/18/Python%E2%80%94%E2%80%94pipreqs/1.png" alt="1"></p>
+<blockquote>
+<p>当用pycharm打开项目时，只要项目下有requirements.txt文件，就会提示是否要安装没有的组件和包<br><img src="/2021/08/18/Python%E2%80%94%E2%80%94pipreqs/2.png" alt="2"></p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>Python</category>
+      </categories>
+      <tags>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -1088,53 +1133,44 @@ BPDU处理变化:
       </tags>
   </entry>
   <entry>
-    <title>控制路由更新</title>
-    <url>/2021/08/04/%E6%8E%A7%E5%88%B6%E8%B7%AF%E7%94%B1%E6%9B%B4%E6%96%B0/</url>
-    <content><![CDATA[<p>关于OSPF的路由更新</p>
+    <title>将本地项目上传Github</title>
+    <url>/2021/08/17/%E5%B0%86%E6%9C%AC%E5%9C%B0%E9%A1%B9%E7%9B%AE%E4%B8%8A%E4%BC%A0Github/</url>
+    <content><![CDATA[<p>上传/更新本地项目到Github</p>
 <span id="more"></span>
 
-<h1 id="OSPF的路由汇总、重分布和过滤"><a href="#OSPF的路由汇总、重分布和过滤" class="headerlink" title="OSPF的路由汇总、重分布和过滤"></a>OSPF的路由汇总、重分布和过滤</h1><h2 id="OSPF路由汇总"><a href="#OSPF路由汇总" class="headerlink" title="OSPF路由汇总"></a>OSPF路由汇总</h2><p>区域间：<br>基于三类LSA，在<font color="#E9967A" size="3.5">ABR上汇总本区域向其他区域通告的区域间路由</font></p>
-<p><img src="/2021/08/04/%E6%8E%A7%E5%88%B6%E8%B7%AF%E7%94%B1%E6%9B%B4%E6%96%B0/%E6%B1%87%E6%80%BB%E5%8C%BA%E5%9F%9F%E9%97%B41.png" alt="汇总区域间1"><br><img src="/2021/08/04/%E6%8E%A7%E5%88%B6%E8%B7%AF%E7%94%B1%E6%9B%B4%E6%96%B0/%E6%B1%87%E6%80%BB%E5%8C%BA%E5%9F%9F%E9%97%B42.png" alt="汇总区域间2"></p>
-<p>区域外：<br>在<font color="#E9967A" size="3.5">ASBR上汇总本设备引入的外部路由</font></p>
-<p><img src="/2021/08/04/%E6%8E%A7%E5%88%B6%E8%B7%AF%E7%94%B1%E6%9B%B4%E6%96%B0/%E6%B1%87%E6%80%BB%E5%8C%BA%E5%9F%9F%E5%A4%961.png" alt="汇总区域外1"><br><img src="/2021/08/04/%E6%8E%A7%E5%88%B6%E8%B7%AF%E7%94%B1%E6%9B%B4%E6%96%B0/%E6%B1%87%E6%80%BB%E5%8C%BA%E5%9F%9F%E5%A4%962.png" alt="汇总区域外2"></p>
-<p>对引入的路由有以下几种情况：</p>
-<pre><code>如果ASBR，处于普通区域（不是处在stub等等特殊区域）将执行LSA5聚合路由
-如果ASBR处在NSSA区域，将会对聚合地址范围内所有LSA5，LSA7执行聚合。
-如果处在NSSA区域，且既是ASBR，又是ABR。那么除了执行第二点操作外，还会将7转5LSA也进行聚合。
-</code></pre>
-<p>#################################################################</p>
+<p>前提：<br>    1. 安装Git（跳过）<br>    2. 获取SSH密匙</p>
+<h1 id="前提——获取SSH密匙"><a href="#前提——获取SSH密匙" class="headerlink" title="前提——获取SSH密匙"></a>前提——获取SSH密匙</h1><p>操作步骤：</p>
 <ol>
-<li>缺省不会自动汇总，使用汇总命令，只通告汇总路由，不通告细化路由。</li>
-<li><font color="#228B22">ABR上汇总本区域向其他区域通告的区域间路由，<font color="#8B008B">ASBR上汇总本设备引入的外部路由。</font></font></li>
-<li>加not-advertise参数，连汇总路由都不通告。</li>
-<li>加cost参数可以改变通告路由的cost。</li>
+<li><p>在桌面右键，选择Git Bash Here，进入Git命令窗口<br><img src="/2021/08/17/%E5%B0%86%E6%9C%AC%E5%9C%B0%E9%A1%B9%E7%9B%AE%E4%B8%8A%E4%BC%A0Github/SSH%E5%AF%86%E9%92%A51.png" alt="SSH密钥1"></p>
+</li>
+<li><p>配置用户和邮箱(可以用Github注册的用户和邮箱)<br>因为Git是分布式版本控制系统，所以需要填写用户名和邮箱作为一个标识</p>
+<figure class="highlight verilog"><table><tr><td class="code"><pre><span class="line">git <span class="keyword">config</span> --<span class="keyword">global</span> user<span class="variable">.name</span> <span class="string">&quot;name&quot;</span></span><br><span class="line">git <span class="keyword">config</span> --<span class="keyword">global</span> user<span class="variable">.email</span> <span class="string">&quot;name@gmail.com&quot;</span></span><br></pre></td></tr></table></figure></li>
+<li><p>这时会在C:\Users\Administrator目录下生成.gitconfig配置文件，我是在C:\Users\94399目录下生成的，还有.ssh文件<br><img src="/2021/08/17/%E5%B0%86%E6%9C%AC%E5%9C%B0%E9%A1%B9%E7%9B%AE%E4%B8%8A%E4%BC%A0Github/SSH%E5%AF%86%E9%92%A52.png" alt="SSH密钥2"><br> gitconfig会是你刚刚写入的用户配置信息</p>
+</li>
+<li><p>生成SSH公钥和私钥</p>
+<figure class="highlight excel"><table><tr><td class="code"><pre><span class="line">ssh-keygen -<span class="built_in">t</span> rsa -C <span class="string">&quot;name@gmail.com&quot;</span> </span><br></pre></td></tr></table></figure>
+<p><img src="/2021/08/17/%E5%B0%86%E6%9C%AC%E5%9C%B0%E9%A1%B9%E7%9B%AE%E4%B8%8A%E4%BC%A0Github/SSH%E5%AF%86%E9%92%A53.png" alt="SSH密钥3"><br>出现后 按三下回车键</p>
+</li>
+<li><p>进入C:\Users\94399.ssh，就可以看到生成的密钥了<br><img src="/2021/08/17/%E5%B0%86%E6%9C%AC%E5%9C%B0%E9%A1%B9%E7%9B%AE%E4%B8%8A%E4%BC%A0Github/SSH%E5%AF%86%E9%92%A54.png" alt="SSH密钥4.png"><br> 用记事本打开<br><img src="/2021/08/17/%E5%B0%86%E6%9C%AC%E5%9C%B0%E9%A1%B9%E7%9B%AE%E4%B8%8A%E4%BC%A0Github/SSH%E5%AF%86%E9%92%A55.png" alt="SSH密钥5.png"></p>
+</li>
 </ol>
-<p>#################################################################</p>
-<h2 id="OSPF路由重分布"><a href="#OSPF路由重分布" class="headerlink" title="OSPF路由重分布"></a>OSPF路由重分布</h2><p>重分布总是向外执行的。这意味着执行重分布的路由器不改变其路由表，只有收到重分布路由的下行路由器会把路由添加到各自路由表中。</p>
-<p><img src="/2021/08/04/%E6%8E%A7%E5%88%B6%E8%B7%AF%E7%94%B1%E6%9B%B4%E6%96%B0/OSPF%E8%B7%AF%E7%94%B1%E9%87%8D%E5%88%86%E5%B8%831.png" alt="OSPF路由重分布1"></p>
-<p>所以重分布到RIP,EIGRP 的路由需要指定种子度量，否者路由不会被重分布。</p>
-<p><img src="/2021/08/04/%E6%8E%A7%E5%88%B6%E8%B7%AF%E7%94%B1%E6%9B%B4%E6%96%B0/OSPF%E8%B7%AF%E7%94%B1%E9%87%8D%E5%88%86%E5%B8%832.png" alt="OSPF路由重分布2"></p>
-<p><img src="/2021/08/04/%E6%8E%A7%E5%88%B6%E8%B7%AF%E7%94%B1%E6%9B%B4%E6%96%B0/OSPF%E8%B7%AF%E7%94%B1%E9%87%8D%E5%88%86%E5%B8%833.png" alt="OSPF路由重分布3"></p>
-<h2 id="OSPF路由过滤"><a href="#OSPF路由过滤" class="headerlink" title="OSPF路由过滤"></a>OSPF路由过滤</h2><h3 id="分发列表"><a href="#分发列表" class="headerlink" title="分发列表"></a>分发列表</h3><p>概念：把ACL应用在路由更新上</p>
-<p>distribute-list分发列表是用于控制路由更新的一个工具，<font color="#FF0000" size="3.5"><strong>只能过滤路由信息，不能过滤LSA</strong></font>。(所以说对距离矢量路由协议比较适用，如：RIP、EIGRP。 像OSPF链路状态路由协议，IN方向(影响本地路由表，但LSDB里是有的)，OUT方向不起作用; 但对本地始发路由可以过滤，原因是通过路由的重分发，而不是LSA传递。)</p>
-<p>缺陷：该命令只会干掉核心路由表，但是LSA依然会存储在路由器的ram里面。如果在area内用分发列表，此时LSDB已经同步完成。只有用了分发列表的交换机会进行路由过滤，别的交换机不会进行路由过滤</p>
-<p><img src="/2021/08/04/%E6%8E%A7%E5%88%B6%E8%B7%AF%E7%94%B1%E6%9B%B4%E6%96%B0/OSPF%E5%88%86%E5%8F%91%E5%88%97%E8%A1%A81.png" alt="OSPF分发列表1"></p>
-<h3 id="前缀列表"><a href="#前缀列表" class="headerlink" title="前缀列表"></a>前缀列表</h3><p>prefix-list：专门用于抓取控制层面流量–只能为发布列表、route-map服务；<br>特点：</p>
-<pre><code>前缀列表的可控性比访问列表高得多，支持增量修改，更为灵活
-前缀列表包含序列号，从最小的开始匹配，默认序列为8，以5增加可以使用序号插入
-判断路由前缀与前缀列表中的前缀是否匹配
-    匹配规则：至上而下逐一匹配，上条匹配按上条执行，不查看小条；末尾隐含拒绝所有
-</code></pre>
-<p><img src="/2021/08/04/%E6%8E%A7%E5%88%B6%E8%B7%AF%E7%94%B1%E6%9B%B4%E6%96%B0/OSPF%E5%89%8D%E7%BC%80%E5%88%97%E8%A1%A81.png" alt="OSPF前缀列表1"><br><img src="/2021/08/04/%E6%8E%A7%E5%88%B6%E8%B7%AF%E7%94%B1%E6%9B%B4%E6%96%B0/OSPF%E5%89%8D%E7%BC%80%E5%88%97%E8%A1%A82.png" alt="OSPF前缀列表2"></p>
-<p><font color="#FF0000"><strong>################################# 前缀列表示例！###################################</strong><br><img src="/2021/08/04/%E6%8E%A7%E5%88%B6%E8%B7%AF%E7%94%B1%E6%9B%B4%E6%96%B0/OSPF%E5%89%8D%E7%BC%80%E5%88%97%E8%A1%A83.png" alt="OSPF前缀列表3"><br><strong>###################################################################################</strong></font></p>
-]]></content>
+<h1 id="前提——为Github账号配置ssh-key"><a href="#前提——为Github账号配置ssh-key" class="headerlink" title="前提——为Github账号配置ssh key"></a>前提——为Github账号配置ssh key</h1><ol>
+<li>在Github中点击个人头像，点击settings<br><img src="/2021/08/17/%E5%B0%86%E6%9C%AC%E5%9C%B0%E9%A1%B9%E7%9B%AE%E4%B8%8A%E4%BC%A0Github/%E9%85%8D%E7%BD%AESSH1.png" alt="配置SSH1"></li>
+<li>打开SSH and GPG keys，点击 New SSH key，进入<br><img src="/2021/08/17/%E5%B0%86%E6%9C%AC%E5%9C%B0%E9%A1%B9%E7%9B%AE%E4%B8%8A%E4%BC%A0Github/%E9%85%8D%E7%BD%AESSH2.png" alt="配置SSH2"><br>将id_rsa.pub文件中的key<strong>全部复制</strong>，粘贴后点击Add key。完成Github账号的SSH Keys配置</li>
+</ol>
+<h1 id="上传本地项目至Github"><a href="#上传本地项目至Github" class="headerlink" title="上传本地项目至Github"></a>上传本地项目至Github</h1><ol>
+<li>在要上传的项目文件夹内，右击鼠标点击 Git Bash here<br><img src="/2021/08/17/%E5%B0%86%E6%9C%AC%E5%9C%B0%E9%A1%B9%E7%9B%AE%E4%B8%8A%E4%BC%A0Github/SSH%E5%AF%86%E9%92%A51.png" alt="SSH密钥1"></li>
+<li>创建本地仓库<figure class="highlight awk"><table><tr><td class="code"><pre><span class="line">git init <span class="regexp">//</span> 把这个目录变成Git可管理目录，出现**.git**文件夹</span><br><span class="line">git add . <span class="regexp">//</span> 把目录下所有文件添加到缓存区</span><br><span class="line">git commit -m <span class="string">&quot;第一次上传（提交的注释）&quot;</span> <span class="regexp">//</span> 把文件提交到仓库</span><br></pre></td></tr></table></figure></li>
+<li>关联Github仓库<br>创建新的仓库<br><img src="/2021/08/17/%E5%B0%86%E6%9C%AC%E5%9C%B0%E9%A1%B9%E7%9B%AE%E4%B8%8A%E4%BC%A0Github/%E4%B8%8A%E4%BC%A0github1.png" alt="上传github1"><br>复制仓库地址<br><img src="/2021/08/17/%E5%B0%86%E6%9C%AC%E5%9C%B0%E9%A1%B9%E7%9B%AE%E4%B8%8A%E4%BC%A0Github/%E4%B8%8A%E4%BC%A0github2.png" alt="上传github2"><br>关联远程Github仓库<figure class="highlight llvm"><table><tr><td class="code"><pre><span class="line">git remote <span class="keyword">add</span> origin git<span class="title">@github.com</span>:REELXX/blogTest.git</span><br></pre></td></tr></table></figure></li>
+<li>上传本地代码到远程关联的Github仓库<figure class="highlight maxima"><table><tr><td class="code"><pre><span class="line">git <span class="built_in">push</span> -u <span class="built_in">origin</span> master</span><br></pre></td></tr></table></figure></li>
+</ol>
+<h1 id="更新本地项目至Github"><a href="#更新本地项目至Github" class="headerlink" title="更新本地项目至Github"></a>更新本地项目至Github</h1><p>添加文件——提交文件——推送文件</p>
+<figure class="highlight armasm"><table><tr><td class="code"><pre><span class="line"><span class="symbol">git</span> <span class="keyword">add</span> .</span><br><span class="line"><span class="symbol">git</span> commit -m <span class="string">&quot;第一次更新&quot;</span></span><br><span class="line"><span class="symbol">git</span> <span class="keyword">push</span> -u origin master</span><br></pre></td></tr></table></figure>]]></content>
       <categories>
-        <category>路由</category>
+        <category>Github</category>
       </categories>
       <tags>
-        <tag>网络</tag>
-        <tag>路由</tag>
-        <tag>OSPF</tag>
+        <tag>Github</tag>
       </tags>
   </entry>
   <entry>
@@ -1425,6 +1461,56 @@ BPDU处理变化:
         <tag>虚拟化</tag>
         <tag>SDN</tag>
         <tag>控制器</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>控制路由更新</title>
+    <url>/2021/08/04/%E6%8E%A7%E5%88%B6%E8%B7%AF%E7%94%B1%E6%9B%B4%E6%96%B0/</url>
+    <content><![CDATA[<p>关于OSPF的路由更新</p>
+<span id="more"></span>
+
+<h1 id="OSPF的路由汇总、重分布和过滤"><a href="#OSPF的路由汇总、重分布和过滤" class="headerlink" title="OSPF的路由汇总、重分布和过滤"></a>OSPF的路由汇总、重分布和过滤</h1><h2 id="OSPF路由汇总"><a href="#OSPF路由汇总" class="headerlink" title="OSPF路由汇总"></a>OSPF路由汇总</h2><p>区域间：<br>基于三类LSA，在<font color="#E9967A" size="3.5">ABR上汇总本区域向其他区域通告的区域间路由</font></p>
+<p><img src="/2021/08/04/%E6%8E%A7%E5%88%B6%E8%B7%AF%E7%94%B1%E6%9B%B4%E6%96%B0/%E6%B1%87%E6%80%BB%E5%8C%BA%E5%9F%9F%E9%97%B41.png" alt="汇总区域间1"><br><img src="/2021/08/04/%E6%8E%A7%E5%88%B6%E8%B7%AF%E7%94%B1%E6%9B%B4%E6%96%B0/%E6%B1%87%E6%80%BB%E5%8C%BA%E5%9F%9F%E9%97%B42.png" alt="汇总区域间2"></p>
+<p>区域外：<br>在<font color="#E9967A" size="3.5">ASBR上汇总本设备引入的外部路由</font></p>
+<p><img src="/2021/08/04/%E6%8E%A7%E5%88%B6%E8%B7%AF%E7%94%B1%E6%9B%B4%E6%96%B0/%E6%B1%87%E6%80%BB%E5%8C%BA%E5%9F%9F%E5%A4%961.png" alt="汇总区域外1"><br><img src="/2021/08/04/%E6%8E%A7%E5%88%B6%E8%B7%AF%E7%94%B1%E6%9B%B4%E6%96%B0/%E6%B1%87%E6%80%BB%E5%8C%BA%E5%9F%9F%E5%A4%962.png" alt="汇总区域外2"></p>
+<p>对引入的路由有以下几种情况：</p>
+<pre><code>如果ASBR，处于普通区域（不是处在stub等等特殊区域）将执行LSA5聚合路由
+如果ASBR处在NSSA区域，将会对聚合地址范围内所有LSA5，LSA7执行聚合。
+如果处在NSSA区域，且既是ASBR，又是ABR。那么除了执行第二点操作外，还会将7转5LSA也进行聚合。
+</code></pre>
+<p>#################################################################</p>
+<ol>
+<li>缺省不会自动汇总，使用汇总命令，只通告汇总路由，不通告细化路由。</li>
+<li><font color="#228B22">ABR上汇总本区域向其他区域通告的区域间路由，<font color="#8B008B">ASBR上汇总本设备引入的外部路由。</font></font></li>
+<li>加not-advertise参数，连汇总路由都不通告。</li>
+<li>加cost参数可以改变通告路由的cost。</li>
+</ol>
+<p>#################################################################</p>
+<h2 id="OSPF路由重分布"><a href="#OSPF路由重分布" class="headerlink" title="OSPF路由重分布"></a>OSPF路由重分布</h2><p>重分布总是向外执行的。这意味着执行重分布的路由器不改变其路由表，只有收到重分布路由的下行路由器会把路由添加到各自路由表中。</p>
+<p><img src="/2021/08/04/%E6%8E%A7%E5%88%B6%E8%B7%AF%E7%94%B1%E6%9B%B4%E6%96%B0/OSPF%E8%B7%AF%E7%94%B1%E9%87%8D%E5%88%86%E5%B8%831.png" alt="OSPF路由重分布1"></p>
+<p>所以重分布到RIP,EIGRP 的路由需要指定种子度量，否者路由不会被重分布。</p>
+<p><img src="/2021/08/04/%E6%8E%A7%E5%88%B6%E8%B7%AF%E7%94%B1%E6%9B%B4%E6%96%B0/OSPF%E8%B7%AF%E7%94%B1%E9%87%8D%E5%88%86%E5%B8%832.png" alt="OSPF路由重分布2"></p>
+<p><img src="/2021/08/04/%E6%8E%A7%E5%88%B6%E8%B7%AF%E7%94%B1%E6%9B%B4%E6%96%B0/OSPF%E8%B7%AF%E7%94%B1%E9%87%8D%E5%88%86%E5%B8%833.png" alt="OSPF路由重分布3"></p>
+<h2 id="OSPF路由过滤"><a href="#OSPF路由过滤" class="headerlink" title="OSPF路由过滤"></a>OSPF路由过滤</h2><h3 id="分发列表"><a href="#分发列表" class="headerlink" title="分发列表"></a>分发列表</h3><p>概念：把ACL应用在路由更新上</p>
+<p>distribute-list分发列表是用于控制路由更新的一个工具，<font color="#FF0000" size="3.5"><strong>只能过滤路由信息，不能过滤LSA</strong></font>。(所以说对距离矢量路由协议比较适用，如：RIP、EIGRP。 像OSPF链路状态路由协议，IN方向(影响本地路由表，但LSDB里是有的)，OUT方向不起作用; 但对本地始发路由可以过滤，原因是通过路由的重分发，而不是LSA传递。)</p>
+<p>缺陷：该命令只会干掉核心路由表，但是LSA依然会存储在路由器的ram里面。如果在area内用分发列表，此时LSDB已经同步完成。只有用了分发列表的交换机会进行路由过滤，别的交换机不会进行路由过滤</p>
+<p><img src="/2021/08/04/%E6%8E%A7%E5%88%B6%E8%B7%AF%E7%94%B1%E6%9B%B4%E6%96%B0/OSPF%E5%88%86%E5%8F%91%E5%88%97%E8%A1%A81.png" alt="OSPF分发列表1"></p>
+<h3 id="前缀列表"><a href="#前缀列表" class="headerlink" title="前缀列表"></a>前缀列表</h3><p>prefix-list：专门用于抓取控制层面流量–只能为发布列表、route-map服务；<br>特点：</p>
+<pre><code>前缀列表的可控性比访问列表高得多，支持增量修改，更为灵活
+前缀列表包含序列号，从最小的开始匹配，默认序列为8，以5增加可以使用序号插入
+判断路由前缀与前缀列表中的前缀是否匹配
+    匹配规则：至上而下逐一匹配，上条匹配按上条执行，不查看小条；末尾隐含拒绝所有
+</code></pre>
+<p><img src="/2021/08/04/%E6%8E%A7%E5%88%B6%E8%B7%AF%E7%94%B1%E6%9B%B4%E6%96%B0/OSPF%E5%89%8D%E7%BC%80%E5%88%97%E8%A1%A81.png" alt="OSPF前缀列表1"><br><img src="/2021/08/04/%E6%8E%A7%E5%88%B6%E8%B7%AF%E7%94%B1%E6%9B%B4%E6%96%B0/OSPF%E5%89%8D%E7%BC%80%E5%88%97%E8%A1%A82.png" alt="OSPF前缀列表2"></p>
+<p><font color="#FF0000"><strong>################################# 前缀列表示例！###################################</strong><br><img src="/2021/08/04/%E6%8E%A7%E5%88%B6%E8%B7%AF%E7%94%B1%E6%9B%B4%E6%96%B0/OSPF%E5%89%8D%E7%BC%80%E5%88%97%E8%A1%A83.png" alt="OSPF前缀列表3"><br><strong>###################################################################################</strong></font></p>
+]]></content>
+      <categories>
+        <category>路由</category>
+      </categories>
+      <tags>
+        <tag>网络</tag>
+        <tag>路由</tag>
+        <tag>OSPF</tag>
       </tags>
   </entry>
   <entry>

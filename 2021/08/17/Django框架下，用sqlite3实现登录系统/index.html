@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/img/touxiang.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/assets/img/touxiang.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"b2t":true,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="在Django框架下，自带sqlite3数据库。在21年的比赛中用sqlite3库实现了用户登录注册">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Django框架下，用sqlite3实现登录系统">
+<meta property="og:url" content="http://example.com/2021/08/17/Django%E6%A1%86%E6%9E%B6%E4%B8%8B%EF%BC%8C%E7%94%A8sqlite3%E5%AE%9E%E7%8E%B0%E7%99%BB%E5%BD%95%E7%B3%BB%E7%BB%9F/index.html">
+<meta property="og:site_name" content="郑林昕的博客">
+<meta property="og:description" content="在Django框架下，自带sqlite3数据库。在21年的比赛中用sqlite3库实现了用户登录注册">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/2021/08/17/Django%E6%A1%86%E6%9E%B6%E4%B8%8B%EF%BC%8C%E7%94%A8sqlite3%E5%AE%9E%E7%8E%B0%E7%99%BB%E5%BD%95%E7%B3%BB%E7%BB%9F/modelsobject.png">
+<meta property="article:published_time" content="2021-08-17T12:52:32.000Z">
+<meta property="article:modified_time" content="2021-08-18T01:40:21.697Z">
+<meta property="article:author" content="郑林昕">
+<meta property="article:tag" content="Django">
+<meta property="article:tag" content="Python">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2021/08/17/Django%E6%A1%86%E6%9E%B6%E4%B8%8B%EF%BC%8C%E7%94%A8sqlite3%E5%AE%9E%E7%8E%B0%E7%99%BB%E5%BD%95%E7%B3%BB%E7%BB%9F/modelsobject.png">
+
+<link rel="canonical" href="http://example.com/2021/08/17/Django%E6%A1%86%E6%9E%B6%E4%B8%8B%EF%BC%8C%E7%94%A8sqlite3%E5%AE%9E%E7%8E%B0%E7%99%BB%E5%BD%95%E7%B3%BB%E7%BB%9F/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Django框架下，用sqlite3实现登录系统 | 郑林昕的博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="郑林昕的博客" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">郑林昕的博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">日常记录</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/08/17/Django%E6%A1%86%E6%9E%B6%E4%B8%8B%EF%BC%8C%E7%94%A8sqlite3%E5%AE%9E%E7%8E%B0%E7%99%BB%E5%BD%95%E7%B3%BB%E7%BB%9F/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/assets/img/touxiang.png">
+      <meta itemprop="name" content="郑林昕">
+      <meta itemprop="description" content="正确的目标，简化，优化，加速，自动化">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="郑林昕的博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Django框架下，用sqlite3实现登录系统
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-08-17 20:52:32" itemprop="dateCreated datePublished" datetime="2021-08-17T20:52:32+08:00">2021-08-17</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-08-18 09:40:21" itemprop="dateModified" datetime="2021-08-18T09:40:21+08:00">2021-08-18</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Python/" itemprop="url" rel="index"><span itemprop="name">Python</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>在Django框架下，自带sqlite3数据库。在21年的比赛中用sqlite3库实现了用户登录注册</p>
+<span id="more"></span>
+
+<p>一开始我想直接使用 models.[model名].objects.的方法从数据库中获取对应数据在后端进行账号密码匹对<br><img src="/2021/08/17/Django%E6%A1%86%E6%9E%B6%E4%B8%8B%EF%BC%8C%E7%94%A8sqlite3%E5%AE%9E%E7%8E%B0%E7%99%BB%E5%BD%95%E7%B3%BB%E7%BB%9F/modelsobject.png" alt="modelsobject"></p>
+<p>曾经用这个方法返回表单给前端，显示用户数据</p>
+<p>但这个方法在后端得到的数据是NULL<br>所以使用了sqlite3在Python的库</p>
+<blockquote>
+<p>获取用户信息</p>
+</blockquote>
+<figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">import sqlite3</span><br><span class="line"></span><br><span class="line"><span class="keyword">con</span> = sqlite3.connect(<span class="string">&#x27;db.sqlite3&#x27;</span>)</span><br><span class="line">cur = <span class="keyword">con</span>.<span class="built_in">cursor</span>()</span><br><span class="line">sql = <span class="string">&#x27;select * from [数据库名：在DB Changes中看]&#x27;</span></span><br><span class="line"><span class="keyword">try</span>:</span><br><span class="line">    cur.<span class="keyword">execute</span>(sql)</span><br><span class="line">    # 获取所有数据</span><br><span class="line">    person_all = cur.fetchall()</span><br><span class="line">    # <span class="keyword">print</span>(person_all)</span><br><span class="line">    # 遍历</span><br><span class="line">    <span class="keyword">for</span> <span class="keyword">p</span> in person_al<span class="variable">l:</span></span><br><span class="line">        # 创建一组组新的用户信息字典 放入peopleInfo 用户名:密码</span><br><span class="line">        peopleInfo = &#123;<span class="keyword">p</span>[<span class="number">1</span>]: <span class="keyword">p</span>[<span class="number">3</span>]&#125;</span><br><span class="line">        # 创建用户名:邮箱</span><br><span class="line">        peopleEmail = &#123;<span class="keyword">p</span>[<span class="number">1</span>]: <span class="keyword">p</span>[<span class="number">2</span>]&#125;</span><br><span class="line">        # 将每个字典更新到nameAndPasswd 做成所有用户信息合集</span><br><span class="line">        nameAndPasswd.<span class="keyword">update</span>(peopleInfo)</span><br><span class="line">        nameAndEmail.<span class="keyword">update</span>(peopleEmail)</span><br><span class="line">        # <span class="keyword">print</span>(<span class="keyword">p</span>)</span><br><span class="line">except Exception <span class="keyword">as</span> <span class="keyword">e</span>:</span><br><span class="line">    <span class="keyword">print</span>(<span class="keyword">e</span>)</span><br><span class="line">    <span class="keyword">print</span>(<span class="string">&#x27;查询失败&#x27;</span>)</span><br><span class="line"><span class="keyword">finally</span>:</span><br><span class="line">    # 关闭游标</span><br><span class="line">    cur.<span class="keyword">close</span>()</span><br><span class="line">    # 关闭连接</span><br><span class="line">    <span class="keyword">con</span>.<span class="keyword">close</span>()</span><br></pre></td></tr></table></figure>
+<p>因为我建立的数据库是（pk，用户名，邮箱，密码），用for循环遍历每一组<br>将每一组的<strong>p[1]——用户名</strong>，<strong>p[3]——密码</strong><font color="#E974">组成一个新的字典</font>再<font color="#E974A">更新到信息合集nameAndPasswd中</font>，当for遍历完的时候，nameAndPasswd中就会有所有用户的账号密码键值对了</p>
+<blockquote>
+<p>登录<br>使用了字典的内置方法 <font color="#E9764A">dict.get(key,default=None)返回指定键的值</font>，用此方法获得的数据库指定账号的<strong>密码</strong>，拿来和输入的密码做比较</p>
+</blockquote>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta"># 获得页面填写的账号信息</span></span><br><span class="line">nameSignIN = request.POST.<span class="keyword">get</span>(<span class="string">&#x27;accountSignIn&#x27;</span>)</span><br><span class="line">passwordSignIN = request.POST.<span class="keyword">get</span>(<span class="string">&#x27;passwordSignIn&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> nameAndPasswd.<span class="keyword">get</span>(nameSignIN) == passwordSignIN:</span><br><span class="line">    <span class="keyword">return</span> render(request, <span class="string">&#x27;???.html&#x27;</span>)</span><br><span class="line">    <span class="meta"># 密码正确</span></span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">    <span class="meta"># 密码错误</span></span><br></pre></td></tr></table></figure>
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Django/" rel="tag"># Django</a>
+              <a href="/tags/Python/" rel="tag"># Python</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/08/17/SPAN/" rel="prev" title="SPAN">
+      <i class="fa fa-chevron-left"></i> SPAN
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/08/17/%E5%B0%86%E6%9C%AC%E5%9C%B0%E9%A1%B9%E7%9B%AE%E4%B8%8A%E4%BC%A0Github/" rel="next" title="将本地项目上传Github">
+      将本地项目上传Github <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="郑林昕"
+      src="/assets/img/touxiang.png">
+  <p class="site-author-name" itemprop="name">郑林昕</p>
+  <div class="site-description" itemprop="description">正确的目标，简化，优化，加速，自动化</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">32</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">10</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">34</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/REELXX" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;REELXX" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:tentosiuCHINA@gmail.com" title="E-Mail → mailto:tentosiuCHINA@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/hiODsbegbrkNKSJ" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;hiODsbegbrkNKSJ" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/atom.xml" title="rss → &#x2F;atom.xml"><i class="fa fa-rss fa-fw"></i>rss</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      相关链接
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://www.cnblogs.com/" title="https:&#x2F;&#x2F;www.cnblogs.com&#x2F;" rel="noopener" target="_blank">博客园</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://bbs.hh010.com/" title="https:&#x2F;&#x2F;bbs.hh010.com&#x2F;" rel="noopener" target="_blank">鸿鹄论坛</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.w3school.com.cn/" title="https:&#x2F;&#x2F;www.w3school.com.cn&#x2F;" rel="noopener" target="_blank">w3school</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://stackoverflow.com/" title="https:&#x2F;&#x2F;stackoverflow.com&#x2F;" rel="noopener" target="_blank">stackoverflow</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.csdn.net/" title="https:&#x2F;&#x2F;www.csdn.net&#x2F;" rel="noopener" target="_blank">CSDN</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">郑林昕</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">81k</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"model":{"jsonPath":"/live2dw/assets/koharu.model.json"},"display":{"position":"left","width":200,"height":400},"mobile":{"show":false},"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+</html>

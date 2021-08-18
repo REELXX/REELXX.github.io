@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/img/touxiang.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/assets/img/touxiang.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"b2t":true,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="上传&#x2F;更新本地项目到Github">
+<meta property="og:type" content="article">
+<meta property="og:title" content="将本地项目上传Github">
+<meta property="og:url" content="http://example.com/2021/08/17/%E5%B0%86%E6%9C%AC%E5%9C%B0%E9%A1%B9%E7%9B%AE%E4%B8%8A%E4%BC%A0Github/index.html">
+<meta property="og:site_name" content="郑林昕的博客">
+<meta property="og:description" content="上传&#x2F;更新本地项目到Github">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/2021/08/17/%E5%B0%86%E6%9C%AC%E5%9C%B0%E9%A1%B9%E7%9B%AE%E4%B8%8A%E4%BC%A0Github/SSH%E5%AF%86%E9%92%A51.png">
+<meta property="og:image" content="http://example.com/2021/08/17/%E5%B0%86%E6%9C%AC%E5%9C%B0%E9%A1%B9%E7%9B%AE%E4%B8%8A%E4%BC%A0Github/SSH%E5%AF%86%E9%92%A52.png">
+<meta property="og:image" content="http://example.com/2021/08/17/%E5%B0%86%E6%9C%AC%E5%9C%B0%E9%A1%B9%E7%9B%AE%E4%B8%8A%E4%BC%A0Github/SSH%E5%AF%86%E9%92%A53.png">
+<meta property="og:image" content="http://example.com/2021/08/17/%E5%B0%86%E6%9C%AC%E5%9C%B0%E9%A1%B9%E7%9B%AE%E4%B8%8A%E4%BC%A0Github/SSH%E5%AF%86%E9%92%A54.png">
+<meta property="og:image" content="http://example.com/2021/08/17/%E5%B0%86%E6%9C%AC%E5%9C%B0%E9%A1%B9%E7%9B%AE%E4%B8%8A%E4%BC%A0Github/SSH%E5%AF%86%E9%92%A55.png">
+<meta property="og:image" content="http://example.com/2021/08/17/%E5%B0%86%E6%9C%AC%E5%9C%B0%E9%A1%B9%E7%9B%AE%E4%B8%8A%E4%BC%A0Github/%E9%85%8D%E7%BD%AESSH1.png">
+<meta property="og:image" content="http://example.com/2021/08/17/%E5%B0%86%E6%9C%AC%E5%9C%B0%E9%A1%B9%E7%9B%AE%E4%B8%8A%E4%BC%A0Github/%E9%85%8D%E7%BD%AESSH2.png">
+<meta property="og:image" content="http://example.com/2021/08/17/%E5%B0%86%E6%9C%AC%E5%9C%B0%E9%A1%B9%E7%9B%AE%E4%B8%8A%E4%BC%A0Github/SSH%E5%AF%86%E9%92%A51.png">
+<meta property="og:image" content="http://example.com/2021/08/17/%E5%B0%86%E6%9C%AC%E5%9C%B0%E9%A1%B9%E7%9B%AE%E4%B8%8A%E4%BC%A0Github/%E4%B8%8A%E4%BC%A0github1.png">
+<meta property="og:image" content="http://example.com/2021/08/17/%E5%B0%86%E6%9C%AC%E5%9C%B0%E9%A1%B9%E7%9B%AE%E4%B8%8A%E4%BC%A0Github/%E4%B8%8A%E4%BC%A0github2.png">
+<meta property="article:published_time" content="2021-08-17T13:03:45.000Z">
+<meta property="article:modified_time" content="2021-08-18T02:34:53.845Z">
+<meta property="article:author" content="郑林昕">
+<meta property="article:tag" content="Github">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2021/08/17/%E5%B0%86%E6%9C%AC%E5%9C%B0%E9%A1%B9%E7%9B%AE%E4%B8%8A%E4%BC%A0Github/SSH%E5%AF%86%E9%92%A51.png">
+
+<link rel="canonical" href="http://example.com/2021/08/17/%E5%B0%86%E6%9C%AC%E5%9C%B0%E9%A1%B9%E7%9B%AE%E4%B8%8A%E4%BC%A0Github/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>将本地项目上传Github | 郑林昕的博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="郑林昕的博客" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">郑林昕的博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">日常记录</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/08/17/%E5%B0%86%E6%9C%AC%E5%9C%B0%E9%A1%B9%E7%9B%AE%E4%B8%8A%E4%BC%A0Github/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/assets/img/touxiang.png">
+      <meta itemprop="name" content="郑林昕">
+      <meta itemprop="description" content="正确的目标，简化，优化，加速，自动化">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="郑林昕的博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          将本地项目上传Github
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-08-17 21:03:45" itemprop="dateCreated datePublished" datetime="2021-08-17T21:03:45+08:00">2021-08-17</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-08-18 10:34:53" itemprop="dateModified" datetime="2021-08-18T10:34:53+08:00">2021-08-18</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Github/" itemprop="url" rel="index"><span itemprop="name">Github</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>上传/更新本地项目到Github</p>
+<span id="more"></span>
+
+<p>前提：<br>    1. 安装Git（跳过）<br>    2. 获取SSH密匙</p>
+<h1 id="前提——获取SSH密匙"><a href="#前提——获取SSH密匙" class="headerlink" title="前提——获取SSH密匙"></a>前提——获取SSH密匙</h1><p>操作步骤：</p>
+<ol>
+<li><p>在桌面右键，选择Git Bash Here，进入Git命令窗口<br><img src="/2021/08/17/%E5%B0%86%E6%9C%AC%E5%9C%B0%E9%A1%B9%E7%9B%AE%E4%B8%8A%E4%BC%A0Github/SSH%E5%AF%86%E9%92%A51.png" alt="SSH密钥1"></p>
+</li>
+<li><p>配置用户和邮箱(可以用Github注册的用户和邮箱)<br>因为Git是分布式版本控制系统，所以需要填写用户名和邮箱作为一个标识</p>
+<figure class="highlight verilog"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git <span class="keyword">config</span> --<span class="keyword">global</span> user<span class="variable">.name</span> <span class="string">&quot;name&quot;</span></span><br><span class="line">git <span class="keyword">config</span> --<span class="keyword">global</span> user<span class="variable">.email</span> <span class="string">&quot;name@gmail.com&quot;</span></span><br></pre></td></tr></table></figure></li>
+<li><p>这时会在C:\Users\Administrator目录下生成.gitconfig配置文件，我是在C:\Users\94399目录下生成的，还有.ssh文件<br><img src="/2021/08/17/%E5%B0%86%E6%9C%AC%E5%9C%B0%E9%A1%B9%E7%9B%AE%E4%B8%8A%E4%BC%A0Github/SSH%E5%AF%86%E9%92%A52.png" alt="SSH密钥2"><br> gitconfig会是你刚刚写入的用户配置信息</p>
+</li>
+<li><p>生成SSH公钥和私钥</p>
+<figure class="highlight excel"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh-keygen -<span class="built_in">t</span> rsa -C <span class="string">&quot;name@gmail.com&quot;</span> </span><br></pre></td></tr></table></figure>
+<p><img src="/2021/08/17/%E5%B0%86%E6%9C%AC%E5%9C%B0%E9%A1%B9%E7%9B%AE%E4%B8%8A%E4%BC%A0Github/SSH%E5%AF%86%E9%92%A53.png" alt="SSH密钥3"><br>出现后 按三下回车键</p>
+</li>
+<li><p>进入C:\Users\94399.ssh，就可以看到生成的密钥了<br><img src="/2021/08/17/%E5%B0%86%E6%9C%AC%E5%9C%B0%E9%A1%B9%E7%9B%AE%E4%B8%8A%E4%BC%A0Github/SSH%E5%AF%86%E9%92%A54.png" alt="SSH密钥4.png"><br> 用记事本打开<br><img src="/2021/08/17/%E5%B0%86%E6%9C%AC%E5%9C%B0%E9%A1%B9%E7%9B%AE%E4%B8%8A%E4%BC%A0Github/SSH%E5%AF%86%E9%92%A55.png" alt="SSH密钥5.png"></p>
+</li>
+</ol>
+<h1 id="前提——为Github账号配置ssh-key"><a href="#前提——为Github账号配置ssh-key" class="headerlink" title="前提——为Github账号配置ssh key"></a>前提——为Github账号配置ssh key</h1><ol>
+<li>在Github中点击个人头像，点击settings<br><img src="/2021/08/17/%E5%B0%86%E6%9C%AC%E5%9C%B0%E9%A1%B9%E7%9B%AE%E4%B8%8A%E4%BC%A0Github/%E9%85%8D%E7%BD%AESSH1.png" alt="配置SSH1"></li>
+<li>打开SSH and GPG keys，点击 New SSH key，进入<br><img src="/2021/08/17/%E5%B0%86%E6%9C%AC%E5%9C%B0%E9%A1%B9%E7%9B%AE%E4%B8%8A%E4%BC%A0Github/%E9%85%8D%E7%BD%AESSH2.png" alt="配置SSH2"><br>将id_rsa.pub文件中的key<strong>全部复制</strong>，粘贴后点击Add key。完成Github账号的SSH Keys配置</li>
+</ol>
+<h1 id="上传本地项目至Github"><a href="#上传本地项目至Github" class="headerlink" title="上传本地项目至Github"></a>上传本地项目至Github</h1><ol>
+<li>在要上传的项目文件夹内，右击鼠标点击 Git Bash here<br><img src="/2021/08/17/%E5%B0%86%E6%9C%AC%E5%9C%B0%E9%A1%B9%E7%9B%AE%E4%B8%8A%E4%BC%A0Github/SSH%E5%AF%86%E9%92%A51.png" alt="SSH密钥1"></li>
+<li>创建本地仓库<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git init <span class="regexp">//</span> 把这个目录变成Git可管理目录，出现**.git**文件夹</span><br><span class="line">git add . <span class="regexp">//</span> 把目录下所有文件添加到缓存区</span><br><span class="line">git commit -m <span class="string">&quot;第一次上传（提交的注释）&quot;</span> <span class="regexp">//</span> 把文件提交到仓库</span><br></pre></td></tr></table></figure></li>
+<li>关联Github仓库<br>创建新的仓库<br><img src="/2021/08/17/%E5%B0%86%E6%9C%AC%E5%9C%B0%E9%A1%B9%E7%9B%AE%E4%B8%8A%E4%BC%A0Github/%E4%B8%8A%E4%BC%A0github1.png" alt="上传github1"><br>复制仓库地址<br><img src="/2021/08/17/%E5%B0%86%E6%9C%AC%E5%9C%B0%E9%A1%B9%E7%9B%AE%E4%B8%8A%E4%BC%A0Github/%E4%B8%8A%E4%BC%A0github2.png" alt="上传github2"><br>关联远程Github仓库<figure class="highlight llvm"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git remote <span class="keyword">add</span> origin git<span class="title">@github.com</span>:REELXX/blogTest.git</span><br></pre></td></tr></table></figure></li>
+<li>上传本地代码到远程关联的Github仓库<figure class="highlight maxima"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">push</span> -u <span class="built_in">origin</span> master</span><br></pre></td></tr></table></figure></li>
+</ol>
+<h1 id="更新本地项目至Github"><a href="#更新本地项目至Github" class="headerlink" title="更新本地项目至Github"></a>更新本地项目至Github</h1><p>添加文件——提交文件——推送文件</p>
+<figure class="highlight armasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="symbol">git</span> <span class="keyword">add</span> .</span><br><span class="line"><span class="symbol">git</span> commit -m <span class="string">&quot;第一次更新&quot;</span></span><br><span class="line"><span class="symbol">git</span> <span class="keyword">push</span> -u origin master</span><br></pre></td></tr></table></figure>
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Github/" rel="tag"># Github</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/08/17/Django%E6%A1%86%E6%9E%B6%E4%B8%8B%EF%BC%8C%E7%94%A8sqlite3%E5%AE%9E%E7%8E%B0%E7%99%BB%E5%BD%95%E7%B3%BB%E7%BB%9F/" rel="prev" title="Django框架下，用sqlite3实现登录系统">
+      <i class="fa fa-chevron-left"></i> Django框架下，用sqlite3实现登录系统
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/08/18/Python%E2%80%94%E2%80%94pipreqs/" rel="next" title="Python——pipreqs">
+      Python——pipreqs <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E6%8F%90%E2%80%94%E2%80%94%E8%8E%B7%E5%8F%96SSH%E5%AF%86%E5%8C%99"><span class="nav-number">1.</span> <span class="nav-text">前提——获取SSH密匙</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E6%8F%90%E2%80%94%E2%80%94%E4%B8%BAGithub%E8%B4%A6%E5%8F%B7%E9%85%8D%E7%BD%AEssh-key"><span class="nav-number">2.</span> <span class="nav-text">前提——为Github账号配置ssh key</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%8A%E4%BC%A0%E6%9C%AC%E5%9C%B0%E9%A1%B9%E7%9B%AE%E8%87%B3Github"><span class="nav-number">3.</span> <span class="nav-text">上传本地项目至Github</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9B%B4%E6%96%B0%E6%9C%AC%E5%9C%B0%E9%A1%B9%E7%9B%AE%E8%87%B3Github"><span class="nav-number">4.</span> <span class="nav-text">更新本地项目至Github</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="郑林昕"
+      src="/assets/img/touxiang.png">
+  <p class="site-author-name" itemprop="name">郑林昕</p>
+  <div class="site-description" itemprop="description">正确的目标，简化，优化，加速，自动化</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">32</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">10</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">34</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/REELXX" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;REELXX" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:tentosiuCHINA@gmail.com" title="E-Mail → mailto:tentosiuCHINA@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/hiODsbegbrkNKSJ" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;hiODsbegbrkNKSJ" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/atom.xml" title="rss → &#x2F;atom.xml"><i class="fa fa-rss fa-fw"></i>rss</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      相关链接
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://www.cnblogs.com/" title="https:&#x2F;&#x2F;www.cnblogs.com&#x2F;" rel="noopener" target="_blank">博客园</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://bbs.hh010.com/" title="https:&#x2F;&#x2F;bbs.hh010.com&#x2F;" rel="noopener" target="_blank">鸿鹄论坛</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.w3school.com.cn/" title="https:&#x2F;&#x2F;www.w3school.com.cn&#x2F;" rel="noopener" target="_blank">w3school</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://stackoverflow.com/" title="https:&#x2F;&#x2F;stackoverflow.com&#x2F;" rel="noopener" target="_blank">stackoverflow</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.csdn.net/" title="https:&#x2F;&#x2F;www.csdn.net&#x2F;" rel="noopener" target="_blank">CSDN</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">郑林昕</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">81k</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"model":{"jsonPath":"/live2dw/assets/koharu.model.json"},"display":{"position":"left","width":200,"height":400},"mobile":{"show":false},"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+</html>
