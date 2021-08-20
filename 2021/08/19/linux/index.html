@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/img/touxiang.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/assets/img/touxiang.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"b2t":true,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="Linux学习笔记">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linux">
+<meta property="og:url" content="http://example.com/2021/08/19/linux/index.html">
+<meta property="og:site_name" content="郑林昕的博客">
+<meta property="og:description" content="Linux学习笔记">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/2021/08/19/linux/%E4%B8%A4%E5%A4%A7%E6%B4%BE%E5%88%AB.png">
+<meta property="og:image" content="http://example.com/2021/08/19/linux/%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F%E5%B1%82%E6%AC%A1%E7%BB%93%E6%9E%84.png">
+<meta property="article:published_time" content="2021-08-19T02:11:50.000Z">
+<meta property="article:modified_time" content="2021-08-20T11:31:07.267Z">
+<meta property="article:author" content="郑林昕">
+<meta property="article:tag" content="Linux">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2021/08/19/linux/%E4%B8%A4%E5%A4%A7%E6%B4%BE%E5%88%AB.png">
+
+<link rel="canonical" href="http://example.com/2021/08/19/linux/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Linux | 郑林昕的博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="郑林昕的博客" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">郑林昕的博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">日常记录</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/08/19/linux/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/assets/img/touxiang.png">
+      <meta itemprop="name" content="郑林昕">
+      <meta itemprop="description" content="正确的目标，简化，优化，加速，自动化">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="郑林昕的博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Linux
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-08-19 10:11:50" itemprop="dateCreated datePublished" datetime="2021-08-19T10:11:50+08:00">2021-08-19</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-08-20 19:31:07" itemprop="dateModified" datetime="2021-08-20T19:31:07+08:00">2021-08-20</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>Linux学习笔记</p>
+<span id="more"></span>
+
+<h1 id="linux"><a href="#linux" class="headerlink" title="linux"></a>linux</h1><h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><h3 id="两大派别"><a href="#两大派别" class="headerlink" title="两大派别"></a>两大派别</h3><p><strong>redhat系列和debian系列</strong><br>redhat系列主要涉及服务器等领域<br>debian系列主要涉及个人PC等领域<br><img src="/2021/08/19/linux/%E4%B8%A4%E5%A4%A7%E6%B4%BE%E5%88%AB.png" alt="两大派别"></p>
+<h3 id="文件系统层次结构"><a href="#文件系统层次结构" class="headerlink" title="文件系统层次结构"></a>文件系统层次结构</h3><p>linux根目录——“ / ”，文件系统被组织成一个倒置的目录树，根目录为顶部<br><img src="/2021/08/19/linux/%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F%E5%B1%82%E6%AC%A1%E7%BB%93%E6%9E%84.png" alt="文件系统层次结构"></p>
+<table>
+<thead>
+<tr>
+<th>目录名</th>
+<th>存放内容</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>bin (binaries)</td>
+<td>存放二进制可执行文件</td>
+</tr>
+<tr>
+<td>sbin (super user binaries)</td>
+<td>存放二进制可执行文件，只有root才能访问</td>
+</tr>
+<tr>
+<td>etc (etcetera)</td>
+<td>存放系统配置文件</td>
+</tr>
+<tr>
+<td>usr (unix shared resources)</td>
+<td>用于存放共享的系统资源</td>
+</tr>
+<tr>
+<td>home</td>
+<td>存放用户文件的根目录</td>
+</tr>
+<tr>
+<td>root</td>
+<td>超级用户目录</td>
+</tr>
+<tr>
+<td>dev (devices)</td>
+<td>用于存放设备文件</td>
+</tr>
+<tr>
+<td>lib (library)</td>
+<td>存放跟文件系统中的程序运行所需要的共享库及内核模块</td>
+</tr>
+<tr>
+<td>mnt (mount)</td>
+<td>系统管理员安装临时文件系统的安装点</td>
+</tr>
+<tr>
+<td>boot</td>
+<td>存放用于系统引导时使用的各种文件</td>
+</tr>
+<tr>
+<td>tmp (temporary)</td>
+<td>用于存放各种临时文件</td>
+</tr>
+<tr>
+<td>var (variable)</td>
+<td>用于存放运行时需要改变数据的文件</td>
+</tr>
+</tbody></table>
+<h2 id="Linux操作"><a href="#Linux操作" class="headerlink" title="Linux操作"></a>Linux操作</h2><h3 id="命令行"><a href="#命令行" class="headerlink" title="命令行"></a>命令行</h3><h4 id="基本语法"><a href="#基本语法" class="headerlink" title="基本语法"></a>基本语法</h4><p>切换控制台 ctrl+alt+F1~F6</p>
+<pre><code>1是图形化界面，其他是CLI界面
+</code></pre>
+<p>命令的语法</p>
+<pre><code>命令 -选项 参数
+    多个选项可以连写：-a -b -c == -abc
+    简写单减号 -l 全拼双减号 --length
+</code></pre>
+<h4 id="获取帮助"><a href="#获取帮助" class="headerlink" title="获取帮助"></a>获取帮助</h4><p>Linux中有两种常见的命令帮助方式：<br><strong>help和man page</strong><br>help：通常是–help或-h<br>man：Linux提供的手册，包含大多数详细命令</p>
+<h3 id="路径"><a href="#路径" class="headerlink" title="路径"></a>路径</h3><p>绝对路径：<br>指定文件在文件系统层次结构中的确切位置。从根目录（/）开始，并指定必须遍历的每个子目录才能到达特定文件。简单规则识别：带有正斜杠（/）的路径名作为第一个字符的是绝对路径。<br>绝对路径的命令查看方式——pwd</p>
+<p>相对路径：<br>例如，/var目录中的用户可以相对的将消息日志文件称为log/message</p>
+<p>导航路径：</p>
+<h3 id="软-硬链接"><a href="#软-硬链接" class="headerlink" title="软/硬链接"></a>软/硬链接</h3><table>
+<thead>
+<tr>
+<th>名称</th>
+<th>命令</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>软链接</td>
+<td>ln -s 被链接的源文件 链接文件</td>
+<td>建立文件的软链接，用通俗的方式讲类似于 Windows 下的快捷方式</td>
+</tr>
+<tr>
+<td>硬链接</td>
+<td>ln 被链接的源文件 链接文件</td>
+<td>创建出相同数据的另一个名称，修改内容会同步到所有其它硬链接，删除不影响其它硬链接</td>
+</tr>
+</tbody></table>
+<h3 id="输入和输出"><a href="#输入和输出" class="headerlink" title="输入和输出"></a>输入和输出</h3><p>重定向正确信息</p>
+<pre><code>命令 &gt; file
+    如果file不存在则创建，存在则覆盖
+命令 &gt;&gt; file1
+    如果file不存在则创建，存在则追加
+</code></pre>
+<p>重定向错误信息</p>
+<pre><code>命令 2&gt; file / 2&gt;&gt; file
+    将错误信息覆盖/追加到file
+命令 &amp;&gt; file / &amp;&gt;&gt; file
+    重定向正确和错误的内容到file中
+</code></pre>
+<p>管道</p>
+<pre><code>命令1|命令2
+    把命令1的结果传递给命令2作为参数
+</code></pre>
+<p>过滤指令grep</p>
+<pre><code>grep 关键字 file
+grep -i 关键字 file 忽略大小写
+    -n 显示行号
+    -v 反向过滤
+    -A/B/C5 显示关键字及后面/前面/前后5行
+</code></pre>
+<h3 id="权限管理"><a href="#权限管理" class="headerlink" title="权限管理"></a>权限管理</h3><p>命令：ls -l 简称 ll<br>前十一个字符代表权限，读r、写w、执行x<br>drwxr-xr-x.</p>
+<table>
+<thead>
+<tr>
+<th>1</th>
+<th>2-4</th>
+<th>5-7</th>
+<th>8-10</th>
+<th>11</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>文件(-),目录(d),链接(l),设备(C),块设备(b)</td>
+<td>第一组rwx代表文件所有者权限</td>
+<td>第二组rwx代表与文件所有组同一组用户权限</td>
+<td>第三组rwx代表其他所有用户权限</td>
+<td>.代表没有ACL扩展权限，+代表有ACL扩展权限</td>
+</tr>
+</tbody></table>
+<h3 id="权限修改"><a href="#权限修改" class="headerlink" title="权限修改"></a>权限修改</h3><p>命令：chmod 777 file<br>r=读取 //值=4<br>w=写入 //值=2<br>x=执行 //值=1<br>每一组为3个二进制，值为1-7，代表不同的权限组合</p>
+<h3 id="ssh远程连接"><a href="#ssh远程连接" class="headerlink" title="ssh远程连接"></a>ssh远程连接</h3><p>命令：ssh 用户名@主机名/IP</p>
+<pre><code>调整文件:/etc/ssh/sshd_config
+禁止密钥登录:PubkeyAuthentication no
+禁止密码登录:PasswordAuthentication no
+禁止root用户登录:PermitRootLogin no
+
+额外：
+    远程拷贝 scp 命令和cp一样
+    scp 被拷贝的文件 拷贝到哪去
+</code></pre>
+<h2 id="HTTP服务"><a href="#HTTP服务" class="headerlink" title="HTTP服务"></a>HTTP服务</h2><p>Apache是世界使用排名第一的Web服务器软件。是Linux上的web应用的标准服务工具 httpd</p>
+<p>Apache服务的各个目录文件</p>
+<table>
+<thead>
+<tr>
+<th>目录或文件</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>/etc/httpd</td>
+<td>Apache服务的根目录</td>
+</tr>
+<tr>
+<td>/etc/httpd/conf/httpd.conf</td>
+<td>Apache服务的主配置文件</td>
+</tr>
+<tr>
+<td>/var/www/html</td>
+<td>Apache服务的文档根目录</td>
+</tr>
+<tr>
+<td>/var/log/httpd</td>
+<td>Apache服务的日志目录</td>
+</tr>
+<tr>
+<td>/var/log/httpd/access_log</td>
+<td>Apache服务的访问日志文件</td>
+</tr>
+<tr>
+<td>/var/log/httpd/error_log</td>
+<td>Apache服务的错误日志文件</td>
+</tr>
+</tbody></table>
+<h2 id="常用命令"><a href="#常用命令" class="headerlink" title="常用命令"></a>常用命令</h2><figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br></pre></td><td class="code"><pre><span class="line"># 最常用</span><br><span class="line"><span class="keyword">pwd</span> 显示当前工作目录（<span class="keyword">print</span> working directory）</span><br><span class="line">touch 创建空文件				                    </span><br><span class="line"><span class="built_in">mkdir</span> 创建目录（<span class="keyword">make</span> directoriy）</span><br><span class="line">-<span class="keyword">p</span> 父目录不存在情况下先生成父目录 （parents）            </span><br><span class="line"><span class="keyword">cp</span> 复制文件或目录（<span class="keyword">copy</span>）</span><br><span class="line">-r 递归处理，将指定目录下的文件与子目录一并拷贝（recursive）     </span><br><span class="line">mv 移动文件或目录、文件或目录改名（<span class="keyword">move</span>）</span><br><span class="line">rm 删除文件（<span class="built_in">remove</span>）</span><br><span class="line">-r 同时删除该目录下的所有文件（recursive）</span><br><span class="line">-<span class="keyword">f</span> 强制删除文件或目录（force）</span><br><span class="line">rmdir 删除空目录（<span class="built_in">remove</span> directoriy）</span><br><span class="line"><span class="keyword">cat</span>显示文本文件内容 （catenate）</span><br><span class="line"><span class="keyword">echo</span></span><br><span class="line"></span><br><span class="line">systemctl <span class="keyword">list</span>-unit-<span class="keyword">files</span> | <span class="keyword">grep</span>... //查看系统服务列表</span><br><span class="line">systemctl start/<span class="keyword">stop</span>/restart 服务名 //服务启动，停止，重启</span><br><span class="line">systemctl enable/disable 服务名 //开启自动启动，禁止服务</span><br><span class="line">systemctl status 服务名 //查看服务状态</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"># 补充</span><br><span class="line">wc 统计文本的行数、字数、字符数（word <span class="built_in">count</span>）</span><br><span class="line">-<span class="keyword">m</span> 统计文本字符数</span><br><span class="line">-<span class="keyword">w</span> 统计文本字数</span><br><span class="line">-<span class="keyword">l</span> 统计文本行数</span><br><span class="line">more、less 分页显示文本文件内容</span><br><span class="line"><span class="keyword">find</span> 在文件系统中查找指定的文件</span><br><span class="line"><span class="keyword">find</span> /etc/ -name <span class="string">&quot;aaa&quot;</span></span><br><span class="line"><span class="keyword">grep</span> 在指定的文本文件中查找指定的字符串</span><br><span class="line"><span class="keyword">ln</span> 建立链接文件（link）</span><br><span class="line">-s 对源文件建立符号连接，而非硬连接（symbolic）</span><br><span class="line">top 显示当前系统中耗费资源最多的进程 </span><br><span class="line"><span class="keyword">ps</span> 显示瞬间的进程状态</span><br><span class="line">-<span class="keyword">e</span> /-A 显示所有进程，环境变量</span><br><span class="line">-<span class="keyword">f</span> 全格式</span><br><span class="line">-<span class="keyword">a</span> 显示所有用户的所有进程（包括其它用户）</span><br><span class="line">-<span class="keyword">u</span> 按用户名和启动时间的顺序来显示进程</span><br><span class="line">-<span class="keyword">x</span> 显示无控制终端的进程</span><br><span class="line">kill 杀死一个进程</span><br><span class="line">kill -<span class="number">9</span> pid</span><br><span class="line">df 显示文件系统磁盘空间的使用情况</span><br><span class="line">du 显示指定的文件（目录）已使用的磁盘空间的总</span><br><span class="line">-h文件大小以K，M，G为单位显示（human-readable）</span><br><span class="line">-s只显示各档案大小的总合（summarize）</span><br><span class="line">free 显示当前内存和交换空间的使用情况 </span><br><span class="line">netstat 显示网络状态信息</span><br><span class="line">-<span class="keyword">a</span> 显示所有连接和监听端口</span><br><span class="line">-t (tcp)仅显示tcp相关选项</span><br><span class="line">-<span class="keyword">u</span> (udp)仅显示udp相关选项</span><br><span class="line">-n 拒绝显示别名，能显示数字的全部转化成数字。</span><br><span class="line">-<span class="keyword">p</span> 显示建立相关链接的程序名</span><br><span class="line">ifconfig 网卡网络配置详解 </span><br><span class="line">ping 测试网络的连通性 </span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h2 id="快捷键"><a href="#快捷键" class="headerlink" title="快捷键"></a>快捷键</h2><figure class="highlight gauss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">单击<span class="built_in">TAB</span>补全 双击<span class="built_in">TAB</span>显示可选的可补充命令行</span><br><span class="line">ctrl + c（停止当前进程）</span><br><span class="line">ctrl + r（查看命令历史）</span><br><span class="line">ctrl + l（清屏，与<span class="keyword">clear</span>命令作用相同）</span><br></pre></td></tr></table></figure>
+<h2 id="vim编辑器"><a href="#vim编辑器" class="headerlink" title="vim编辑器"></a>vim编辑器</h2><p>末行模式</p>
+<pre><code>查询，忽略大小写的查询 set ic
+保存w
+退出q
+设置参数set
+替换 []s/old/new/g，%全文替换，（n1,n2）范围内替换
+</code></pre>
+<p>命令模式</p>
+<pre><code>复制yy，黏贴p，剪切dd
+撤销u，前进ctrl+r，删除字符nx
+替换r R，保存ZZ，G最后一行gg第一行
+</code></pre>
+<h2 id="YUM常用命令"><a href="#YUM常用命令" class="headerlink" title="YUM常用命令"></a>YUM常用命令</h2><figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">yum info 软件包名称 <span class="string">//</span>查看软件包信息</span><br><span class="line">yum search <span class="string">//</span>搜索软件包</span><br><span class="line">yum list <span class="string">//</span>通过软件名查看有几个下载路径</span><br><span class="line"></span><br><span class="line">yum install 软件包 <span class="string">//</span>安装</span><br><span class="line">yum install <span class="params">--downloadonly</span> <span class="params">--downloaddir=/path</span> <span class="string">//</span>仅下载不安装</span><br><span class="line">yum update 软件包 <span class="string">//</span>升级</span><br><span class="line">yum remove 软件包 <span class="string">//</span>移除</span><br><span class="line"></span><br><span class="line">yum whatprovides 命令 <span class="string">//</span>查询命令需要安装什么软件包</span><br></pre></td></tr></table></figure>
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Linux/" rel="tag"># Linux</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/08/18/Python%E2%80%94%E2%80%94pipreqs/" rel="prev" title="Python——pipreqs">
+      <i class="fa fa-chevron-left"></i> Python——pipreqs
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/08/19/shell/" rel="next" title="shell">
+      shell <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#linux"><span class="nav-number">1.</span> <span class="nav-text">linux</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%83%8C%E6%99%AF"><span class="nav-number">1.1.</span> <span class="nav-text">背景</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%A4%E5%A4%A7%E6%B4%BE%E5%88%AB"><span class="nav-number">1.1.1.</span> <span class="nav-text">两大派别</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F%E5%B1%82%E6%AC%A1%E7%BB%93%E6%9E%84"><span class="nav-number">1.1.2.</span> <span class="nav-text">文件系统层次结构</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Linux%E6%93%8D%E4%BD%9C"><span class="nav-number">1.2.</span> <span class="nav-text">Linux操作</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%91%BD%E4%BB%A4%E8%A1%8C"><span class="nav-number">1.2.1.</span> <span class="nav-text">命令行</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E8%AF%AD%E6%B3%95"><span class="nav-number">1.2.1.1.</span> <span class="nav-text">基本语法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%8E%B7%E5%8F%96%E5%B8%AE%E5%8A%A9"><span class="nav-number">1.2.1.2.</span> <span class="nav-text">获取帮助</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B7%AF%E5%BE%84"><span class="nav-number">1.2.2.</span> <span class="nav-text">路径</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BD%AF-%E7%A1%AC%E9%93%BE%E6%8E%A5"><span class="nav-number">1.2.3.</span> <span class="nav-text">软&#x2F;硬链接</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BE%93%E5%85%A5%E5%92%8C%E8%BE%93%E5%87%BA"><span class="nav-number">1.2.4.</span> <span class="nav-text">输入和输出</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9D%83%E9%99%90%E7%AE%A1%E7%90%86"><span class="nav-number">1.2.5.</span> <span class="nav-text">权限管理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9D%83%E9%99%90%E4%BF%AE%E6%94%B9"><span class="nav-number">1.2.6.</span> <span class="nav-text">权限修改</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ssh%E8%BF%9C%E7%A8%8B%E8%BF%9E%E6%8E%A5"><span class="nav-number">1.2.7.</span> <span class="nav-text">ssh远程连接</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#HTTP%E6%9C%8D%E5%8A%A1"><span class="nav-number">1.3.</span> <span class="nav-text">HTTP服务</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4"><span class="nav-number">1.4.</span> <span class="nav-text">常用命令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BF%AB%E6%8D%B7%E9%94%AE"><span class="nav-number">1.5.</span> <span class="nav-text">快捷键</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#vim%E7%BC%96%E8%BE%91%E5%99%A8"><span class="nav-number">1.6.</span> <span class="nav-text">vim编辑器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#YUM%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4"><span class="nav-number">1.7.</span> <span class="nav-text">YUM常用命令</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="郑林昕"
+      src="/assets/img/touxiang.png">
+  <p class="site-author-name" itemprop="name">郑林昕</p>
+  <div class="site-description" itemprop="description">正确的目标，简化，优化，加速，自动化</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">34</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">36</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/REELXX" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;REELXX" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:tentosiuCHINA@gmail.com" title="E-Mail → mailto:tentosiuCHINA@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/hiODsbegbrkNKSJ" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;hiODsbegbrkNKSJ" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/atom.xml" title="rss → &#x2F;atom.xml"><i class="fa fa-rss fa-fw"></i>rss</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      相关链接
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://www.cnblogs.com/" title="https:&#x2F;&#x2F;www.cnblogs.com&#x2F;" rel="noopener" target="_blank">博客园</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://bbs.hh010.com/" title="https:&#x2F;&#x2F;bbs.hh010.com&#x2F;" rel="noopener" target="_blank">鸿鹄论坛</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.w3school.com.cn/" title="https:&#x2F;&#x2F;www.w3school.com.cn&#x2F;" rel="noopener" target="_blank">w3school</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://stackoverflow.com/" title="https:&#x2F;&#x2F;stackoverflow.com&#x2F;" rel="noopener" target="_blank">stackoverflow</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.csdn.net/" title="https:&#x2F;&#x2F;www.csdn.net&#x2F;" rel="noopener" target="_blank">CSDN</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">郑林昕</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">87k</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"model":{"jsonPath":"/live2dw/assets/koharu.model.json"},"display":{"position":"left","width":200,"height":400},"mobile":{"show":false},"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+</html>

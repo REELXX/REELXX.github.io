@@ -1,51 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>ACL解析</title>
-    <url>/2021/07/23/ACL%E8%A7%A3%E6%9E%90/</url>
-    <content><![CDATA[<p>接入控制列表<br>Access Control Lists 接入控制列表 俗称防火墙</p>
-<span id="more"></span>
-
-<h1 id="ACL学习"><a href="#ACL学习" class="headerlink" title="ACL学习"></a>ACL学习</h1><h2 id="适用范围分类：安全ACLs和QoS-ACLs"><a href="#适用范围分类：安全ACLs和QoS-ACLs" class="headerlink" title="适用范围分类：安全ACLs和QoS ACLs"></a>适用范围分类：安全ACLs和QoS ACLs</h2><p>安全ACLs——控制哪些数据流允许从网络设备通过</p>
-<p>QoS策略——对数据流进行优先级分类和处理</p>
-<h2 id="组成："><a href="#组成：" class="headerlink" title="组成："></a>组成：</h2><p>ACLs —— 由ACE组成</p>
-<p>ACE接入控制列表表项 —— 申明了满足该表项的匹配条件和行为</p>
-<pre><code>示例：
-    10 permit ip host 1.1.1.1 any
-        * 10代表ACE序列号，越小越优先
-        * permit代表动作——允许 ，deny——拒绝
-        * Ip host 1.1.1.1 any表明报文必须是IP报文，且源IP必须是1.1.1.1 目的IP没限制
-</code></pre>
-<h2 id="工作原理："><a href="#工作原理：" class="headerlink" title="工作原理："></a>工作原理：</h2><ol>
-<li>当一个数据报进入一个端口，路由器检查这个数据报是否可路由。如果可以路由，检查这个端口是否有ACL控制进入数据报。如果有，根据ACL中的条件指令，检查数据报。如果数据报被允许的，就查询路由表，决定数据报的目标端口。</li>
-<li>路由器检查目标端口是否存在ACL控制流出的数据报。若不存在，这个数据报直接发送给目标端口。若存在，就再根据ACL进行取舍，再转发到目的端口。</li>
-<li>总结：一个入站数据报，由路由器处理器调入内存，读取数据报包头信息，如目标IP并搜索路由表，如有表项中有，则从路由表的选择接口转发（如果表项中没，丢弃），数据进入该接口的访问控制列表（如果没ACL，直接转发），按条件进行筛选。</li>
-</ol>
-<h2 id="两个方向："><a href="#两个方向：" class="headerlink" title="两个方向："></a>两个方向：</h2><ul>
-<li>出 out ：已经进入路由器，正离开路由器接口的数据包</li>
-<li>进 in ： 已到达路由器接口的数据包，将被路由器处理</li>
-</ul>
-<h2 id="使用："><a href="#使用：" class="headerlink" title="使用："></a>使用：</h2><h3 id="1-“3P”原则"><a href="#1-“3P”原则" class="headerlink" title="1.“3P”原则"></a>1.“3P”原则</h3><p>在路由器上应用ACL时，可以为每种协议（Per Protocol）、每个方向（Per Direction）和每个接口（Per Interface）配置一个ACL，一般称为“3P原则”。</p>
-<ol>
-<li>一个ACL只能基于一种协议，因此每种协议都需要配置单独的ACL。</li>
-<li>经过路由器接口的数据有进（ln）和出（Out）两个方向，因此在接口上配置访问控制列表也有进（In）和出（Out）两个方向。每个接口可以配置进方向的ACL，也可以配置出方向的ACL，或者两者都配置，但是一个ACL只能控制一个方向。</li>
-<li>一个ACL只能控制一个接口上的数据流量，无法同时控制多个接口上的数据流量。</li>
-</ol>
-<h3 id="2-语句顺序决定了对数据的控制顺序"><a href="#2-语句顺序决定了对数据的控制顺序" class="headerlink" title="2.语句顺序决定了对数据的控制顺序"></a>2.语句顺序决定了对数据的控制顺序</h3><p>ACL的语句是一种自上而下的逻辑排列关系。数据匹配过程中是依次对语句进行比较，一旦匹配成功则按照当前语句控制策略处理，不再与之后的语句进行比较。因此，正确的语句顺序才能得到所需的控制效果。</p>
-<h3 id="3-至少有一条允许（Permit）语句"><a href="#3-至少有一条允许（Permit）语句" class="headerlink" title="3.至少有一条允许（Permit）语句"></a>3.至少有一条允许（Permit）语句</h3><p>所有ACL的最后一条语句都是隐式拒绝语句，表示当所有语句都无法匹配时，将拒绝数据通过并自动丢弃数据，以防数据意外进入网络。因此，在写“拒绝（deny）”的ACL时，一定至少要有一条允许（Permit）语句，否则配置ACL的接口将拒绝任何数据通过，影响正常的网络通信。</p>
-<h3 id="4-最有限制性的语句应该放在ACL的靠前位置"><a href="#4-最有限制性的语句应该放在ACL的靠前位置" class="headerlink" title="4.最有限制性的语句应该放在ACL的靠前位置"></a>4.最有限制性的语句应该放在ACL的靠前位置</h3><p>最有限制性的语句放在ACL的靠前位置，可以首先过滤掉很多不符合条件的数据，节省后面语句的比较时间，从而提高路由器的工作效率。</p>
-<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p><a href="https://blog.csdn.net/ck784101777/article/details/97893744?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522162702611116780264055304%2522%252C%2522scm%2522%253A%252220140713.130102334..%2522%257D&request_id=162702611116780264055304&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~all~top_click~default-5-97893744.first_rank_v2_pc_rank_v29&utm_term=ACL&spm=1018.2226.3001.4187">ACL访问控制(华为)</a></p>
-<p><a href="https://blog.csdn.net/gaofei0428/article/details/111874262?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522162702611116780264055304%2522%252C%2522scm%2522%253A%252220140713.130102334..%2522%257D&request_id=162702611116780264055304&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~all~top_click~default-3-111874262.first_rank_v2_pc_rank_v29&utm_term=ACL&spm=1018.2226.3001.4187">ACL访问控制列表</a></p>
-]]></content>
-      <categories>
-        <category>数据通信</category>
-      </categories>
-      <tags>
-        <tag>数据通信</tag>
-        <tag>网络基础</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>ARP解析</title>
     <url>/2021/07/21/ARP%E8%A7%A3%E6%9E%90/</url>
     <content><![CDATA[<p>&emsp;&emsp;地址解析协议（Address Resolution Protocol），其基本功能为透过目标设备的IP地址，查询目标设备的MAC地址，以保证通信的顺利进行。它是IPv4中网络层必不可少的协议，不过在IPv6中已不再适用，并被邻居发现协议（NDP）所替代。</p>
@@ -121,6 +76,51 @@
       <tags>
         <tag>网络基础</tag>
         <tag>数据链路层</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>ACL解析</title>
+    <url>/2021/07/23/ACL%E8%A7%A3%E6%9E%90/</url>
+    <content><![CDATA[<p>接入控制列表<br>Access Control Lists 接入控制列表 俗称防火墙</p>
+<span id="more"></span>
+
+<h1 id="ACL学习"><a href="#ACL学习" class="headerlink" title="ACL学习"></a>ACL学习</h1><h2 id="适用范围分类：安全ACLs和QoS-ACLs"><a href="#适用范围分类：安全ACLs和QoS-ACLs" class="headerlink" title="适用范围分类：安全ACLs和QoS ACLs"></a>适用范围分类：安全ACLs和QoS ACLs</h2><p>安全ACLs——控制哪些数据流允许从网络设备通过</p>
+<p>QoS策略——对数据流进行优先级分类和处理</p>
+<h2 id="组成："><a href="#组成：" class="headerlink" title="组成："></a>组成：</h2><p>ACLs —— 由ACE组成</p>
+<p>ACE接入控制列表表项 —— 申明了满足该表项的匹配条件和行为</p>
+<pre><code>示例：
+    10 permit ip host 1.1.1.1 any
+        * 10代表ACE序列号，越小越优先
+        * permit代表动作——允许 ，deny——拒绝
+        * Ip host 1.1.1.1 any表明报文必须是IP报文，且源IP必须是1.1.1.1 目的IP没限制
+</code></pre>
+<h2 id="工作原理："><a href="#工作原理：" class="headerlink" title="工作原理："></a>工作原理：</h2><ol>
+<li>当一个数据报进入一个端口，路由器检查这个数据报是否可路由。如果可以路由，检查这个端口是否有ACL控制进入数据报。如果有，根据ACL中的条件指令，检查数据报。如果数据报被允许的，就查询路由表，决定数据报的目标端口。</li>
+<li>路由器检查目标端口是否存在ACL控制流出的数据报。若不存在，这个数据报直接发送给目标端口。若存在，就再根据ACL进行取舍，再转发到目的端口。</li>
+<li>总结：一个入站数据报，由路由器处理器调入内存，读取数据报包头信息，如目标IP并搜索路由表，如有表项中有，则从路由表的选择接口转发（如果表项中没，丢弃），数据进入该接口的访问控制列表（如果没ACL，直接转发），按条件进行筛选。</li>
+</ol>
+<h2 id="两个方向："><a href="#两个方向：" class="headerlink" title="两个方向："></a>两个方向：</h2><ul>
+<li>出 out ：已经进入路由器，正离开路由器接口的数据包</li>
+<li>进 in ： 已到达路由器接口的数据包，将被路由器处理</li>
+</ul>
+<h2 id="使用："><a href="#使用：" class="headerlink" title="使用："></a>使用：</h2><h3 id="1-“3P”原则"><a href="#1-“3P”原则" class="headerlink" title="1.“3P”原则"></a>1.“3P”原则</h3><p>在路由器上应用ACL时，可以为每种协议（Per Protocol）、每个方向（Per Direction）和每个接口（Per Interface）配置一个ACL，一般称为“3P原则”。</p>
+<ol>
+<li>一个ACL只能基于一种协议，因此每种协议都需要配置单独的ACL。</li>
+<li>经过路由器接口的数据有进（ln）和出（Out）两个方向，因此在接口上配置访问控制列表也有进（In）和出（Out）两个方向。每个接口可以配置进方向的ACL，也可以配置出方向的ACL，或者两者都配置，但是一个ACL只能控制一个方向。</li>
+<li>一个ACL只能控制一个接口上的数据流量，无法同时控制多个接口上的数据流量。</li>
+</ol>
+<h3 id="2-语句顺序决定了对数据的控制顺序"><a href="#2-语句顺序决定了对数据的控制顺序" class="headerlink" title="2.语句顺序决定了对数据的控制顺序"></a>2.语句顺序决定了对数据的控制顺序</h3><p>ACL的语句是一种自上而下的逻辑排列关系。数据匹配过程中是依次对语句进行比较，一旦匹配成功则按照当前语句控制策略处理，不再与之后的语句进行比较。因此，正确的语句顺序才能得到所需的控制效果。</p>
+<h3 id="3-至少有一条允许（Permit）语句"><a href="#3-至少有一条允许（Permit）语句" class="headerlink" title="3.至少有一条允许（Permit）语句"></a>3.至少有一条允许（Permit）语句</h3><p>所有ACL的最后一条语句都是隐式拒绝语句，表示当所有语句都无法匹配时，将拒绝数据通过并自动丢弃数据，以防数据意外进入网络。因此，在写“拒绝（deny）”的ACL时，一定至少要有一条允许（Permit）语句，否则配置ACL的接口将拒绝任何数据通过，影响正常的网络通信。</p>
+<h3 id="4-最有限制性的语句应该放在ACL的靠前位置"><a href="#4-最有限制性的语句应该放在ACL的靠前位置" class="headerlink" title="4.最有限制性的语句应该放在ACL的靠前位置"></a>4.最有限制性的语句应该放在ACL的靠前位置</h3><p>最有限制性的语句放在ACL的靠前位置，可以首先过滤掉很多不符合条件的数据，节省后面语句的比较时间，从而提高路由器的工作效率。</p>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p><a href="https://blog.csdn.net/ck784101777/article/details/97893744?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522162702611116780264055304%2522%252C%2522scm%2522%253A%252220140713.130102334..%2522%257D&request_id=162702611116780264055304&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~all~top_click~default-5-97893744.first_rank_v2_pc_rank_v29&utm_term=ACL&spm=1018.2226.3001.4187">ACL访问控制(华为)</a></p>
+<p><a href="https://blog.csdn.net/gaofei0428/article/details/111874262?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522162702611116780264055304%2522%252C%2522scm%2522%253A%252220140713.130102334..%2522%257D&request_id=162702611116780264055304&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~all~top_click~default-3-111874262.first_rank_v2_pc_rank_v29&utm_term=ACL&spm=1018.2226.3001.4187">ACL访问控制列表</a></p>
+]]></content>
+      <categories>
+        <category>数据通信</category>
+      </categories>
+      <tags>
+        <tag>网络基础</tag>
+        <tag>数据通信</tag>
       </tags>
   </entry>
   <entry>
@@ -286,8 +286,8 @@ BFD通知本地OSPF进程BFD邻居不可达。
         <category>数据通信</category>
       </categories>
       <tags>
-        <tag>数据通信</tag>
         <tag>数据链路层</tag>
+        <tag>数据通信</tag>
         <tag>交换机</tag>
       </tags>
   </entry>
@@ -306,15 +306,10 @@ BFD通知本地OSPF进程BFD邻居不可达。
         <category>数据通信</category>
       </categories>
       <tags>
-        <tag>数据通信</tag>
         <tag>数据链路层</tag>
+        <tag>数据通信</tag>
         <tag>网络</tag>
       </tags>
-  </entry>
-  <entry>
-    <title>M-LAG</title>
-    <url>/2021/08/13/M-LAG/</url>
-    <content><![CDATA[]]></content>
   </entry>
   <entry>
     <title>MPLS VPN</title>
@@ -644,6 +639,28 @@ ILM
       </tags>
   </entry>
   <entry>
+    <title>VAP</title>
+    <url>/2021/08/11/VAP/</url>
+    <content><![CDATA[<div class="hbe hbe-container" id="hexo-blog-encrypt" data-wpm="Oh, this is an invalid password. Check and try again, please." data-whm="OOPS, these decrypted content may changed, but you can still have a look.">
+  <script id="hbeData" type="hbeData" data-hmacdigest="ff0c6ea39a7037cf670311274314c1b3adbb9632a2347afc72a37bd93c73478a">f6139c82e97dc16a5fc8c8565b4be2a6d93f96eb084eb17eca70bf462341fd0ddc4c8fffc318e67430a5d503d847966d89c7284a955ceec27fd7601cf6063a85ed548ee0b3cacc9454908123cdaf77285d0c5b2355af0ac86e12354da1affb647b67d610cca3633be073ddcd9eb8f8accc12e0b2d2227a4e05575fd9eb8a92b0a183fb53c5d67568b07e552b9f7e94b1efcb6de2a7ea45156426ba06c39d78df3f453cff58e5f241a5e31f5d7e9857ce4a895507c6d38a8e6a6d1d9a33e286a92de60db3efe174e0a084f2189b831f236b6c464512196ca7f1bfb83bb0a0270fad39d8320010d7ae80c2b02d1fd6bd173e5c0b6efabb77a1c9d68b13b575e6c50108ce2c15396e82f4d608a4ad1752cbc6faecb6b15c817442d28308c57823a205634aba20804cd685cb59af2280251c9c73e35b276f85c5bd2ee891d1f49f337c6c4af869ccee7cdf27452b09e2161ae34359329f4c4b9b069ab1eae837e77a983605ca2a7cfcdc1acd2ba630c94015110f536d2716de8b0e2716796d950e7f773f3acb6dbfa758244237e59bed96d8d234ee70f5060b12dbe047508d4182317765e5d3f4481a7db30a9b0014b0ae1b441a516a08e056cbcd0cede5b2f5b784eae4be02571393fb801113e420996e05804701716b38f43531da4624a681e9d3ef4663d2cbc96dc9742928ffceaee49d815e8fcbd49f579bf72f3d226e17742c170efc6d933e055b5dccb8debaca65520e6a8a2ab8804a345ed4c12e52f6663d54cacf11172fb0c46562f82ab1f8fcba66f6a4b2b940a98c07fc4e11b3918e69b4987c6c6162febb841aa564a927a1f5d1fafe96c7865a3108a3f8c397aac474d494005197f6d8da37e78542f6bdae38bce828bad56e6b8c53489c5486cbac94156f1b2276c0d5affd090c9e69325f5f5279c71bfe8c517a057af753c888337ffdfa717985420a2938d457ea5e3a0927c35b3343a265f109a467b053464397d4fa2287f63c76b9bec86b3c427621214193bc11e7787dc9a1a776e0b9218698f5114db7f0158ced7783a0f516be0102b007d89fc76619ce9ced5d8e421cec03f04b9a432f379ed55813aeadad4ddebeef7c972faa35b7f154f950f4269f633650188c69396b0a82fd1bc984cbbd6268c16676b8e9c481e9bf4678e326bf4ae2ee1709a9d62f63cdb5dab0518bbe77e5e96d89c781b2151599d03fdcd6e747bf569bbdd9588741dde1aa0386d4189eee8bba1a415a8f1ff40805bb930b7e864d80cdeb63da95fc913fbb693c4fc1133774e72a80f9564c52bbdb78c02bc3e94c877c466e2426af9d9902c0ddf98e8b85daf1bb33e44215d7b54a07a1716e7b9d8a0e52b8c00c52913411b1c21be87d6f500ec05d02bc4413f341deee7b35a7a8a842604b5ef4dace0adb886599e43791ed9317f9a1e8673ea4b1c3da46a5a9f101ba03e5aa240c24dde98595a066959d693aa7747fffe789e2f234e6f6fbc00284867ed600de07c9a12f1a06b957858f0d11f02450bebeca0ce5654c3b490a326a0e723585dbe0d6a8c911519f2aaf990f95916459334c028672f6ee4a5dcfa830e7d84494f87b777606149871ba51a35be467e5dbcb6dd194c5810fb55b7795f7a93069fa79f495d9e680dbaf2f9e45f6f3976515a1589b5f5ecb837815bc115184e756489cf87b73a4ae0e4b91fd3108b1632d35bf7d142c030e46f75bd87f3b616be70219a90df53e520a0b92eed12e057c3abcafd89b20d102eb5e90113fec14585f0b999c759b423059f1a164edcc40ced34c9975860b31474a984a8199727d029877de18c753ab7c6779856dc1dff9eb9b3bf6ba63a83fad295df2a2fdb6073d4c2bc01f29a7d847562e11f4a7c017126e35545bb50f221a31057cc9f1eb34e4f9cb4188320e62911baad8ea22f855b3d8e6c28113e1a878c90782b967fbcd1012a7d9eb8d7d27659001fac5272ca8ccd2bcefef51f2042dcde6d60a2f13960f9e2c98e534a588487d8adc4d64a9f6068e612205c57d83a4ef528559fe80fc6b25451f8e388c8d0f9f299c28241a05bc23b58e2cc4eed4d758d031641f85c45a74d3c72afab1178fcffd4bc886569a4af81765d64d3b69b808ff7ac073e5180e8ec28d55ead360010d0c0aa449bec40e7c08eb0385499025508c3f77ff22ac94636ccc759e42c975fe8e3c0bd3cef6b27804fe108729ed1af807acc152620dab9fc14c480dbae98c034f0e532908aea64a04fb4ae1fe3b05c093f6e9fcc26aa4ceba6cbd755e00698c20dc5c05734f48f46ddd7aaed2877d39d4ee792ca6fbe8860f7270a832a6ced169713f065ff0622a1cda5f6ac37e12bb759503ceefe5966411dd479ea265606c28d5da31fc58bad4987accb1920c4d7475884a4bfa3099cfcde409966ab31ad02967e999fbe7a6290291f14ecd4700d2ac114f9ceec96e74f1bda4acc640767c67680dcf2b2b8c03228e9aa48d4f6b9c54652c6af0b0e40a13451e207906cd97c30953ed5c48e315929bb6c277f1db18cfb9857b36edd8087cbaf4c2550235209e9c90e844fd5b1ee7d30e6b4415b31fe11aef2dad447196e88a3fa6aeb16639d11e558a3ce9c4c45827ce06f77af9fd1f3b1e09310c5efe3ee014a3fd584f7bd09ca6a1d22487cd0c0cd08d8c2089bca6b0cf6d9fcd5cff23993a1cb65dfb6d0e329db96fa929b913bb68c7bc786a515fb7aac89ac309037cde7be7093f5ab498bf8076baa62d4f7c1c281f3d4375a14be3c0d4dec719d25716733bd3bda8b48c4fc90b61c174c250192f0b2a333bd2f49f9bb3b25c052bbbb789a51f7f466eb385b6b46811e26fceb327d91381823b1eafbd284b5d0f6e1baf749770a4eac93dbb764c92f5eddcae487d29d30d4a7dc0f9ed519427a7f5bc4baa7f0f7942320edc96343f37dc0d9f710f225233691e7a4d34bf35a9c9ae984f526b4ce91a6e8b27adc9eb23b7c2bbe152a4a5b525019fe60ae356aa8131f7a3f19ef9929a96aef1b94452dd5d80f7055a0b015997564931517782d4110fee844bd5a7db2d62d936e396174a1d64d3af79e3850595f7a3aa9a22b55c6ef031a690cc9cdc9459d11e37087528a8b75c6310a3f8c9eeb1b544c36f65f39eba8f346f101d1c71f6866f0b19ee766de97371c1717f31dffce738c3f6bbc51b8ed24c305e866c330271f0c881a31fe9bb03543a118828241d2c513c3aa186d03715117fbbce93fd9d500aeb977d62ab115037d3c267fc8e024a7cc0e6e090f66ab9a1e2b10ca5f233d63f2fa9247164bc2977776d9f74f7410da25e1cf02973a11d88c40c9bbc7b6591cb6786b5126382f097d679a4d28d761f78cf5612250b5a32c81edba1fb2d3e81cd242afd01cd5a823ccae2fb09e8c78b92737743ff449510ddfada7dc0d66c21ff7bf9e1fe93a3251e0800f9c17212b77a37ae6ec9684d386c2a99e697037c744815b18b1f3962a28e37ae5a32524fe0e8197f0ef2d66a8ea46790c9e55e7ee9c1f52fa62fe9dec49b9048e8763da99d37391e57f18bb886c46d9727a300d3aa807e2fae6afa454f6ac5c1b0aaf6230cd6290fe15f7ab90e01c28c6dc8508ad86bbb4e417edac665d2c4b2f57dd89b685be144ab2e91b4d98da1d81892fe35a60990449c794823c2eaab7f99dbd477c0d2efb4f6440cbecba7cb139b7ff27e46ea247aff24623127493a85338612953b4bb68e46c75bc247987884c887b207472a1feb78c125ff04ac89a96de6da505b53da1f6f4befffd3952ba54caf137e952a19e088c6937a639afac305b9653507bf6e11b3db53b57992f40b6fa5513613ffcf529977841396d109342b2b0770b95c8593c11c4993f2a650d0f557dfcdf42a5103f136b48e2b5354b3a77c9ef4546e81c7e3f43e8c073c48ec1ebcdfdea331f2c5ccb2ff34db6f27bbdcf6539d6985426799e7fe04ce4b844c119b49c9a916463501d750fd969191b4f75d9576c43f554c7452ceed2eccd212483eaedb41e4cfa09b0c5f13822d2ee1c0c517a7f79b8967303d3e10f6b469ca8585e7c4d2d4e8d5cbabdc61c93d94a244a4d1f58ac819a3b36080f7d42cb01d3cd43d455e94f8fcc2b6589a747bc4de9e5523bde67b516353d99f9c455249f340e15d3b556c919f5ba45b5d3a6b88f3aea0ace1f11c279ffbc01b1af0a37075edd9c9452199f0a28d5421ecdb6d29926bcc1b7f7da5d7ec98f1fcb1dff70c7467f388c7526f9e0e1223361062374f812342c0b2d65d42e43a11e7f83b59fa1c7fdb40969cf083ae3ca73c2c52bb16e3a8d8964c6adbd9eabb9d442745e087dc7e71a44a334ce7c3b2699a67c01fe33db9a1da3c3f27e69bd6f992113cf1afedf0160482dc96141ab6cb7d7d5ce1805d971f223a2005a361116ac83ac40917eada439ecc8b2fd7c99a3deea48ef942f6a1d3abeb9a140a54a11cf8cc068704bec284a263e4a9cb42e4fac50eb34a05d5cae1f0aa4f790d17523bed4cfd1e0d99833997af1fbdea25281d20d92e17d198a04a5722693b9754ca52ef31e6b6b84ade201d18d78ab2dcb88b66c26c0e96593831dffaa03fa14939f86750882048b52dcf56e0cb40d24a39706e015c858425e6fe4a7ef83ce0539cd4490982512a426f3857183afa7b7adcc0b19d50f83662c7be7b250d02956a48dd792d513323167598fb8bd28b951691f5fb929add4d3c98cd9547f8a7e5e1f729b585a0a0fb56b5f9f29bb4cda3906549db2cd8ffe2f6cc4fd89d755e2a1b4e676a56ebb50fa9ee316d13a422a3c42bb761052c6f6067943c8d1d812a08e82b55a7570ea4ff96bd22630d01b1ca57790d1abf1a6b042252224f57db379576756be6a67ce5845afc5a228f166c303474858a120232e7adfd997b0bd4b21deac7840a252049a4bb59c0a3fe73d06546e8936945f76bf23ba74d6474d31126c4f383b3ae1ca0e88b7ef9275a45c6dce2d0ad14a7adcbdeea617d7bc397729dd0ed6d907b7e2686add01b629fe86e7e49e20a81f95b9b6ee7b228a1e7e114c191282a3ca1304b2f376a5b9b27566a889d5137a82c695350f10108c7ced52e955813ceeea66c75261cfb4813d44a216e7ce1cc402fe6c00e0ec38d31200d33788b57e7b8043d502c3b20f5331a1d752b769ef7217daa9cb3f1fb7c8fbd5b71b46f438bdf9b978f119904134a527760712fab11cb8144a21ec47b2e9b26b1b2ed46dd7ad61661e90712970125037516b4b7af09783a9f9f3aa8ad27776fe8dad34bb35886554d839ff7b4630433f3bda492fee4da0ca4887b818fb1f7f6166d9d28551bdaa7def2e1f1fc324e515cde39c5d97cce9e41dba8db701e55e57f01ee393f4bae715290766934b8c63efc1441070dd280cfa94116037ff4b3b8b96d2cdf8f52ae3f709b889a15d4d707ddbb7c9f36585011de4711d872ab6d12cae0f903bdf9f2fc7847182ad3e4a991bb05c1708abfcee4c87b0ea9dac660407902963b2f7ab22111ed81b90e46841f79cb611a8ee8d2d702a8827bc427b478c1afcafc653f0d9f5b75a6a934b3646e04ae503e04746f4dd4fca8420a6fdcbd171bc84c0667c9e27cafbe820866c9562d640bf0a1d5672862ee428885e1c2fbdc3bbc6cd982ba1dbe3288dfd6589d5f4c03c1afd5a42ece34fd8103ece6c8b4eaab792f95600241289f702312c0d1ff02459e1618eb815be00100e8ded7e65bf59150ef6a9075caafa7158460e8211b3ef947df61e114ed6cf7c3dc7769ca3397c69fcf74b4cbb593a50085a07228c8c5c81d8323e639e2634a3dc50c7294581153f06e00c9428d6c0d41e9c5eff33859c405d440e28850e3b8a82f7f32935de1bf60b96522b4f91fc99b08a7fd1993cb6dcb7d8aaddef3fe2f932b78d2cd3c51445104ffdb18f22330958e84d6ac6f9961adda8eba1e0be4a3940c68549e68f808343cb30a86a4aedc059bfe5ef4c0056452a0c3e8d54c5829493f08fdfa092a6b1c798432e9ae0e5f45df7f591117d8fb94bc738057ea265423e8f9302c4514debd13f5e5b224c35f997f90d8d4daf33ed41461a9525a5a2fa9385428bcf29a50d692742963696e6b72620b3338e8411e0e27c3683d3366a61804223810da10ba6247e858c324f77b09cd8fb20328f72a8753f2b57ccb65d817190565bb1f5ca63eda15640865046bc1c3dc083a20ce0117c701856678bb965fa3666e4d4c668271515403c82d07493c51b41e38f147ef65a4ec0d65d2d0e41e438fe2864c73b05953371649397337179797b88b6e585be28e82e6a51f2d8ec9cbdfe12042762a2b804e0b0eb65de93b46c563cb84c9f352f0b9f9ce3692d6eae0c8607b295ecd325950a0eeddbbc013b3b7bd5d377b6c1b1de0446d0b8497976dd1d5cc6db9b6dceead2d53bfb74fb77b694c8f15eb01c691f972b3aa8633208d83e10f59a08d32c6be57697db6bea08e491d1e21b032df4093c399dec61d7db7c682e31e985c26ba157a436c2229051852ad7d17a3878d493e1607f4f7b1f7a93bda940ea58d5c00a9324940305144b0c36f5798ed604e3281b4816c5f9edf19cf6da58540a9d2b02d33d32b4fc02d9157e967346294cac31a42e6db17d0429763e8e5925c32fb6615e5ab02c6757ee63f85cad7ffa612c2beb107db31b763f7843f2dbb0792d0fbf6ed23d6fc74d545b2ac2b74284f5c8b717fea21afccd754c55defbfcd0a4804d1c81d0ae10cf36815b3704ef0a5972cce8371111ac4061ede8c608d0fbd58a56c06c11ee3543d4f303189dd6da3d2c1634cc4d1808c9a91c62808638673b2627b7a84b9eed165abc6992bdb4aa12f1abe8e00f019047a5e8440ae02913078cb0db34445480e07fcc66e5a8562d4eda38536df7b17314b8d18fd61909ca6590bca6e2928591afa894070b6b32af704c04d46af328d69c63a6df00316178069b353dcf3394efdd2afe80ee546b873b69fe220e2e45c348bfc0e9f7451e078db61236977dad844d55b0d29efdc9fa4e332ff46189f83b6894a061c026347c803dae35c0df9731f042eaf989f5580fe58320010541354d92751f26b318be950a493c8cb198ecd7042f9d1d66848d0be6dcc5807d42bb6108f96eeac48996de11e2b0af8cf1b4a9cc6f9ffb1172f592ee359e7e7c337339bd83daa4e8a20e05a81b21b3252a68df8f5a264cd5b055aeb376fa1ab4d7a9902182b055d7ed6888967ab9196977a23b6ecb6eb2d31b98ce2af1a86e058f182cd0e987ec92ea57823e8e022f89c2fcca8ca4e361c9a2e35d3e8abaaf652ef1d6e28f1af1469fe5cabcf48bf595e6e664198d9cb0577cea27ac9e9cbce8804436ee7403e8117212787e85f30a113a510c44669ba3ec6a6f231e3f58be4e1b8e291f685f18b0f8da10c7390e32c7cb3cfd72761958f6c31c5e2798bbd882d3f819e8891bca928914e84eb5ba6</script>
+  <div class="hbe hbe-content">
+    <div class="hbe hbe-input hbe-input-default">
+      <input class="hbe hbe-input-field hbe-input-field-default" type="password" id="hbePass">
+      <label class="hbe hbe-input-label hbe-input-label-default" for="hbePass">
+        <span class="hbe hbe-input-label-content hbe-input-label-content-default">Hey, password is required here.</span>
+      </label>
+    </div>
+  </div>
+</div>
+<script data-pjax src="/lib/hbe.js"></script><link href="/css/hbe.style.css" rel="stylesheet" type="text/css">]]></content>
+      <categories>
+        <category>虚拟化</category>
+      </categories>
+      <tags>
+        <tag>虚拟化技术</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>STP解析</title>
     <url>/2021/08/02/STP%E8%A7%A3%E6%9E%90/</url>
     <content><![CDATA[<p>生成树协议STP（Spanning Tree Protocol）将环形网络修剪成为一个无环的树型网络，避免报文在环形网络中的增生和无限循环。<br>在一个复杂的网络环境中，难免会出现环路。由于冗余备份的需要，网络设计者都倾向于在设备之间部署多条物理链路，其中一条作主用链路，其他链路作备份，这样都有可能会导致环路产生。<br>环路会产生广播风暴，最终导致整个网络资源被耗尽，网络瘫痪不可用。环路还会引起MAC地址表震荡导致MAC地址表项被破坏。<br>为了破除环路，可以采用数据链路层协议STP，运行该协议的设备通过彼此交互信息发现网络中的环路，并有选择的对某个端口进行阻塞，最终将环形网络结构修剪成无环路的树形网络结构，从而防止报文在环形网络中不断循环，避免设备由于重复接收相同的报文造成处理能力下降。</p>
@@ -774,28 +791,6 @@ BPDU处理变化:
       </tags>
   </entry>
   <entry>
-    <title>VAP</title>
-    <url>/2021/08/11/VAP/</url>
-    <content><![CDATA[<div class="hbe hbe-container" id="hexo-blog-encrypt" data-wpm="Oh, this is an invalid password. Check and try again, please." data-whm="OOPS, these decrypted content may changed, but you can still have a look.">
-  <script id="hbeData" type="hbeData" data-hmacdigest="ff0c6ea39a7037cf670311274314c1b3adbb9632a2347afc72a37bd93c73478a">f6139c82e97dc16a5fc8c8565b4be2a6d93f96eb084eb17eca70bf462341fd0ddc4c8fffc318e67430a5d503d847966d89c7284a955ceec27fd7601cf6063a85ed548ee0b3cacc9454908123cdaf77285d0c5b2355af0ac86e12354da1affb647b67d610cca3633be073ddcd9eb8f8accc12e0b2d2227a4e05575fd9eb8a92b0a183fb53c5d67568b07e552b9f7e94b1efcb6de2a7ea45156426ba06c39d78df3f453cff58e5f241a5e31f5d7e9857ce4a895507c6d38a8e6a6d1d9a33e286a92de60db3efe174e0a084f2189b831f236b6c464512196ca7f1bfb83bb0a0270fad39d8320010d7ae80c2b02d1fd6bd173e5c0b6efabb77a1c9d68b13b575e6c50108ce2c15396e82f4d608a4ad1752cbc6faecb6b15c817442d28308c57823a205634aba20804cd685cb59af2280251c9c73e35b276f85c5bd2ee891d1f49f337c6c4af869ccee7cdf27452b09e2161ae34359329f4c4b9b069ab1eae837e77a983605ca2a7cfcdc1acd2ba630c94015110f536d2716de8b0e2716796d950e7f773f3acb6dbfa758244237e59bed96d8d234ee70f5060b12dbe047508d4182317765e5d3f4481a7db30a9b0014b0ae1b441a516a08e056cbcd0cede5b2f5b784eae4be02571393fb801113e420996e05804701716b38f43531da4624a681e9d3ef4663d2cbc96dc9742928ffceaee49d815e8fcbd49f579bf72f3d226e17742c170efc6d933e055b5dccb8debaca65520e6a8a2ab8804a345ed4c12e52f6663d54cacf11172fb0c46562f82ab1f8fcba66f6a4b2b940a98c07fc4e11b3918e69b4987c6c6162febb841aa564a927a1f5d1fafe96c7865a3108a3f8c397aac474d494005197f6d8da37e78542f6bdae38bce828bad56e6b8c53489c5486cbac94156f1b2276c0d5affd090c9e69325f5f5279c71bfe8c517a057af753c888337ffdfa717985420a2938d457ea5e3a0927c35b3343a265f109a467b053464397d4fa2287f63c76b9bec86b3c427621214193bc11e7787dc9a1a776e0b9218698f5114db7f0158ced7783a0f516be0102b007d89fc76619ce9ced5d8e421cec03f04b9a432f379ed55813aeadad4ddebeef7c972faa35b7f154f950f4269f633650188c69396b0a82fd1bc984cbbd6268c16676b8e9c481e9bf4678e326bf4ae2ee1709a9d62f63cdb5dab0518bbe77e5e96d89c781b2151599d03fdcd6e747bf569bbdd9588741dde1aa0386d4189eee8bba1a415a8f1ff40805bb930b7e864d80cdeb63da95fc913fbb693c4fc1133774e72a80f9564c52bbdb78c02bc3e94c877c466e2426af9d9902c0ddf98e8b85daf1bb33e44215d7b54a07a1716e7b9d8a0e52b8c00c52913411b1c21be87d6f500ec05d02bc4413f341deee7b35a7a8a842604b5ef4dace0adb886599e43791ed9317f9a1e8673ea4b1c3da46a5a9f101ba03e5aa240c24dde98595a066959d693aa7747fffe789e2f234e6f6fbc00284867ed600de07c9a12f1a06b957858f0d11f02450bebeca0ce5654c3b490a326a0e723585dbe0d6a8c911519f2aaf990f95916459334c028672f6ee4a5dcfa830e7d84494f87b777606149871ba51a35be467e5dbcb6dd194c5810fb55b7795f7a93069fa79f495d9e680dbaf2f9e45f6f3976515a1589b5f5ecb837815bc115184e756489cf87b73a4ae0e4b91fd3108b1632d35bf7d142c030e46f75bd87f3b616be70219a90df53e520a0b92eed12e057c3abcafd89b20d102eb5e90113fec14585f0b999c759b423059f1a164edcc40ced34c9975860b31474a984a8199727d029877de18c753ab7c6779856dc1dff9eb9b3bf6ba63a83fad295df2a2fdb6073d4c2bc01f29a7d847562e11f4a7c017126e35545bb50f221a31057cc9f1eb34e4f9cb4188320e62911baad8ea22f855b3d8e6c28113e1a878c90782b967fbcd1012a7d9eb8d7d27659001fac5272ca8ccd2bcefef51f2042dcde6d60a2f13960f9e2c98e534a588487d8adc4d64a9f6068e612205c57d83a4ef528559fe80fc6b25451f8e388c8d0f9f299c28241a05bc23b58e2cc4eed4d758d031641f85c45a74d3c72afab1178fcffd4bc886569a4af81765d64d3b69b808ff7ac073e5180e8ec28d55ead360010d0c0aa449bec40e7c08eb0385499025508c3f77ff22ac94636ccc759e42c975fe8e3c0bd3cef6b27804fe108729ed1af807acc152620dab9fc14c480dbae98c034f0e532908aea64a04fb4ae1fe3b05c093f6e9fcc26aa4ceba6cbd755e00698c20dc5c05734f48f46ddd7aaed2877d39d4ee792ca6fbe8860f7270a832a6ced169713f065ff0622a1cda5f6ac37e12bb759503ceefe5966411dd479ea265606c28d5da31fc58bad4987accb1920c4d7475884a4bfa3099cfcde409966ab31ad02967e999fbe7a6290291f14ecd4700d2ac114f9ceec96e74f1bda4acc640767c67680dcf2b2b8c03228e9aa48d4f6b9c54652c6af0b0e40a13451e207906cd97c30953ed5c48e315929bb6c277f1db18cfb9857b36edd8087cbaf4c2550235209e9c90e844fd5b1ee7d30e6b4415b31fe11aef2dad447196e88a3fa6aeb16639d11e558a3ce9c4c45827ce06f77af9fd1f3b1e09310c5efe3ee014a3fd584f7bd09ca6a1d22487cd0c0cd08d8c2089bca6b0cf6d9fcd5cff23993a1cb65dfb6d0e329db96fa929b913bb68c7bc786a515fb7aac89ac309037cde7be7093f5ab498bf8076baa62d4f7c1c281f3d4375a14be3c0d4dec719d25716733bd3bda8b48c4fc90b61c174c250192f0b2a333bd2f49f9bb3b25c052bbbb789a51f7f466eb385b6b46811e26fceb327d91381823b1eafbd284b5d0f6e1baf749770a4eac93dbb764c92f5eddcae487d29d30d4a7dc0f9ed519427a7f5bc4baa7f0f7942320edc96343f37dc0d9f710f225233691e7a4d34bf35a9c9ae984f526b4ce91a6e8b27adc9eb23b7c2bbe152a4a5b525019fe60ae356aa8131f7a3f19ef9929a96aef1b94452dd5d80f7055a0b015997564931517782d4110fee844bd5a7db2d62d936e396174a1d64d3af79e3850595f7a3aa9a22b55c6ef031a690cc9cdc9459d11e37087528a8b75c6310a3f8c9eeb1b544c36f65f39eba8f346f101d1c71f6866f0b19ee766de97371c1717f31dffce738c3f6bbc51b8ed24c305e866c330271f0c881a31fe9bb03543a118828241d2c513c3aa186d03715117fbbce93fd9d500aeb977d62ab115037d3c267fc8e024a7cc0e6e090f66ab9a1e2b10ca5f233d63f2fa9247164bc2977776d9f74f7410da25e1cf02973a11d88c40c9bbc7b6591cb6786b5126382f097d679a4d28d761f78cf5612250b5a32c81edba1fb2d3e81cd242afd01cd5a823ccae2fb09e8c78b92737743ff449510ddfada7dc0d66c21ff7bf9e1fe93a3251e0800f9c17212b77a37ae6ec9684d386c2a99e697037c744815b18b1f3962a28e37ae5a32524fe0e8197f0ef2d66a8ea46790c9e55e7ee9c1f52fa62fe9dec49b9048e8763da99d37391e57f18bb886c46d9727a300d3aa807e2fae6afa454f6ac5c1b0aaf6230cd6290fe15f7ab90e01c28c6dc8508ad86bbb4e417edac665d2c4b2f57dd89b685be144ab2e91b4d98da1d81892fe35a60990449c794823c2eaab7f99dbd477c0d2efb4f6440cbecba7cb139b7ff27e46ea247aff24623127493a85338612953b4bb68e46c75bc247987884c887b207472a1feb78c125ff04ac89a96de6da505b53da1f6f4befffd3952ba54caf137e952a19e088c6937a639afac305b9653507bf6e11b3db53b57992f40b6fa5513613ffcf529977841396d109342b2b0770b95c8593c11c4993f2a650d0f557dfcdf42a5103f136b48e2b5354b3a77c9ef4546e81c7e3f43e8c073c48ec1ebcdfdea331f2c5ccb2ff34db6f27bbdcf6539d6985426799e7fe04ce4b844c119b49c9a916463501d750fd969191b4f75d9576c43f554c7452ceed2eccd212483eaedb41e4cfa09b0c5f13822d2ee1c0c517a7f79b8967303d3e10f6b469ca8585e7c4d2d4e8d5cbabdc61c93d94a244a4d1f58ac819a3b36080f7d42cb01d3cd43d455e94f8fcc2b6589a747bc4de9e5523bde67b516353d99f9c455249f340e15d3b556c919f5ba45b5d3a6b88f3aea0ace1f11c279ffbc01b1af0a37075edd9c9452199f0a28d5421ecdb6d29926bcc1b7f7da5d7ec98f1fcb1dff70c7467f388c7526f9e0e1223361062374f812342c0b2d65d42e43a11e7f83b59fa1c7fdb40969cf083ae3ca73c2c52bb16e3a8d8964c6adbd9eabb9d442745e087dc7e71a44a334ce7c3b2699a67c01fe33db9a1da3c3f27e69bd6f992113cf1afedf0160482dc96141ab6cb7d7d5ce1805d971f223a2005a361116ac83ac40917eada439ecc8b2fd7c99a3deea48ef942f6a1d3abeb9a140a54a11cf8cc068704bec284a263e4a9cb42e4fac50eb34a05d5cae1f0aa4f790d17523bed4cfd1e0d99833997af1fbdea25281d20d92e17d198a04a5722693b9754ca52ef31e6b6b84ade201d18d78ab2dcb88b66c26c0e96593831dffaa03fa14939f86750882048b52dcf56e0cb40d24a39706e015c858425e6fe4a7ef83ce0539cd4490982512a426f3857183afa7b7adcc0b19d50f83662c7be7b250d02956a48dd792d513323167598fb8bd28b951691f5fb929add4d3c98cd9547f8a7e5e1f729b585a0a0fb56b5f9f29bb4cda3906549db2cd8ffe2f6cc4fd89d755e2a1b4e676a56ebb50fa9ee316d13a422a3c42bb761052c6f6067943c8d1d812a08e82b55a7570ea4ff96bd22630d01b1ca57790d1abf1a6b042252224f57db379576756be6a67ce5845afc5a228f166c303474858a120232e7adfd997b0bd4b21deac7840a252049a4bb59c0a3fe73d06546e8936945f76bf23ba74d6474d31126c4f383b3ae1ca0e88b7ef9275a45c6dce2d0ad14a7adcbdeea617d7bc397729dd0ed6d907b7e2686add01b629fe86e7e49e20a81f95b9b6ee7b228a1e7e114c191282a3ca1304b2f376a5b9b27566a889d5137a82c695350f10108c7ced52e955813ceeea66c75261cfb4813d44a216e7ce1cc402fe6c00e0ec38d31200d33788b57e7b8043d502c3b20f5331a1d752b769ef7217daa9cb3f1fb7c8fbd5b71b46f438bdf9b978f119904134a527760712fab11cb8144a21ec47b2e9b26b1b2ed46dd7ad61661e90712970125037516b4b7af09783a9f9f3aa8ad27776fe8dad34bb35886554d839ff7b4630433f3bda492fee4da0ca4887b818fb1f7f6166d9d28551bdaa7def2e1f1fc324e515cde39c5d97cce9e41dba8db701e55e57f01ee393f4bae715290766934b8c63efc1441070dd280cfa94116037ff4b3b8b96d2cdf8f52ae3f709b889a15d4d707ddbb7c9f36585011de4711d872ab6d12cae0f903bdf9f2fc7847182ad3e4a991bb05c1708abfcee4c87b0ea9dac660407902963b2f7ab22111ed81b90e46841f79cb611a8ee8d2d702a8827bc427b478c1afcafc653f0d9f5b75a6a934b3646e04ae503e04746f4dd4fca8420a6fdcbd171bc84c0667c9e27cafbe820866c9562d640bf0a1d5672862ee428885e1c2fbdc3bbc6cd982ba1dbe3288dfd6589d5f4c03c1afd5a42ece34fd8103ece6c8b4eaab792f95600241289f702312c0d1ff02459e1618eb815be00100e8ded7e65bf59150ef6a9075caafa7158460e8211b3ef947df61e114ed6cf7c3dc7769ca3397c69fcf74b4cbb593a50085a07228c8c5c81d8323e639e2634a3dc50c7294581153f06e00c9428d6c0d41e9c5eff33859c405d440e28850e3b8a82f7f32935de1bf60b96522b4f91fc99b08a7fd1993cb6dcb7d8aaddef3fe2f932b78d2cd3c51445104ffdb18f22330958e84d6ac6f9961adda8eba1e0be4a3940c68549e68f808343cb30a86a4aedc059bfe5ef4c0056452a0c3e8d54c5829493f08fdfa092a6b1c798432e9ae0e5f45df7f591117d8fb94bc738057ea265423e8f9302c4514debd13f5e5b224c35f997f90d8d4daf33ed41461a9525a5a2fa9385428bcf29a50d692742963696e6b72620b3338e8411e0e27c3683d3366a61804223810da10ba6247e858c324f77b09cd8fb20328f72a8753f2b57ccb65d817190565bb1f5ca63eda15640865046bc1c3dc083a20ce0117c701856678bb965fa3666e4d4c668271515403c82d07493c51b41e38f147ef65a4ec0d65d2d0e41e438fe2864c73b05953371649397337179797b88b6e585be28e82e6a51f2d8ec9cbdfe12042762a2b804e0b0eb65de93b46c563cb84c9f352f0b9f9ce3692d6eae0c8607b295ecd325950a0eeddbbc013b3b7bd5d377b6c1b1de0446d0b8497976dd1d5cc6db9b6dceead2d53bfb74fb77b694c8f15eb01c691f972b3aa8633208d83e10f59a08d32c6be57697db6bea08e491d1e21b032df4093c399dec61d7db7c682e31e985c26ba157a436c2229051852ad7d17a3878d493e1607f4f7b1f7a93bda940ea58d5c00a9324940305144b0c36f5798ed604e3281b4816c5f9edf19cf6da58540a9d2b02d33d32b4fc02d9157e967346294cac31a42e6db17d0429763e8e5925c32fb6615e5ab02c6757ee63f85cad7ffa612c2beb107db31b763f7843f2dbb0792d0fbf6ed23d6fc74d545b2ac2b74284f5c8b717fea21afccd754c55defbfcd0a4804d1c81d0ae10cf36815b3704ef0a5972cce8371111ac4061ede8c608d0fbd58a56c06c11ee3543d4f303189dd6da3d2c1634cc4d1808c9a91c62808638673b2627b7a84b9eed165abc6992bdb4aa12f1abe8e00f019047a5e8440ae02913078cb0db34445480e07fcc66e5a8562d4eda38536df7b17314b8d18fd61909ca6590bca6e2928591afa894070b6b32af704c04d46af328d69c63a6df00316178069b353dcf3394efdd2afe80ee546b873b69fe220e2e45c348bfc0e9f7451e078db61236977dad844d55b0d29efdc9fa4e332ff46189f83b6894a061c026347c803dae35c0df9731f042eaf989f5580fe58320010541354d92751f26b318be950a493c8cb198ecd7042f9d1d66848d0be6dcc5807d42bb6108f96eeac48996de11e2b0af8cf1b4a9cc6f9ffb1172f592ee359e7e7c337339bd83daa4e8a20e05a81b21b3252a68df8f5a264cd5b055aeb376fa1ab4d7a9902182b055d7ed6888967ab9196977a23b6ecb6eb2d31b98ce2af1a86e058f182cd0e987ec92ea57823e8e022f89c2fcca8ca4e361c9a2e35d3e8abaaf652ef1d6e28f1af1469fe5cabcf48bf595e6e664198d9cb0577cea27ac9e9cbce8804436ee7403e8117212787e85f30a113a510c44669ba3ec6a6f231e3f58be4e1b8e291f685f18b0f8da10c7390e32c7cb3cfd72761958f6c31c5e2798bbd882d3f819e8891bca928914e84eb5ba6</script>
-  <div class="hbe hbe-content">
-    <div class="hbe hbe-input hbe-input-default">
-      <input class="hbe hbe-input-field hbe-input-field-default" type="password" id="hbePass">
-      <label class="hbe hbe-input-label hbe-input-label-default" for="hbePass">
-        <span class="hbe hbe-input-label-content hbe-input-label-content-default">Hey, password is required here.</span>
-      </label>
-    </div>
-  </div>
-</div>
-<script data-pjax src="/lib/hbe.js"></script><link href="/css/hbe.style.css" rel="stylesheet" type="text/css">]]></content>
-      <categories>
-        <category>虚拟化</category>
-      </categories>
-      <tags>
-        <tag>虚拟化技术</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>VRF</title>
     <url>/2021/08/05/VRF/</url>
     <content><![CDATA[<p>VPN路由转发表 —— 为了解决MPLS VPN中的本地路由冲突问题</p>
@@ -875,6 +870,11 @@ BPDU处理变化:
       </tags>
   </entry>
   <entry>
+    <title>ansible</title>
+    <url>/2021/08/19/ansible/</url>
+    <content><![CDATA[]]></content>
+  </entry>
+  <entry>
     <title>Hello World</title>
     <url>/2021/07/20/hello-world/</url>
     <content><![CDATA[<p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
@@ -892,6 +892,210 @@ BPDU处理变化:
 
 <p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
 ]]></content>
+  </entry>
+  <entry>
+    <title>Linux</title>
+    <url>/2021/08/19/linux/</url>
+    <content><![CDATA[<p>Linux学习笔记</p>
+<span id="more"></span>
+
+<h1 id="linux"><a href="#linux" class="headerlink" title="linux"></a>linux</h1><h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><h3 id="两大派别"><a href="#两大派别" class="headerlink" title="两大派别"></a>两大派别</h3><p><strong>redhat系列和debian系列</strong><br>redhat系列主要涉及服务器等领域<br>debian系列主要涉及个人PC等领域<br><img src="/2021/08/19/linux/%E4%B8%A4%E5%A4%A7%E6%B4%BE%E5%88%AB.png" alt="两大派别"></p>
+<h3 id="文件系统层次结构"><a href="#文件系统层次结构" class="headerlink" title="文件系统层次结构"></a>文件系统层次结构</h3><p>linux根目录——“ / ”，文件系统被组织成一个倒置的目录树，根目录为顶部<br><img src="/2021/08/19/linux/%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F%E5%B1%82%E6%AC%A1%E7%BB%93%E6%9E%84.png" alt="文件系统层次结构"></p>
+<table>
+<thead>
+<tr>
+<th>目录名</th>
+<th>存放内容</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>bin (binaries)</td>
+<td>存放二进制可执行文件</td>
+</tr>
+<tr>
+<td>sbin (super user binaries)</td>
+<td>存放二进制可执行文件，只有root才能访问</td>
+</tr>
+<tr>
+<td>etc (etcetera)</td>
+<td>存放系统配置文件</td>
+</tr>
+<tr>
+<td>usr (unix shared resources)</td>
+<td>用于存放共享的系统资源</td>
+</tr>
+<tr>
+<td>home</td>
+<td>存放用户文件的根目录</td>
+</tr>
+<tr>
+<td>root</td>
+<td>超级用户目录</td>
+</tr>
+<tr>
+<td>dev (devices)</td>
+<td>用于存放设备文件</td>
+</tr>
+<tr>
+<td>lib (library)</td>
+<td>存放跟文件系统中的程序运行所需要的共享库及内核模块</td>
+</tr>
+<tr>
+<td>mnt (mount)</td>
+<td>系统管理员安装临时文件系统的安装点</td>
+</tr>
+<tr>
+<td>boot</td>
+<td>存放用于系统引导时使用的各种文件</td>
+</tr>
+<tr>
+<td>tmp (temporary)</td>
+<td>用于存放各种临时文件</td>
+</tr>
+<tr>
+<td>var (variable)</td>
+<td>用于存放运行时需要改变数据的文件</td>
+</tr>
+</tbody></table>
+<h2 id="Linux操作"><a href="#Linux操作" class="headerlink" title="Linux操作"></a>Linux操作</h2><h3 id="命令行"><a href="#命令行" class="headerlink" title="命令行"></a>命令行</h3><h4 id="基本语法"><a href="#基本语法" class="headerlink" title="基本语法"></a>基本语法</h4><p>切换控制台 ctrl+alt+F1~F6</p>
+<pre><code>1是图形化界面，其他是CLI界面
+</code></pre>
+<p>命令的语法</p>
+<pre><code>命令 -选项 参数
+    多个选项可以连写：-a -b -c == -abc
+    简写单减号 -l 全拼双减号 --length
+</code></pre>
+<h4 id="获取帮助"><a href="#获取帮助" class="headerlink" title="获取帮助"></a>获取帮助</h4><p>Linux中有两种常见的命令帮助方式：<br><strong>help和man page</strong><br>help：通常是–help或-h<br>man：Linux提供的手册，包含大多数详细命令</p>
+<h3 id="路径"><a href="#路径" class="headerlink" title="路径"></a>路径</h3><p>绝对路径：<br>指定文件在文件系统层次结构中的确切位置。从根目录（/）开始，并指定必须遍历的每个子目录才能到达特定文件。简单规则识别：带有正斜杠（/）的路径名作为第一个字符的是绝对路径。<br>绝对路径的命令查看方式——pwd</p>
+<p>相对路径：<br>例如，/var目录中的用户可以相对的将消息日志文件称为log/message</p>
+<p>导航路径：</p>
+<h3 id="软-硬链接"><a href="#软-硬链接" class="headerlink" title="软/硬链接"></a>软/硬链接</h3><table>
+<thead>
+<tr>
+<th>名称</th>
+<th>命令</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>软链接</td>
+<td>ln -s 被链接的源文件 链接文件</td>
+<td>建立文件的软链接，用通俗的方式讲类似于 Windows 下的快捷方式</td>
+</tr>
+<tr>
+<td>硬链接</td>
+<td>ln 被链接的源文件 链接文件</td>
+<td>创建出相同数据的另一个名称，修改内容会同步到所有其它硬链接，删除不影响其它硬链接</td>
+</tr>
+</tbody></table>
+<h3 id="输入和输出"><a href="#输入和输出" class="headerlink" title="输入和输出"></a>输入和输出</h3><p>重定向正确信息</p>
+<pre><code>命令 &gt; file
+    如果file不存在则创建，存在则覆盖
+命令 &gt;&gt; file1
+    如果file不存在则创建，存在则追加
+</code></pre>
+<p>重定向错误信息</p>
+<pre><code>命令 2&gt; file / 2&gt;&gt; file
+    将错误信息覆盖/追加到file
+命令 &amp;&gt; file / &amp;&gt;&gt; file
+    重定向正确和错误的内容到file中
+</code></pre>
+<p>管道</p>
+<pre><code>命令1|命令2
+    把命令1的结果传递给命令2作为参数
+</code></pre>
+<p>过滤指令grep</p>
+<pre><code>grep 关键字 file
+grep -i 关键字 file 忽略大小写
+    -n 显示行号
+    -v 反向过滤
+    -A/B/C5 显示关键字及后面/前面/前后5行
+</code></pre>
+<h3 id="权限管理"><a href="#权限管理" class="headerlink" title="权限管理"></a>权限管理</h3><p>命令：ls -l 简称 ll<br>前十一个字符代表权限，读r、写w、执行x<br>drwxr-xr-x.</p>
+<table>
+<thead>
+<tr>
+<th>1</th>
+<th>2-4</th>
+<th>5-7</th>
+<th>8-10</th>
+<th>11</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>文件(-),目录(d),链接(l),设备(C),块设备(b)</td>
+<td>第一组rwx代表文件所有者权限</td>
+<td>第二组rwx代表与文件所有组同一组用户权限</td>
+<td>第三组rwx代表其他所有用户权限</td>
+<td>.代表没有ACL扩展权限，+代表有ACL扩展权限</td>
+</tr>
+</tbody></table>
+<h3 id="权限修改"><a href="#权限修改" class="headerlink" title="权限修改"></a>权限修改</h3><p>命令：chmod 777 file<br>r=读取 //值=4<br>w=写入 //值=2<br>x=执行 //值=1<br>每一组为3个二进制，值为1-7，代表不同的权限组合</p>
+<h3 id="ssh远程连接"><a href="#ssh远程连接" class="headerlink" title="ssh远程连接"></a>ssh远程连接</h3><p>命令：ssh 用户名@主机名/IP</p>
+<pre><code>调整文件:/etc/ssh/sshd_config
+禁止密钥登录:PubkeyAuthentication no
+禁止密码登录:PasswordAuthentication no
+禁止root用户登录:PermitRootLogin no
+
+额外：
+    远程拷贝 scp 命令和cp一样
+    scp 被拷贝的文件 拷贝到哪去
+</code></pre>
+<h2 id="HTTP服务"><a href="#HTTP服务" class="headerlink" title="HTTP服务"></a>HTTP服务</h2><p>Apache是世界使用排名第一的Web服务器软件。是Linux上的web应用的标准服务工具 httpd</p>
+<p>Apache服务的各个目录文件</p>
+<table>
+<thead>
+<tr>
+<th>目录或文件</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>/etc/httpd</td>
+<td>Apache服务的根目录</td>
+</tr>
+<tr>
+<td>/etc/httpd/conf/httpd.conf</td>
+<td>Apache服务的主配置文件</td>
+</tr>
+<tr>
+<td>/var/www/html</td>
+<td>Apache服务的文档根目录</td>
+</tr>
+<tr>
+<td>/var/log/httpd</td>
+<td>Apache服务的日志目录</td>
+</tr>
+<tr>
+<td>/var/log/httpd/access_log</td>
+<td>Apache服务的访问日志文件</td>
+</tr>
+<tr>
+<td>/var/log/httpd/error_log</td>
+<td>Apache服务的错误日志文件</td>
+</tr>
+</tbody></table>
+<h2 id="常用命令"><a href="#常用命令" class="headerlink" title="常用命令"></a>常用命令</h2><figure class="highlight vim"><table><tr><td class="code"><pre><span class="line"># 最常用</span><br><span class="line"><span class="keyword">pwd</span> 显示当前工作目录（<span class="keyword">print</span> working directory）</span><br><span class="line">touch 创建空文件				                    </span><br><span class="line"><span class="built_in">mkdir</span> 创建目录（<span class="keyword">make</span> directoriy）</span><br><span class="line">-<span class="keyword">p</span> 父目录不存在情况下先生成父目录 （parents）            </span><br><span class="line"><span class="keyword">cp</span> 复制文件或目录（<span class="keyword">copy</span>）</span><br><span class="line">-r 递归处理，将指定目录下的文件与子目录一并拷贝（recursive）     </span><br><span class="line">mv 移动文件或目录、文件或目录改名（<span class="keyword">move</span>）</span><br><span class="line">rm 删除文件（<span class="built_in">remove</span>）</span><br><span class="line">-r 同时删除该目录下的所有文件（recursive）</span><br><span class="line">-<span class="keyword">f</span> 强制删除文件或目录（force）</span><br><span class="line">rmdir 删除空目录（<span class="built_in">remove</span> directoriy）</span><br><span class="line"><span class="keyword">cat</span>显示文本文件内容 （catenate）</span><br><span class="line"><span class="keyword">echo</span></span><br><span class="line"></span><br><span class="line">systemctl <span class="keyword">list</span>-unit-<span class="keyword">files</span> | <span class="keyword">grep</span>... //查看系统服务列表</span><br><span class="line">systemctl start/<span class="keyword">stop</span>/restart 服务名 //服务启动，停止，重启</span><br><span class="line">systemctl enable/disable 服务名 //开启自动启动，禁止服务</span><br><span class="line">systemctl status 服务名 //查看服务状态</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"># 补充</span><br><span class="line">wc 统计文本的行数、字数、字符数（word <span class="built_in">count</span>）</span><br><span class="line">-<span class="keyword">m</span> 统计文本字符数</span><br><span class="line">-<span class="keyword">w</span> 统计文本字数</span><br><span class="line">-<span class="keyword">l</span> 统计文本行数</span><br><span class="line">more、less 分页显示文本文件内容</span><br><span class="line"><span class="keyword">find</span> 在文件系统中查找指定的文件</span><br><span class="line"><span class="keyword">find</span> /etc/ -name <span class="string">&quot;aaa&quot;</span></span><br><span class="line"><span class="keyword">grep</span> 在指定的文本文件中查找指定的字符串</span><br><span class="line"><span class="keyword">ln</span> 建立链接文件（link）</span><br><span class="line">-s 对源文件建立符号连接，而非硬连接（symbolic）</span><br><span class="line">top 显示当前系统中耗费资源最多的进程 </span><br><span class="line"><span class="keyword">ps</span> 显示瞬间的进程状态</span><br><span class="line">-<span class="keyword">e</span> /-A 显示所有进程，环境变量</span><br><span class="line">-<span class="keyword">f</span> 全格式</span><br><span class="line">-<span class="keyword">a</span> 显示所有用户的所有进程（包括其它用户）</span><br><span class="line">-<span class="keyword">u</span> 按用户名和启动时间的顺序来显示进程</span><br><span class="line">-<span class="keyword">x</span> 显示无控制终端的进程</span><br><span class="line">kill 杀死一个进程</span><br><span class="line">kill -<span class="number">9</span> pid</span><br><span class="line">df 显示文件系统磁盘空间的使用情况</span><br><span class="line">du 显示指定的文件（目录）已使用的磁盘空间的总</span><br><span class="line">-h文件大小以K，M，G为单位显示（human-readable）</span><br><span class="line">-s只显示各档案大小的总合（summarize）</span><br><span class="line">free 显示当前内存和交换空间的使用情况 </span><br><span class="line">netstat 显示网络状态信息</span><br><span class="line">-<span class="keyword">a</span> 显示所有连接和监听端口</span><br><span class="line">-t (tcp)仅显示tcp相关选项</span><br><span class="line">-<span class="keyword">u</span> (udp)仅显示udp相关选项</span><br><span class="line">-n 拒绝显示别名，能显示数字的全部转化成数字。</span><br><span class="line">-<span class="keyword">p</span> 显示建立相关链接的程序名</span><br><span class="line">ifconfig 网卡网络配置详解 </span><br><span class="line">ping 测试网络的连通性 </span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h2 id="快捷键"><a href="#快捷键" class="headerlink" title="快捷键"></a>快捷键</h2><figure class="highlight gauss"><table><tr><td class="code"><pre><span class="line">单击<span class="built_in">TAB</span>补全 双击<span class="built_in">TAB</span>显示可选的可补充命令行</span><br><span class="line">ctrl + c（停止当前进程）</span><br><span class="line">ctrl + r（查看命令历史）</span><br><span class="line">ctrl + l（清屏，与<span class="keyword">clear</span>命令作用相同）</span><br></pre></td></tr></table></figure>
+<h2 id="vim编辑器"><a href="#vim编辑器" class="headerlink" title="vim编辑器"></a>vim编辑器</h2><p>末行模式</p>
+<pre><code>查询，忽略大小写的查询 set ic
+保存w
+退出q
+设置参数set
+替换 []s/old/new/g，%全文替换，（n1,n2）范围内替换
+</code></pre>
+<p>命令模式</p>
+<pre><code>复制yy，黏贴p，剪切dd
+撤销u，前进ctrl+r，删除字符nx
+替换r R，保存ZZ，G最后一行gg第一行
+</code></pre>
+<h2 id="YUM常用命令"><a href="#YUM常用命令" class="headerlink" title="YUM常用命令"></a>YUM常用命令</h2><figure class="highlight jboss-cli"><table><tr><td class="code"><pre><span class="line">yum info 软件包名称 <span class="string">//</span>查看软件包信息</span><br><span class="line">yum search <span class="string">//</span>搜索软件包</span><br><span class="line">yum list <span class="string">//</span>通过软件名查看有几个下载路径</span><br><span class="line"></span><br><span class="line">yum install 软件包 <span class="string">//</span>安装</span><br><span class="line">yum install <span class="params">--downloadonly</span> <span class="params">--downloaddir=/path</span> <span class="string">//</span>仅下载不安装</span><br><span class="line">yum update 软件包 <span class="string">//</span>升级</span><br><span class="line">yum remove 软件包 <span class="string">//</span>移除</span><br><span class="line"></span><br><span class="line">yum whatprovides 命令 <span class="string">//</span>查询命令需要安装什么软件包</span><br></pre></td></tr></table></figure>]]></content>
+      <categories>
+        <category>Linux</category>
+      </categories>
+      <tags>
+        <tag>Linux</tag>
+      </tags>
   </entry>
   <entry>
     <title>openstack</title>
@@ -920,6 +1124,120 @@ BPDU处理变化:
         <tag>网络</tag>
         <tag>openstack</tag>
         <tag>Apache</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>shell</title>
+    <url>/2021/08/19/shell/</url>
+    <content><![CDATA[<p>shell实质上是用户、内核和系统硬件之间的接口，是学习正确的系统管理和安全保护最关键的方面之一。<br>简单层面上来看，shell脚本就是对多行命令的集合，深层次上，它是Linux的基础编程工具，可为系统管理员提供简单的工具开发。类似Windows的bat批处理脚本</p>
+<span id="more"></span>
+
+<h1 id="shell"><a href="#shell" class="headerlink" title="shell"></a>shell</h1><h2 id="bash脚本"><a href="#bash脚本" class="headerlink" title="bash脚本"></a>bash脚本</h2><p>编写格式：</p>
+<pre><code>#!/bin/bash 开头
+一般以.sh 为文件扩展名
+做好一定的代码注释
+</code></pre>
+<p>bash脚本的执行方法：</p>
+<pre><code>source方法
+工作目录执行法
+</code></pre>
+<h2 id="通配符"><a href="#通配符" class="headerlink" title="通配符"></a>通配符</h2><p>用于shell，用于匹配某些特定规律的文件名（简单正则）</p>
+<table>
+<thead>
+<tr>
+<th>通配符</th>
+<th>含义</th>
+<th>实例</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>*</td>
+<td>匹配0或多个字符</td>
+<td>a*b,a和b之间可以有任意长度的任意字符包括0</td>
+</tr>
+<tr>
+<td>？</td>
+<td>匹配任意一个字符</td>
+<td>a？b,a和b之间必须也只能有一个字符</td>
+</tr>
+<tr>
+<td>[list]</td>
+<td>匹配list中任意单一字符</td>
+<td>a[xyz]b,a和b之间三选一</td>
+</tr>
+<tr>
+<td>[!list]或[^list]</td>
+<td>匹配不在list中的任意单一字符</td>
+<td>a[!0-9]b,a和b之间不能有数字</td>
+</tr>
+<tr>
+<td>[c1-c2]</td>
+<td>匹配c1-c2中的任意单一字符</td>
+<td>a[0-9]b,a和b之间有个数字</td>
+</tr>
+<tr>
+<td>[!c1-c2]</td>
+<td>匹配不在c1-c2中的任意单一字符</td>
+<td>a[!0-9]b,比如acb</td>
+</tr>
+<tr>
+<td>{string1,string2}</td>
+<td>匹配string1或string2或更多其中一个的字符串</td>
+<td>a{123,456,789}b,a123b、a456b</td>
+</tr>
+</tbody></table>
+<h2 id="shell含义"><a href="#shell含义" class="headerlink" title="shell含义"></a>shell含义</h2><p>shell接受从输入的命令，交给操作系统去执行<br>shell脚本命令的工作方式有两种：交互式和批处理</p>
+<pre><code>交互式：每输入一次命令，就立刻执行
+批处理：事先编写好一个完整的shell脚本，一次性完整执行
+</code></pre>
+<h3 id="命令是什么"><a href="#命令是什么" class="headerlink" title="命令是什么"></a>命令是什么</h3><p>是可执行程序；是shell函数——一系列方法的合集；内建于shell自身的命令。内部命令叫做buildtins，比如cd</p>
+<h3 id="标准输入、输出和错误"><a href="#标准输入、输出和错误" class="headerlink" title="标准输入、输出和错误"></a>标准输入、输出和错误</h3><p>我们用到的程序都会产生输出，这些数据通常由两种类型组成</p>
+<pre><code>第一：程序运行的结构 STDOUT
+第二：得到的状态和错误信息 STDERR
+</code></pre>
+<p>读取上一条命令执行后的状态信息命令： </p>
+<figure class="highlight apache"><table><tr><td class="code"><pre><span class="line"><span class="attribute">echo</span> $? // <span class="number">0</span>代表执行成功 非<span class="number">0</span>代表执行失败</span><br></pre></td></tr></table></figure>
+<h3 id="命令执行结果判断"><a href="#命令执行结果判断" class="headerlink" title="命令执行结果判断"></a>命令执行结果判断</h3><p>写shell脚本批处理时，需要根据上一条命令的返回结果进行一个判断。<br>可以通过shell中的逻辑符号进行上一条命令执行结果的判断</p>
+<pre><code>&amp;&amp;逻辑与
+    &amp;&amp;连接的命令会从前到后依次执行
+    只有当前面的命令成功才会执行后面的命令
+||逻辑或
+    ||连接的命令会从前到后依次执行
+    当前面的命令执行失败后，执行后面命令
+</code></pre>
+<h2 id="变量"><a href="#变量" class="headerlink" title="变量"></a>变量</h2><p>在Linux平台，变量分为：</p>
+<pre><code>环境变量 // shell变量
+</code></pre>
+<p>环境变量储存在/etc/profile文件中。命令行shell变量存储在~/.bashrc文件中</p>
+<p>引用变量的方法：</p>
+<pre><code>在变量名前面使用$符号
+当变量需要和字符串组合时，使用&#123; &#125;符号。比如 $&#123;name&#125;blog —— zhenglinxinblog
+</code></pre>
+<p>{ }用法：</p>
+<pre><code>$&#123;parameter:-word&#125;:这种变量定义的方式，当parameter空时，临时赋值word
+$&#123;parameter:=word&#125;:当parameter为空时，直接把word赋值给它。下次调用变量时也是word值
+</code></pre>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment">#设置变量</span></span><br><span class="line">[root]<span class="built_in">echo</span> <span class="variable">$name</span></span><br><span class="line">（空白）</span><br><span class="line">[root]name=zhenglinxin</span><br><span class="line">[root]<span class="built_in">echo</span> <span class="variable">$name</span></span><br><span class="line">zhenglinxin</span><br><span class="line"></span><br><span class="line"><span class="comment">#取消变量</span></span><br><span class="line">[root]<span class="built_in">unset</span> name</span><br><span class="line">[root]<span class="built_in">echo</span> <span class="variable">$name</span></span><br><span class="line">（空白）</span><br></pre></td></tr></table></figure>
+
+<h2 id="脚本接受参数"><a href="#脚本接受参数" class="headerlink" title="脚本接受参数"></a>脚本接受参数</h2><p>命令格式：</p>
+<pre><code>命令 [选项] [参数]
+</code></pre>
+<p>Shell语言内置的一些变量：</p>
+<pre><code>$# // 总共几个参数 （空格区分）
+$? // 上一个命令执行后的返回值
+$* // 所有参数（一起显示）
+$@ // 所有参数（一个一个显示）
+$0,1,2 // 0-脚本名 1-第一个参数 2-第二个参数
+</code></pre>
+<h2 id="if-for-while"><a href="#if-for-while" class="headerlink" title="if/for/while"></a>if/for/while</h2><h3 id="if"><a href="#if" class="headerlink" title="if"></a>if</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> 条件</span><br><span class="line">    <span class="keyword">then</span> 条件通过后执行操作</span><br><span class="line"><span class="keyword">fi</span></span><br></pre></td></tr></table></figure>
+<h3 id="for"><a href="#for" class="headerlink" title="for"></a>for</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> $(seq 1 3)</span><br><span class="line"><span class="keyword">do</span></span><br><span class="line">    <span class="built_in">echo</span> <span class="variable">$i</span></span><br><span class="line"><span class="keyword">done</span></span><br></pre></td></tr></table></figure>
+<h3 id="while"><a href="#while" class="headerlink" title="while"></a>while</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="keyword">while</span> [ <span class="variable">$i</span> -le 10 ]</span><br><span class="line"><span class="keyword">do</span> </span><br><span class="line">    <span class="built_in">echo</span> <span class="variable">$i</span></span><br><span class="line">    <span class="built_in">let</span> ++i</span><br><span class="line"><span class="keyword">done</span></span><br></pre></td></tr></table></figure>
+]]></content>
+      <categories>
+        <category>Linux</category>
+      </categories>
+      <tags>
+        <tag>脚本</tag>
       </tags>
   </entry>
   <entry>
@@ -1009,6 +1327,55 @@ BPDU处理变化:
       </tags>
   </entry>
   <entry>
+    <title>博客文档指南</title>
+    <url>/2021/07/20/%E5%8D%9A%E5%AE%A2%E7%BC%96%E5%86%99%E6%8C%87%E5%8D%97/</url>
+    <content><![CDATA[<p>根据<a href="https://blog.csdn.net/sanallen/article/details/92081911?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522162684851716780274192566%2522%252C%2522scm%2522%253A%252220140713.130102334..%2522%257D&request_id=162684851716780274192566&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~all~sobaiduend~default-1-92081911.first_rank_v2_pc_rank_v29&utm_term=markdown%E6%96%87%E6%A1%A3%E7%BC%96%E5%86%99%E6%8C%87%E5%8D%97&spm=1018.2226.3001.4187">Markdown文档编写指南</a>编写</p>
+<span id="more"></span>
+<p>标题使用#一级 ##二级 ###三级 类推</p>
+<h2 id="段落"><a href="#段落" class="headerlink" title="段落"></a>段落</h2><p>两行之间空一行就能划分段落</p>
+<p>第一行段落</p>
+<p>第二行段落</p>
+<h2 id="区块引用"><a href="#区块引用" class="headerlink" title="区块引用"></a>区块引用</h2><blockquote>
+<p>对内容进行强调显示，会被高亮显示</p>
+</blockquote>
+<h2 id="超链接"><a href="#超链接" class="headerlink" title="超链接"></a>超链接</h2><p><a href="https://www.baidu.com/">百度</a></p>
+<h2 id="老婆！！"><a href="#老婆！！" class="headerlink" title="老婆！！"></a>老婆！！</h2><p><img src="https://img1.baidu.com/it/u=3661816073,3507776781&fm=26&fmt=auto&gp=0.jpg" alt="22"></p>
+<h2 id="无序列表"><a href="#无序列表" class="headerlink" title="无序列表"></a>无序列表</h2><ul>
+<li>first</li>
+<li>second</li>
+<li>third<h2 id="有序列表"><a href="#有序列表" class="headerlink" title="有序列表"></a>有序列表</h2></li>
+</ul>
+<ol>
+<li>第一行</li>
+<li>第二行</li>
+<li>第三行<h2 id="锚点"><a href="#锚点" class="headerlink" title="锚点"></a>锚点</h2>使用命名锚记可以在文档中设置标记，这些标记通常放在文档的特定主题处或顶部。然后可以创建到这些命名锚记的链接，这些链接可快速将访问者带到指定位置。</li>
+</ol>
+<p>创建到命名锚记的链接的过程分为两步。</p>
+<ul>
+<li>创建命名锚记</li>
+<li>创建 到该命名锚记的链接。</li>
+</ul>
+<p>反正就是用于文章快速定位，点击目录便可直接跳转到指定位置的。</p>
+<p>在这里我分享一下锚点在MarkDown编辑器中怎么使用：<br>首先是建立一个跳转的连接：</p>
+<p><a href="#jump">说明文字</a></p>
+<p>然后标记要跳转到的位置：</p>
+<p><span id="jump">跳转到的位置</span></p>
+<h2 id="空格是-amp-emsp；"><a href="#空格是-amp-emsp；" class="headerlink" title="空格是 &amp;emsp；"></a>空格是 &amp;emsp；</h2><h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><hr>
+<p>分割线 <em>斜体内容</em>  <strong>加粗内容</strong></p>
+<hr>
+<blockquote>
+<p>ctrl+shift+p 命令输入框<br>    – markdown 侧边阅览</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>博客</category>
+      </categories>
+      <tags>
+        <tag>博客</tag>
+        <tag>编写指南</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>交换机数据平面，控制平面和管理平面的分离</title>
     <url>/2021/07/22/%E5%85%B3%E4%BA%8E%E6%95%B0%E6%8D%AE%E5%B9%B3%E9%9D%A2%EF%BC%8C%E6%8E%A7%E5%88%B6%E5%B9%B3%E9%9D%A2%E5%92%8C%E8%BD%AC%E5%8F%91%E5%B9%B3%E9%9D%A2%E7%9A%84%E5%88%86%E7%A6%BB%E9%97%AE%E9%A2%98/</url>
     <content><![CDATA[<p><a href="#jump">三平面分离的详细解析</a></p>
@@ -1067,55 +1434,6 @@ BPDU处理变化:
       </tags>
   </entry>
   <entry>
-    <title>博客文档指南</title>
-    <url>/2021/07/20/%E5%8D%9A%E5%AE%A2%E7%BC%96%E5%86%99%E6%8C%87%E5%8D%97/</url>
-    <content><![CDATA[<p>根据<a href="https://blog.csdn.net/sanallen/article/details/92081911?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522162684851716780274192566%2522%252C%2522scm%2522%253A%252220140713.130102334..%2522%257D&request_id=162684851716780274192566&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~all~sobaiduend~default-1-92081911.first_rank_v2_pc_rank_v29&utm_term=markdown%E6%96%87%E6%A1%A3%E7%BC%96%E5%86%99%E6%8C%87%E5%8D%97&spm=1018.2226.3001.4187">Markdown文档编写指南</a>编写</p>
-<span id="more"></span>
-<p>标题使用#一级 ##二级 ###三级 类推</p>
-<h2 id="段落"><a href="#段落" class="headerlink" title="段落"></a>段落</h2><p>两行之间空一行就能划分段落</p>
-<p>第一行段落</p>
-<p>第二行段落</p>
-<h2 id="区块引用"><a href="#区块引用" class="headerlink" title="区块引用"></a>区块引用</h2><blockquote>
-<p>对内容进行强调显示，会被高亮显示</p>
-</blockquote>
-<h2 id="超链接"><a href="#超链接" class="headerlink" title="超链接"></a>超链接</h2><p><a href="https://www.baidu.com/">百度</a></p>
-<h2 id="老婆！！"><a href="#老婆！！" class="headerlink" title="老婆！！"></a>老婆！！</h2><p><img src="https://img1.baidu.com/it/u=3661816073,3507776781&fm=26&fmt=auto&gp=0.jpg" alt="22"></p>
-<h2 id="无序列表"><a href="#无序列表" class="headerlink" title="无序列表"></a>无序列表</h2><ul>
-<li>first</li>
-<li>second</li>
-<li>third<h2 id="有序列表"><a href="#有序列表" class="headerlink" title="有序列表"></a>有序列表</h2></li>
-</ul>
-<ol>
-<li>第一行</li>
-<li>第二行</li>
-<li>第三行<h2 id="锚点"><a href="#锚点" class="headerlink" title="锚点"></a>锚点</h2>使用命名锚记可以在文档中设置标记，这些标记通常放在文档的特定主题处或顶部。然后可以创建到这些命名锚记的链接，这些链接可快速将访问者带到指定位置。</li>
-</ol>
-<p>创建到命名锚记的链接的过程分为两步。</p>
-<ul>
-<li>创建命名锚记</li>
-<li>创建 到该命名锚记的链接。</li>
-</ul>
-<p>反正就是用于文章快速定位，点击目录便可直接跳转到指定位置的。</p>
-<p>在这里我分享一下锚点在MarkDown编辑器中怎么使用：<br>首先是建立一个跳转的连接：</p>
-<p><a href="#jump">说明文字</a></p>
-<p>然后标记要跳转到的位置：</p>
-<p><span id="jump">跳转到的位置</span></p>
-<h2 id="空格是-amp-emsp；"><a href="#空格是-amp-emsp；" class="headerlink" title="空格是 &amp;emsp；"></a>空格是 &amp;emsp；</h2><h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><hr>
-<p>分割线 <em>斜体内容</em>  <strong>加粗内容</strong></p>
-<hr>
-<blockquote>
-<p>ctrl+shift+p 命令输入框<br>    – markdown 侧边阅览</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>博客</category>
-      </categories>
-      <tags>
-        <tag>博客</tag>
-        <tag>编写指南</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>IPMI，MGMT口</title>
     <url>/2021/08/13/%E5%90%84%E7%A7%8D%E6%8E%A5%E5%8F%A3/</url>
     <content><![CDATA[<p>交换机上的各种接口</p>
@@ -1165,12 +1483,73 @@ BPDU处理变化:
 <li>上传本地代码到远程关联的Github仓库<figure class="highlight maxima"><table><tr><td class="code"><pre><span class="line">git <span class="built_in">push</span> -u <span class="built_in">origin</span> master</span><br></pre></td></tr></table></figure></li>
 </ol>
 <h1 id="更新本地项目至Github"><a href="#更新本地项目至Github" class="headerlink" title="更新本地项目至Github"></a>更新本地项目至Github</h1><p>添加文件——提交文件——推送文件</p>
-<figure class="highlight armasm"><table><tr><td class="code"><pre><span class="line"><span class="symbol">git</span> <span class="keyword">add</span> .</span><br><span class="line"><span class="symbol">git</span> commit -m <span class="string">&quot;第一次更新&quot;</span></span><br><span class="line"><span class="symbol">git</span> <span class="keyword">push</span> -u origin master</span><br></pre></td></tr></table></figure>]]></content>
+<figure class="highlight armasm"><table><tr><td class="code"><pre><span class="line"><span class="symbol">git</span> <span class="keyword">add</span> .</span><br><span class="line"><span class="symbol">git</span> commit -m <span class="string">&quot;第一次更新&quot;</span></span><br><span class="line"><span class="symbol">git</span> <span class="keyword">push</span> -u origin master</span><br></pre></td></tr></table></figure>
+
+<h1 id="解决更新本地项目至Github报错"><a href="#解决更新本地项目至Github报错" class="headerlink" title="解决更新本地项目至Github报错"></a>解决更新本地项目至Github报错</h1><p><strong>报错问题</strong></p>
+<figure class="highlight vim"><table><tr><td class="code"><pre><span class="line">To github.<span class="keyword">com</span>:REELXX/networkContestCode.git</span><br><span class="line"> ! [rejected]        master -&gt; master (fetch <span class="keyword">first</span>)</span><br><span class="line">error: failed <span class="keyword">to</span> push some refs <span class="keyword">to</span> <span class="string">&#x27;github.com:REELXX/networkContestCode.git&#x27;</span></span><br><span class="line">hin<span class="variable">t:</span> Updates were rejected because the remote contains work that you <span class="keyword">do</span></span><br><span class="line">hin<span class="variable">t:</span> not have locally. This <span class="keyword">is</span> usually caused by another repository pushing</span><br><span class="line">hin<span class="variable">t:</span> <span class="keyword">to</span> the same ref. You may want <span class="keyword">to</span> <span class="keyword">first</span> integrate the remote <span class="keyword">changes</span></span><br><span class="line">hin<span class="variable">t:</span> (<span class="keyword">e</span>.g., <span class="string">&#x27;git pull ...&#x27;</span>) before pushing again.</span><br><span class="line">hin<span class="variable">t:</span> See the <span class="string">&#x27;Note about fast-forwards&#x27;</span> in <span class="string">&#x27;git push --help&#x27;</span> <span class="keyword">for</span> details.</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><img src="/2021/08/17/%E5%B0%86%E6%9C%AC%E5%9C%B0%E9%A1%B9%E7%9B%AE%E4%B8%8A%E4%BC%A0Github/%E6%8A%A5%E9%94%991.png" alt="报错1"></p>
+<p>这个问题是由于Github中README.md文件不在本地代码目录中，执行下列代码解决</p>
+<figure class="highlight ada"><table><tr><td class="code"><pre><span class="line">git pull <span class="comment">--rebase origin master</span></span><br></pre></td></tr></table></figure>
+<p><img src="/2021/08/17/%E5%B0%86%E6%9C%AC%E5%9C%B0%E9%A1%B9%E7%9B%AE%E4%B8%8A%E4%BC%A0Github/%E6%8A%A5%E9%94%991%E8%A7%A3%E5%86%B31.png" alt="报错1解决1"><br>推送文件</p>
+<figure class="highlight maxima"><table><tr><td class="code"><pre><span class="line">git <span class="built_in">push</span> -u <span class="built_in">origin</span> master</span><br></pre></td></tr></table></figure>
+<p><img src="/2021/08/17/%E5%B0%86%E6%9C%AC%E5%9C%B0%E9%A1%B9%E7%9B%AE%E4%B8%8A%E4%BC%A0Github/%E6%8A%A5%E9%94%991%E8%A7%A3%E5%86%B32.png" alt="报错1解决2"></p>
+]]></content>
       <categories>
         <category>Github</category>
       </categories>
       <tags>
         <tag>Github</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>控制路由更新</title>
+    <url>/2021/08/04/%E6%8E%A7%E5%88%B6%E8%B7%AF%E7%94%B1%E6%9B%B4%E6%96%B0/</url>
+    <content><![CDATA[<p>关于OSPF的路由更新</p>
+<span id="more"></span>
+
+<h1 id="OSPF的路由汇总、重分布和过滤"><a href="#OSPF的路由汇总、重分布和过滤" class="headerlink" title="OSPF的路由汇总、重分布和过滤"></a>OSPF的路由汇总、重分布和过滤</h1><h2 id="OSPF路由汇总"><a href="#OSPF路由汇总" class="headerlink" title="OSPF路由汇总"></a>OSPF路由汇总</h2><p>区域间：<br>基于三类LSA，在<font color="#E9967A" size="3.5">ABR上汇总本区域向其他区域通告的区域间路由</font></p>
+<p><img src="/2021/08/04/%E6%8E%A7%E5%88%B6%E8%B7%AF%E7%94%B1%E6%9B%B4%E6%96%B0/%E6%B1%87%E6%80%BB%E5%8C%BA%E5%9F%9F%E9%97%B41.png" alt="汇总区域间1"><br><img src="/2021/08/04/%E6%8E%A7%E5%88%B6%E8%B7%AF%E7%94%B1%E6%9B%B4%E6%96%B0/%E6%B1%87%E6%80%BB%E5%8C%BA%E5%9F%9F%E9%97%B42.png" alt="汇总区域间2"></p>
+<p>区域外：<br>在<font color="#E9967A" size="3.5">ASBR上汇总本设备引入的外部路由</font></p>
+<p><img src="/2021/08/04/%E6%8E%A7%E5%88%B6%E8%B7%AF%E7%94%B1%E6%9B%B4%E6%96%B0/%E6%B1%87%E6%80%BB%E5%8C%BA%E5%9F%9F%E5%A4%961.png" alt="汇总区域外1"><br><img src="/2021/08/04/%E6%8E%A7%E5%88%B6%E8%B7%AF%E7%94%B1%E6%9B%B4%E6%96%B0/%E6%B1%87%E6%80%BB%E5%8C%BA%E5%9F%9F%E5%A4%962.png" alt="汇总区域外2"></p>
+<p>对引入的路由有以下几种情况：</p>
+<pre><code>如果ASBR，处于普通区域（不是处在stub等等特殊区域）将执行LSA5聚合路由
+如果ASBR处在NSSA区域，将会对聚合地址范围内所有LSA5，LSA7执行聚合。
+如果处在NSSA区域，且既是ASBR，又是ABR。那么除了执行第二点操作外，还会将7转5LSA也进行聚合。
+</code></pre>
+<p>#################################################################</p>
+<ol>
+<li>缺省不会自动汇总，使用汇总命令，只通告汇总路由，不通告细化路由。</li>
+<li><font color="#228B22">ABR上汇总本区域向其他区域通告的区域间路由，<font color="#8B008B">ASBR上汇总本设备引入的外部路由。</font></font></li>
+<li>加not-advertise参数，连汇总路由都不通告。</li>
+<li>加cost参数可以改变通告路由的cost。</li>
+</ol>
+<p>#################################################################</p>
+<h2 id="OSPF路由重分布"><a href="#OSPF路由重分布" class="headerlink" title="OSPF路由重分布"></a>OSPF路由重分布</h2><p>重分布总是向外执行的。这意味着执行重分布的路由器不改变其路由表，只有收到重分布路由的下行路由器会把路由添加到各自路由表中。</p>
+<p><img src="/2021/08/04/%E6%8E%A7%E5%88%B6%E8%B7%AF%E7%94%B1%E6%9B%B4%E6%96%B0/OSPF%E8%B7%AF%E7%94%B1%E9%87%8D%E5%88%86%E5%B8%831.png" alt="OSPF路由重分布1"></p>
+<p>所以重分布到RIP,EIGRP 的路由需要指定种子度量，否者路由不会被重分布。</p>
+<p><img src="/2021/08/04/%E6%8E%A7%E5%88%B6%E8%B7%AF%E7%94%B1%E6%9B%B4%E6%96%B0/OSPF%E8%B7%AF%E7%94%B1%E9%87%8D%E5%88%86%E5%B8%832.png" alt="OSPF路由重分布2"></p>
+<p><img src="/2021/08/04/%E6%8E%A7%E5%88%B6%E8%B7%AF%E7%94%B1%E6%9B%B4%E6%96%B0/OSPF%E8%B7%AF%E7%94%B1%E9%87%8D%E5%88%86%E5%B8%833.png" alt="OSPF路由重分布3"></p>
+<h2 id="OSPF路由过滤"><a href="#OSPF路由过滤" class="headerlink" title="OSPF路由过滤"></a>OSPF路由过滤</h2><h3 id="分发列表"><a href="#分发列表" class="headerlink" title="分发列表"></a>分发列表</h3><p>概念：把ACL应用在路由更新上</p>
+<p>distribute-list分发列表是用于控制路由更新的一个工具，<font color="#FF0000" size="3.5"><strong>只能过滤路由信息，不能过滤LSA</strong></font>。(所以说对距离矢量路由协议比较适用，如：RIP、EIGRP。 像OSPF链路状态路由协议，IN方向(影响本地路由表，但LSDB里是有的)，OUT方向不起作用; 但对本地始发路由可以过滤，原因是通过路由的重分发，而不是LSA传递。)</p>
+<p>缺陷：该命令只会干掉核心路由表，但是LSA依然会存储在路由器的ram里面。如果在area内用分发列表，此时LSDB已经同步完成。只有用了分发列表的交换机会进行路由过滤，别的交换机不会进行路由过滤</p>
+<p><img src="/2021/08/04/%E6%8E%A7%E5%88%B6%E8%B7%AF%E7%94%B1%E6%9B%B4%E6%96%B0/OSPF%E5%88%86%E5%8F%91%E5%88%97%E8%A1%A81.png" alt="OSPF分发列表1"></p>
+<h3 id="前缀列表"><a href="#前缀列表" class="headerlink" title="前缀列表"></a>前缀列表</h3><p>prefix-list：专门用于抓取控制层面流量–只能为发布列表、route-map服务；<br>特点：</p>
+<pre><code>前缀列表的可控性比访问列表高得多，支持增量修改，更为灵活
+前缀列表包含序列号，从最小的开始匹配，默认序列为8，以5增加可以使用序号插入
+判断路由前缀与前缀列表中的前缀是否匹配
+    匹配规则：至上而下逐一匹配，上条匹配按上条执行，不查看小条；末尾隐含拒绝所有
+</code></pre>
+<p><img src="/2021/08/04/%E6%8E%A7%E5%88%B6%E8%B7%AF%E7%94%B1%E6%9B%B4%E6%96%B0/OSPF%E5%89%8D%E7%BC%80%E5%88%97%E8%A1%A81.png" alt="OSPF前缀列表1"><br><img src="/2021/08/04/%E6%8E%A7%E5%88%B6%E8%B7%AF%E7%94%B1%E6%9B%B4%E6%96%B0/OSPF%E5%89%8D%E7%BC%80%E5%88%97%E8%A1%A82.png" alt="OSPF前缀列表2"></p>
+<p><font color="#FF0000"><strong>################################# 前缀列表示例！###################################</strong><br><img src="/2021/08/04/%E6%8E%A7%E5%88%B6%E8%B7%AF%E7%94%B1%E6%9B%B4%E6%96%B0/OSPF%E5%89%8D%E7%BC%80%E5%88%97%E8%A1%A83.png" alt="OSPF前缀列表3"><br><strong>###################################################################################</strong></font></p>
+]]></content>
+      <categories>
+        <category>路由</category>
+      </categories>
+      <tags>
+        <tag>网络</tag>
+        <tag>路由</tag>
+        <tag>OSPF</tag>
       </tags>
   </entry>
   <entry>
@@ -1461,56 +1840,6 @@ BPDU处理变化:
         <tag>虚拟化</tag>
         <tag>SDN</tag>
         <tag>控制器</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>控制路由更新</title>
-    <url>/2021/08/04/%E6%8E%A7%E5%88%B6%E8%B7%AF%E7%94%B1%E6%9B%B4%E6%96%B0/</url>
-    <content><![CDATA[<p>关于OSPF的路由更新</p>
-<span id="more"></span>
-
-<h1 id="OSPF的路由汇总、重分布和过滤"><a href="#OSPF的路由汇总、重分布和过滤" class="headerlink" title="OSPF的路由汇总、重分布和过滤"></a>OSPF的路由汇总、重分布和过滤</h1><h2 id="OSPF路由汇总"><a href="#OSPF路由汇总" class="headerlink" title="OSPF路由汇总"></a>OSPF路由汇总</h2><p>区域间：<br>基于三类LSA，在<font color="#E9967A" size="3.5">ABR上汇总本区域向其他区域通告的区域间路由</font></p>
-<p><img src="/2021/08/04/%E6%8E%A7%E5%88%B6%E8%B7%AF%E7%94%B1%E6%9B%B4%E6%96%B0/%E6%B1%87%E6%80%BB%E5%8C%BA%E5%9F%9F%E9%97%B41.png" alt="汇总区域间1"><br><img src="/2021/08/04/%E6%8E%A7%E5%88%B6%E8%B7%AF%E7%94%B1%E6%9B%B4%E6%96%B0/%E6%B1%87%E6%80%BB%E5%8C%BA%E5%9F%9F%E9%97%B42.png" alt="汇总区域间2"></p>
-<p>区域外：<br>在<font color="#E9967A" size="3.5">ASBR上汇总本设备引入的外部路由</font></p>
-<p><img src="/2021/08/04/%E6%8E%A7%E5%88%B6%E8%B7%AF%E7%94%B1%E6%9B%B4%E6%96%B0/%E6%B1%87%E6%80%BB%E5%8C%BA%E5%9F%9F%E5%A4%961.png" alt="汇总区域外1"><br><img src="/2021/08/04/%E6%8E%A7%E5%88%B6%E8%B7%AF%E7%94%B1%E6%9B%B4%E6%96%B0/%E6%B1%87%E6%80%BB%E5%8C%BA%E5%9F%9F%E5%A4%962.png" alt="汇总区域外2"></p>
-<p>对引入的路由有以下几种情况：</p>
-<pre><code>如果ASBR，处于普通区域（不是处在stub等等特殊区域）将执行LSA5聚合路由
-如果ASBR处在NSSA区域，将会对聚合地址范围内所有LSA5，LSA7执行聚合。
-如果处在NSSA区域，且既是ASBR，又是ABR。那么除了执行第二点操作外，还会将7转5LSA也进行聚合。
-</code></pre>
-<p>#################################################################</p>
-<ol>
-<li>缺省不会自动汇总，使用汇总命令，只通告汇总路由，不通告细化路由。</li>
-<li><font color="#228B22">ABR上汇总本区域向其他区域通告的区域间路由，<font color="#8B008B">ASBR上汇总本设备引入的外部路由。</font></font></li>
-<li>加not-advertise参数，连汇总路由都不通告。</li>
-<li>加cost参数可以改变通告路由的cost。</li>
-</ol>
-<p>#################################################################</p>
-<h2 id="OSPF路由重分布"><a href="#OSPF路由重分布" class="headerlink" title="OSPF路由重分布"></a>OSPF路由重分布</h2><p>重分布总是向外执行的。这意味着执行重分布的路由器不改变其路由表，只有收到重分布路由的下行路由器会把路由添加到各自路由表中。</p>
-<p><img src="/2021/08/04/%E6%8E%A7%E5%88%B6%E8%B7%AF%E7%94%B1%E6%9B%B4%E6%96%B0/OSPF%E8%B7%AF%E7%94%B1%E9%87%8D%E5%88%86%E5%B8%831.png" alt="OSPF路由重分布1"></p>
-<p>所以重分布到RIP,EIGRP 的路由需要指定种子度量，否者路由不会被重分布。</p>
-<p><img src="/2021/08/04/%E6%8E%A7%E5%88%B6%E8%B7%AF%E7%94%B1%E6%9B%B4%E6%96%B0/OSPF%E8%B7%AF%E7%94%B1%E9%87%8D%E5%88%86%E5%B8%832.png" alt="OSPF路由重分布2"></p>
-<p><img src="/2021/08/04/%E6%8E%A7%E5%88%B6%E8%B7%AF%E7%94%B1%E6%9B%B4%E6%96%B0/OSPF%E8%B7%AF%E7%94%B1%E9%87%8D%E5%88%86%E5%B8%833.png" alt="OSPF路由重分布3"></p>
-<h2 id="OSPF路由过滤"><a href="#OSPF路由过滤" class="headerlink" title="OSPF路由过滤"></a>OSPF路由过滤</h2><h3 id="分发列表"><a href="#分发列表" class="headerlink" title="分发列表"></a>分发列表</h3><p>概念：把ACL应用在路由更新上</p>
-<p>distribute-list分发列表是用于控制路由更新的一个工具，<font color="#FF0000" size="3.5"><strong>只能过滤路由信息，不能过滤LSA</strong></font>。(所以说对距离矢量路由协议比较适用，如：RIP、EIGRP。 像OSPF链路状态路由协议，IN方向(影响本地路由表，但LSDB里是有的)，OUT方向不起作用; 但对本地始发路由可以过滤，原因是通过路由的重分发，而不是LSA传递。)</p>
-<p>缺陷：该命令只会干掉核心路由表，但是LSA依然会存储在路由器的ram里面。如果在area内用分发列表，此时LSDB已经同步完成。只有用了分发列表的交换机会进行路由过滤，别的交换机不会进行路由过滤</p>
-<p><img src="/2021/08/04/%E6%8E%A7%E5%88%B6%E8%B7%AF%E7%94%B1%E6%9B%B4%E6%96%B0/OSPF%E5%88%86%E5%8F%91%E5%88%97%E8%A1%A81.png" alt="OSPF分发列表1"></p>
-<h3 id="前缀列表"><a href="#前缀列表" class="headerlink" title="前缀列表"></a>前缀列表</h3><p>prefix-list：专门用于抓取控制层面流量–只能为发布列表、route-map服务；<br>特点：</p>
-<pre><code>前缀列表的可控性比访问列表高得多，支持增量修改，更为灵活
-前缀列表包含序列号，从最小的开始匹配，默认序列为8，以5增加可以使用序号插入
-判断路由前缀与前缀列表中的前缀是否匹配
-    匹配规则：至上而下逐一匹配，上条匹配按上条执行，不查看小条；末尾隐含拒绝所有
-</code></pre>
-<p><img src="/2021/08/04/%E6%8E%A7%E5%88%B6%E8%B7%AF%E7%94%B1%E6%9B%B4%E6%96%B0/OSPF%E5%89%8D%E7%BC%80%E5%88%97%E8%A1%A81.png" alt="OSPF前缀列表1"><br><img src="/2021/08/04/%E6%8E%A7%E5%88%B6%E8%B7%AF%E7%94%B1%E6%9B%B4%E6%96%B0/OSPF%E5%89%8D%E7%BC%80%E5%88%97%E8%A1%A82.png" alt="OSPF前缀列表2"></p>
-<p><font color="#FF0000"><strong>################################# 前缀列表示例！###################################</strong><br><img src="/2021/08/04/%E6%8E%A7%E5%88%B6%E8%B7%AF%E7%94%B1%E6%9B%B4%E6%96%B0/OSPF%E5%89%8D%E7%BC%80%E5%88%97%E8%A1%A83.png" alt="OSPF前缀列表3"><br><strong>###################################################################################</strong></font></p>
-]]></content>
-      <categories>
-        <category>路由</category>
-      </categories>
-      <tags>
-        <tag>网络</tag>
-        <tag>路由</tag>
-        <tag>OSPF</tag>
       </tags>
   </entry>
   <entry>
