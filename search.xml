@@ -46,53 +46,6 @@
       </tags>
   </entry>
   <entry>
-    <title>BFD</title>
-    <url>/2021/08/17/BFD/</url>
-    <content><![CDATA[<p>双向转发检测BFD（Bidirectional Forwarding Detection）是一种全网统一的检测机制，用于快速检测、监控网络中链路或者IP路由的转发连通状况。为了减小设备故障对业务的影响，提高网络的可靠性，网络设备需要能够尽快检测到与相邻设备间的通信故障，以便及时采取措施，保证业务继续进行。在现有网络中，有些链路通常通过硬件检测信号，如SDH告警，检测链路故障，但并不是所有的介质都能够提供硬件检测。此时，应用就要依靠上层协议自身的Hello报文机制来进行故障检测。上层协议的检测时间都在1秒以上，这样的故障检测时间对某些应用来说是不能容忍的。同时，在一些小型三层网络中，如果没有部署路由协议，则无法使用路由协议的Hello报文机制来检测故障</p>
-<span id="more"></span>
-<h1 id="BFD"><a href="#BFD" class="headerlink" title="BFD"></a>BFD</h1><h2 id="原理简介"><a href="#原理简介" class="headerlink" title="原理简介"></a>原理简介</h2><p>BFD在两台网络设备上建立会话，用来检测网络设备间的双向转发路径，为上层应用服务。BFD本身并没有邻居发现机制，而是靠被服务的上层应用通知其邻居信息以建立会话。会话建立后会周期性地快速发送BFD报文，如果在检测时间内没有收到BFD报文则认为该双向转发路径发生了故障，通知被服务的上层应用进行相应的处理。下面以OSPF与BFD联动为例，简单介绍会话工作流程。</p>
-<p><img src="/2021/08/17/BFD/BFD%E4%BC%9A%E8%AF%9D%E5%BB%BA%E7%AB%8B%E6%B5%81%E7%A8%8B%E5%9B%BE.png" alt="BFD会话建立流程图"></p>
-<p>上图所示是一个简单的网络组网，两台设备上同时配置了OSPF与BFD，BFD会话建立过程如下所示：</p>
-<pre><code>    OSPF通过自己的Hello机制发现邻居并建立连接。
-    OSPF在建立了新的邻居关系后，将邻居信息（包括目的地址和源地址等）通告给BFD。
-    BFD根据收到的邻居信息建立会话。
-</code></pre>
-<p>会话建立以后，BFD开始检测链路故障，并做出快速反应。</p>
-<p><img src="/2021/08/17/BFD/BFD%E6%95%85%E9%9A%9C%E5%8F%91%E7%8E%B0%E5%A4%84%E7%90%86%E6%B5%81%E7%A8%8B%E5%9B%BE.png" alt="BFD故障发现处理流程图"></p>
-<p>如上图所示：</p>
-<pre><code>被检测链路出现故障。
-BFD快速检测到链路故障，BFD会话状态变为Down。
-BFD通知本地OSPF进程BFD邻居不可达。
-本地OSPF进程中断OSPF邻居关系。
-</code></pre>
-<h2 id="BFD会话建立方式"><a href="#BFD会话建立方式" class="headerlink" title="BFD会话建立方式"></a>BFD会话建立方式</h2><p>BFD会话的建立有两种方式，即静态建立BFD会话和动态建立BFD会话。静态和动态创建BFD会话的主要区别在于<strong>本地标识符（<font color="#E9764A">Local Discriminator<font>）</font></font></strong>和<strong>远端标识符（<font color="#E9764A">Remote Discriminator<font>）</font></font></strong>的配置方式不同。BFD通过控制报文中的Local Discriminator和Remote Discriminator区分不同的会话。</p>
-<p><strong>静态建立BFD会话</strong></p>
-<pre><code>静态建立BFD会话是指通过命令行手工配置BFD会话参数，包括配置本地标识符和远端标识符等，然后手工下发BFD会话建立请求。
-</code></pre>
-<p><strong>动态建立BFD会话</strong></p>
-<pre><code>动态建立BFD会话时，系统对本地标识符和远端标识符的处理方式如下：
-
-    动态分配本地标识符
-        当应用程序触发动态创建BFD会话时，系统分配属于动态会话标识符区域的值作为BFD会话的本地标识符。然后向对端发送Remote Discriminator的值为0的BFD控制报文，进行会话协商。
-
-    自学习远端标识符
-        当BFD会话的一端收到Remote Discriminator的值为0的BFD控制报文时，判断该报文是否与本地BFD会话匹配，如果匹配，则学习接收到的BFD报文中Local Discriminator的值，获取远端标识符。
-</code></pre>
-<h2 id="BFD检测机制"><a href="#BFD检测机制" class="headerlink" title="BFD检测机制"></a>BFD检测机制</h2><p>BFD的检测机制是两个系统建立BFD会话，并沿它们之间的路径周期性发送BFD控制报文，如果一方在既定的时间内没有收到BFD控制报文，则认为路径上发生了故障。</p>
-<p>BFD提供异步检测模式。在这种模式下，系统之间相互周期性地发送BFD控制报文，如果某个系统连续几个报文都没有接收到，就认为此BFD会话的状态是Down。</p>
-<h2 id="BFD会话管理"><a href="#BFD会话管理" class="headerlink" title="BFD会话管理"></a>BFD会话管理</h2><p>BFD会话有四种状态：Down、Init、Up和AdminDown。会话状态变化通过BFD报文的State字段传递，系统根据自己本地的会话状态和接收到的对端BFD报文驱动状态改变。BFD状态机的建立和拆除都采用三次握手机制，以确保两端系统都能知道状态的变化。以BFD会话建立为例，简单介绍状态机的迁移过程。</p>
-<p><img src="/2021/08/17/BFD/BFD%E4%BC%9A%E8%AF%9D%E5%BB%BA%E7%AB%8B%E6%B5%81%E7%A8%8B%E5%9B%BE2.png" alt="BFD会话建立流程图2"></p>
-<ol>
-<li>RouterA和RouterB各自启动BFD状态机，初始状态为Down，发送状态为Down的BFD报文。对于静态配置BFD会话，报文中的Remote Discriminator的值是用户指定的；对于动态创建BFD会话，Remote Discriminator的值是0。</li>
-<li>RouterB收到状态为Down的BFD报文后，状态切换至Init，并发送状态为Init的BFD报文。</li>
-<li>RouterB本地BFD状态为Init后，不再处理接收到的状态为Down的报文。</li>
-<li>RouterA的BFD状态变化同RouterB。</li>
-<li>RouterB收到状态为Init的BFD报文后，本地状态切换至Up。</li>
-<li>RouterA的BFD状态变化同RouterB。</li>
-</ol>
-]]></content>
-  </entry>
-  <entry>
     <title>ARP解析</title>
     <url>/2021/07/21/ARP%E8%A7%A3%E6%9E%90/</url>
     <content><![CDATA[<p>&emsp;&emsp;地址解析协议（Address Resolution Protocol），其基本功能为透过目标设备的IP地址，查询目标设备的MAC地址，以保证通信的顺利进行。它是IPv4中网络层必不可少的协议，不过在IPv6中已不再适用，并被邻居发现协议（NDP）所替代。</p>
@@ -171,6 +124,53 @@ BFD通知本地OSPF进程BFD邻居不可达。
       </tags>
   </entry>
   <entry>
+    <title>BFD</title>
+    <url>/2021/08/17/BFD/</url>
+    <content><![CDATA[<p>双向转发检测BFD（Bidirectional Forwarding Detection）是一种全网统一的检测机制，用于快速检测、监控网络中链路或者IP路由的转发连通状况。为了减小设备故障对业务的影响，提高网络的可靠性，网络设备需要能够尽快检测到与相邻设备间的通信故障，以便及时采取措施，保证业务继续进行。在现有网络中，有些链路通常通过硬件检测信号，如SDH告警，检测链路故障，但并不是所有的介质都能够提供硬件检测。此时，应用就要依靠上层协议自身的Hello报文机制来进行故障检测。上层协议的检测时间都在1秒以上，这样的故障检测时间对某些应用来说是不能容忍的。同时，在一些小型三层网络中，如果没有部署路由协议，则无法使用路由协议的Hello报文机制来检测故障</p>
+<span id="more"></span>
+<h1 id="BFD"><a href="#BFD" class="headerlink" title="BFD"></a>BFD</h1><h2 id="原理简介"><a href="#原理简介" class="headerlink" title="原理简介"></a>原理简介</h2><p>BFD在两台网络设备上建立会话，用来检测网络设备间的双向转发路径，为上层应用服务。BFD本身并没有邻居发现机制，而是靠被服务的上层应用通知其邻居信息以建立会话。会话建立后会周期性地快速发送BFD报文，如果在检测时间内没有收到BFD报文则认为该双向转发路径发生了故障，通知被服务的上层应用进行相应的处理。下面以OSPF与BFD联动为例，简单介绍会话工作流程。</p>
+<p><img src="/2021/08/17/BFD/BFD%E4%BC%9A%E8%AF%9D%E5%BB%BA%E7%AB%8B%E6%B5%81%E7%A8%8B%E5%9B%BE.png" alt="BFD会话建立流程图"></p>
+<p>上图所示是一个简单的网络组网，两台设备上同时配置了OSPF与BFD，BFD会话建立过程如下所示：</p>
+<pre><code>    OSPF通过自己的Hello机制发现邻居并建立连接。
+    OSPF在建立了新的邻居关系后，将邻居信息（包括目的地址和源地址等）通告给BFD。
+    BFD根据收到的邻居信息建立会话。
+</code></pre>
+<p>会话建立以后，BFD开始检测链路故障，并做出快速反应。</p>
+<p><img src="/2021/08/17/BFD/BFD%E6%95%85%E9%9A%9C%E5%8F%91%E7%8E%B0%E5%A4%84%E7%90%86%E6%B5%81%E7%A8%8B%E5%9B%BE.png" alt="BFD故障发现处理流程图"></p>
+<p>如上图所示：</p>
+<pre><code>被检测链路出现故障。
+BFD快速检测到链路故障，BFD会话状态变为Down。
+BFD通知本地OSPF进程BFD邻居不可达。
+本地OSPF进程中断OSPF邻居关系。
+</code></pre>
+<h2 id="BFD会话建立方式"><a href="#BFD会话建立方式" class="headerlink" title="BFD会话建立方式"></a>BFD会话建立方式</h2><p>BFD会话的建立有两种方式，即静态建立BFD会话和动态建立BFD会话。静态和动态创建BFD会话的主要区别在于<strong>本地标识符（<font color="#E9764A">Local Discriminator<font>）</font></font></strong>和<strong>远端标识符（<font color="#E9764A">Remote Discriminator<font>）</font></font></strong>的配置方式不同。BFD通过控制报文中的Local Discriminator和Remote Discriminator区分不同的会话。</p>
+<p><strong>静态建立BFD会话</strong></p>
+<pre><code>静态建立BFD会话是指通过命令行手工配置BFD会话参数，包括配置本地标识符和远端标识符等，然后手工下发BFD会话建立请求。
+</code></pre>
+<p><strong>动态建立BFD会话</strong></p>
+<pre><code>动态建立BFD会话时，系统对本地标识符和远端标识符的处理方式如下：
+
+    动态分配本地标识符
+        当应用程序触发动态创建BFD会话时，系统分配属于动态会话标识符区域的值作为BFD会话的本地标识符。然后向对端发送Remote Discriminator的值为0的BFD控制报文，进行会话协商。
+
+    自学习远端标识符
+        当BFD会话的一端收到Remote Discriminator的值为0的BFD控制报文时，判断该报文是否与本地BFD会话匹配，如果匹配，则学习接收到的BFD报文中Local Discriminator的值，获取远端标识符。
+</code></pre>
+<h2 id="BFD检测机制"><a href="#BFD检测机制" class="headerlink" title="BFD检测机制"></a>BFD检测机制</h2><p>BFD的检测机制是两个系统建立BFD会话，并沿它们之间的路径周期性发送BFD控制报文，如果一方在既定的时间内没有收到BFD控制报文，则认为路径上发生了故障。</p>
+<p>BFD提供异步检测模式。在这种模式下，系统之间相互周期性地发送BFD控制报文，如果某个系统连续几个报文都没有接收到，就认为此BFD会话的状态是Down。</p>
+<h2 id="BFD会话管理"><a href="#BFD会话管理" class="headerlink" title="BFD会话管理"></a>BFD会话管理</h2><p>BFD会话有四种状态：Down、Init、Up和AdminDown。会话状态变化通过BFD报文的State字段传递，系统根据自己本地的会话状态和接收到的对端BFD报文驱动状态改变。BFD状态机的建立和拆除都采用三次握手机制，以确保两端系统都能知道状态的变化。以BFD会话建立为例，简单介绍状态机的迁移过程。</p>
+<p><img src="/2021/08/17/BFD/BFD%E4%BC%9A%E8%AF%9D%E5%BB%BA%E7%AB%8B%E6%B5%81%E7%A8%8B%E5%9B%BE2.png" alt="BFD会话建立流程图2"></p>
+<ol>
+<li>RouterA和RouterB各自启动BFD状态机，初始状态为Down，发送状态为Down的BFD报文。对于静态配置BFD会话，报文中的Remote Discriminator的值是用户指定的；对于动态创建BFD会话，Remote Discriminator的值是0。</li>
+<li>RouterB收到状态为Down的BFD报文后，状态切换至Init，并发送状态为Init的BFD报文。</li>
+<li>RouterB本地BFD状态为Init后，不再处理接收到的状态为Down的报文。</li>
+<li>RouterA的BFD状态变化同RouterB。</li>
+<li>RouterB收到状态为Init的BFD报文后，本地状态切换至Up。</li>
+<li>RouterA的BFD状态变化同RouterB。</li>
+</ol>
+]]></content>
+  </entry>
+  <entry>
     <title>Django框架下，用sqlite3实现登录系统</title>
     <url>/2021/08/17/Django%E6%A1%86%E6%9E%B6%E4%B8%8B%EF%BC%8C%E7%94%A8sqlite3%E5%AE%9E%E7%8E%B0%E7%99%BB%E5%BD%95%E7%B3%BB%E7%BB%9F/</url>
     <content><![CDATA[<p>在Django框架下，自带sqlite3数据库。在21年的比赛中用sqlite3库实现了用户登录注册</p>
@@ -194,38 +194,6 @@ BFD通知本地OSPF进程BFD邻居不可达。
       <tags>
         <tag>Django</tag>
         <tag>Python</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Hexo+yilia左侧背景图片更换</title>
-    <url>/2021/07/23/Hexo-yilia%E5%B7%A6%E4%BE%A7%E8%83%8C%E6%99%AF%E5%9B%BE%E7%89%87%E6%9B%B4%E6%8D%A2/</url>
-    <content><![CDATA[<p>关于hexo+yilia的左侧替换原始背景方案</p>
-<span id="more"></span>
-<h2 id="修改主题配置"><a href="#修改主题配置" class="headerlink" title="修改主题配置"></a>修改主题配置</h2><h3 id="1-找到themes-yilia目录下的-config-yml-修改配置："><a href="#1-找到themes-yilia目录下的-config-yml-修改配置：" class="headerlink" title="1.找到themes\yilia目录下的_config.yml,修改配置："></a>1.找到<strong>themes\yilia</strong>目录下的_config.yml,修改配置：</h3><p>header 这一项修改为 #00000</p>
-<p><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9jZG4uYW55d2F5MTMxNC5jbi9pbWFnZTIwMTkwNzMwMTUwNDQ1LnBuZw?x-oss-process=image/format,png" alt="config.yml"></p>
-<h3 id="2-把你选好的背景图片放到themes-yilia-source目录下"><a href="#2-把你选好的背景图片放到themes-yilia-source目录下" class="headerlink" title="2.把你选好的背景图片放到themes\yilia\source目录下"></a>2.把你选好的背景图片放到<strong>themes\yilia\source</strong>目录下</h3><p>图像推荐大小：700 x 1200,出来的效果比较好</p>
-<p><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9jZG4uYW55d2F5MTMxNC5jbi9pbWFnZTIwMTkwNzMwMTUxMjMyLnBuZw?x-oss-process=image/format,png" alt="背景文件夹"></p>
-<h3 id="3-打开yilia-source目录下的main-xxxx-css-进行修改"><a href="#3-打开yilia-source目录下的main-xxxx-css-进行修改" class="headerlink" title="3.打开yilia\source目录下的main.xxxx.css,进行修改"></a>3.打开<strong>yilia\source</strong>目录下的main.xxxx.css,进行修改</h3><p>这里的xxxx是不确定的意思，有些人重新build后会和原版的不一样</p>
-<p>Crtl + F搜索 <strong>.left-col{ ，.left-col .overlay{ 以及 #mobile-nav .overlay</strong></p>
-<p><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9jZG4uYW55d2F5MTMxNC5jbi9pbWFnZTIwMTkwNzMwMTUyMTE2LnBuZw?x-oss-process=image/format,png" alt="1"></p>
-<p><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9jZG4uYW55d2F5MTMxNC5jbi9pbWFnZTIwMTkwNzMwMTUyNDMxLnBuZw?x-oss-process=image/format,png" alt="2"></p>
-<p><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9jZG4uYW55d2F5MTMxNC5jbi9pbWFnZTIwMTkwNzMwMTUyODA0LnBuZw?x-oss-process=image/format,png" alt="3"></p>
-<p>分别在括号里面加上属性：</p>
-<pre><code>1. background-image:url(&quot;图片文件名&quot;);
-</code></pre>
-<p>如果你的图片存储在网络上，可以不进行第2步，第3步添加的代码改成:</p>
-<pre><code>1. background-image:url(&quot;图片地址&quot;);
-</code></pre>
-<p>重新部署就行啦。</p>
-<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><p><a href="https://blog.csdn.net/qq_40922859/article/details/102886979?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522162700245216780265456678%2522%252C%2522scm%2522%253A%252220140713.130102334..%2522%257D&request_id=162700245216780265456678&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~all~sobaiduend~default-1-102886979.first_rank_v2_pc_rank_v29&utm_term=yilia%E5%B7%A6%E4%BE%A7&spm=1018.2226.3001.4187">本该如此的博客</a></p>
-]]></content>
-      <categories>
-        <category>博客</category>
-      </categories>
-      <tags>
-        <tag>博客自定义</tag>
-        <tag>yilia</tag>
-        <tag>经验</tag>
       </tags>
   </entry>
   <entry>
@@ -283,6 +251,38 @@ BFD通知本地OSPF进程BFD邻居不可达。
         <tag>数据通信</tag>
         <tag>数据链路层</tag>
         <tag>交换机</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Hexo+yilia左侧背景图片更换</title>
+    <url>/2021/07/23/Hexo-yilia%E5%B7%A6%E4%BE%A7%E8%83%8C%E6%99%AF%E5%9B%BE%E7%89%87%E6%9B%B4%E6%8D%A2/</url>
+    <content><![CDATA[<p>关于hexo+yilia的左侧替换原始背景方案</p>
+<span id="more"></span>
+<h2 id="修改主题配置"><a href="#修改主题配置" class="headerlink" title="修改主题配置"></a>修改主题配置</h2><h3 id="1-找到themes-yilia目录下的-config-yml-修改配置："><a href="#1-找到themes-yilia目录下的-config-yml-修改配置：" class="headerlink" title="1.找到themes\yilia目录下的_config.yml,修改配置："></a>1.找到<strong>themes\yilia</strong>目录下的_config.yml,修改配置：</h3><p>header 这一项修改为 #00000</p>
+<p><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9jZG4uYW55d2F5MTMxNC5jbi9pbWFnZTIwMTkwNzMwMTUwNDQ1LnBuZw?x-oss-process=image/format,png" alt="config.yml"></p>
+<h3 id="2-把你选好的背景图片放到themes-yilia-source目录下"><a href="#2-把你选好的背景图片放到themes-yilia-source目录下" class="headerlink" title="2.把你选好的背景图片放到themes\yilia\source目录下"></a>2.把你选好的背景图片放到<strong>themes\yilia\source</strong>目录下</h3><p>图像推荐大小：700 x 1200,出来的效果比较好</p>
+<p><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9jZG4uYW55d2F5MTMxNC5jbi9pbWFnZTIwMTkwNzMwMTUxMjMyLnBuZw?x-oss-process=image/format,png" alt="背景文件夹"></p>
+<h3 id="3-打开yilia-source目录下的main-xxxx-css-进行修改"><a href="#3-打开yilia-source目录下的main-xxxx-css-进行修改" class="headerlink" title="3.打开yilia\source目录下的main.xxxx.css,进行修改"></a>3.打开<strong>yilia\source</strong>目录下的main.xxxx.css,进行修改</h3><p>这里的xxxx是不确定的意思，有些人重新build后会和原版的不一样</p>
+<p>Crtl + F搜索 <strong>.left-col{ ，.left-col .overlay{ 以及 #mobile-nav .overlay</strong></p>
+<p><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9jZG4uYW55d2F5MTMxNC5jbi9pbWFnZTIwMTkwNzMwMTUyMTE2LnBuZw?x-oss-process=image/format,png" alt="1"></p>
+<p><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9jZG4uYW55d2F5MTMxNC5jbi9pbWFnZTIwMTkwNzMwMTUyNDMxLnBuZw?x-oss-process=image/format,png" alt="2"></p>
+<p><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9jZG4uYW55d2F5MTMxNC5jbi9pbWFnZTIwMTkwNzMwMTUyODA0LnBuZw?x-oss-process=image/format,png" alt="3"></p>
+<p>分别在括号里面加上属性：</p>
+<pre><code>1. background-image:url(&quot;图片文件名&quot;);
+</code></pre>
+<p>如果你的图片存储在网络上，可以不进行第2步，第3步添加的代码改成:</p>
+<pre><code>1. background-image:url(&quot;图片地址&quot;);
+</code></pre>
+<p>重新部署就行啦。</p>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><p><a href="https://blog.csdn.net/qq_40922859/article/details/102886979?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522162700245216780265456678%2522%252C%2522scm%2522%253A%252220140713.130102334..%2522%257D&request_id=162700245216780265456678&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~all~sobaiduend~default-1-102886979.first_rank_v2_pc_rank_v29&utm_term=yilia%E5%B7%A6%E4%BE%A7&spm=1018.2226.3001.4187">本该如此的博客</a></p>
+]]></content>
+      <categories>
+        <category>博客</category>
+      </categories>
+      <tags>
+        <tag>博客自定义</tag>
+        <tag>yilia</tag>
+        <tag>经验</tag>
       </tags>
   </entry>
   <entry>
@@ -1647,6 +1647,56 @@ $0,1,2 // 0-脚本名 1-第一个参数 2-第二个参数
       </tags>
   </entry>
   <entry>
+    <title>控制路由更新</title>
+    <url>/2021/08/04/%E6%8E%A7%E5%88%B6%E8%B7%AF%E7%94%B1%E6%9B%B4%E6%96%B0/</url>
+    <content><![CDATA[<p>关于OSPF的路由更新</p>
+<span id="more"></span>
+
+<h1 id="OSPF的路由汇总、重分布和过滤"><a href="#OSPF的路由汇总、重分布和过滤" class="headerlink" title="OSPF的路由汇总、重分布和过滤"></a>OSPF的路由汇总、重分布和过滤</h1><h2 id="OSPF路由汇总"><a href="#OSPF路由汇总" class="headerlink" title="OSPF路由汇总"></a>OSPF路由汇总</h2><p>区域间：<br>基于三类LSA，在<font color="#E9967A" size="3.5">ABR上汇总本区域向其他区域通告的区域间路由</font></p>
+<p><img src="/2021/08/04/%E6%8E%A7%E5%88%B6%E8%B7%AF%E7%94%B1%E6%9B%B4%E6%96%B0/%E6%B1%87%E6%80%BB%E5%8C%BA%E5%9F%9F%E9%97%B41.png" alt="汇总区域间1"><br><img src="/2021/08/04/%E6%8E%A7%E5%88%B6%E8%B7%AF%E7%94%B1%E6%9B%B4%E6%96%B0/%E6%B1%87%E6%80%BB%E5%8C%BA%E5%9F%9F%E9%97%B42.png" alt="汇总区域间2"></p>
+<p>区域外：<br>在<font color="#E9967A" size="3.5">ASBR上汇总本设备引入的外部路由</font></p>
+<p><img src="/2021/08/04/%E6%8E%A7%E5%88%B6%E8%B7%AF%E7%94%B1%E6%9B%B4%E6%96%B0/%E6%B1%87%E6%80%BB%E5%8C%BA%E5%9F%9F%E5%A4%961.png" alt="汇总区域外1"><br><img src="/2021/08/04/%E6%8E%A7%E5%88%B6%E8%B7%AF%E7%94%B1%E6%9B%B4%E6%96%B0/%E6%B1%87%E6%80%BB%E5%8C%BA%E5%9F%9F%E5%A4%962.png" alt="汇总区域外2"></p>
+<p>对引入的路由有以下几种情况：</p>
+<pre><code>如果ASBR，处于普通区域（不是处在stub等等特殊区域）将执行LSA5聚合路由
+如果ASBR处在NSSA区域，将会对聚合地址范围内所有LSA5，LSA7执行聚合。
+如果处在NSSA区域，且既是ASBR，又是ABR。那么除了执行第二点操作外，还会将7转5LSA也进行聚合。
+</code></pre>
+<p>#################################################################</p>
+<ol>
+<li>缺省不会自动汇总，使用汇总命令，只通告汇总路由，不通告细化路由。</li>
+<li><font color="#228B22">ABR上汇总本区域向其他区域通告的区域间路由，<font color="#8B008B">ASBR上汇总本设备引入的外部路由。</font></font></li>
+<li>加not-advertise参数，连汇总路由都不通告。</li>
+<li>加cost参数可以改变通告路由的cost。</li>
+</ol>
+<p>#################################################################</p>
+<h2 id="OSPF路由重分布"><a href="#OSPF路由重分布" class="headerlink" title="OSPF路由重分布"></a>OSPF路由重分布</h2><p>重分布总是向外执行的。这意味着执行重分布的路由器不改变其路由表，只有收到重分布路由的下行路由器会把路由添加到各自路由表中。</p>
+<p><img src="/2021/08/04/%E6%8E%A7%E5%88%B6%E8%B7%AF%E7%94%B1%E6%9B%B4%E6%96%B0/OSPF%E8%B7%AF%E7%94%B1%E9%87%8D%E5%88%86%E5%B8%831.png" alt="OSPF路由重分布1"></p>
+<p>所以重分布到RIP,EIGRP 的路由需要指定种子度量，否者路由不会被重分布。</p>
+<p><img src="/2021/08/04/%E6%8E%A7%E5%88%B6%E8%B7%AF%E7%94%B1%E6%9B%B4%E6%96%B0/OSPF%E8%B7%AF%E7%94%B1%E9%87%8D%E5%88%86%E5%B8%832.png" alt="OSPF路由重分布2"></p>
+<p><img src="/2021/08/04/%E6%8E%A7%E5%88%B6%E8%B7%AF%E7%94%B1%E6%9B%B4%E6%96%B0/OSPF%E8%B7%AF%E7%94%B1%E9%87%8D%E5%88%86%E5%B8%833.png" alt="OSPF路由重分布3"></p>
+<h2 id="OSPF路由过滤"><a href="#OSPF路由过滤" class="headerlink" title="OSPF路由过滤"></a>OSPF路由过滤</h2><h3 id="分发列表"><a href="#分发列表" class="headerlink" title="分发列表"></a>分发列表</h3><p>概念：把ACL应用在路由更新上</p>
+<p>distribute-list分发列表是用于控制路由更新的一个工具，<font color="#FF0000" size="3.5"><strong>只能过滤路由信息，不能过滤LSA</strong></font>。(所以说对距离矢量路由协议比较适用，如：RIP、EIGRP。 像OSPF链路状态路由协议，IN方向(影响本地路由表，但LSDB里是有的)，OUT方向不起作用; 但对本地始发路由可以过滤，原因是通过路由的重分发，而不是LSA传递。)</p>
+<p>缺陷：该命令只会干掉核心路由表，但是LSA依然会存储在路由器的ram里面。如果在area内用分发列表，此时LSDB已经同步完成。只有用了分发列表的交换机会进行路由过滤，别的交换机不会进行路由过滤</p>
+<p><img src="/2021/08/04/%E6%8E%A7%E5%88%B6%E8%B7%AF%E7%94%B1%E6%9B%B4%E6%96%B0/OSPF%E5%88%86%E5%8F%91%E5%88%97%E8%A1%A81.png" alt="OSPF分发列表1"></p>
+<h3 id="前缀列表"><a href="#前缀列表" class="headerlink" title="前缀列表"></a>前缀列表</h3><p>prefix-list：专门用于抓取控制层面流量–只能为发布列表、route-map服务；<br>特点：</p>
+<pre><code>前缀列表的可控性比访问列表高得多，支持增量修改，更为灵活
+前缀列表包含序列号，从最小的开始匹配，默认序列为8，以5增加可以使用序号插入
+判断路由前缀与前缀列表中的前缀是否匹配
+    匹配规则：至上而下逐一匹配，上条匹配按上条执行，不查看小条；末尾隐含拒绝所有
+</code></pre>
+<p><img src="/2021/08/04/%E6%8E%A7%E5%88%B6%E8%B7%AF%E7%94%B1%E6%9B%B4%E6%96%B0/OSPF%E5%89%8D%E7%BC%80%E5%88%97%E8%A1%A81.png" alt="OSPF前缀列表1"><br><img src="/2021/08/04/%E6%8E%A7%E5%88%B6%E8%B7%AF%E7%94%B1%E6%9B%B4%E6%96%B0/OSPF%E5%89%8D%E7%BC%80%E5%88%97%E8%A1%A82.png" alt="OSPF前缀列表2"></p>
+<p><font color="#FF0000"><strong>################################# 前缀列表示例！###################################</strong><br><img src="/2021/08/04/%E6%8E%A7%E5%88%B6%E8%B7%AF%E7%94%B1%E6%9B%B4%E6%96%B0/OSPF%E5%89%8D%E7%BC%80%E5%88%97%E8%A1%A83.png" alt="OSPF前缀列表3"><br><strong>###################################################################################</strong></font></p>
+]]></content>
+      <categories>
+        <category>路由</category>
+      </categories>
+      <tags>
+        <tag>网络</tag>
+        <tag>路由</tag>
+        <tag>OSPF</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>将本地项目上传Github</title>
     <url>/2021/08/17/%E5%B0%86%E6%9C%AC%E5%9C%B0%E9%A1%B9%E7%9B%AE%E4%B8%8A%E4%BC%A0Github/</url>
     <content><![CDATA[<p>上传/更新本地项目到Github</p>
@@ -1696,56 +1746,6 @@ $0,1,2 // 0-脚本名 1-第一个参数 2-第二个参数
       </categories>
       <tags>
         <tag>Github</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>控制路由更新</title>
-    <url>/2021/08/04/%E6%8E%A7%E5%88%B6%E8%B7%AF%E7%94%B1%E6%9B%B4%E6%96%B0/</url>
-    <content><![CDATA[<p>关于OSPF的路由更新</p>
-<span id="more"></span>
-
-<h1 id="OSPF的路由汇总、重分布和过滤"><a href="#OSPF的路由汇总、重分布和过滤" class="headerlink" title="OSPF的路由汇总、重分布和过滤"></a>OSPF的路由汇总、重分布和过滤</h1><h2 id="OSPF路由汇总"><a href="#OSPF路由汇总" class="headerlink" title="OSPF路由汇总"></a>OSPF路由汇总</h2><p>区域间：<br>基于三类LSA，在<font color="#E9967A" size="3.5">ABR上汇总本区域向其他区域通告的区域间路由</font></p>
-<p><img src="/2021/08/04/%E6%8E%A7%E5%88%B6%E8%B7%AF%E7%94%B1%E6%9B%B4%E6%96%B0/%E6%B1%87%E6%80%BB%E5%8C%BA%E5%9F%9F%E9%97%B41.png" alt="汇总区域间1"><br><img src="/2021/08/04/%E6%8E%A7%E5%88%B6%E8%B7%AF%E7%94%B1%E6%9B%B4%E6%96%B0/%E6%B1%87%E6%80%BB%E5%8C%BA%E5%9F%9F%E9%97%B42.png" alt="汇总区域间2"></p>
-<p>区域外：<br>在<font color="#E9967A" size="3.5">ASBR上汇总本设备引入的外部路由</font></p>
-<p><img src="/2021/08/04/%E6%8E%A7%E5%88%B6%E8%B7%AF%E7%94%B1%E6%9B%B4%E6%96%B0/%E6%B1%87%E6%80%BB%E5%8C%BA%E5%9F%9F%E5%A4%961.png" alt="汇总区域外1"><br><img src="/2021/08/04/%E6%8E%A7%E5%88%B6%E8%B7%AF%E7%94%B1%E6%9B%B4%E6%96%B0/%E6%B1%87%E6%80%BB%E5%8C%BA%E5%9F%9F%E5%A4%962.png" alt="汇总区域外2"></p>
-<p>对引入的路由有以下几种情况：</p>
-<pre><code>如果ASBR，处于普通区域（不是处在stub等等特殊区域）将执行LSA5聚合路由
-如果ASBR处在NSSA区域，将会对聚合地址范围内所有LSA5，LSA7执行聚合。
-如果处在NSSA区域，且既是ASBR，又是ABR。那么除了执行第二点操作外，还会将7转5LSA也进行聚合。
-</code></pre>
-<p>#################################################################</p>
-<ol>
-<li>缺省不会自动汇总，使用汇总命令，只通告汇总路由，不通告细化路由。</li>
-<li><font color="#228B22">ABR上汇总本区域向其他区域通告的区域间路由，<font color="#8B008B">ASBR上汇总本设备引入的外部路由。</font></font></li>
-<li>加not-advertise参数，连汇总路由都不通告。</li>
-<li>加cost参数可以改变通告路由的cost。</li>
-</ol>
-<p>#################################################################</p>
-<h2 id="OSPF路由重分布"><a href="#OSPF路由重分布" class="headerlink" title="OSPF路由重分布"></a>OSPF路由重分布</h2><p>重分布总是向外执行的。这意味着执行重分布的路由器不改变其路由表，只有收到重分布路由的下行路由器会把路由添加到各自路由表中。</p>
-<p><img src="/2021/08/04/%E6%8E%A7%E5%88%B6%E8%B7%AF%E7%94%B1%E6%9B%B4%E6%96%B0/OSPF%E8%B7%AF%E7%94%B1%E9%87%8D%E5%88%86%E5%B8%831.png" alt="OSPF路由重分布1"></p>
-<p>所以重分布到RIP,EIGRP 的路由需要指定种子度量，否者路由不会被重分布。</p>
-<p><img src="/2021/08/04/%E6%8E%A7%E5%88%B6%E8%B7%AF%E7%94%B1%E6%9B%B4%E6%96%B0/OSPF%E8%B7%AF%E7%94%B1%E9%87%8D%E5%88%86%E5%B8%832.png" alt="OSPF路由重分布2"></p>
-<p><img src="/2021/08/04/%E6%8E%A7%E5%88%B6%E8%B7%AF%E7%94%B1%E6%9B%B4%E6%96%B0/OSPF%E8%B7%AF%E7%94%B1%E9%87%8D%E5%88%86%E5%B8%833.png" alt="OSPF路由重分布3"></p>
-<h2 id="OSPF路由过滤"><a href="#OSPF路由过滤" class="headerlink" title="OSPF路由过滤"></a>OSPF路由过滤</h2><h3 id="分发列表"><a href="#分发列表" class="headerlink" title="分发列表"></a>分发列表</h3><p>概念：把ACL应用在路由更新上</p>
-<p>distribute-list分发列表是用于控制路由更新的一个工具，<font color="#FF0000" size="3.5"><strong>只能过滤路由信息，不能过滤LSA</strong></font>。(所以说对距离矢量路由协议比较适用，如：RIP、EIGRP。 像OSPF链路状态路由协议，IN方向(影响本地路由表，但LSDB里是有的)，OUT方向不起作用; 但对本地始发路由可以过滤，原因是通过路由的重分发，而不是LSA传递。)</p>
-<p>缺陷：该命令只会干掉核心路由表，但是LSA依然会存储在路由器的ram里面。如果在area内用分发列表，此时LSDB已经同步完成。只有用了分发列表的交换机会进行路由过滤，别的交换机不会进行路由过滤</p>
-<p><img src="/2021/08/04/%E6%8E%A7%E5%88%B6%E8%B7%AF%E7%94%B1%E6%9B%B4%E6%96%B0/OSPF%E5%88%86%E5%8F%91%E5%88%97%E8%A1%A81.png" alt="OSPF分发列表1"></p>
-<h3 id="前缀列表"><a href="#前缀列表" class="headerlink" title="前缀列表"></a>前缀列表</h3><p>prefix-list：专门用于抓取控制层面流量–只能为发布列表、route-map服务；<br>特点：</p>
-<pre><code>前缀列表的可控性比访问列表高得多，支持增量修改，更为灵活
-前缀列表包含序列号，从最小的开始匹配，默认序列为8，以5增加可以使用序号插入
-判断路由前缀与前缀列表中的前缀是否匹配
-    匹配规则：至上而下逐一匹配，上条匹配按上条执行，不查看小条；末尾隐含拒绝所有
-</code></pre>
-<p><img src="/2021/08/04/%E6%8E%A7%E5%88%B6%E8%B7%AF%E7%94%B1%E6%9B%B4%E6%96%B0/OSPF%E5%89%8D%E7%BC%80%E5%88%97%E8%A1%A81.png" alt="OSPF前缀列表1"><br><img src="/2021/08/04/%E6%8E%A7%E5%88%B6%E8%B7%AF%E7%94%B1%E6%9B%B4%E6%96%B0/OSPF%E5%89%8D%E7%BC%80%E5%88%97%E8%A1%A82.png" alt="OSPF前缀列表2"></p>
-<p><font color="#FF0000"><strong>################################# 前缀列表示例！###################################</strong><br><img src="/2021/08/04/%E6%8E%A7%E5%88%B6%E8%B7%AF%E7%94%B1%E6%9B%B4%E6%96%B0/OSPF%E5%89%8D%E7%BC%80%E5%88%97%E8%A1%A83.png" alt="OSPF前缀列表3"><br><strong>###################################################################################</strong></font></p>
-]]></content>
-      <categories>
-        <category>路由</category>
-      </categories>
-      <tags>
-        <tag>网络</tag>
-        <tag>路由</tag>
-        <tag>OSPF</tag>
       </tags>
   </entry>
   <entry>
