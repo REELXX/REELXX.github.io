@@ -551,25 +551,6 @@ ILM
       </tags>
   </entry>
   <entry>
-    <title>Python——pipreqs</title>
-    <url>/2021/08/18/Python%E2%80%94%E2%80%94pipreqs/</url>
-    <content><![CDATA[<p>解决Python项目在不同环境没法运行的问题，通过pipreqs库导出所需要的包</p>
-<span id="more"></span>
-
-<figure class="highlight jboss-cli"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 安装</span></span><br><span class="line">pip install pipreqs</span><br><span class="line"><span class="comment"># 在项目下运行</span></span><br><span class="line">pipreqs <span class="string">./</span> <span class="params">--encoding=utf8</span></span><br></pre></td></tr></table></figure>
-<p>执行完后，在项目下会生成<font color="#E9764A">requirements.txt</font>文件，项目中的组件和包都会在其中<br><img src="/2021/08/18/Python%E2%80%94%E2%80%94pipreqs/1.png" alt="1"></p>
-<blockquote>
-<p>当用pycharm打开项目时，只要项目下有requirements.txt文件，就会提示是否要安装没有的组件和包<br><img src="/2021/08/18/Python%E2%80%94%E2%80%94pipreqs/2.png" alt="2"></p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>Python</category>
-      </categories>
-      <tags>
-        <tag>Python</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>SPAN</title>
     <url>/2021/08/17/SPAN/</url>
     <content><![CDATA[<p>SPAN，全称为Switched Port Analyzer，直译为交换端口分析器。是一种交换机的端口镜像技术。作用主要是为了给某种网络分析器提供网络数据流，SPAN并不会影响源端口的数据交换，它只是将源端口发送或接收的数据包副本发送到监控端口</p>
@@ -636,6 +617,25 @@ ILM
       <tags>
         <tag>端口镜像</tag>
         <tag>运维</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Python——pipreqs</title>
+    <url>/2021/08/18/Python%E2%80%94%E2%80%94pipreqs/</url>
+    <content><![CDATA[<p>解决Python项目在不同环境没法运行的问题，通过pipreqs库导出所需要的包</p>
+<span id="more"></span>
+
+<figure class="highlight jboss-cli"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 安装</span></span><br><span class="line">pip install pipreqs</span><br><span class="line"><span class="comment"># 在项目下运行</span></span><br><span class="line">pipreqs <span class="string">./</span> <span class="params">--encoding=utf8</span></span><br></pre></td></tr></table></figure>
+<p>执行完后，在项目下会生成<font color="#E9764A">requirements.txt</font>文件，项目中的组件和包都会在其中<br><img src="/2021/08/18/Python%E2%80%94%E2%80%94pipreqs/1.png" alt="1"></p>
+<blockquote>
+<p>当用pycharm打开项目时，只要项目下有requirements.txt文件，就会提示是否要安装没有的组件和包<br><img src="/2021/08/18/Python%E2%80%94%E2%80%94pipreqs/2.png" alt="2"></p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>Python</category>
+      </categories>
+      <tags>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -1196,6 +1196,11 @@ grep -i 关键字 file 忽略大小写
       </tags>
   </entry>
   <entry>
+    <title>openstack搭建笔记</title>
+    <url>/2021/08/20/openstack%E6%90%AD%E5%BB%BA%E7%AC%94%E8%AE%B0/</url>
+    <content><![CDATA[]]></content>
+  </entry>
+  <entry>
     <title>openstack</title>
     <url>/2021/08/12/openstack/</url>
     <content><![CDATA[<p>云操作系统（OpenStack），用于联动计算、存储、网络资源，OpenStack和控制器以及网络增值设备如负载均衡设备或防火墙设备采用plugin对接。</p>
@@ -1223,11 +1228,6 @@ grep -i 关键字 file 忽略大小写
         <tag>openstack</tag>
         <tag>Apache</tag>
       </tags>
-  </entry>
-  <entry>
-    <title>openstack搭建笔记</title>
-    <url>/2021/08/20/openstack%E6%90%AD%E5%BB%BA%E7%AC%94%E8%AE%B0/</url>
-    <content><![CDATA[]]></content>
   </entry>
   <entry>
     <title>openstack重要组件</title>
@@ -1442,7 +1442,7 @@ $0,1,2 // 0-脚本名 1-第一个参数 2-第二个参数
       </tags>
   </entry>
   <entry>
-    <title>深入研究二层端口</title>
+    <title>vlan笔记</title>
     <url>/2021/07/22/%E4%BA%8C%E5%B1%82%E7%AB%AF%E5%8F%A3/</url>
     <content><![CDATA[<p><strong>OSI模型</strong>：OSI 是不同制造商的设备和应用软件在网络中进行通信的标准，此模型已经成为计算机间和网络间进行通信的主要结构模型。</p>
 <span id="more"></span>
@@ -1476,7 +1476,8 @@ $0,1,2 // 0-脚本名 1-第一个参数 2-第二个参数
 <h3 id="Trunk-端口"><a href="#Trunk-端口" class="headerlink" title="Trunk 端口"></a>Trunk 端口</h3><p>&emsp;&emsp;Trunk端口是用来连接与其他交换机的二层以太网端口。它的最主要特性就是允许多个VLAN的帧通过，并且所发送的以太网帧都是带标签的，除了发送VLAN ID与PVID（Port Default VLAN ID，端口缺省VLAN ID）一致的VLAN帧。</p>
 <h3 id="Hybird-端口"><a href="#Hybird-端口" class="headerlink" title="Hybird 端口"></a>Hybird 端口</h3><p>&emsp;&emsp;Hybrid端口可以说是以上Access端口和Trunk端口的混合体，具有它们共同的特等性，是一种特殊的二层以太网端口。正因如此，Hybrid端口既可以连接用户主机，又可以连接其他交换机、路由器设备。同时Hybrid端口又允许一个，或多个VLAN的帧通过，并可选择以带标签，或者不带标签的方式发送数据帧。</p>
 <h3 id="QinQ-端口"><a href="#QinQ-端口" class="headerlink" title="QinQ 端口"></a>QinQ 端口</h3><p>&emsp;&emsp;QinQ端口是专用于QinQ协议的二层以太网端口。它可以给数据帧加上双层VLAN标签，即在原来标签的基础上，给帧加上一个新的标签，从而可以支持多达4094×4094个VLAN，满足企业用户网络对VLAN数量更高的需求。S1700和S2700SI不支持QinQ类型端口。</p>
-<h2 id="二层端口数据帧处理规则"><a href="#二层端口数据帧处理规则" class="headerlink" title="二层端口数据帧处理规则"></a>二层端口数据帧处理规则</h2><blockquote>
+<h2 id="二层端口数据帧处理规则"><a href="#二层端口数据帧处理规则" class="headerlink" title="二层端口数据帧处理规则"></a>二层端口数据帧处理规则</h2><p><img src="/2021/07/22/%E4%BA%8C%E5%B1%82%E7%AB%AF%E5%8F%A3/VLAN%E5%B8%A7%E6%94%B6%E5%8F%91%E6%83%85%E5%86%B5.png" alt="VLAN帧收发情况"></p>
+<blockquote>
 <table>
 <thead>
 <tr>
@@ -1752,34 +1753,6 @@ $0,1,2 // 0-脚本名 1-第一个参数 2-第二个参数
         <tag>路由</tag>
         <tag>OSPF</tag>
       </tags>
-  </entry>
-  <entry>
-    <title>交换机版本升级</title>
-    <url>/2021/08/16/%E9%94%90%E6%8D%B7%E4%BA%A4%E6%8D%A2%E6%9C%BA%E7%89%88%E6%9C%AC%E5%8D%87%E7%BA%A7/</url>
-    <content><![CDATA[<p>不同方式升级交换机版本</p>
-<span id="more"></span>
-
-<h1 id="U盘升级"><a href="#U盘升级" class="headerlink" title="U盘升级"></a>U盘升级</h1><p>1、查看U盘文件:dir usb<br>2、用U盘上传更新文件：</p>
-<figure class="highlight apache"><table><tr><td class="code"><pre><span class="line"><span class="attribute">Switch</span>#upgrade usb<span class="number">0</span>:N<span class="number">18000</span>_RG<span class="number">0</span>S<span class="number">11</span>.<span class="number">0</span>(<span class="number">1</span>)B<span class="number">2</span>_CM_<span class="number">08050053</span>_install.bin</span><br></pre></td></tr></table></figure>
-<p>——&gt;usb0与机架包的名字中间不要有空格,即usb0:与N18000中间不要有空格<br>3、通过show upgrade status查看交换机升级情况(确定所有引擎/板卡/FE板卡是success状态),升级完成后通过命令reload重启交换机<br>4、重启完成后,通过show version detail查看交换机版本</p>
-<h1 id="TFTP升级"><a href="#TFTP升级" class="headerlink" title="TFTP升级"></a>TFTP升级</h1><p>电脑和交换机先要能ping通<br>1、配置IP地址:</p>
-<figure class="highlight stylus"><table><tr><td class="code"><pre><span class="line">Switch&gt;enable</span><br><span class="line">Switch<span class="selector-id">#configure</span> terminal</span><br><span class="line"><span class="function"><span class="title">Switch</span><span class="params">(config)</span></span><span class="selector-id">#interface</span> vlan <span class="number">1</span></span><br><span class="line"><span class="function"><span class="title">Switch</span><span class="params">(config-if)</span></span><span class="selector-id">#ip</span> <span class="selector-tag">address</span> <span class="number">192.168</span>.<span class="number">1.1</span> <span class="number">255.255</span>.<span class="number">255.0</span></span><br><span class="line"><span class="function"><span class="title">Switch</span><span class="params">(config-if)</span></span>#exit</span><br></pre></td></tr></table></figure>
-<p>2、将文件拷贝至交换机:</p>
-<figure class="highlight apache"><table><tr><td class="code"><pre><span class="line"><span class="attribute">Switch</span>#copy tftp://<span class="number">192.168.1.2</span>/N<span class="number">1800</span>e_RGOS<span class="number">11</span>.<span class="number">0</span>(<span class="number">1</span>)B<span class="number">2</span>_CM_<span class="number">08050053</span>_insta<span class="number">1</span>l.bin flash:/N<span class="number">18000</span>_RGOS<span class="number">11</span>.<span class="number">0</span>(<span class="number">1</span>)B<span class="number">2</span>_CM_<span class="number">08050053</span>_instal<span class="number">1</span>.bin</span><br></pre></td></tr></table></figure>
-<p>—-&gt;192.168.1.2是电脑的IP地址;N18000_RGOS11.0(1)B2_CM_08e50053_instal1.bin是电脑上的主程序文件名;<br>3、升级:</p>
-<figure class="highlight apache"><table><tr><td class="code"><pre><span class="line"><span class="attribute">Switch</span>#upgrade flash:N<span class="number">18000</span>_RGOS<span class="number">11</span>.<span class="number">0</span>(<span class="number">1</span>)B<span class="number">2</span>_CM_<span class="number">08050053</span>_install.bin</span><br></pre></td></tr></table></figure>
-<p>4、通过show upgrade status确定交换机升级情况,升级完成后通过命令reload重启交换机<br>5、重启完成后,通过show version detail查看交换机版本</p>
-<h1 id="带外管理MGMT口"><a href="#带外管理MGMT口" class="headerlink" title="带外管理MGMT口"></a>带外管理MGMT口</h1><blockquote>
-<p>该接口独立于业务接口，专门作为交换机管理<br>MGMT口测试需要携带OOB参数：<font color="#E9764A">ping oob 192.168.1.1<font></font></font></p>
-</blockquote>
-<p><strong>MGMT口升级</strong><br>1、配置IP地址:</p>
-<figure class="highlight stylus"><table><tr><td class="code"><pre><span class="line">Switch&gt;enable</span><br><span class="line">Switch<span class="selector-id">#configure</span> terminal</span><br><span class="line"><span class="function"><span class="title">Switch</span><span class="params">(config)</span></span><span class="selector-id">#interface</span> mgmt <span class="number">0</span></span><br><span class="line"><span class="function"><span class="title">Switch</span><span class="params">(config-if)</span></span> <span class="selector-id">#ip</span> <span class="selector-tag">address</span> <span class="number">192.168</span>.<span class="number">1.1</span> <span class="number">255.255</span>.<span class="number">255.0</span></span><br><span class="line"><span class="function"><span class="title">Switch</span><span class="params">(config-if)</span></span>#exit</span><br></pre></td></tr></table></figure>
-<p>2、将文件拷贝至交换机:</p>
-<figure class="highlight apache"><table><tr><td class="code"><pre><span class="line"><span class="attribute">Switch</span>#copy oob_tftp ://<span class="number">192.168.1.2</span>/N<span class="number">1800</span>e_RGOS<span class="number">11</span>.<span class="number">0</span>(<span class="number">1</span>)B<span class="number">2</span>_CM_<span class="number">08050053</span>_install.binflash:/N<span class="number">18000</span>_RGOS<span class="number">11</span>.<span class="number">0</span>(<span class="number">1</span>)B<span class="number">2</span>_CM_<span class="number">08050053</span>_install.bin</span><br></pre></td></tr></table></figure>
-<p>—-&gt;192.168.1.2是电脑的IP地址;N18000_RGOS11.0(1)B2_CM_08050853_install.bin是电脑上的主程序文件名;rgos.bin是放入交换机上的主程序名称<br>3、升级:</p>
-<figure class="highlight apache"><table><tr><td class="code"><pre><span class="line"><span class="attribute">Switch</span>#upgrade flash:N<span class="number">18000</span>_RGOS<span class="number">11</span>.<span class="number">0</span>(<span class="number">1</span>)B<span class="number">2</span>_CM_<span class="number">08050053</span>_install.bin</span><br></pre></td></tr></table></figure>
-<p>4、通过show upgrade status确定交换机升级情况,升级完成后通过命令reload重启交换机<br>5、重启完成后,通过show version detail查看交换机版本</p>
-]]></content>
   </entry>
   <entry>
     <title>网络虚拟化</title>
@@ -2070,6 +2043,34 @@ $0,1,2 // 0-脚本名 1-第一个参数 2-第二个参数
         <tag>SDN</tag>
         <tag>控制器</tag>
       </tags>
+  </entry>
+  <entry>
+    <title>交换机版本升级</title>
+    <url>/2021/08/16/%E9%94%90%E6%8D%B7%E4%BA%A4%E6%8D%A2%E6%9C%BA%E7%89%88%E6%9C%AC%E5%8D%87%E7%BA%A7/</url>
+    <content><![CDATA[<p>不同方式升级交换机版本</p>
+<span id="more"></span>
+
+<h1 id="U盘升级"><a href="#U盘升级" class="headerlink" title="U盘升级"></a>U盘升级</h1><p>1、查看U盘文件:dir usb<br>2、用U盘上传更新文件：</p>
+<figure class="highlight apache"><table><tr><td class="code"><pre><span class="line"><span class="attribute">Switch</span>#upgrade usb<span class="number">0</span>:N<span class="number">18000</span>_RG<span class="number">0</span>S<span class="number">11</span>.<span class="number">0</span>(<span class="number">1</span>)B<span class="number">2</span>_CM_<span class="number">08050053</span>_install.bin</span><br></pre></td></tr></table></figure>
+<p>——&gt;usb0与机架包的名字中间不要有空格,即usb0:与N18000中间不要有空格<br>3、通过show upgrade status查看交换机升级情况(确定所有引擎/板卡/FE板卡是success状态),升级完成后通过命令reload重启交换机<br>4、重启完成后,通过show version detail查看交换机版本</p>
+<h1 id="TFTP升级"><a href="#TFTP升级" class="headerlink" title="TFTP升级"></a>TFTP升级</h1><p>电脑和交换机先要能ping通<br>1、配置IP地址:</p>
+<figure class="highlight stylus"><table><tr><td class="code"><pre><span class="line">Switch&gt;enable</span><br><span class="line">Switch<span class="selector-id">#configure</span> terminal</span><br><span class="line"><span class="function"><span class="title">Switch</span><span class="params">(config)</span></span><span class="selector-id">#interface</span> vlan <span class="number">1</span></span><br><span class="line"><span class="function"><span class="title">Switch</span><span class="params">(config-if)</span></span><span class="selector-id">#ip</span> <span class="selector-tag">address</span> <span class="number">192.168</span>.<span class="number">1.1</span> <span class="number">255.255</span>.<span class="number">255.0</span></span><br><span class="line"><span class="function"><span class="title">Switch</span><span class="params">(config-if)</span></span>#exit</span><br></pre></td></tr></table></figure>
+<p>2、将文件拷贝至交换机:</p>
+<figure class="highlight apache"><table><tr><td class="code"><pre><span class="line"><span class="attribute">Switch</span>#copy tftp://<span class="number">192.168.1.2</span>/N<span class="number">1800</span>e_RGOS<span class="number">11</span>.<span class="number">0</span>(<span class="number">1</span>)B<span class="number">2</span>_CM_<span class="number">08050053</span>_insta<span class="number">1</span>l.bin flash:/N<span class="number">18000</span>_RGOS<span class="number">11</span>.<span class="number">0</span>(<span class="number">1</span>)B<span class="number">2</span>_CM_<span class="number">08050053</span>_instal<span class="number">1</span>.bin</span><br></pre></td></tr></table></figure>
+<p>—-&gt;192.168.1.2是电脑的IP地址;N18000_RGOS11.0(1)B2_CM_08e50053_instal1.bin是电脑上的主程序文件名;<br>3、升级:</p>
+<figure class="highlight apache"><table><tr><td class="code"><pre><span class="line"><span class="attribute">Switch</span>#upgrade flash:N<span class="number">18000</span>_RGOS<span class="number">11</span>.<span class="number">0</span>(<span class="number">1</span>)B<span class="number">2</span>_CM_<span class="number">08050053</span>_install.bin</span><br></pre></td></tr></table></figure>
+<p>4、通过show upgrade status确定交换机升级情况,升级完成后通过命令reload重启交换机<br>5、重启完成后,通过show version detail查看交换机版本</p>
+<h1 id="带外管理MGMT口"><a href="#带外管理MGMT口" class="headerlink" title="带外管理MGMT口"></a>带外管理MGMT口</h1><blockquote>
+<p>该接口独立于业务接口，专门作为交换机管理<br>MGMT口测试需要携带OOB参数：<font color="#E9764A">ping oob 192.168.1.1<font></font></font></p>
+</blockquote>
+<p><strong>MGMT口升级</strong><br>1、配置IP地址:</p>
+<figure class="highlight stylus"><table><tr><td class="code"><pre><span class="line">Switch&gt;enable</span><br><span class="line">Switch<span class="selector-id">#configure</span> terminal</span><br><span class="line"><span class="function"><span class="title">Switch</span><span class="params">(config)</span></span><span class="selector-id">#interface</span> mgmt <span class="number">0</span></span><br><span class="line"><span class="function"><span class="title">Switch</span><span class="params">(config-if)</span></span> <span class="selector-id">#ip</span> <span class="selector-tag">address</span> <span class="number">192.168</span>.<span class="number">1.1</span> <span class="number">255.255</span>.<span class="number">255.0</span></span><br><span class="line"><span class="function"><span class="title">Switch</span><span class="params">(config-if)</span></span>#exit</span><br></pre></td></tr></table></figure>
+<p>2、将文件拷贝至交换机:</p>
+<figure class="highlight apache"><table><tr><td class="code"><pre><span class="line"><span class="attribute">Switch</span>#copy oob_tftp ://<span class="number">192.168.1.2</span>/N<span class="number">1800</span>e_RGOS<span class="number">11</span>.<span class="number">0</span>(<span class="number">1</span>)B<span class="number">2</span>_CM_<span class="number">08050053</span>_install.binflash:/N<span class="number">18000</span>_RGOS<span class="number">11</span>.<span class="number">0</span>(<span class="number">1</span>)B<span class="number">2</span>_CM_<span class="number">08050053</span>_install.bin</span><br></pre></td></tr></table></figure>
+<p>—-&gt;192.168.1.2是电脑的IP地址;N18000_RGOS11.0(1)B2_CM_08050853_install.bin是电脑上的主程序文件名;rgos.bin是放入交换机上的主程序名称<br>3、升级:</p>
+<figure class="highlight apache"><table><tr><td class="code"><pre><span class="line"><span class="attribute">Switch</span>#upgrade flash:N<span class="number">18000</span>_RGOS<span class="number">11</span>.<span class="number">0</span>(<span class="number">1</span>)B<span class="number">2</span>_CM_<span class="number">08050053</span>_install.bin</span><br></pre></td></tr></table></figure>
+<p>4、通过show upgrade status确定交换机升级情况,升级完成后通过命令reload重启交换机<br>5、重启完成后,通过show version detail查看交换机版本</p>
+]]></content>
   </entry>
   <entry>
     <title>BGP笔记</title>
