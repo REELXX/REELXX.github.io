@@ -46,6 +46,53 @@
       </tags>
   </entry>
   <entry>
+    <title>BFD</title>
+    <url>/2021/08/17/BFD/</url>
+    <content><![CDATA[<p>双向转发检测BFD（Bidirectional Forwarding Detection）是一种全网统一的检测机制，用于快速检测、监控网络中链路或者IP路由的转发连通状况。为了减小设备故障对业务的影响，提高网络的可靠性，网络设备需要能够尽快检测到与相邻设备间的通信故障，以便及时采取措施，保证业务继续进行。在现有网络中，有些链路通常通过硬件检测信号，如SDH告警，检测链路故障，但并不是所有的介质都能够提供硬件检测。此时，应用就要依靠上层协议自身的Hello报文机制来进行故障检测。上层协议的检测时间都在1秒以上，这样的故障检测时间对某些应用来说是不能容忍的。同时，在一些小型三层网络中，如果没有部署路由协议，则无法使用路由协议的Hello报文机制来检测故障</p>
+<span id="more"></span>
+<h1 id="BFD"><a href="#BFD" class="headerlink" title="BFD"></a>BFD</h1><h2 id="原理简介"><a href="#原理简介" class="headerlink" title="原理简介"></a>原理简介</h2><p>BFD在两台网络设备上建立会话，用来检测网络设备间的双向转发路径，为上层应用服务。BFD本身并没有邻居发现机制，而是靠被服务的上层应用通知其邻居信息以建立会话。会话建立后会周期性地快速发送BFD报文，如果在检测时间内没有收到BFD报文则认为该双向转发路径发生了故障，通知被服务的上层应用进行相应的处理。下面以OSPF与BFD联动为例，简单介绍会话工作流程。</p>
+<p><img src="/2021/08/17/BFD/BFD%E4%BC%9A%E8%AF%9D%E5%BB%BA%E7%AB%8B%E6%B5%81%E7%A8%8B%E5%9B%BE.png" alt="BFD会话建立流程图"></p>
+<p>上图所示是一个简单的网络组网，两台设备上同时配置了OSPF与BFD，BFD会话建立过程如下所示：</p>
+<pre><code>    OSPF通过自己的Hello机制发现邻居并建立连接。
+    OSPF在建立了新的邻居关系后，将邻居信息（包括目的地址和源地址等）通告给BFD。
+    BFD根据收到的邻居信息建立会话。
+</code></pre>
+<p>会话建立以后，BFD开始检测链路故障，并做出快速反应。</p>
+<p><img src="/2021/08/17/BFD/BFD%E6%95%85%E9%9A%9C%E5%8F%91%E7%8E%B0%E5%A4%84%E7%90%86%E6%B5%81%E7%A8%8B%E5%9B%BE.png" alt="BFD故障发现处理流程图"></p>
+<p>如上图所示：</p>
+<pre><code>被检测链路出现故障。
+BFD快速检测到链路故障，BFD会话状态变为Down。
+BFD通知本地OSPF进程BFD邻居不可达。
+本地OSPF进程中断OSPF邻居关系。
+</code></pre>
+<h2 id="BFD会话建立方式"><a href="#BFD会话建立方式" class="headerlink" title="BFD会话建立方式"></a>BFD会话建立方式</h2><p>BFD会话的建立有两种方式，即静态建立BFD会话和动态建立BFD会话。静态和动态创建BFD会话的主要区别在于<strong>本地标识符（<font color="#E9764A">Local Discriminator<font>）</font></font></strong>和<strong>远端标识符（<font color="#E9764A">Remote Discriminator<font>）</font></font></strong>的配置方式不同。BFD通过控制报文中的Local Discriminator和Remote Discriminator区分不同的会话。</p>
+<p><strong>静态建立BFD会话</strong></p>
+<pre><code>静态建立BFD会话是指通过命令行手工配置BFD会话参数，包括配置本地标识符和远端标识符等，然后手工下发BFD会话建立请求。
+</code></pre>
+<p><strong>动态建立BFD会话</strong></p>
+<pre><code>动态建立BFD会话时，系统对本地标识符和远端标识符的处理方式如下：
+
+    动态分配本地标识符
+        当应用程序触发动态创建BFD会话时，系统分配属于动态会话标识符区域的值作为BFD会话的本地标识符。然后向对端发送Remote Discriminator的值为0的BFD控制报文，进行会话协商。
+
+    自学习远端标识符
+        当BFD会话的一端收到Remote Discriminator的值为0的BFD控制报文时，判断该报文是否与本地BFD会话匹配，如果匹配，则学习接收到的BFD报文中Local Discriminator的值，获取远端标识符。
+</code></pre>
+<h2 id="BFD检测机制"><a href="#BFD检测机制" class="headerlink" title="BFD检测机制"></a>BFD检测机制</h2><p>BFD的检测机制是两个系统建立BFD会话，并沿它们之间的路径周期性发送BFD控制报文，如果一方在既定的时间内没有收到BFD控制报文，则认为路径上发生了故障。</p>
+<p>BFD提供异步检测模式。在这种模式下，系统之间相互周期性地发送BFD控制报文，如果某个系统连续几个报文都没有接收到，就认为此BFD会话的状态是Down。</p>
+<h2 id="BFD会话管理"><a href="#BFD会话管理" class="headerlink" title="BFD会话管理"></a>BFD会话管理</h2><p>BFD会话有四种状态：Down、Init、Up和AdminDown。会话状态变化通过BFD报文的State字段传递，系统根据自己本地的会话状态和接收到的对端BFD报文驱动状态改变。BFD状态机的建立和拆除都采用三次握手机制，以确保两端系统都能知道状态的变化。以BFD会话建立为例，简单介绍状态机的迁移过程。</p>
+<p><img src="/2021/08/17/BFD/BFD%E4%BC%9A%E8%AF%9D%E5%BB%BA%E7%AB%8B%E6%B5%81%E7%A8%8B%E5%9B%BE2.png" alt="BFD会话建立流程图2"></p>
+<ol>
+<li>RouterA和RouterB各自启动BFD状态机，初始状态为Down，发送状态为Down的BFD报文。对于静态配置BFD会话，报文中的Remote Discriminator的值是用户指定的；对于动态创建BFD会话，Remote Discriminator的值是0。</li>
+<li>RouterB收到状态为Down的BFD报文后，状态切换至Init，并发送状态为Init的BFD报文。</li>
+<li>RouterB本地BFD状态为Init后，不再处理接收到的状态为Down的报文。</li>
+<li>RouterA的BFD状态变化同RouterB。</li>
+<li>RouterB收到状态为Init的BFD报文后，本地状态切换至Up。</li>
+<li>RouterA的BFD状态变化同RouterB。</li>
+</ol>
+]]></content>
+  </entry>
+  <entry>
     <title>ARP解析</title>
     <url>/2021/07/21/ARP%E8%A7%A3%E6%9E%90/</url>
     <content><![CDATA[<p>&emsp;&emsp;地址解析协议（Address Resolution Protocol），其基本功能为透过目标设备的IP地址，查询目标设备的MAC地址，以保证通信的顺利进行。它是IPv4中网络层必不可少的协议，不过在IPv6中已不再适用，并被邻居发现协议（NDP）所替代。</p>
@@ -122,53 +169,6 @@
         <tag>网络基础</tag>
         <tag>数据链路层</tag>
       </tags>
-  </entry>
-  <entry>
-    <title>BFD</title>
-    <url>/2021/08/17/BFD/</url>
-    <content><![CDATA[<p>双向转发检测BFD（Bidirectional Forwarding Detection）是一种全网统一的检测机制，用于快速检测、监控网络中链路或者IP路由的转发连通状况。为了减小设备故障对业务的影响，提高网络的可靠性，网络设备需要能够尽快检测到与相邻设备间的通信故障，以便及时采取措施，保证业务继续进行。在现有网络中，有些链路通常通过硬件检测信号，如SDH告警，检测链路故障，但并不是所有的介质都能够提供硬件检测。此时，应用就要依靠上层协议自身的Hello报文机制来进行故障检测。上层协议的检测时间都在1秒以上，这样的故障检测时间对某些应用来说是不能容忍的。同时，在一些小型三层网络中，如果没有部署路由协议，则无法使用路由协议的Hello报文机制来检测故障</p>
-<span id="more"></span>
-<h1 id="BFD"><a href="#BFD" class="headerlink" title="BFD"></a>BFD</h1><h2 id="原理简介"><a href="#原理简介" class="headerlink" title="原理简介"></a>原理简介</h2><p>BFD在两台网络设备上建立会话，用来检测网络设备间的双向转发路径，为上层应用服务。BFD本身并没有邻居发现机制，而是靠被服务的上层应用通知其邻居信息以建立会话。会话建立后会周期性地快速发送BFD报文，如果在检测时间内没有收到BFD报文则认为该双向转发路径发生了故障，通知被服务的上层应用进行相应的处理。下面以OSPF与BFD联动为例，简单介绍会话工作流程。</p>
-<p><img src="/2021/08/17/BFD/BFD%E4%BC%9A%E8%AF%9D%E5%BB%BA%E7%AB%8B%E6%B5%81%E7%A8%8B%E5%9B%BE.png" alt="BFD会话建立流程图"></p>
-<p>上图所示是一个简单的网络组网，两台设备上同时配置了OSPF与BFD，BFD会话建立过程如下所示：</p>
-<pre><code>    OSPF通过自己的Hello机制发现邻居并建立连接。
-    OSPF在建立了新的邻居关系后，将邻居信息（包括目的地址和源地址等）通告给BFD。
-    BFD根据收到的邻居信息建立会话。
-</code></pre>
-<p>会话建立以后，BFD开始检测链路故障，并做出快速反应。</p>
-<p><img src="/2021/08/17/BFD/BFD%E6%95%85%E9%9A%9C%E5%8F%91%E7%8E%B0%E5%A4%84%E7%90%86%E6%B5%81%E7%A8%8B%E5%9B%BE.png" alt="BFD故障发现处理流程图"></p>
-<p>如上图所示：</p>
-<pre><code>被检测链路出现故障。
-BFD快速检测到链路故障，BFD会话状态变为Down。
-BFD通知本地OSPF进程BFD邻居不可达。
-本地OSPF进程中断OSPF邻居关系。
-</code></pre>
-<h2 id="BFD会话建立方式"><a href="#BFD会话建立方式" class="headerlink" title="BFD会话建立方式"></a>BFD会话建立方式</h2><p>BFD会话的建立有两种方式，即静态建立BFD会话和动态建立BFD会话。静态和动态创建BFD会话的主要区别在于<strong>本地标识符（<font color="#E9764A">Local Discriminator<font>）</font></font></strong>和<strong>远端标识符（<font color="#E9764A">Remote Discriminator<font>）</font></font></strong>的配置方式不同。BFD通过控制报文中的Local Discriminator和Remote Discriminator区分不同的会话。</p>
-<p><strong>静态建立BFD会话</strong></p>
-<pre><code>静态建立BFD会话是指通过命令行手工配置BFD会话参数，包括配置本地标识符和远端标识符等，然后手工下发BFD会话建立请求。
-</code></pre>
-<p><strong>动态建立BFD会话</strong></p>
-<pre><code>动态建立BFD会话时，系统对本地标识符和远端标识符的处理方式如下：
-
-    动态分配本地标识符
-        当应用程序触发动态创建BFD会话时，系统分配属于动态会话标识符区域的值作为BFD会话的本地标识符。然后向对端发送Remote Discriminator的值为0的BFD控制报文，进行会话协商。
-
-    自学习远端标识符
-        当BFD会话的一端收到Remote Discriminator的值为0的BFD控制报文时，判断该报文是否与本地BFD会话匹配，如果匹配，则学习接收到的BFD报文中Local Discriminator的值，获取远端标识符。
-</code></pre>
-<h2 id="BFD检测机制"><a href="#BFD检测机制" class="headerlink" title="BFD检测机制"></a>BFD检测机制</h2><p>BFD的检测机制是两个系统建立BFD会话，并沿它们之间的路径周期性发送BFD控制报文，如果一方在既定的时间内没有收到BFD控制报文，则认为路径上发生了故障。</p>
-<p>BFD提供异步检测模式。在这种模式下，系统之间相互周期性地发送BFD控制报文，如果某个系统连续几个报文都没有接收到，就认为此BFD会话的状态是Down。</p>
-<h2 id="BFD会话管理"><a href="#BFD会话管理" class="headerlink" title="BFD会话管理"></a>BFD会话管理</h2><p>BFD会话有四种状态：Down、Init、Up和AdminDown。会话状态变化通过BFD报文的State字段传递，系统根据自己本地的会话状态和接收到的对端BFD报文驱动状态改变。BFD状态机的建立和拆除都采用三次握手机制，以确保两端系统都能知道状态的变化。以BFD会话建立为例，简单介绍状态机的迁移过程。</p>
-<p><img src="/2021/08/17/BFD/BFD%E4%BC%9A%E8%AF%9D%E5%BB%BA%E7%AB%8B%E6%B5%81%E7%A8%8B%E5%9B%BE2.png" alt="BFD会话建立流程图2"></p>
-<ol>
-<li>RouterA和RouterB各自启动BFD状态机，初始状态为Down，发送状态为Down的BFD报文。对于静态配置BFD会话，报文中的Remote Discriminator的值是用户指定的；对于动态创建BFD会话，Remote Discriminator的值是0。</li>
-<li>RouterB收到状态为Down的BFD报文后，状态切换至Init，并发送状态为Init的BFD报文。</li>
-<li>RouterB本地BFD状态为Init后，不再处理接收到的状态为Down的报文。</li>
-<li>RouterA的BFD状态变化同RouterB。</li>
-<li>RouterB收到状态为Init的BFD报文后，本地状态切换至Up。</li>
-<li>RouterA的BFD状态变化同RouterB。</li>
-</ol>
-]]></content>
   </entry>
   <entry>
     <title>Django框架下，用sqlite3实现登录系统</title>
@@ -1749,34 +1749,6 @@ $0,1,2 // 0-脚本名 1-第一个参数 2-第二个参数
       </tags>
   </entry>
   <entry>
-    <title>交换机版本升级</title>
-    <url>/2021/08/16/%E9%94%90%E6%8D%B7%E4%BA%A4%E6%8D%A2%E6%9C%BA%E7%89%88%E6%9C%AC%E5%8D%87%E7%BA%A7/</url>
-    <content><![CDATA[<p>不同方式升级交换机版本</p>
-<span id="more"></span>
-
-<h1 id="U盘升级"><a href="#U盘升级" class="headerlink" title="U盘升级"></a>U盘升级</h1><p>1、查看U盘文件:dir usb<br>2、用U盘上传更新文件：</p>
-<figure class="highlight apache"><table><tr><td class="code"><pre><span class="line"><span class="attribute">Switch</span>#upgrade usb<span class="number">0</span>:N<span class="number">18000</span>_RG<span class="number">0</span>S<span class="number">11</span>.<span class="number">0</span>(<span class="number">1</span>)B<span class="number">2</span>_CM_<span class="number">08050053</span>_install.bin</span><br></pre></td></tr></table></figure>
-<p>——&gt;usb0与机架包的名字中间不要有空格,即usb0:与N18000中间不要有空格<br>3、通过show upgrade status查看交换机升级情况(确定所有引擎/板卡/FE板卡是success状态),升级完成后通过命令reload重启交换机<br>4、重启完成后,通过show version detail查看交换机版本</p>
-<h1 id="TFTP升级"><a href="#TFTP升级" class="headerlink" title="TFTP升级"></a>TFTP升级</h1><p>电脑和交换机先要能ping通<br>1、配置IP地址:</p>
-<figure class="highlight stylus"><table><tr><td class="code"><pre><span class="line">Switch&gt;enable</span><br><span class="line">Switch<span class="selector-id">#configure</span> terminal</span><br><span class="line"><span class="function"><span class="title">Switch</span><span class="params">(config)</span></span><span class="selector-id">#interface</span> vlan <span class="number">1</span></span><br><span class="line"><span class="function"><span class="title">Switch</span><span class="params">(config-if)</span></span><span class="selector-id">#ip</span> <span class="selector-tag">address</span> <span class="number">192.168</span>.<span class="number">1.1</span> <span class="number">255.255</span>.<span class="number">255.0</span></span><br><span class="line"><span class="function"><span class="title">Switch</span><span class="params">(config-if)</span></span>#exit</span><br></pre></td></tr></table></figure>
-<p>2、将文件拷贝至交换机:</p>
-<figure class="highlight apache"><table><tr><td class="code"><pre><span class="line"><span class="attribute">Switch</span>#copy tftp://<span class="number">192.168.1.2</span>/N<span class="number">1800</span>e_RGOS<span class="number">11</span>.<span class="number">0</span>(<span class="number">1</span>)B<span class="number">2</span>_CM_<span class="number">08050053</span>_insta<span class="number">1</span>l.bin flash:/N<span class="number">18000</span>_RGOS<span class="number">11</span>.<span class="number">0</span>(<span class="number">1</span>)B<span class="number">2</span>_CM_<span class="number">08050053</span>_instal<span class="number">1</span>.bin</span><br></pre></td></tr></table></figure>
-<p>—-&gt;192.168.1.2是电脑的IP地址;N18000_RGOS11.0(1)B2_CM_08e50053_instal1.bin是电脑上的主程序文件名;<br>3、升级:</p>
-<figure class="highlight apache"><table><tr><td class="code"><pre><span class="line"><span class="attribute">Switch</span>#upgrade flash:N<span class="number">18000</span>_RGOS<span class="number">11</span>.<span class="number">0</span>(<span class="number">1</span>)B<span class="number">2</span>_CM_<span class="number">08050053</span>_install.bin</span><br></pre></td></tr></table></figure>
-<p>4、通过show upgrade status确定交换机升级情况,升级完成后通过命令reload重启交换机<br>5、重启完成后,通过show version detail查看交换机版本</p>
-<h1 id="带外管理MGMT口"><a href="#带外管理MGMT口" class="headerlink" title="带外管理MGMT口"></a>带外管理MGMT口</h1><blockquote>
-<p>该接口独立于业务接口，专门作为交换机管理<br>MGMT口测试需要携带OOB参数：<font color="#E9764A">ping oob 192.168.1.1<font></font></font></p>
-</blockquote>
-<p><strong>MGMT口升级</strong><br>1、配置IP地址:</p>
-<figure class="highlight stylus"><table><tr><td class="code"><pre><span class="line">Switch&gt;enable</span><br><span class="line">Switch<span class="selector-id">#configure</span> terminal</span><br><span class="line"><span class="function"><span class="title">Switch</span><span class="params">(config)</span></span><span class="selector-id">#interface</span> mgmt <span class="number">0</span></span><br><span class="line"><span class="function"><span class="title">Switch</span><span class="params">(config-if)</span></span> <span class="selector-id">#ip</span> <span class="selector-tag">address</span> <span class="number">192.168</span>.<span class="number">1.1</span> <span class="number">255.255</span>.<span class="number">255.0</span></span><br><span class="line"><span class="function"><span class="title">Switch</span><span class="params">(config-if)</span></span>#exit</span><br></pre></td></tr></table></figure>
-<p>2、将文件拷贝至交换机:</p>
-<figure class="highlight apache"><table><tr><td class="code"><pre><span class="line"><span class="attribute">Switch</span>#copy oob_tftp ://<span class="number">192.168.1.2</span>/N<span class="number">1800</span>e_RGOS<span class="number">11</span>.<span class="number">0</span>(<span class="number">1</span>)B<span class="number">2</span>_CM_<span class="number">08050053</span>_install.binflash:/N<span class="number">18000</span>_RGOS<span class="number">11</span>.<span class="number">0</span>(<span class="number">1</span>)B<span class="number">2</span>_CM_<span class="number">08050053</span>_install.bin</span><br></pre></td></tr></table></figure>
-<p>—-&gt;192.168.1.2是电脑的IP地址;N18000_RGOS11.0(1)B2_CM_08050853_install.bin是电脑上的主程序文件名;rgos.bin是放入交换机上的主程序名称<br>3、升级:</p>
-<figure class="highlight apache"><table><tr><td class="code"><pre><span class="line"><span class="attribute">Switch</span>#upgrade flash:N<span class="number">18000</span>_RGOS<span class="number">11</span>.<span class="number">0</span>(<span class="number">1</span>)B<span class="number">2</span>_CM_<span class="number">08050053</span>_install.bin</span><br></pre></td></tr></table></figure>
-<p>4、通过show upgrade status确定交换机升级情况,升级完成后通过命令reload重启交换机<br>5、重启完成后,通过show version detail查看交换机版本</p>
-]]></content>
-  </entry>
-  <entry>
     <title>网络虚拟化</title>
     <url>/2021/07/28/%E7%BD%91%E7%BB%9C%E8%99%9A%E6%8B%9F%E5%8C%96%E2%80%94%E2%80%94SDN/</url>
     <content><![CDATA[<p>软件定义网络（英语：software-defined networking，缩写作SDN）是一种新型网络构架。它利用OpenFlow协定将路由器的控制平面（control plane）从数据平面（data plane）中分离，改以软件方式实作，从而使得将分散在各个网络装置上的控制平面进行集中化管理成为可能，该构架可使网路管理员在不更动硬件装置的前提下，以中央控制方式用程序重新规划网络，为控制网络流量提供了新方案，也为核心网络和应用创新提供了良好平台。SDN可以按使用领域分为：SD-WAN，SD-LAN，SD-DC，SDN将人工智慧引入到网络系统里来，将是未来几年最热门的网络前沿技术之一。</p>
@@ -2065,6 +2037,34 @@ $0,1,2 // 0-脚本名 1-第一个参数 2-第二个参数
         <tag>SDN</tag>
         <tag>控制器</tag>
       </tags>
+  </entry>
+  <entry>
+    <title>交换机版本升级</title>
+    <url>/2021/08/16/%E9%94%90%E6%8D%B7%E4%BA%A4%E6%8D%A2%E6%9C%BA%E7%89%88%E6%9C%AC%E5%8D%87%E7%BA%A7/</url>
+    <content><![CDATA[<p>不同方式升级交换机版本</p>
+<span id="more"></span>
+
+<h1 id="U盘升级"><a href="#U盘升级" class="headerlink" title="U盘升级"></a>U盘升级</h1><p>1、查看U盘文件:dir usb<br>2、用U盘上传更新文件：</p>
+<figure class="highlight apache"><table><tr><td class="code"><pre><span class="line"><span class="attribute">Switch</span>#upgrade usb<span class="number">0</span>:N<span class="number">18000</span>_RG<span class="number">0</span>S<span class="number">11</span>.<span class="number">0</span>(<span class="number">1</span>)B<span class="number">2</span>_CM_<span class="number">08050053</span>_install.bin</span><br></pre></td></tr></table></figure>
+<p>——&gt;usb0与机架包的名字中间不要有空格,即usb0:与N18000中间不要有空格<br>3、通过show upgrade status查看交换机升级情况(确定所有引擎/板卡/FE板卡是success状态),升级完成后通过命令reload重启交换机<br>4、重启完成后,通过show version detail查看交换机版本</p>
+<h1 id="TFTP升级"><a href="#TFTP升级" class="headerlink" title="TFTP升级"></a>TFTP升级</h1><p>电脑和交换机先要能ping通<br>1、配置IP地址:</p>
+<figure class="highlight stylus"><table><tr><td class="code"><pre><span class="line">Switch&gt;enable</span><br><span class="line">Switch<span class="selector-id">#configure</span> terminal</span><br><span class="line"><span class="function"><span class="title">Switch</span><span class="params">(config)</span></span><span class="selector-id">#interface</span> vlan <span class="number">1</span></span><br><span class="line"><span class="function"><span class="title">Switch</span><span class="params">(config-if)</span></span><span class="selector-id">#ip</span> <span class="selector-tag">address</span> <span class="number">192.168</span>.<span class="number">1.1</span> <span class="number">255.255</span>.<span class="number">255.0</span></span><br><span class="line"><span class="function"><span class="title">Switch</span><span class="params">(config-if)</span></span>#exit</span><br></pre></td></tr></table></figure>
+<p>2、将文件拷贝至交换机:</p>
+<figure class="highlight apache"><table><tr><td class="code"><pre><span class="line"><span class="attribute">Switch</span>#copy tftp://<span class="number">192.168.1.2</span>/N<span class="number">1800</span>e_RGOS<span class="number">11</span>.<span class="number">0</span>(<span class="number">1</span>)B<span class="number">2</span>_CM_<span class="number">08050053</span>_insta<span class="number">1</span>l.bin flash:/N<span class="number">18000</span>_RGOS<span class="number">11</span>.<span class="number">0</span>(<span class="number">1</span>)B<span class="number">2</span>_CM_<span class="number">08050053</span>_instal<span class="number">1</span>.bin</span><br></pre></td></tr></table></figure>
+<p>—-&gt;192.168.1.2是电脑的IP地址;N18000_RGOS11.0(1)B2_CM_08e50053_instal1.bin是电脑上的主程序文件名;<br>3、升级:</p>
+<figure class="highlight apache"><table><tr><td class="code"><pre><span class="line"><span class="attribute">Switch</span>#upgrade flash:N<span class="number">18000</span>_RGOS<span class="number">11</span>.<span class="number">0</span>(<span class="number">1</span>)B<span class="number">2</span>_CM_<span class="number">08050053</span>_install.bin</span><br></pre></td></tr></table></figure>
+<p>4、通过show upgrade status确定交换机升级情况,升级完成后通过命令reload重启交换机<br>5、重启完成后,通过show version detail查看交换机版本</p>
+<h1 id="带外管理MGMT口"><a href="#带外管理MGMT口" class="headerlink" title="带外管理MGMT口"></a>带外管理MGMT口</h1><blockquote>
+<p>该接口独立于业务接口，专门作为交换机管理<br>MGMT口测试需要携带OOB参数：<font color="#E9764A">ping oob 192.168.1.1<font></font></font></p>
+</blockquote>
+<p><strong>MGMT口升级</strong><br>1、配置IP地址:</p>
+<figure class="highlight stylus"><table><tr><td class="code"><pre><span class="line">Switch&gt;enable</span><br><span class="line">Switch<span class="selector-id">#configure</span> terminal</span><br><span class="line"><span class="function"><span class="title">Switch</span><span class="params">(config)</span></span><span class="selector-id">#interface</span> mgmt <span class="number">0</span></span><br><span class="line"><span class="function"><span class="title">Switch</span><span class="params">(config-if)</span></span> <span class="selector-id">#ip</span> <span class="selector-tag">address</span> <span class="number">192.168</span>.<span class="number">1.1</span> <span class="number">255.255</span>.<span class="number">255.0</span></span><br><span class="line"><span class="function"><span class="title">Switch</span><span class="params">(config-if)</span></span>#exit</span><br></pre></td></tr></table></figure>
+<p>2、将文件拷贝至交换机:</p>
+<figure class="highlight apache"><table><tr><td class="code"><pre><span class="line"><span class="attribute">Switch</span>#copy oob_tftp ://<span class="number">192.168.1.2</span>/N<span class="number">1800</span>e_RGOS<span class="number">11</span>.<span class="number">0</span>(<span class="number">1</span>)B<span class="number">2</span>_CM_<span class="number">08050053</span>_install.binflash:/N<span class="number">18000</span>_RGOS<span class="number">11</span>.<span class="number">0</span>(<span class="number">1</span>)B<span class="number">2</span>_CM_<span class="number">08050053</span>_install.bin</span><br></pre></td></tr></table></figure>
+<p>—-&gt;192.168.1.2是电脑的IP地址;N18000_RGOS11.0(1)B2_CM_08050853_install.bin是电脑上的主程序文件名;rgos.bin是放入交换机上的主程序名称<br>3、升级:</p>
+<figure class="highlight apache"><table><tr><td class="code"><pre><span class="line"><span class="attribute">Switch</span>#upgrade flash:N<span class="number">18000</span>_RGOS<span class="number">11</span>.<span class="number">0</span>(<span class="number">1</span>)B<span class="number">2</span>_CM_<span class="number">08050053</span>_install.bin</span><br></pre></td></tr></table></figure>
+<p>4、通过show upgrade status确定交换机升级情况,升级完成后通过命令reload重启交换机<br>5、重启完成后,通过show version detail查看交换机版本</p>
+]]></content>
   </entry>
   <entry>
     <title>BGP笔记</title>
