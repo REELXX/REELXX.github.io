@@ -175,12 +175,11 @@ body {
   height: 100%;
 }
 body {
-  position: relative;
+  background: var(--body-bg-color);
+  color: var(--text-color);
   font-family: 'Lato', "PingFang SC", "Microsoft YaHei", sans-serif;
   font-size: 14px;
   line-height: 2;
-  /* color: #555; */
-  background: #f5f7f9;
 }
 @media (max-width: 991px) {
   body {
@@ -1060,16 +1059,16 @@ pre .javascript .function {
     display: none;
   }
 }
-.menu .menu-item a,
-.menu .menu-item span.exturl {
+.menu-item a,
+.menu-item span.exturl {
+  border-bottom: 1px solid transparent;
   display: block;
   font-size: 12px;
   line-height: inherit;
-  border-bottom: 1px solid transparent;
   transition-property: border-color;
+  transition-delay: 0s;
   transition-duration: 0.2s;
   transition-timing-function: ease-in-out;
-  transition-delay: 0s;
 }
 @media (hover: none) {
   .menu-item a:hover,
@@ -1109,7 +1108,7 @@ pre .javascript .function {
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background-color: #bbb;
+  background: var(--menu-item-bg-color);
 }
 .use-motion .menu-item {
   opacity: 0;
@@ -1182,7 +1181,7 @@ pre .javascript .function {
 }
 .links-of-author a::before,
 .links-of-author span.exturl::before {
-  background: #c255ff;
+  background: #49ffff;
   border-radius: 50%;
   content: ' ';
   display: inline-block;
@@ -1771,9 +1770,9 @@ pre .javascript .function {
 }
 .posts-expand .post-title {
   font-size: 1.5em;
-  font-weight: 400;
   margin: initial;
   text-align: center;
+  font-weight: 400;
   overflow-wrap: break-word;
   word-wrap: break-word;
 }
@@ -1782,7 +1781,6 @@ pre .javascript .function {
   color: var(--link-color);
   display: inline-block;
   position: relative;
-  line-height: 1.2;
   vertical-align: top;
 }
 .posts-expand .post-title-link::before {
@@ -1792,6 +1790,10 @@ pre .javascript .function {
   height: 2px;
   left: 0;
   position: absolute;
+  -webkit-transform: scaleX(0);
+  -moz-transform: scaleX(0);
+  -ms-transform: scaleX(0);
+  -o-transform: scaleX(0);
   transform: scaleX(0);
   visibility: hidden;
   width: 100%;
@@ -2417,10 +2419,15 @@ ul.breadcrumb li + li:last-child {
 }
 .menu .menu-item a,
 .menu .menu-item span.exturl {
-  padding: 5px 20px;
   position: relative;
+  box-sizing: border-box;
+  padding: 5px 20px;
   text-align: left;
+  line-height: inherit;
   transition-property: background-color;
+  transition-duration: 0.2s;
+  transition-timing-function: ease-in-out;
+  transition-delay: 0s;
 }
 @media (max-width: 991px) {
   .menu .menu-item.menu-item-search {
