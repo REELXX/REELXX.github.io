@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/img/touxiang.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/assets/img/touxiang.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"./public/search.xml"};
+  </script>
+
+  <meta name="description" content="DHCP（Dynamic Host Configuration Protocol，动态主机配置协议），前身是BOOTP协议，是一个局域网的网络协议，使用UDP协议工作，统一使用两个IANA分配的端口：67（服务器端），68（客户端）。DHCP通常被用于局域网环境，主要作用是集中的管理、分配IP地址，使client动态的获得IP地址、Gateway地址、DNS服务器地址等信息，并能够提升地址的使用率">
+<meta property="og:type" content="article">
+<meta property="og:title" content="DHCP">
+<meta property="og:url" content="http://example.com/2021/08/25/dhcp/index.html">
+<meta property="og:site_name" content="郑林昕的博客">
+<meta property="og:description" content="DHCP（Dynamic Host Configuration Protocol，动态主机配置协议），前身是BOOTP协议，是一个局域网的网络协议，使用UDP协议工作，统一使用两个IANA分配的端口：67（服务器端），68（客户端）。DHCP通常被用于局域网环境，主要作用是集中的管理、分配IP地址，使client动态的获得IP地址、Gateway地址、DNS服务器地址等信息，并能够提升地址的使用率">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/2021/08/25/dhcp/dhcpdiscover.png">
+<meta property="og:image" content="http://example.com/2021/08/25/dhcp/dhcpoffer.png">
+<meta property="og:image" content="http://example.com/2021/08/25/dhcp/dhcprequest.png">
+<meta property="og:image" content="http://example.com/2021/08/25/dhcp/dhcpack.png">
+<meta property="article:published_time" content="2021-08-25T03:38:25.000Z">
+<meta property="article:modified_time" content="2021-08-26T05:26:56.523Z">
+<meta property="article:author" content="郑林昕">
+<meta property="article:tag" content="DHCP">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2021/08/25/dhcp/dhcpdiscover.png">
+
+<link rel="canonical" href="http://example.com/2021/08/25/dhcp/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>DHCP | 郑林昕的博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="郑林昕的博客" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">郑林昕的博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">日常记录</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/08/25/dhcp/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/assets/img/touxiang.png">
+      <meta itemprop="name" content="郑林昕">
+      <meta itemprop="description" content="正确的目标，简化，优化，加速，自动化">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="郑林昕的博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          DHCP
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-08-25 11:38:25" itemprop="dateCreated datePublished" datetime="2021-08-25T11:38:25+08:00">2021-08-25</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-08-26 13:26:56" itemprop="dateModified" datetime="2021-08-26T13:26:56+08:00">2021-08-26</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%95%B0%E6%8D%AE%E9%80%9A%E4%BF%A1/" itemprop="url" rel="index"><span itemprop="name">数据通信</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>DHCP（Dynamic Host Configuration Protocol，动态主机配置协议），前身是BOOTP协议，是一个局域网的网络协议，使用UDP协议工作，统一使用两个IANA分配的端口：67（服务器端），68（客户端）。DHCP通常被用于局域网环境，主要作用是集中的管理、分配IP地址，使client动态的获得IP地址、Gateway地址、DNS服务器地址等信息，并能够提升地址的使用率。简单来说，DHCP就是一个不需要账号密码登录的、自动给内网机器分配IP地址等信息的协议。</p>
+<span id="more"></span>
+
+<h1 id="DHCP"><a href="#DHCP" class="headerlink" title="DHCP"></a>DHCP</h1><h2 id="DHCP报文"><a href="#DHCP报文" class="headerlink" title="DHCP报文"></a>DHCP报文</h2><p>DHCP discover<br>DHCP offer<br>DHCP request<br>DHCP ack</p>
+<p>DHCP服务器——UDP67号端口<br>DHCP客户端——UDP68号端口<br>先有服务器67才能有客户端68</p>
+<h2 id="DHCP四步租约过程"><a href="#DHCP四步租约过程" class="headerlink" title="DHCP四步租约过程"></a>DHCP四步租约过程</h2><p>DHCP租约过程分为4步：</p>
+<p>①客户机请求IP（客户机发DHCPDISCOVER广播包）；</p>
+<p>②服务器响应（服务器发DHCPOFFER广播包）；</p>
+<p>③客户机选择IP（客户机发DHCPREQUEST广播包）；</p>
+<p>④服务器确定租约（服务器发DHCPACK/DHCPNAK广播包）。</p>
+<p><strong>详解4步租约过程：</strong><br><strong>第1步：客户机请求IP</strong><br><font color="#E9764A"><strong>客户机请求IP也称为DHCPDISCOVER</strong></font>。</p>
+<p>当一个DHCP客户机启动时，会自动将自己的IP地址配置成0.0.0.0，由于使用0.0.0.0不能进行正常通信，所以客户机就必须通过DHCP服务器来获取一个合法的地址。由于客户机不知道DHCP服务器的IP地址，<font color="#E9764A"><strong>所以它使用0.0.0.0的地址作为源地址，使用UDP68端口作为源端口，使用255.255.255.255作为目标地址，使用UDP67端口作为目的端口来广播请求IP地址信息</strong></font>（见图一）。广播信息中包含了DHCP客户机的MAC地址和计算机名，以便使DHCP服务器能确定是哪个客户机发送的请求。</p>
+<p>DHCP客户机总是试图重新租用它接收过的最后一个IP地址，这给网络带来一定的稳定性。</p>
+<p>因为此时，DHCP客户端没有分配到IP地址，也不知道DHCP服务器或DHCP中继的IP地址，所以在DHCP DISCOVER报文中Ciaddr（客户端IP地址）、Yiaddr（被分配的DHCP客户端IP地址）、<font color="#E9764A"><strong>Siaddr（下一个为DHCP客户端分配IP地址的DHCP服务器地址）</strong></font>、Giaddr（DHCP中继IP地址）这四个字段均为0.0.0.0，如下所示。另外，从中可以看到，在CHADDR字段和DHCP选项中Client Identifier字段中都标识了DHCP客户端网卡MAC地址。</p>
+<p>图一：客户机请求IP<br><img src="/2021/08/25/dhcp/dhcpdiscover.png" alt="dhcpdiscover"></p>
+<p><strong>第2步：服务器响应</strong><br><font color="#E9764A"><strong>服务器响应也称为DHCPOFFER</strong></font>。</p>
+<p>当DHCP服务器接收到客户机请求IP地址的信息时，它就在自己的IP地址池中查找是否有合法的IP地址提供给客户机。如果有，DHCP服务器就将此IP地址做上标记，加入到DHCPOFFER的消息中，然后DHCP服务器就广播一则包括下列信息的DHCPOFFER消息：</p>
+<p>DHCP客户机的MAC地址；DHCP服务器提供的合法IP地址；子网掩码；默认网关（路由）；租约的期限；DHCP服务器的IP地址。</p>
+<p>因为DHCP客户机还没有IP地址，所以<font color="#E9764A"><strong>DHCP服务器使用自己的IP地址作为源地址，使用UDP67端口作为源端口，使用255.255.255.255作为目标地址，使用UDP68端口作为目的端口来广播DHCPOFFER信息</strong></font>（见图二）。</p>
+<p>图二：服务器响应<br><img src="/2021/08/25/dhcp/dhcpoffer.png" alt="dhcpoffer"></p>
+<p><strong>第3步：客户机选择IP</strong><br><font color="#E9764A"><strong>客户机选择IP，也称为DHCPREQUEST</strong></font>。</p>
+<p>DHCP客户机从接收到的第一个DHCPOFFER消息中选择IP地址，发出IP地址的DHCP服务器将该地址保留，这样该地址就不能提供给另一个DHCP客户机。当客户机从第一个DHCP服务器接收DHCPOFFER并选择IP地址后，DHCP租约的第三过程发生。客户机将DHCPREQUEST消息广播到所有的DHCP服务器，表明它接受提供的内容。DHCPREQUEST消息包括为该客户机提供IP配置的服务器的服务标识符（IP地址）。DHCP服务器查看服务器标识符字段，以确定它自己是否被选择为指定的客户机提供IP地址，如果那些DHCPOFFER被拒绝，则DHCP服务器会取消提供并保留其IP地址以用于下一个IP租约请求。</p>
+<p>在客户机选择IP的过程中，虽然客户机选择了IP地址，但是还没有配置IP地址，而在一个网络中可能有几个DHCP服务器，所以<font color="#E9764A"><strong>客户机仍然使用0.0.0.0的地址作为源地址，使用UDP68端口作为源端口，使用255.255.255.255作为目标地址，使用UDP67端口作为目的端口来广播DHCPREQUEST信息</strong></font>（见图三）。</p>
+<p>图三：客户机选择IP<br><img src="/2021/08/25/dhcp/dhcprequest.png" alt="dhcprequest"></p>
+<p><strong>第4步：服务器确认租约</strong><br><font color="#E9764A"><strong>服务器确认租约，也称为DHCPACK/DHCPNAK</strong></font>。</p>
+<p>DHCP服务器接收到DHCPREQUEST消息后，以DHCPACK消息的形式向客户机广播成功的确认，该消息包含有IP地址的有效租约和其他可能配置的信息。虽然服务器确认了客户机的租约请求，但是客户机还没有收到服务器的DHCPACK消息，所以<font color="#E9764A"><strong>服务器仍然使用自己的IP地址作为源地址，使用UDP67端口作为源端口，使用255.255.255.255作为目标地址，使用UDP68端口作为目的端口来广播DHCPACK信息</strong></font>（见图四）。当客户机收到DHCPACK消息时，它就配置了IP地址，完成了TCP/IP的初始化。</p>
+<p>如果DHCPREQUEST不成功，例如客户机试图租约先前的IP地址，但该IP地址不再可用，或者因为客户机移到其他子网，该IP无效时，DHCP服务器将广播否定确认消息DHCPNAK。当客户机接收到不成功的确认时，它将重新开始DHCP租约过程</p>
+<p>如果DHCP客户机无法找到DHCP服务器，它将从TCP/IP的B类网段169.254.0.0中挑选一个IP地址作为自己的IP地址，继续每隔5分钟尝试与DHCP服务器进行通讯，一旦与DHCP服务器取得联系，则客户机放弃自动配置的IP地址，而使用DHCP服务器分配的IP地址。<br>如果一台DHCP客户机有两个或者多个网卡，则DHCP服务器会为每个网卡分配一个唯一而有效的IP地址。</p>
+<p>图四：服务器确认租约<br><img src="/2021/08/25/dhcp/dhcpack.png" alt="dhcpack"></p>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p><a target="_blank" rel="noopener" href="https://blog.csdn.net/frank_jb/article/details/108877109?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522162986065416780265435106%2522%252C%2522scm%2522%253A%252220140713.130102334.pc%255Fall.%2522%257D&request_id=162986065416780265435106&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~all~first_rank_ecpm_v1~rank_v29_ecpm-5-108877109.ecpm_v1_rank_v29&utm_term=DHCP%E5%B7%A5%E4%BD%9C%E8%BF%87%E7%A8%8B%E4%BB%A5%E5%8F%8A%E6%8A%A5%E6%96%87&spm=1018.2226.3001.4187">DHCP协议说明及报文</a></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/DHCP/" rel="tag"># DHCP</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/08/23/%E5%85%B3%E4%BA%8Ehexo%E9%83%A8%E7%BD%B2%E9%97%AE%E9%A2%98/" rel="prev" title="关于hexo修改css问题">
+      <i class="fa fa-chevron-left"></i> 关于hexo修改css问题
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/08/25/%E6%95%B0%E6%8D%AE%E4%B8%AD%E5%BF%83%E6%9E%B6%E6%9E%84/" rel="next" title="数据中心架构">
+      数据中心架构 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#DHCP"><span class="nav-number">1.</span> <span class="nav-text">DHCP</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#DHCP%E6%8A%A5%E6%96%87"><span class="nav-number">1.1.</span> <span class="nav-text">DHCP报文</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#DHCP%E5%9B%9B%E6%AD%A5%E7%A7%9F%E7%BA%A6%E8%BF%87%E7%A8%8B"><span class="nav-number">1.2.</span> <span class="nav-text">DHCP四步租约过程</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">2.</span> <span class="nav-text">参考</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="郑林昕"
+      src="/assets/img/touxiang.png">
+  <p class="site-author-name" itemprop="name">郑林昕</p>
+  <div class="site-description" itemprop="description">正确的目标，简化，优化，加速，自动化</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">40</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">40</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/REELXX" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;REELXX" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:tentosiuCHINA@gmail.com" title="E-Mail → mailto:tentosiuCHINA@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/hiODsbegbrkNKSJ" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;hiODsbegbrkNKSJ" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/atom.xml" title="rss → &#x2F;atom.xml"><i class="fa fa-rss fa-fw"></i>rss</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      相关链接
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://www.cnblogs.com/" title="https:&#x2F;&#x2F;www.cnblogs.com&#x2F;" rel="noopener" target="_blank">博客园</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://bbs.hh010.com/" title="https:&#x2F;&#x2F;bbs.hh010.com&#x2F;" rel="noopener" target="_blank">鸿鹄论坛</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.w3school.com.cn/" title="https:&#x2F;&#x2F;www.w3school.com.cn&#x2F;" rel="noopener" target="_blank">w3school</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://stackoverflow.com/" title="https:&#x2F;&#x2F;stackoverflow.com&#x2F;" rel="noopener" target="_blank">stackoverflow</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.csdn.net/" title="https:&#x2F;&#x2F;www.csdn.net&#x2F;" rel="noopener" target="_blank">CSDN</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">郑林昕</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">95k</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"model":{"jsonPath":"/live2dw/assets/koharu.model.json"},"display":{"position":"left","width":200,"height":400},"mobile":{"show":false},"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+</html>

@@ -197,6 +197,63 @@ BFD通知本地OSPF进程BFD邻居不可达。
       </tags>
   </entry>
   <entry>
+    <title>LACP解析</title>
+    <url>/2021/07/25/LACP%E8%A7%A3%E6%9E%90/</url>
+    <content><![CDATA[<p>Link Aggregation Control Protocol，链路汇聚控制协议基于IEEE802.3ad标准。各厂家均支持的标准协议，LACP协议通过LACPDU（Link Aggregation Control Protocol Data Unit，链路汇聚控制协议数据单元）与对端交互信息,建立聚合端口AP ，<strong>处于动态聚合组中的接口会自动使能LACP 协议，该接口将通过发送LACPDU 向对端通告自己的系统LACP 协议优先级、系统MAC、端口的LACP 协议优先级、端口号和操作Key。</strong>对端接收到LACPDU 后，将其中的信息与其他接口所收到的信息进行比较，以选择能够进行聚合的接口，从而双方可以对接口处于聚合状态达成一致。</p>
+<span id="more"></span>
+
+<h1 id="链路汇聚控制协议"><a href="#链路汇聚控制协议" class="headerlink" title="链路汇聚控制协议"></a>链路汇聚控制协议</h1><h2 id="AP的概念"><a href="#AP的概念" class="headerlink" title="AP的概念"></a>AP的概念</h2><p>将多个物理链接捆绑在一起形成一个逻辑链接，这个逻辑链接称为 Aggregate Port（简称AP）。<font color="#F4A460">用于扩展链路带宽，提供更高的连接可靠性。</font></p>
+<p>AP 功能支持流量平衡，<font color="#F4A460">可以把流量均匀地分配给各成员链路。</font>AP 功能还实现了链路备份，当AP 中的一条成员链路断开时，系统会将该成员链路的流量自动地分配到AP 中的其它有效成员链路上。AP 中一条成员链路收到的广播或者多播报文，将不会被转发到其它成员链路上。</p>
+<h2 id="LACP的目的"><a href="#LACP的目的" class="headerlink" title="LACP的目的"></a>LACP的目的</h2><p>增加带宽，增加可靠性，负载均衡，快速收敛</p>
+<h2 id="LACP端口状态"><a href="#LACP端口状态" class="headerlink" title="LACP端口状态"></a>LACP端口状态</h2><ol>
+<li>DOWN：断开</li>
+<li>BNDL：正常聚合</li>
+<li>SUSP：单方面聚合 对面挂了(对方某些数值不匹配或者没有启用LACP)</li>
+</ol>
+<h2 id="LACP报文"><a href="#LACP报文" class="headerlink" title="LACP报文"></a>LACP报文</h2><p>主要字段介绍</p>
+<p>Actor_Port/Partner_Port：本端/对端接口信息。<br>Actor_State/Partner_State：本端/对端状态。<br>Actor_System_Priority/Partner_System_Priority：本端/对端系统优先级。<br>Actor_System/Partner_System：本端/对端系统ID。<br>Actor_Key/Partner_Key：本端/对端操作Key，各接口的该值相同才能够聚合。<br>Actor_Port_Priority/Partner_Port_Priority：本端/对端接口优先级。</p>
+<h2 id="静态模式和动态模式"><a href="#静态模式和动态模式" class="headerlink" title="静态模式和动态模式"></a>静态模式和动态模式</h2><p><strong>静态模式</strong>：<br>静态 LACP 模式下，Eth-Trunk 接口的建立，成员接口的加入，都是由手工配置完成的。但活动端口还是由LACP协议报文协商得出，禁止关闭LACP协议<br><strong>动态模式</strong>：<br>动态 LACP 模式下，Eth-Trunk 接口的建立，成员接口的加入，活动接口的选择完全由LACP 协议通过协商完成。所有配置都由协议完成，不需要用户人为干涉</p>
+<h3 id="静态模块的配置"><a href="#静态模块的配置" class="headerlink" title="静态模块的配置"></a>静态模块的配置</h3><p>lacp建立时，不建议先配置冗余线路，会导致二层环路<br>对于二层AP，AP口不会继承源端口属性，退出AP口后，源端口属性会恢复</p>
+<p>静态配置</p>
+<pre><code>二层
+    创建L2AP
+    向AP添加成员口
+三层
+    创建L3AP
+    向AP加入成员口（三层接口）
+</code></pre>
+<h3 id="动态链路聚合的要求"><a href="#动态链路聚合的要求" class="headerlink" title="动态链路聚合的要求"></a>动态链路聚合的要求</h3><p>动态链路聚合是LACP协议自动地添加和删除聚合组内的端口，两个端口被自动地聚合在一起有一定的要求。</p>
+<ol>
+<li>只有相同的操作key才能被聚合在一起。</li>
+<li>只有和主端口具有相同的速率和双工等基本属性的端口才能被动态聚合在一起。</li>
+<li>端口链路处于UP状态，相连的端口启用LACP，并且端口或者相连端口必须处于主动模式(Active)。</li>
+</ol>
+<h3 id="动态链路聚合优先级关系"><a href="#动态链路聚合优先级关系" class="headerlink" title="动态链路聚合优先级关系"></a>动态链路聚合优先级关系</h3><p>关于<font color="#F4A460">优先级的都是越小越好 </font></p>
+<p>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;—— 系统ID（<font color="#87CEFA">系统优先级+MAC地址</font>），端口ID（<font color="#87CEFA">端口优先级+端口号</font>）</p>
+<p>LACP主端口：聚合组内优先级最高的端口。<font color="#F4A460">只有与主端口属性相同的端口能处于聚合状态，参加数据转发。</font></p>
+<p>LACP协商：系统ID优先级高的系统成为主系统，<font color="#F4A460">主系统的端口状态决定另一个系统的端口状态。</font></p>
+<h3 id="动态协商的过程"><a href="#动态协商的过程" class="headerlink" title="动态协商的过程"></a>动态协商的过程</h3><pre><code>1．通过LACP的报文交互，确定哪台交换机为“主子”，比较原则为：lacp system-priority （越小越优先，二层比小原则）
+2．确定“主子”之后，再确定交换机上的哪个端口为“大臣”，比较原则：lacp port-priority
+（越小越优先），以此端口为参考，表明可以加入聚合组（准入）
+3．确定参考端口后，本机的其他端口如果配置了使能LACP且属性和参考端口一致，也可以加入聚合组。
+4．对端收到LACP报文后，按照主子定义的规矩选择可以成为聚合组的成员。
+</code></pre>
+<h2 id="负载均衡"><a href="#负载均衡" class="headerlink" title="负载均衡"></a>负载均衡</h2><p>我们可以用 aggregateport load-balance设定流量分配方式</p>
+<p>我们要根据不同的网络环境，<font color="#F4A460">设置合适的流量分配模式，</font>以便把流量均匀分布到各个链路上，充分利用带宽。</p>
+<p>为什么要手动设置流量分配模式？<font color="#FF0000">因为每个包的大小不一样，所以AP不可能真正做到平均分配流量，</font><font color="#F4A460">需要人为先做到大致分配流量。</font>比如4台机子ping1台，要做到负载均衡肯定要<font color="#FF0000">基于源IP</font>（4个源IP，人为先将流量分成4份，做到大致的流量分配，再交给AP让它做流量平衡。就好比粗调和细调，我们人为的就是粗调，AP做的就是细调）。</p>
+<h3 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h3><p>aggregateport load-balance {dst-mac |src-mac | src-dst-mac |                                                 dst-ip | src-ip | src-dst-ip }<br>dst-mac：根据输入报文的目的 MAC 地址进行流量分配。<br>src-mac：根据输入报文的源 MAC 地址进行流量分配。<br>src-dst-ip：根据源 IP 与目的 IP 进行流量分配。<br>dst-ip：根据输入报文的目的 IP 地址进行流量分配。<br>src-ip：根据输入报文的源 IP 地址进行流量分配。<br>src-dst-mac：根据源 MAC 与目的 MAC 进行流量分配。</p>
+<h2 id="删除聚合口要注意什么"><a href="#删除聚合口要注意什么" class="headerlink" title="删除聚合口要注意什么"></a>删除聚合口要注意什么</h2><p>建立与删除之前，最好先断开一条冗余链路。否则可能导致LACP删除后，形成二层环路，导致网络异常。</p>
+]]></content>
+      <categories>
+        <category>数据通信</category>
+      </categories>
+      <tags>
+        <tag>数据通信</tag>
+        <tag>数据链路层</tag>
+        <tag>交换机</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Hexo+yilia左侧背景图片更换</title>
     <url>/2021/07/23/Hexo-yilia%E5%B7%A6%E4%BE%A7%E8%83%8C%E6%99%AF%E5%9B%BE%E7%89%87%E6%9B%B4%E6%8D%A2/</url>
     <content><![CDATA[<p>关于hexo+yilia的左侧替换原始背景方案</p>
@@ -226,6 +283,71 @@ BFD通知本地OSPF进程BFD邻居不可达。
         <tag>博客自定义</tag>
         <tag>yilia</tag>
         <tag>经验</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>LLDP协议解析</title>
+    <url>/2021/07/23/LLDP%E5%8D%8F%E8%AE%AE%E8%A7%A3%E6%9E%90/</url>
+    <content><![CDATA[<p>链路层发现协议基本概念</p>
+<span id="more"></span>
+
+<h1 id="链路层发现协议"><a href="#链路层发现协议" class="headerlink" title="链路层发现协议"></a>链路层发现协议</h1><h2 id="概述1："><a href="#概述1：" class="headerlink" title="概述1："></a>概述1：</h2><p>LLDP（Link Layer Discovery Protocol，链路层发现协议）就是用于这个目的的协议。LLDP定义在802.1ab中,它是一个二层协议，它提供了一种标准的链路层发现方式。LLDP协议使得接入网络的一台设备可以将其主要的能力，管理地址，设备标识，接口标识等信息发送给接入同一个局域网络的其它设备。当一个设备从网络中接收到其它设备的这些信息时，它就将这些信息以MIB的形式存储起来。<br>这些MIB信息可用于发现设备的物理拓扑结构以及管理配置信息。需要注意的是LLDP仅仅被设计用于进行信息通告，它被用于通告一个设备的信息并可以获得其它设备的信息，进而得到相关的MIB信息。它不是一个配置、控制协议，无法通过该协议对远端设备进行配置，它只是提供了关于网络拓扑以及管理配置的信息，这些信息可以被用于管理、配置的目的，如何用取决于信息的使用者。</p>
+<h2 id="概述2："><a href="#概述2：" class="headerlink" title="概述2："></a>概述2：</h2><p>LLDP（Link Layer Discovery Protocol，链路层发现协议）是由IEEE 802.1AB定义的一种链路层发现协议。通过LLDP协议能够进行拓扑的发现及掌握拓扑的变化情况。LLDP将设备本地的信息组织成TLV的格式（Type/Lenth/Value，类型/长度/值）封装在LLDPDU（LLDP data unit，链路层发现协议数据单元）中发送给邻居设备，同时它将邻居设备发送的LLDPDU以MIB（Management Information Base，管理信息库）的形式存储起来，提供给网络管理系统访问。<br>通过LLDP，网络管理系统可以掌握拓扑的连接情况，比如设备的哪些端口与其它设备相连接，链路连接两端的端口的速率、双工是否匹配等，管理员可以根据这些信息快速地定位及排查故障。</p>
+<h2 id="LLDP工作模式"><a href="#LLDP工作模式" class="headerlink" title="LLDP工作模式"></a>LLDP工作模式</h2><p>LLDP提供了三种工作模式：<br>• TxRx：即发送也接收LLDPDU。<br>• Rx Only：只接收不发送LLDPDU。<br>• Tx Only：只发送不接收LLDPDU。<br>当端口的LLDP工作模式发生变化时，端口将对协议状态机进行初始化操作，通过配置端口初始化的延迟时间，可以避免由于工作模式频繁改变而导致端口不断地进行初始化操作。</p>
+<h2 id="待补充"><a href="#待补充" class="headerlink" title="待补充"></a>待补充</h2><h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><p><a href="https://blog.csdn.net/goodluckwhh/article/details/10948065?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522162702451016780262582058%2522%252C%2522scm%2522%253A%252220140713.130102334..%2522%257D&request_id=162702451016780262582058&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~all~top_positive~default-1-10948065.first_rank_v2_pc_rank_v29&utm_term=lldp&spm=1018.2226.3001.4187">数据链路层学习之LLDP</a></p>
+]]></content>
+      <categories>
+        <category>数据通信</category>
+      </categories>
+      <tags>
+        <tag>数据通信</tag>
+        <tag>数据链路层</tag>
+        <tag>网络</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>MPLS VPN</title>
+    <url>/2021/07/27/MPLS-VPN/</url>
+    <content><![CDATA[<p>BGP/MPLS IP VPN是一种L3VPN（Layer 3 Virtual Private Network）。它使用BGP（Border Gateway Protocol）在服务提供商骨干网上发布VPN路由，使用MPLS（Multiprotocol Label Switch）在服务提供商骨干网上转发VPN报文。这里的IP是指VPN承载的是IP（Internet Protocol）报文。</p>
+<span id="more"></span>
+
+<p><img src="/2021/07/27/MPLS-VPN/VPN%E6%A8%A1%E5%9E%8B.png" alt="MPLS IP VPN模型"><br>图：BGP/MPLS IP VPN模型</p>
+<p>BGP/MPLS IP VPN的基本模型由三部分组成：CE、PE和P。</p>
+<pre><code>• CE（Customer Edge）：用户网络边缘设备，有接口直接与服务提供商网络相连。CE可以是路由器或交换机，也可以是一台主机。通常情况下，CE“感知”不到VPN的存在，也不需要支持MPLS。
+• PE（Provider Edge）：是服务提供商网络的边缘设备，与CE直接相连。在MPLS网络中，对VPN的所有处理都发生在PE上，对PE性能要求较高。
+• P（Provider）：服务提供商网络中的骨干设备，不与CE直接相连。P设备只需要具备基本MPLS转发能力，不维护VPN信息。
+</code></pre>
+<p>PE和P设备仅由服务提供商管理；CE设备仅由用户管理，除非用户把管理权委托给服务提供商。</p>
+<p>一台PE设备可以接入多台CE设备。一台CE设备也可以连接属于相同或不同服务提供商的多台PE设备。</p>
+<h1 id="MPLS-VPN的原理描述"><a href="#MPLS-VPN的原理描述" class="headerlink" title="MPLS VPN的原理描述"></a>MPLS VPN的原理描述</h1><h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念:"></a>基本概念:</h2><h3 id="Site"><a href="#Site" class="headerlink" title="Site:"></a>Site:</h3><pre><code>• Site是指相互之间具备IP连通性的一组IP系统，并且，这组IP系统的IP连通性不需通过运营商网络实现。
+• Site的划分是根据设备的拓扑关系，而不是地理位置，尽管在大多数情况下一个Site中的设备地理位置相邻。地理位置隔离的两组IP系统，如果它们使用专线互联，不需要通过运营商网络就可以互通，这两组IP系统也组成一个Site。
+• 一个Site中的设备可以属于多个VPN，换言之，一个Site可以属于多个VPN。
+• Site通过CE连接到运营商网络，一个Site可以包含多个CE，但一个CE只属于一个Site。
+    根据Site的情况，建议CE设备选择方案如下：
+    如果Site只是一台主机，则这台主机就作为CE设备；
+    如果Site是单个子网，则使用交换机作为CE设备；
+    如果Site是多个子网，则使用路由器作为CE设备。
+    对于多个连接到同一运营商网络的Site，通过制定策略，可以将它们划分为不同的集合（set），只有属于相同集合的Site之间才能通过运营商网络互访，这种集合就是VPN。
+</code></pre>
+<h3 id="地址空间重叠："><a href="#地址空间重叠：" class="headerlink" title="地址空间重叠："></a>地址空间重叠：</h3><p>VPN是一种私有网络，不同的VPN独立管理自己的地址范围，也称为地址空间（address space）。不同VPN的地址空间可能会在一定范围内重合，例如，VPN1和VPN2都使用10.110.10.0/24网段地址，这就发生了地址空间的重叠（address spaces overlapping）。</p>
+<p>以下两种情况允许VPN使用重叠的地址空间：</p>
+<pre><code>• 两个VPN没有共同的Site
+• 两个VPN有共同的Site，但此Site中的设备不与两个VPN中使用重叠地址空间的设备互访
+</code></pre>
+<h3 id="VPN示例："><a href="#VPN示例：" class="headerlink" title="VPN示例："></a>VPN示例：</h3><p>在BGP/MPLS IP VPN中，不同VPN之间的路由隔离通过VPN实例（VPN-instance）实现。<br>PE为每个直接相连的Site建立并维护专门的VPN实例，VPN实例中包含对应Site的VPN成员关系和路由规则。具体来说，VPN实例中的信息包括：IP路由表、标签转发表、与VPN实例绑定的接口以及VPN实例的管理信息。VPN实例的管理信息包括RD（Route Distinguisher，路由标识符）、路由过滤策略、成员接口列表等。</p>
+<h3 id="VPN、Site、VPN实例之间的关系如下："><a href="#VPN、Site、VPN实例之间的关系如下：" class="headerlink" title="VPN、Site、VPN实例之间的关系如下："></a>VPN、Site、VPN实例之间的关系如下：</h3><pre><code>• VPN是多个Site的组合。一个Site可以属于多个VPN。
+• 每一个Site在PE上都关联一个VPN实例。VPN实例综合了它所关联的Site的VPN成员关系和路由规则。多个Site根据VPN实例的规则组合成一个VPN。
+• VPN实例与VPN不是一一对应的关系，VPN实例与Site之间存在一一对应的关系。
+</code></pre>
+<p><font color="#E99">VPN实例也称为VPN路由转发表VRF（VPN Routing and Forwarding table）。PE上存在多个路由转发表，包括一个公网路由转发表，以及一个或多个VPN路由转发表。</font></p>
+]]></content>
+      <categories>
+        <category>VPN</category>
+      </categories>
+      <tags>
+        <tag>数据通信</tag>
+        <tag>网络</tag>
+        <tag>VPN</tag>
       </tags>
   </entry>
   <entry>
@@ -323,7 +445,7 @@ ILM
                 a) 如果标签中的栈底标识S=1，表明该标签是栈底标签，直接进行IP转发。
                 b) 如果标签中的栈底标识S=0，表明还有下一层标签，继续进行下一层标签转发。
 </code></pre>
-<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p><a href="https://blog.csdn.net/qq_38265137/article/details/80503389?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522162737542016780265433996%2522%252C%2522scm%2522%253A%252220140713.130102334..%2522%257D&request_id=162737542016780265433996&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~all~top_positive~default-1-80503389.first_rank_v2_pc_rank_v29&utm_term=MPLS&spm=1018.2226.3001.4187">曹世宏写的太好了，按照他的博客学的MPLS——MPLS基础</a></p>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p><a href="https://blog.csdn.net/qq_38265137/article/details/80503389?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522162737542016780265433996%2522%252C%2522scm%2522%253A%252220140713.130102334..%2522%257D&request_id=162737542016780265433996&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~all~top_positive~default-1-80503389.first_rank_v2_pc_rank_v29&utm_term=MPLS&spm=1018.2226.3001.4187">MPLS基础</a></p>
 ]]></content>
       <categories>
         <category>路由</category>
@@ -331,51 +453,6 @@ ILM
       <tags>
         <tag>数据通信</tag>
         <tag>网络</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>MPLS VPN</title>
-    <url>/2021/07/27/MPLS-VPN/</url>
-    <content><![CDATA[<p>BGP/MPLS IP VPN是一种L3VPN（Layer 3 Virtual Private Network）。它使用BGP（Border Gateway Protocol）在服务提供商骨干网上发布VPN路由，使用MPLS（Multiprotocol Label Switch）在服务提供商骨干网上转发VPN报文。这里的IP是指VPN承载的是IP（Internet Protocol）报文。</p>
-<span id="more"></span>
-
-<p><img src="/2021/07/27/MPLS-VPN/VPN%E6%A8%A1%E5%9E%8B.png" alt="MPLS IP VPN模型"><br>图：BGP/MPLS IP VPN模型</p>
-<p>BGP/MPLS IP VPN的基本模型由三部分组成：CE、PE和P。</p>
-<pre><code>• CE（Customer Edge）：用户网络边缘设备，有接口直接与服务提供商网络相连。CE可以是路由器或交换机，也可以是一台主机。通常情况下，CE“感知”不到VPN的存在，也不需要支持MPLS。
-• PE（Provider Edge）：是服务提供商网络的边缘设备，与CE直接相连。在MPLS网络中，对VPN的所有处理都发生在PE上，对PE性能要求较高。
-• P（Provider）：服务提供商网络中的骨干设备，不与CE直接相连。P设备只需要具备基本MPLS转发能力，不维护VPN信息。
-</code></pre>
-<p>PE和P设备仅由服务提供商管理；CE设备仅由用户管理，除非用户把管理权委托给服务提供商。</p>
-<p>一台PE设备可以接入多台CE设备。一台CE设备也可以连接属于相同或不同服务提供商的多台PE设备。</p>
-<h1 id="MPLS-VPN的原理描述"><a href="#MPLS-VPN的原理描述" class="headerlink" title="MPLS VPN的原理描述"></a>MPLS VPN的原理描述</h1><h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念:"></a>基本概念:</h2><h3 id="Site"><a href="#Site" class="headerlink" title="Site:"></a>Site:</h3><pre><code>• Site是指相互之间具备IP连通性的一组IP系统，并且，这组IP系统的IP连通性不需通过运营商网络实现。
-• Site的划分是根据设备的拓扑关系，而不是地理位置，尽管在大多数情况下一个Site中的设备地理位置相邻。地理位置隔离的两组IP系统，如果它们使用专线互联，不需要通过运营商网络就可以互通，这两组IP系统也组成一个Site。
-• 一个Site中的设备可以属于多个VPN，换言之，一个Site可以属于多个VPN。
-• Site通过CE连接到运营商网络，一个Site可以包含多个CE，但一个CE只属于一个Site。
-    根据Site的情况，建议CE设备选择方案如下：
-    如果Site只是一台主机，则这台主机就作为CE设备；
-    如果Site是单个子网，则使用交换机作为CE设备；
-    如果Site是多个子网，则使用路由器作为CE设备。
-    对于多个连接到同一运营商网络的Site，通过制定策略，可以将它们划分为不同的集合（set），只有属于相同集合的Site之间才能通过运营商网络互访，这种集合就是VPN。
-</code></pre>
-<h3 id="地址空间重叠："><a href="#地址空间重叠：" class="headerlink" title="地址空间重叠："></a>地址空间重叠：</h3><p>VPN是一种私有网络，不同的VPN独立管理自己的地址范围，也称为地址空间（address space）。不同VPN的地址空间可能会在一定范围内重合，例如，VPN1和VPN2都使用10.110.10.0/24网段地址，这就发生了地址空间的重叠（address spaces overlapping）。</p>
-<p>以下两种情况允许VPN使用重叠的地址空间：</p>
-<pre><code>• 两个VPN没有共同的Site
-• 两个VPN有共同的Site，但此Site中的设备不与两个VPN中使用重叠地址空间的设备互访
-</code></pre>
-<h3 id="VPN示例："><a href="#VPN示例：" class="headerlink" title="VPN示例："></a>VPN示例：</h3><p>在BGP/MPLS IP VPN中，不同VPN之间的路由隔离通过VPN实例（VPN-instance）实现。<br>PE为每个直接相连的Site建立并维护专门的VPN实例，VPN实例中包含对应Site的VPN成员关系和路由规则。具体来说，VPN实例中的信息包括：IP路由表、标签转发表、与VPN实例绑定的接口以及VPN实例的管理信息。VPN实例的管理信息包括RD（Route Distinguisher，路由标识符）、路由过滤策略、成员接口列表等。</p>
-<h3 id="VPN、Site、VPN实例之间的关系如下："><a href="#VPN、Site、VPN实例之间的关系如下：" class="headerlink" title="VPN、Site、VPN实例之间的关系如下："></a>VPN、Site、VPN实例之间的关系如下：</h3><pre><code>• VPN是多个Site的组合。一个Site可以属于多个VPN。
-• 每一个Site在PE上都关联一个VPN实例。VPN实例综合了它所关联的Site的VPN成员关系和路由规则。多个Site根据VPN实例的规则组合成一个VPN。
-• VPN实例与VPN不是一一对应的关系，VPN实例与Site之间存在一一对应的关系。
-</code></pre>
-<p><font color="#E99">VPN实例也称为VPN路由转发表VRF（VPN Routing and Forwarding table）。PE上存在多个路由转发表，包括一个公网路由转发表，以及一个或多个VPN路由转发表。</font></p>
-]]></content>
-      <categories>
-        <category>VPN</category>
-      </categories>
-      <tags>
-        <tag>数据通信</tag>
-        <tag>网络</tag>
-        <tag>VPN</tag>
       </tags>
   </entry>
   <entry>
@@ -468,25 +545,6 @@ ILM
       </tags>
   </entry>
   <entry>
-    <title>Python——pipreqs</title>
-    <url>/2021/08/18/Python%E2%80%94%E2%80%94pipreqs/</url>
-    <content><![CDATA[<p>解决Python项目在不同环境没法运行的问题，通过pipreqs库导出所需要的包</p>
-<span id="more"></span>
-
-<figure class="highlight jboss-cli"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 安装</span></span><br><span class="line">pip install pipreqs</span><br><span class="line"><span class="comment"># 在项目下运行</span></span><br><span class="line">pipreqs <span class="string">./</span> <span class="params">--encoding=utf8</span></span><br></pre></td></tr></table></figure>
-<p>执行完后，在项目下会生成<font color="#E9764A">requirements.txt</font>文件，项目中的组件和包都会在其中<br><img src="/2021/08/18/Python%E2%80%94%E2%80%94pipreqs/1.png" alt="1"></p>
-<blockquote>
-<p>当用pycharm打开项目时，只要项目下有requirements.txt文件，就会提示是否要安装没有的组件和包<br><img src="/2021/08/18/Python%E2%80%94%E2%80%94pipreqs/2.png" alt="2"></p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>Python</category>
-      </categories>
-      <tags>
-        <tag>Python</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>SPAN</title>
     <url>/2021/08/17/SPAN/</url>
     <content><![CDATA[<p>SPAN，全称为Switched Port Analyzer，直译为交换端口分析器。是一种交换机的端口镜像技术。作用主要是为了给某种网络分析器提供网络数据流，SPAN并不会影响源端口的数据交换，它只是将源端口发送或接收的数据包副本发送到监控端口</p>
@@ -556,23 +614,22 @@ ILM
       </tags>
   </entry>
   <entry>
-    <title>LLDP协议解析</title>
-    <url>/2021/07/23/LLDP%E5%8D%8F%E8%AE%AE%E8%A7%A3%E6%9E%90/</url>
-    <content><![CDATA[<p>链路层发现协议基本概念</p>
+    <title>Python——pipreqs</title>
+    <url>/2021/08/18/Python%E2%80%94%E2%80%94pipreqs/</url>
+    <content><![CDATA[<p>解决Python项目在不同环境没法运行的问题，通过pipreqs库导出所需要的包</p>
 <span id="more"></span>
 
-<h1 id="链路层发现协议"><a href="#链路层发现协议" class="headerlink" title="链路层发现协议"></a>链路层发现协议</h1><h2 id="概述1："><a href="#概述1：" class="headerlink" title="概述1："></a>概述1：</h2><p>LLDP（Link Layer Discovery Protocol，链路层发现协议）就是用于这个目的的协议。LLDP定义在802.1ab中,它是一个二层协议，它提供了一种标准的链路层发现方式。LLDP协议使得接入网络的一台设备可以将其主要的能力，管理地址，设备标识，接口标识等信息发送给接入同一个局域网络的其它设备。当一个设备从网络中接收到其它设备的这些信息时，它就将这些信息以MIB的形式存储起来。<br>这些MIB信息可用于发现设备的物理拓扑结构以及管理配置信息。需要注意的是LLDP仅仅被设计用于进行信息通告，它被用于通告一个设备的信息并可以获得其它设备的信息，进而得到相关的MIB信息。它不是一个配置、控制协议，无法通过该协议对远端设备进行配置，它只是提供了关于网络拓扑以及管理配置的信息，这些信息可以被用于管理、配置的目的，如何用取决于信息的使用者。</p>
-<h2 id="概述2："><a href="#概述2：" class="headerlink" title="概述2："></a>概述2：</h2><p>LLDP（Link Layer Discovery Protocol，链路层发现协议）是由IEEE 802.1AB定义的一种链路层发现协议。通过LLDP协议能够进行拓扑的发现及掌握拓扑的变化情况。LLDP将设备本地的信息组织成TLV的格式（Type/Lenth/Value，类型/长度/值）封装在LLDPDU（LLDP data unit，链路层发现协议数据单元）中发送给邻居设备，同时它将邻居设备发送的LLDPDU以MIB（Management Information Base，管理信息库）的形式存储起来，提供给网络管理系统访问。<br>通过LLDP，网络管理系统可以掌握拓扑的连接情况，比如设备的哪些端口与其它设备相连接，链路连接两端的端口的速率、双工是否匹配等，管理员可以根据这些信息快速地定位及排查故障。</p>
-<h2 id="LLDP工作模式"><a href="#LLDP工作模式" class="headerlink" title="LLDP工作模式"></a>LLDP工作模式</h2><p>LLDP提供了三种工作模式：<br>• TxRx：即发送也接收LLDPDU。<br>• Rx Only：只接收不发送LLDPDU。<br>• Tx Only：只发送不接收LLDPDU。<br>当端口的LLDP工作模式发生变化时，端口将对协议状态机进行初始化操作，通过配置端口初始化的延迟时间，可以避免由于工作模式频繁改变而导致端口不断地进行初始化操作。</p>
-<h2 id="待补充"><a href="#待补充" class="headerlink" title="待补充"></a>待补充</h2><h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><p><a href="https://blog.csdn.net/goodluckwhh/article/details/10948065?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522162702451016780262582058%2522%252C%2522scm%2522%253A%252220140713.130102334..%2522%257D&request_id=162702451016780262582058&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~all~top_positive~default-1-10948065.first_rank_v2_pc_rank_v29&utm_term=lldp&spm=1018.2226.3001.4187">数据链路层学习之LLDP</a></p>
+<figure class="highlight jboss-cli"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 安装</span></span><br><span class="line">pip install pipreqs</span><br><span class="line"><span class="comment"># 在项目下运行</span></span><br><span class="line">pipreqs <span class="string">./</span> <span class="params">--encoding=utf8</span></span><br></pre></td></tr></table></figure>
+<p>执行完后，在项目下会生成<font color="#E9764A">requirements.txt</font>文件，项目中的组件和包都会在其中<br><img src="/2021/08/18/Python%E2%80%94%E2%80%94pipreqs/1.png" alt="1"></p>
+<blockquote>
+<p>当用pycharm打开项目时，只要项目下有requirements.txt文件，就会提示是否要安装没有的组件和包<br><img src="/2021/08/18/Python%E2%80%94%E2%80%94pipreqs/2.png" alt="2"></p>
+</blockquote>
 ]]></content>
       <categories>
-        <category>数据通信</category>
+        <category>Python</category>
       </categories>
       <tags>
-        <tag>数据通信</tag>
-        <tag>数据链路层</tag>
-        <tag>网络</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -725,63 +782,6 @@ BPDU处理变化:
       </categories>
       <tags>
         <tag>虚拟化技术</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>LACP解析</title>
-    <url>/2021/07/25/LACP%E8%A7%A3%E6%9E%90/</url>
-    <content><![CDATA[<p>Link Aggregation Control Protocol，链路汇聚控制协议基于IEEE802.3ad标准。各厂家均支持的标准协议，LACP协议通过LACPDU（Link Aggregation Control Protocol Data Unit，链路汇聚控制协议数据单元）与对端交互信息,建立聚合端口AP ，<strong>处于动态聚合组中的接口会自动使能LACP 协议，该接口将通过发送LACPDU 向对端通告自己的系统LACP 协议优先级、系统MAC、端口的LACP 协议优先级、端口号和操作Key。</strong>对端接收到LACPDU 后，将其中的信息与其他接口所收到的信息进行比较，以选择能够进行聚合的接口，从而双方可以对接口处于聚合状态达成一致。</p>
-<span id="more"></span>
-
-<h1 id="链路汇聚控制协议"><a href="#链路汇聚控制协议" class="headerlink" title="链路汇聚控制协议"></a>链路汇聚控制协议</h1><h2 id="AP的概念"><a href="#AP的概念" class="headerlink" title="AP的概念"></a>AP的概念</h2><p>将多个物理链接捆绑在一起形成一个逻辑链接，这个逻辑链接称为 Aggregate Port（简称AP）。<font color="#F4A460">用于扩展链路带宽，提供更高的连接可靠性。</font></p>
-<p>AP 功能支持流量平衡，<font color="#F4A460">可以把流量均匀地分配给各成员链路。</font>AP 功能还实现了链路备份，当AP 中的一条成员链路断开时，系统会将该成员链路的流量自动地分配到AP 中的其它有效成员链路上。AP 中一条成员链路收到的广播或者多播报文，将不会被转发到其它成员链路上。</p>
-<h2 id="LACP的目的"><a href="#LACP的目的" class="headerlink" title="LACP的目的"></a>LACP的目的</h2><p>增加带宽，增加可靠性，负载均衡，快速收敛</p>
-<h2 id="LACP端口状态"><a href="#LACP端口状态" class="headerlink" title="LACP端口状态"></a>LACP端口状态</h2><ol>
-<li>DOWN：断开</li>
-<li>BNDL：正常聚合</li>
-<li>SUSP：单方面聚合 对面挂了(对方某些数值不匹配或者没有启用LACP)</li>
-</ol>
-<h2 id="LACP报文"><a href="#LACP报文" class="headerlink" title="LACP报文"></a>LACP报文</h2><p>主要字段介绍</p>
-<p>Actor_Port/Partner_Port：本端/对端接口信息。<br>Actor_State/Partner_State：本端/对端状态。<br>Actor_System_Priority/Partner_System_Priority：本端/对端系统优先级。<br>Actor_System/Partner_System：本端/对端系统ID。<br>Actor_Key/Partner_Key：本端/对端操作Key，各接口的该值相同才能够聚合。<br>Actor_Port_Priority/Partner_Port_Priority：本端/对端接口优先级。</p>
-<h2 id="静态模式和动态模式"><a href="#静态模式和动态模式" class="headerlink" title="静态模式和动态模式"></a>静态模式和动态模式</h2><p><strong>静态模式</strong>：<br>静态 LACP 模式下，Eth-Trunk 接口的建立，成员接口的加入，都是由手工配置完成的。但活动端口还是由LACP协议报文协商得出，禁止关闭LACP协议<br><strong>动态模式</strong>：<br>动态 LACP 模式下，Eth-Trunk 接口的建立，成员接口的加入，活动接口的选择完全由LACP 协议通过协商完成。所有配置都由协议完成，不需要用户人为干涉</p>
-<h3 id="静态模块的配置"><a href="#静态模块的配置" class="headerlink" title="静态模块的配置"></a>静态模块的配置</h3><p>lacp建立时，不建议先配置冗余线路，会导致二层环路<br>对于二层AP，AP口不会继承源端口属性，退出AP口后，源端口属性会恢复</p>
-<p>静态配置</p>
-<pre><code>二层
-    创建L2AP
-    向AP添加成员口
-三层
-    创建L3AP
-    向AP加入成员口（三层接口）
-</code></pre>
-<h3 id="动态链路聚合的要求"><a href="#动态链路聚合的要求" class="headerlink" title="动态链路聚合的要求"></a>动态链路聚合的要求</h3><p>动态链路聚合是LACP协议自动地添加和删除聚合组内的端口，两个端口被自动地聚合在一起有一定的要求。</p>
-<ol>
-<li>只有相同的操作key才能被聚合在一起。</li>
-<li>只有和主端口具有相同的速率和双工等基本属性的端口才能被动态聚合在一起。</li>
-<li>端口链路处于UP状态，相连的端口启用LACP，并且端口或者相连端口必须处于主动模式(Active)。</li>
-</ol>
-<h3 id="动态链路聚合优先级关系"><a href="#动态链路聚合优先级关系" class="headerlink" title="动态链路聚合优先级关系"></a>动态链路聚合优先级关系</h3><p>关于<font color="#F4A460">优先级的都是越小越好 </font></p>
-<p>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;—— 系统ID（<font color="#87CEFA">系统优先级+MAC地址</font>），端口ID（<font color="#87CEFA">端口优先级+端口号</font>）</p>
-<p>LACP主端口：聚合组内优先级最高的端口。<font color="#F4A460">只有与主端口属性相同的端口能处于聚合状态，参加数据转发。</font></p>
-<p>LACP协商：系统ID优先级高的系统成为主系统，<font color="#F4A460">主系统的端口状态决定另一个系统的端口状态。</font></p>
-<h3 id="动态协商的过程"><a href="#动态协商的过程" class="headerlink" title="动态协商的过程"></a>动态协商的过程</h3><pre><code>1．通过LACP的报文交互，确定哪台交换机为“主子”，比较原则为：lacp system-priority （越小越优先，二层比小原则）
-2．确定“主子”之后，再确定交换机上的哪个端口为“大臣”，比较原则：lacp port-priority
-（越小越优先），以此端口为参考，表明可以加入聚合组（准入）
-3．确定参考端口后，本机的其他端口如果配置了使能LACP且属性和参考端口一致，也可以加入聚合组。
-4．对端收到LACP报文后，按照主子定义的规矩选择可以成为聚合组的成员。
-</code></pre>
-<h2 id="负载均衡"><a href="#负载均衡" class="headerlink" title="负载均衡"></a>负载均衡</h2><p>我们可以用 aggregateport load-balance设定流量分配方式</p>
-<p>我们要根据不同的网络环境，<font color="#F4A460">设置合适的流量分配模式，</font>以便把流量均匀分布到各个链路上，充分利用带宽。</p>
-<p>为什么要手动设置流量分配模式？<font color="#FF0000">因为每个包的大小不一样，所以AP不可能真正做到平均分配流量，</font><font color="#F4A460">需要人为先做到大致分配流量。</font>比如4台机子ping1台，要做到负载均衡肯定要<font color="#FF0000">基于源IP</font>（4个源IP，人为先将流量分成4份，做到大致的流量分配，再交给AP让它做流量平衡。就好比粗调和细调，我们人为的就是粗调，AP做的就是细调）。</p>
-<h3 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h3><p>aggregateport load-balance {dst-mac |src-mac | src-dst-mac |                                                 dst-ip | src-ip | src-dst-ip }<br>dst-mac：根据输入报文的目的 MAC 地址进行流量分配。<br>src-mac：根据输入报文的源 MAC 地址进行流量分配。<br>src-dst-ip：根据源 IP 与目的 IP 进行流量分配。<br>dst-ip：根据输入报文的目的 IP 地址进行流量分配。<br>src-ip：根据输入报文的源 IP 地址进行流量分配。<br>src-dst-mac：根据源 MAC 与目的 MAC 进行流量分配。</p>
-<h2 id="删除聚合口要注意什么"><a href="#删除聚合口要注意什么" class="headerlink" title="删除聚合口要注意什么"></a>删除聚合口要注意什么</h2><p>建立与删除之前，最好先断开一条冗余链路。否则可能导致LACP删除后，形成二层环路，导致网络异常。</p>
-]]></content>
-      <categories>
-        <category>数据通信</category>
-      </categories>
-      <tags>
-        <tag>数据通信</tag>
-        <tag>数据链路层</tag>
-        <tag>交换机</tag>
       </tags>
   </entry>
   <entry>
@@ -964,6 +964,47 @@ ConnectionPlugins：连接插件，Ansible和Host通信使用
       <tags>
         <tag>Linux</tag>
         <tag>自动化运维</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>DHCP</title>
+    <url>/2021/08/25/dhcp/</url>
+    <content><![CDATA[<p>DHCP（Dynamic Host Configuration Protocol，动态主机配置协议），前身是BOOTP协议，是一个局域网的网络协议，使用UDP协议工作，统一使用两个IANA分配的端口：67（服务器端），68（客户端）。DHCP通常被用于局域网环境，主要作用是集中的管理、分配IP地址，使client动态的获得IP地址、Gateway地址、DNS服务器地址等信息，并能够提升地址的使用率。简单来说，DHCP就是一个不需要账号密码登录的、自动给内网机器分配IP地址等信息的协议。</p>
+<span id="more"></span>
+
+<h1 id="DHCP"><a href="#DHCP" class="headerlink" title="DHCP"></a>DHCP</h1><h2 id="DHCP报文"><a href="#DHCP报文" class="headerlink" title="DHCP报文"></a>DHCP报文</h2><p>DHCP discover<br>DHCP offer<br>DHCP request<br>DHCP ack</p>
+<p>DHCP服务器——UDP67号端口<br>DHCP客户端——UDP68号端口<br>先有服务器67才能有客户端68</p>
+<h2 id="DHCP四步租约过程"><a href="#DHCP四步租约过程" class="headerlink" title="DHCP四步租约过程"></a>DHCP四步租约过程</h2><p>DHCP租约过程分为4步：</p>
+<p>①客户机请求IP（客户机发DHCPDISCOVER广播包）；</p>
+<p>②服务器响应（服务器发DHCPOFFER广播包）；</p>
+<p>③客户机选择IP（客户机发DHCPREQUEST广播包）；</p>
+<p>④服务器确定租约（服务器发DHCPACK/DHCPNAK广播包）。</p>
+<p><strong>详解4步租约过程：</strong><br><strong>第1步：客户机请求IP</strong><br><font color="#E9764A"><strong>客户机请求IP也称为DHCPDISCOVER</strong></font>。</p>
+<p>当一个DHCP客户机启动时，会自动将自己的IP地址配置成0.0.0.0，由于使用0.0.0.0不能进行正常通信，所以客户机就必须通过DHCP服务器来获取一个合法的地址。由于客户机不知道DHCP服务器的IP地址，<font color="#E9764A"><strong>所以它使用0.0.0.0的地址作为源地址，使用UDP68端口作为源端口，使用255.255.255.255作为目标地址，使用UDP67端口作为目的端口来广播请求IP地址信息</strong></font>（见图一）。广播信息中包含了DHCP客户机的MAC地址和计算机名，以便使DHCP服务器能确定是哪个客户机发送的请求。</p>
+<p>DHCP客户机总是试图重新租用它接收过的最后一个IP地址，这给网络带来一定的稳定性。</p>
+<p>因为此时，DHCP客户端没有分配到IP地址，也不知道DHCP服务器或DHCP中继的IP地址，所以在DHCP DISCOVER报文中Ciaddr（客户端IP地址）、Yiaddr（被分配的DHCP客户端IP地址）、<font color="#E9764A"><strong>Siaddr（下一个为DHCP客户端分配IP地址的DHCP服务器地址）</strong></font>、Giaddr（DHCP中继IP地址）这四个字段均为0.0.0.0，如下所示。另外，从中可以看到，在CHADDR字段和DHCP选项中Client Identifier字段中都标识了DHCP客户端网卡MAC地址。</p>
+<p>图一：客户机请求IP<br><img src="/2021/08/25/dhcp/dhcpdiscover.png" alt="dhcpdiscover"></p>
+<p><strong>第2步：服务器响应</strong><br><font color="#E9764A"><strong>服务器响应也称为DHCPOFFER</strong></font>。</p>
+<p>当DHCP服务器接收到客户机请求IP地址的信息时，它就在自己的IP地址池中查找是否有合法的IP地址提供给客户机。如果有，DHCP服务器就将此IP地址做上标记，加入到DHCPOFFER的消息中，然后DHCP服务器就广播一则包括下列信息的DHCPOFFER消息：</p>
+<p>DHCP客户机的MAC地址；DHCP服务器提供的合法IP地址；子网掩码；默认网关（路由）；租约的期限；DHCP服务器的IP地址。</p>
+<p>因为DHCP客户机还没有IP地址，所以<font color="#E9764A"><strong>DHCP服务器使用自己的IP地址作为源地址，使用UDP67端口作为源端口，使用255.255.255.255作为目标地址，使用UDP68端口作为目的端口来广播DHCPOFFER信息</strong></font>（见图二）。</p>
+<p>图二：服务器响应<br><img src="/2021/08/25/dhcp/dhcpoffer.png" alt="dhcpoffer"></p>
+<p><strong>第3步：客户机选择IP</strong><br><font color="#E9764A"><strong>客户机选择IP，也称为DHCPREQUEST</strong></font>。</p>
+<p>DHCP客户机从接收到的第一个DHCPOFFER消息中选择IP地址，发出IP地址的DHCP服务器将该地址保留，这样该地址就不能提供给另一个DHCP客户机。当客户机从第一个DHCP服务器接收DHCPOFFER并选择IP地址后，DHCP租约的第三过程发生。客户机将DHCPREQUEST消息广播到所有的DHCP服务器，表明它接受提供的内容。DHCPREQUEST消息包括为该客户机提供IP配置的服务器的服务标识符（IP地址）。DHCP服务器查看服务器标识符字段，以确定它自己是否被选择为指定的客户机提供IP地址，如果那些DHCPOFFER被拒绝，则DHCP服务器会取消提供并保留其IP地址以用于下一个IP租约请求。</p>
+<p>在客户机选择IP的过程中，虽然客户机选择了IP地址，但是还没有配置IP地址，而在一个网络中可能有几个DHCP服务器，所以<font color="#E9764A"><strong>客户机仍然使用0.0.0.0的地址作为源地址，使用UDP68端口作为源端口，使用255.255.255.255作为目标地址，使用UDP67端口作为目的端口来广播DHCPREQUEST信息</strong></font>（见图三）。</p>
+<p>图三：客户机选择IP<br><img src="/2021/08/25/dhcp/dhcprequest.png" alt="dhcprequest"></p>
+<p><strong>第4步：服务器确认租约</strong><br><font color="#E9764A"><strong>服务器确认租约，也称为DHCPACK/DHCPNAK</strong></font>。</p>
+<p>DHCP服务器接收到DHCPREQUEST消息后，以DHCPACK消息的形式向客户机广播成功的确认，该消息包含有IP地址的有效租约和其他可能配置的信息。虽然服务器确认了客户机的租约请求，但是客户机还没有收到服务器的DHCPACK消息，所以<font color="#E9764A"><strong>服务器仍然使用自己的IP地址作为源地址，使用UDP67端口作为源端口，使用255.255.255.255作为目标地址，使用UDP68端口作为目的端口来广播DHCPACK信息</strong></font>（见图四）。当客户机收到DHCPACK消息时，它就配置了IP地址，完成了TCP/IP的初始化。</p>
+<p>如果DHCPREQUEST不成功，例如客户机试图租约先前的IP地址，但该IP地址不再可用，或者因为客户机移到其他子网，该IP无效时，DHCP服务器将广播否定确认消息DHCPNAK。当客户机接收到不成功的确认时，它将重新开始DHCP租约过程</p>
+<p>如果DHCP客户机无法找到DHCP服务器，它将从TCP/IP的B类网段169.254.0.0中挑选一个IP地址作为自己的IP地址，继续每隔5分钟尝试与DHCP服务器进行通讯，一旦与DHCP服务器取得联系，则客户机放弃自动配置的IP地址，而使用DHCP服务器分配的IP地址。<br>如果一台DHCP客户机有两个或者多个网卡，则DHCP服务器会为每个网卡分配一个唯一而有效的IP地址。</p>
+<p>图四：服务器确认租约<br><img src="/2021/08/25/dhcp/dhcpack.png" alt="dhcpack"></p>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p><a href="https://blog.csdn.net/frank_jb/article/details/108877109?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522162986065416780265435106%2522%252C%2522scm%2522%253A%252220140713.130102334.pc%255Fall.%2522%257D&request_id=162986065416780265435106&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~all~first_rank_ecpm_v1~rank_v29_ecpm-5-108877109.ecpm_v1_rank_v29&utm_term=DHCP%E5%B7%A5%E4%BD%9C%E8%BF%87%E7%A8%8B%E4%BB%A5%E5%8F%8A%E6%8A%A5%E6%96%87&spm=1018.2226.3001.4187">DHCP协议说明及报文</a></p>
+]]></content>
+      <categories>
+        <category>数据通信</category>
+      </categories>
+      <tags>
+        <tag>DHCP</tag>
       </tags>
   </entry>
   <entry>
@@ -1286,6 +1327,23 @@ grep -i 关键字 file 忽略大小写
 <p><strong>Swift —— 对象存储</strong><br>➢ 自 OpenStack 成立以来一直是一个核心项目。Swift 的功能类似于一个分布式、可访问 API 的存储平台，<br>可直接将它集成到应用程序中，或者用于存储 VM 镜像、备份和归档以及较小的文件，例如照片和电子邮件 </p>
 <h1 id="网络服务neutron"><a href="#网络服务neutron" class="headerlink" title="网络服务neutron"></a>网络服务neutron</h1><p>neutron设计目标是实现“网络及服务”NaaS</p>
 <p><img src="/2021/08/20/openstack%E9%87%8D%E8%A6%81%E7%BB%84%E4%BB%B6/neutron%E7%BB%93%E6%9E%84.png" alt="neutron结构"></p>
+<h2 id="neutron包含组件"><a href="#neutron包含组件" class="headerlink" title="neutron包含组件"></a>neutron包含组件</h2><p>neutron-server</p>
+<blockquote>
+<p><font color="#E9764A"><strong>专门来接受neutron restful API调用的服务器</strong></font>，负责将不同的restful API分发到不同的neutron-plugin上</p>
+</blockquote>
+<p>neutron-plugin</p>
+<blockquote>
+<p><font color="#E9764A"><strong>不同网络功能实现的入口</strong></font>，各个厂商可以开发自己的plugin。neutron-plugin接受neutron-server发来的restful API，向neutron DB完成信息的注册，然后将具体要执行的业务操作和参数通知给自身对应的neutron agent</p>
+<p>neutron-plugin分为<font color="#800080">core-plugin</font>和<font color="#6495ED">service-plugin</font>两类</p>
+<blockquote>
+<p>&emsp;&emsp;<font color="#800080">core-plugin</font>：负责管理L2的网络连接。主要包括network、subnet、port三类核心资源，对这三类资源进行操作的Restful API被neutron-server看作core API<br>&emsp;&emsp;<font color="#6495ED">service-plugin</font>：除了core-plugin外所有plugin，主要实现L3-L7的网络服务。对这些资源进行操作的Restful API被neutron-server看作Extension API，需要厂商自行扩展</p>
+</blockquote>
+</blockquote>
+<p><img src="/2021/08/20/openstack%E9%87%8D%E8%A6%81%E7%BB%84%E4%BB%B6/networkSubnetPort.png" alt="networkSubnetPort"></p>
+<p>neutron-agent</p>
+<blockquote>
+<p><font color="#E9764A"><strong>neutron-plugin在设备上的代理</strong></font>，接受对应的neutron-plugin通知的业务操作和参数，并转换为具体的设备级操作，以指导设备的动作。当设备发生问题时，neutron-agent会通知neutron-plugin</p>
+</blockquote>
 <h2 id="L2虚拟化实现原理"><a href="#L2虚拟化实现原理" class="headerlink" title="L2虚拟化实现原理"></a>L2虚拟化实现原理</h2><p>neutron将虚拟网络对象模型在物理网络上实现：</p>
 <pre><code>在linux-br上配置iptable规则，实现安全组
 在ovs网桥上，配置流表规则，为不同端口配置不同的vlan tag，实现虚拟机的流量隔离
@@ -1523,12 +1581,29 @@ $0,1,2 // 0-脚本名 1-第一个参数 2-第二个参数
       </tags>
   </entry>
   <entry>
-    <title>关于hexo部署问题</title>
+    <title>关于hexo修改css问题</title>
     <url>/2021/08/23/%E5%85%B3%E4%BA%8Ehexo%E9%83%A8%E7%BD%B2%E9%97%AE%E9%A2%98/</url>
     <content><![CDATA[<p>解决hexo+next在本地部署成功，上传后失效问题</p>
 <span id="more"></span>
 
-<p>在使用hexo写博客的时候</p>
+<h1 id="问题1：重新部署css失效"><a href="#问题1：重新部署css失效" class="headerlink" title="问题1：重新部署css失效"></a>问题1：重新部署css失效</h1><p>hexo在每次推送更新的时候，都需要<u>清除缓存</u>，重新<u>部署静态文件</u>，再<u>推送更新</u>。<br>每次清除缓存时都会删除main.css文件，再根据配置文件生成新的main.css文件。<br>因为美观，我就自定义了博客的main.css文件，来修改页面的字体和样式。</p>
+<p>然而在下一次更新博客的时候，上自己的网站一看，修改的样式没了</p>
+<blockquote>
+<p>原因：当再次推送时，重新部署的静态文件.css不包含个人修改的<br>解决方案：先清除缓存，再部署静态文件，此时将修改好的main.css文件覆盖 <font color="#F08080">/根目录/public/css/main.css</font>。覆盖成功后，再推送更新</p>
+</blockquote>
+<p><img src="/2021/08/23/%E5%85%B3%E4%BA%8Ehexo%E9%83%A8%E7%BD%B2%E9%97%AE%E9%A2%98/main%E6%96%87%E4%BB%B6%E4%BD%8D%E7%BD%AE.png" alt="main文件位置"></p>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line">hexo cl</span><br><span class="line">hexo g</span><br><span class="line">手动去覆盖<span class="selector-tag">main</span><span class="selector-class">.css</span>，覆盖成功后</span><br><span class="line">hexo d</span><br></pre></td></tr></table></figure>
+
+<h1 id="问题2：增加功能失败"><a href="#问题2：增加功能失败" class="headerlink" title="问题2：增加功能失败"></a>问题2：增加功能失败</h1><p>问题描述：本地测试成功，但推送后网页上失效</p>
+<blockquote>
+<p>前提：本地测试成功——代表配置文件配置成功</p>
+</blockquote>
+<p>我在写了一些博客之后发现，想要查询以前写的内容很不方便，于是新增了搜索的功能<br>在本地测试成功的情况下，我推送了更新，但网站上的搜索功能却失效了<br>在确认配置文件正确后，使用F12查看了网页</p>
+<p><img src="/2021/08/23/%E5%85%B3%E4%BA%8Ehexo%E9%83%A8%E7%BD%B2%E9%97%AE%E9%A2%98/F12.png" alt="F12"></p>
+<p>发现本地测试页面渲染出的Html、css文件都和网站上部署后的不一样</p>
+<blockquote>
+<p>原因：因为我在<font color="#FF000">增加搜索功能前</font>修改了main.css并用这个main.css覆盖了系统重新部署的main.css，导致.css文件里并没有生成搜索功能该有的代码<br>解决方案：可以使用文本对比工具，将系统重新部署的main.css文件和之前修改的main.css对比，将新增功能的代码段落加入到修改的main.css中。当修改的main.css文件中有新增功能的段落后，部署的网站上就能正常使用功能了</p>
+</blockquote>
 ]]></content>
       <categories>
         <category>博客</category>
@@ -1645,23 +1720,6 @@ $0,1,2 // 0-脚本名 1-第一个参数 2-第二个参数
       </tags>
   </entry>
   <entry>
-    <title>IPMI，MGMT口</title>
-    <url>/2021/08/13/%E5%90%84%E7%A7%8D%E6%8E%A5%E5%8F%A3/</url>
-    <content><![CDATA[<p>交换机上的各种接口</p>
-<span id="more"></span>
-
-<h1 id="MGMT口"><a href="#MGMT口" class="headerlink" title="MGMT口"></a>MGMT口</h1><p>MGMT是网络管理端口，可以直接用网线连接，登陆进防火墙以网页模式管理<br>1） 用户可以通过Ping、Tracert等命令探测MGMT 口上配置的IP地址是否可达，并在MGMT 口上通过Ping、Tracert命令探测远程IP是否可达，因此MGMT 口支持ICMP应用。<br>2）用户可以通过Telnet/SSH/SNMP/WEB等方式登录到MGMT 口对设备进行管理，并且登录时支持AAA验证（包括Radius 和Tacacs+这两种服务器认证方式），甚至在执行命令行时还需要支持Tacacs+授权。<br>3）设备的日志、告警等信息也可以通过MGMT 口发送到网管的日志服务器上。<br>4）MGMT 口支持Telnet Client，TFTP Client。<br>5）MGMT 口支持NTP/SNTP报文的收发以实现网络时间同步。<br>6）MGMT 口支持静态ARP绑定。 </p>
-<h1 id="IPMI口"><a href="#IPMI口" class="headerlink" title="IPMI口"></a>IPMI口</h1><p>IPMI，即智能平台管理接口（Intelligent Platform Management Interface），IPMI的核心是一个专用芯片/控制器(BMC)，独立于操作系统、BIOS和处理器，因此属于带外管理设备。正是因为如此，我们可以通过BMC来控制或者获取系统的各种信息，而不需要关注系统是否正常。比如，系统卡住了，可以通过ipmi reset系统，而不需要跑到机房断电；系统无法登录也可以远程屏幕查看是什么问题。</p>
-]]></content>
-      <categories>
-        <category>交换机</category>
-      </categories>
-      <tags>
-        <tag>交换机</tag>
-        <tag>接口</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>将本地项目上传Github</title>
     <url>/2021/08/17/%E5%B0%86%E6%9C%AC%E5%9C%B0%E9%A1%B9%E7%9B%AE%E4%B8%8A%E4%BC%A0Github/</url>
     <content><![CDATA[<p>上传/更新本地项目到Github</p>
@@ -1714,6 +1772,23 @@ $0,1,2 // 0-脚本名 1-第一个参数 2-第二个参数
       </tags>
   </entry>
   <entry>
+    <title>IPMI，MGMT口</title>
+    <url>/2021/08/13/%E5%90%84%E7%A7%8D%E6%8E%A5%E5%8F%A3/</url>
+    <content><![CDATA[<p>交换机上的各种接口</p>
+<span id="more"></span>
+
+<h1 id="MGMT口"><a href="#MGMT口" class="headerlink" title="MGMT口"></a>MGMT口</h1><p>MGMT是网络管理端口，可以直接用网线连接，登陆进防火墙以网页模式管理<br>1） 用户可以通过Ping、Tracert等命令探测MGMT 口上配置的IP地址是否可达，并在MGMT 口上通过Ping、Tracert命令探测远程IP是否可达，因此MGMT 口支持ICMP应用。<br>2）用户可以通过Telnet/SSH/SNMP/WEB等方式登录到MGMT 口对设备进行管理，并且登录时支持AAA验证（包括Radius 和Tacacs+这两种服务器认证方式），甚至在执行命令行时还需要支持Tacacs+授权。<br>3）设备的日志、告警等信息也可以通过MGMT 口发送到网管的日志服务器上。<br>4）MGMT 口支持Telnet Client，TFTP Client。<br>5）MGMT 口支持NTP/SNTP报文的收发以实现网络时间同步。<br>6）MGMT 口支持静态ARP绑定。 </p>
+<h1 id="IPMI口"><a href="#IPMI口" class="headerlink" title="IPMI口"></a>IPMI口</h1><p>IPMI，即智能平台管理接口（Intelligent Platform Management Interface），IPMI的核心是一个专用芯片/控制器(BMC)，独立于操作系统、BIOS和处理器，因此属于带外管理设备。正是因为如此，我们可以通过BMC来控制或者获取系统的各种信息，而不需要关注系统是否正常。比如，系统卡住了，可以通过ipmi reset系统，而不需要跑到机房断电；系统无法登录也可以远程屏幕查看是什么问题。</p>
+]]></content>
+      <categories>
+        <category>交换机</category>
+      </categories>
+      <tags>
+        <tag>交换机</tag>
+        <tag>接口</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>控制路由更新</title>
     <url>/2021/08/04/%E6%8E%A7%E5%88%B6%E8%B7%AF%E7%94%B1%E6%9B%B4%E6%96%B0/</url>
     <content><![CDATA[<p>关于OSPF的路由更新</p>
@@ -1761,6 +1836,32 @@ $0,1,2 // 0-脚本名 1-第一个参数 2-第二个参数
         <tag>网络</tag>
         <tag>路由</tag>
         <tag>OSPF</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>数据中心架构</title>
+    <url>/2021/08/25/%E6%95%B0%E6%8D%AE%E4%B8%AD%E5%BF%83%E6%9E%B6%E6%9E%84/</url>
+    <content><![CDATA[<p>Leaf-Spine网络架构好处</p>
+<span id="more"></span>
+
+<h1 id="名词解释"><a href="#名词解释" class="headerlink" title="名词解释"></a>名词解释</h1><p><strong>结构名词</strong><br>POD：数据中心的一个区域单位，包含交换机和服务器<br>Fabric：POD内使用的网络架构就是IP Fabric （还没搞明白是什么 只知道Leaf-Spine<br>DCI：POD和POD间的互联区域<br><strong>设备名词</strong><br>Spine（Core）：核心节点，连接各个Leaf<br>Leaf（TOR）：叶子节点，连接服务器、防火墙、负载均衡等<br>Border Leaf：Leaf功能节点，与数据中心外网连接，作为流量的出口设备</p>
+<h1 id="数据中心架构"><a href="#数据中心架构" class="headerlink" title="数据中心架构"></a>数据中心架构</h1><p><img src="/2021/08/25/%E6%95%B0%E6%8D%AE%E4%B8%AD%E5%BF%83%E6%9E%B6%E6%9E%84/%E7%BB%84%E7%BD%91%E8%AE%BE%E8%AE%A1.png" alt="组网设计"></p>
+<p><strong>好处</strong>：</p>
+<pre><code>控制面多活，提高冗余
+转发面多活
+网关下沉，控制广播域，全路由转发易维护
+</code></pre>
+<p><strong>为什么这种架构</strong>    </p>
+<pre><code>数据中心多东西向流量，少南北向流量
+方便横向扩展
+全路由转发减少二层环路，方便运维
+</code></pre>
+]]></content>
+      <categories>
+        <category>数据中心</category>
+      </categories>
+      <tags>
+        <tag>数据中心</tag>
       </tags>
   </entry>
   <entry>
@@ -2165,7 +2266,7 @@ $0,1,2 // 0-脚本名 1-第一个参数 2-第二个参数
 <td>已经收到对方的Keepalive包，双方能力特性一致，开始使用Update通告路由信息</td>
 </tr>
 </tbody></table>
-<h2 id="BGP路径选择"><a href="#BGP路径选择" class="headerlink" title="BGP路径选择"></a>BGP路径选择</h2><h3 id="BGP路径选择-1"><a href="#BGP路径选择-1" class="headerlink" title="BGP路径选择"></a>BGP路径选择</h3><p>步骤一    <font color="#E9764A"><strong>优选权重最高的路由 weight</strong>（Cisco私有）</font><br>步骤二  如果多条路由拥有相同权重。<font color="#E9764A"><strong>优选本地优先级最高的路由（Local Preference 用在一个AS内部）</strong></font><br>步骤三  如果多条路由拥有相同本地优先级。<font color="#E9764A"><strong>优选本地路由器初始的路由</strong>（本地初始路由在BGP表中下一跳为0.0.0.0）</font><br>步骤四  如果没有本地路由器初始路由。<font color="#E9764A"><strong>优选AS-PATH最短的路由</strong></font><br>步骤五  如果多条路由拥有相同长短的AS-PATH。<font color="#E9764A"><strong>优选源代码最小的路由</strong>（Origin Code：IGP&lt;EGP&lt;Incomplete）</font><br>步骤六    如果多条路由拥有相同源代码。<font color="#E9764A"><strong>优选MED最低的路由</strong>（路由器在AS之间交换MED）</font><br>步骤七    如果多条路由拥有相同MED。<font color="#E9764A"><strong>优选外部路由</strong>（eBGP）<strong>而不是内部路由</strong>（iBGP）</font><br>步骤八    如果只剩内部路由，<font color="#E9764A"><strong>优选穿越最近IGP邻居的路径</strong>（去往BGP下一跳的最短路径）</font><br>步骤九    对于eBGP路径，<font color="#E9764A"><strong>优选最老的路由</strong>（减少路由反复启动和禁用的风险）</font><br>步骤十    <font color="#E9764A"><strong>优选邻居BGP路由器ID值最低的路由</strong></font><br>步骤十一    如果BGP路由器ID都相同。<font color="#E9764A"><strong>优选邻居IP地址最小的路由</strong></font></p>
+<h2 id="BGP路径选择"><a href="#BGP路径选择" class="headerlink" title="BGP路径选择"></a>BGP路径选择</h2><h3 id="BGP路径选择-1"><a href="#BGP路径选择-1" class="headerlink" title="BGP路径选择"></a>BGP路径选择</h3><p>步骤一    <font color="#E9764A"><strong>优选权重最高的路由 weight</strong></font>（Cisco私有）<br>步骤二  如果多条路由拥有相同权重。<font color="#E9764A"><strong>优选本地优先级最高的路由</strong></font>（Local Preference 用在一个AS内部）<br>步骤三  如果多条路由拥有相同本地优先级。<font color="#E9764A"><strong>优选本地路由器初始的路由</strong></font>（本地初始路由在BGP表中下一跳为0.0.0.0）<br>步骤四  如果没有本地路由器初始路由。<font color="#E9764A"><strong>优选AS-PATH最短的路由</strong></font><br>步骤五  如果多条路由拥有相同长短的AS-PATH。<font color="#E9764A"><strong>优选源代码最小的路由</strong></font>（Origin Code：IGP&lt;EGP&lt;Incomplete）<br>步骤六    如果多条路由拥有相同源代码。<font color="#E9764A"><strong>优选MED最低的路由</strong></font>（路由器在AS之间交换MED）<br>步骤七    如果多条路由拥有相同MED。<font color="#E9764A"><strong>优选外部路由</strong></font>（eBGP）<font color="#E9764A"><strong>而不是内部路由</strong></font>（iBGP）<br>步骤八    如果只剩内部路由，<font color="#E9764A"><strong>优选穿越最近IGP邻居的路径</strong></font>（去往BGP下一跳的最短路径）<br>步骤九    对于eBGP路径，<font color="#E9764A"><strong>优选最老的路由</strong></font>（减少路由反复启动和禁用的风险）<br>步骤十    <font color="#E9764A"><strong>优选邻居BGP路由器ID值最低的路由</strong></font><br>步骤十一    如果BGP路由器ID都相同。<font color="#E9764A"><strong>优选邻居IP地址最小的路由</strong></font></p>
 <h3 id="实例"><a href="#实例" class="headerlink" title="实例"></a>实例</h3><p>通过十一个步骤，最终只有一条路径会被放入路由表并传播给路由器的其他BGP邻居。如果没有修改路由的话，最常见的路由选择因素是路由选择中的步骤四：优选最短的AS-PATH。<br><strong>步骤一</strong> 对比权重，非源于本地路由器的路由，默认权重为0<br><strong>步骤二</strong> 对比本地优先级，所有网络的本地优先级默认为100。只有当网络管理员手动配置过，步骤一和步骤二才会生效<br><strong>步骤三</strong> 查看这个AS拥有的网络。如果其中一条是由本地路由器注入到BGP表中的，那么优选本地路由器提供的路由，而不是通过其他BGP路由器收到的路由<br><strong>步骤四</strong> 优选跨越最少AS的路径。这是BGP中路径选择最常见的结果<br><strong>步骤五</strong> 查看的是网络进入BGP的方式。通常网络是由命令network（源代码为i）或者通过重分布（源代码为？）进入BGP的<br><strong>步骤六</strong> 通过查看MED，判断邻居AS希望本地AS向哪里发送指定网络的数据包<br><strong>步骤七</strong> 这是BGP路径选择第二常见的最终结果。从eBGP邻居学到的外部路径优于从iBGP邻居学到的内部路径。一个AS内的路由器会优选使用ISP（网络服务商）的带宽资源，来去往某个网络，而不是优选本地AS中另一台iBGP邻居并占用内部带宽资源<br>如果AS路径长度相等，并且这个AS中只有iBGP提供了路径，BGP就会选择去往最近出口的路径。<strong>步骤八</strong>就会查找最近的iBGP邻居（“最近”决定于IGP中的度量，比如RIP条数，OSPF最小开销等）<br>如果AS路径长度相等，穿越所有iBGP邻居的开销也相等，或者所有去往这个网络的邻居都是eBGP邻居，那么下一步就是选择最老路径（<strong>步骤九</strong>），因为它建立时间最长，可以<br>认为它最稳定<br>如果上述都相等，优选BGP路由ID最低的路由（<strong>步骤十</strong>）<br>如果BGP路由器ID也相同（比如所有路径都去往同一台BGP路由器），那么选择邻居IP地址最小的路由（<strong>步骤十一</strong>）</p>
 <h2 id="BGP属性"><a href="#BGP属性" class="headerlink" title="BGP属性"></a>BGP属性</h2><table>
 <thead>
@@ -2615,7 +2716,7 @@ EVPN可以同时发布二层MAC信息和三层路由信息。
 <li>Leaf1收到ARP广播请求后，查询ARP广播抑制表。因为已经有Host2的主机信息，所以Leaf1直接对ARP请求进行代答。</li>
 </ol>
 <p>如果Leaf1上没有Host2的ARP广播抑制表，那么依然按照正常的流程进行广播。</p>
-<h2 id="同网段通信"><a href="#同网段通信" class="headerlink" title="同网段通信"></a>同网段通信</h2><h3 id="建立VXLAN隧道"><a href="#建立VXLAN隧道" class="headerlink" title="建立VXLAN隧道"></a>建立VXLAN隧道</h3><p><img src="/2021/08/05/EVPN-VXLAN/%E5%BB%BA%E7%AB%8BVXLAN%E9%9A%A7%E9%81%93.png" alt="建立VXLAN隧道"></p>
+<h2 id="同网段二层互通"><a href="#同网段二层互通" class="headerlink" title="同网段二层互通"></a>同网段二层互通</h2><h3 id="建立VXLAN隧道"><a href="#建立VXLAN隧道" class="headerlink" title="建立VXLAN隧道"></a>建立VXLAN隧道</h3><p><img src="/2021/08/05/EVPN-VXLAN/%E5%BB%BA%E7%AB%8BVXLAN%E9%9A%A7%E9%81%93.png" alt="建立VXLAN隧道"></p>
 <p>前提条件</p>
 <pre><code>1.Leaf1 和 leaf2属于统一BD
 2.两端leaf的VTEP IP地址路由可达
@@ -2632,8 +2733,6 @@ EVPN可以同时发布二层MAC信息和三层路由信息。
 <p><font color="#FF0000"><strong>同网段下</strong></font>，只要两端VTEP IP可达,RT匹配，隧道就建成。<br>建立头端复制列表[VNI,Source,Destination]用于BUM报文的转发</p>
 <p><span id="jump">  </span></p>
 <p><font color="#FF0000"><strong>不同网段上</strong></font>，交换机根据主机1所属的BD域，获取相应的二层VNI、L3VPN实例及L3VPN实例关联的三层VNI信息（IP + MAC + Host1所属的二层VNI + L3VPN实例的三层VNI）</p>
-<p>然后：<br>1.Leaf1上的EVPN实例就可以根据这些信息生成EVPN Type2类型的路由,除了获取的Host1的相关信息外，还携带本端EVPN实例的ERT、路由下一跳（本端VTEP IP）、VTEP的MAC等信息，将其发送给对等体Leaf2。<br>2.Leaf1上的EVPN实例将Host1的IP + MAC + 三层VNI发给本端的L3VPN实例，从而在本端的L3VPN实例中生成本地Host1的路由。</p>
-<p>Leaf2收到Leaf1发来的Type2路由后，能够学习到Host1的IP地址信息，并将其保存在相应的路由表中，其下一跳为Leaf1的VTEP IP地址，同时记录对应的三层VNI信息，处理过程如下：<br>1.检查该路由的ERT与接收端<font color="#FF0000"><strong>EVPN实例</strong></font>的IRT是否相同。如果相同，则接收该路由，同时EVPN实例提取其中包含的主机IP+MAC信息，用于主机ARP通告。<br>2.检查该路由的ERT与接收端<font color="#FF0000"><strong>L3VPN实例</strong></font>的IRT是否相同。如果相同，则接收该路由，同时L3VPN实例提取其中的主机IP地址+三层VNI信息，在其路由表中生成Host1的路由。该路由的下一跳会被设置为Leaf1的VXLAN隧道接口。<br>3.接收端EVPN实例或L3VPN实例接收该路由后会通过下一跳（下一跳填的是自己的IP地址发出去）获取Leaf1的VTEP IP地址，如果该地址三层路由可达，则建立一条到Leaf1的VXLAN隧道。</p>
 <h3 id="生成MAC表"><a href="#生成MAC表" class="headerlink" title="生成MAC表"></a>生成MAC表</h3><p>步骤：<br>1.主机1上线时，通过动态ARP报文<br>Leaf1就能学到主机1的MAC地址，BD值和入接口（Leaf1的本地MAC表生成主机一的表项）</p>
 <p><img src="/2021/08/05/EVPN-VXLAN/MAC1.png" alt="MAC1"></p>
 <p>2.Leaf1发送给Leaf2  Type2类型的BGP EVPN路由</p>
@@ -2648,6 +2747,20 @@ EVPN可以同时发布二层MAC信息和三层路由信息。
 <p><img src="/2021/08/05/EVPN-VXLAN/F2.png" alt="F2"></p>
 <p>4.Leaf1收到VXLAN报文后进行解封装，获取内层报文，并根据内层报文的目的MAC地址，从本地MAC表找到对应的出接口，发送给主机1</p>
 <p><img src="/2021/08/05/EVPN-VXLAN/F3.png" alt="F3"></p>
+<h2 id="不同网段三层互通"><a href="#不同网段三层互通" class="headerlink" title="不同网段三层互通"></a>不同网段三层互通</h2><p>分布式网关：Spine作为透传节点，Leaf作为三层网关</p>
+<h3 id="建立VXLAN隧道-1"><a href="#建立VXLAN隧道-1" class="headerlink" title="建立VXLAN隧道"></a>建立VXLAN隧道</h3><ol>
+<li>Host1上线时，Leaf1通过ARP学到了Host1的ARP表项，同时根据入接口，可以获得BD以及BD对应的二三层VNI信息和VPN信息<blockquote>
+<p><strong>三层VNI用来标识不同的VPN，VPN用来隔离不同租户</strong></p>
+</blockquote>
+</li>
+</ol>
+<p><img src="/2021/08/05/EVPN-VXLAN/%E4%B8%8D%E5%90%8C%E7%BD%91%E6%AE%B5%E4%B8%89%E5%B1%82%E4%BA%92%E9%80%9A1.png" alt="不同网段三层互通1"><br>2. Leaf1根据获取的信息，在本地对应的VPN中保存Host1的主机路由<br>3. Leaf1向Leaf2发送Type2类型的BGP EVPN路由<br><img src="/2021/08/05/EVPN-VXLAN/%E4%B8%8D%E5%90%8C%E7%BD%91%E6%AE%B5%E4%B8%89%E5%B1%82%E4%BA%92%E9%80%9A2.png" alt="不同网段三层互通2"><br>4. Type2主要包含了VTEP地址、主机IP、MAC地址、三层VNI和EVPN实例出方向的RT值<br>5. Leaf2首先检查RT是否匹配。如果匹配，Leaf2根据Type2路由中主机IP、MAC地址、三层VNI信息在VPN中保存Host1的路由。同时如果VTEP IP可达，Leaf1和Leaf2就成功通过BGP EVPN自动建立一条VXLAN隧道</p>
+<h3 id="转发流程"><a href="#转发流程" class="headerlink" title="转发流程"></a>转发流程</h3><ol>
+<li>隧道建立完后，当Host2向Host1发送报文时<br><img src="/2021/08/05/EVPN-VXLAN/%E4%B8%8D%E5%90%8C%E7%BD%91%E6%AE%B5%E4%B8%89%E5%B1%82%E4%BA%92%E9%80%9A3.png" alt="不同网段三层互通3"></li>
+<li>Leaf2收到主机2的报文后，首先根据报文入接口找到对应的BD，以及BD对应的VRF，然后在该VRF中，查找到至主机1 的路由，以及该路由对应的三层VNI信息。Leaf2根据查找到的信息进行VXLAN封装<br><img src="/2021/08/05/EVPN-VXLAN/%E4%B8%8D%E5%90%8C%E7%BD%91%E6%AE%B5%E4%B8%89%E5%B1%82%E4%BA%92%E9%80%9A4.png" alt="不同网段三层互通4"></li>
+<li>并将报文转发至leaf1，封装的VXLAN报文中会携带三层VNI信息，Leaf1接收到VXLAN报文后进行解封装，根据报文携带的三层VNI找到对应的VRF<br><img src="/2021/08/05/EVPN-VXLAN/%E4%B8%8D%E5%90%8C%E7%BD%91%E6%AE%B5%E4%B8%89%E5%B1%82%E4%BA%92%E9%80%9A5.png" alt="不同网段三层互通5"></li>
+<li>在该VRF路由表中查找到至主机1的路由，最后将报文转发至主机1<br><img src="/2021/08/05/EVPN-VXLAN/%E4%B8%8D%E5%90%8C%E7%BD%91%E6%AE%B5%E4%B8%89%E5%B1%82%E4%BA%92%E9%80%9A6.png" alt="不同网段三层互通6"></li>
+</ol>
 ]]></content>
       <categories>
         <category>虚拟化</category>

@@ -49,8 +49,14 @@
 <meta property="og:image" content="http://example.com/2021/08/05/EVPN-VXLAN/F1.png">
 <meta property="og:image" content="http://example.com/2021/08/05/EVPN-VXLAN/F2.png">
 <meta property="og:image" content="http://example.com/2021/08/05/EVPN-VXLAN/F3.png">
+<meta property="og:image" content="http://example.com/2021/08/05/EVPN-VXLAN/%E4%B8%8D%E5%90%8C%E7%BD%91%E6%AE%B5%E4%B8%89%E5%B1%82%E4%BA%92%E9%80%9A1.png">
+<meta property="og:image" content="http://example.com/2021/08/05/EVPN-VXLAN/%E4%B8%8D%E5%90%8C%E7%BD%91%E6%AE%B5%E4%B8%89%E5%B1%82%E4%BA%92%E9%80%9A2.png">
+<meta property="og:image" content="http://example.com/2021/08/05/EVPN-VXLAN/%E4%B8%8D%E5%90%8C%E7%BD%91%E6%AE%B5%E4%B8%89%E5%B1%82%E4%BA%92%E9%80%9A3.png">
+<meta property="og:image" content="http://example.com/2021/08/05/EVPN-VXLAN/%E4%B8%8D%E5%90%8C%E7%BD%91%E6%AE%B5%E4%B8%89%E5%B1%82%E4%BA%92%E9%80%9A4.png">
+<meta property="og:image" content="http://example.com/2021/08/05/EVPN-VXLAN/%E4%B8%8D%E5%90%8C%E7%BD%91%E6%AE%B5%E4%B8%89%E5%B1%82%E4%BA%92%E9%80%9A5.png">
+<meta property="og:image" content="http://example.com/2021/08/05/EVPN-VXLAN/%E4%B8%8D%E5%90%8C%E7%BD%91%E6%AE%B5%E4%B8%89%E5%B1%82%E4%BA%92%E9%80%9A6.png">
 <meta property="article:published_time" content="2021-08-05T02:42:17.000Z">
-<meta property="article:modified_time" content="2021-08-17T08:40:46.896Z">
+<meta property="article:modified_time" content="2021-08-26T02:24:36.515Z">
 <meta property="article:author" content="郑林昕">
 <meta property="article:tag" content="VPN">
 <meta property="article:tag" content="虚拟化">
@@ -247,7 +253,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-08-17 16:40:46" itemprop="dateModified" datetime="2021-08-17T16:40:46+08:00">2021-08-17</time>
+                <time title="修改时间：2021-08-26 10:24:36" itemprop="dateModified" datetime="2021-08-26T10:24:36+08:00">2021-08-26</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -532,7 +538,7 @@ EVPN可以同时发布二层MAC信息和三层路由信息。
 <li>Leaf1收到ARP广播请求后，查询ARP广播抑制表。因为已经有Host2的主机信息，所以Leaf1直接对ARP请求进行代答。</li>
 </ol>
 <p>如果Leaf1上没有Host2的ARP广播抑制表，那么依然按照正常的流程进行广播。</p>
-<h2 id="同网段通信"><a href="#同网段通信" class="headerlink" title="同网段通信"></a>同网段通信</h2><h3 id="建立VXLAN隧道"><a href="#建立VXLAN隧道" class="headerlink" title="建立VXLAN隧道"></a>建立VXLAN隧道</h3><p><img src="/2021/08/05/EVPN-VXLAN/%E5%BB%BA%E7%AB%8BVXLAN%E9%9A%A7%E9%81%93.png" alt="建立VXLAN隧道"></p>
+<h2 id="同网段二层互通"><a href="#同网段二层互通" class="headerlink" title="同网段二层互通"></a>同网段二层互通</h2><h3 id="建立VXLAN隧道"><a href="#建立VXLAN隧道" class="headerlink" title="建立VXLAN隧道"></a>建立VXLAN隧道</h3><p><img src="/2021/08/05/EVPN-VXLAN/%E5%BB%BA%E7%AB%8BVXLAN%E9%9A%A7%E9%81%93.png" alt="建立VXLAN隧道"></p>
 <p>前提条件</p>
 <pre><code>1.Leaf1 和 leaf2属于统一BD
 2.两端leaf的VTEP IP地址路由可达
@@ -549,8 +555,6 @@ EVPN可以同时发布二层MAC信息和三层路由信息。
 <p><font color="#FF0000"><strong>同网段下</strong></font>，只要两端VTEP IP可达,RT匹配，隧道就建成。<br>建立头端复制列表[VNI,Source,Destination]用于BUM报文的转发</p>
 <p><span id="jump">  </span></p>
 <p><font color="#FF0000"><strong>不同网段上</strong></font>，交换机根据主机1所属的BD域，获取相应的二层VNI、L3VPN实例及L3VPN实例关联的三层VNI信息（IP + MAC + Host1所属的二层VNI + L3VPN实例的三层VNI）</p>
-<p>然后：<br>1.Leaf1上的EVPN实例就可以根据这些信息生成EVPN Type2类型的路由,除了获取的Host1的相关信息外，还携带本端EVPN实例的ERT、路由下一跳（本端VTEP IP）、VTEP的MAC等信息，将其发送给对等体Leaf2。<br>2.Leaf1上的EVPN实例将Host1的IP + MAC + 三层VNI发给本端的L3VPN实例，从而在本端的L3VPN实例中生成本地Host1的路由。</p>
-<p>Leaf2收到Leaf1发来的Type2路由后，能够学习到Host1的IP地址信息，并将其保存在相应的路由表中，其下一跳为Leaf1的VTEP IP地址，同时记录对应的三层VNI信息，处理过程如下：<br>1.检查该路由的ERT与接收端<font color="#FF0000"><strong>EVPN实例</strong></font>的IRT是否相同。如果相同，则接收该路由，同时EVPN实例提取其中包含的主机IP+MAC信息，用于主机ARP通告。<br>2.检查该路由的ERT与接收端<font color="#FF0000"><strong>L3VPN实例</strong></font>的IRT是否相同。如果相同，则接收该路由，同时L3VPN实例提取其中的主机IP地址+三层VNI信息，在其路由表中生成Host1的路由。该路由的下一跳会被设置为Leaf1的VXLAN隧道接口。<br>3.接收端EVPN实例或L3VPN实例接收该路由后会通过下一跳（下一跳填的是自己的IP地址发出去）获取Leaf1的VTEP IP地址，如果该地址三层路由可达，则建立一条到Leaf1的VXLAN隧道。</p>
 <h3 id="生成MAC表"><a href="#生成MAC表" class="headerlink" title="生成MAC表"></a>生成MAC表</h3><p>步骤：<br>1.主机1上线时，通过动态ARP报文<br>Leaf1就能学到主机1的MAC地址，BD值和入接口（Leaf1的本地MAC表生成主机一的表项）</p>
 <p><img src="/2021/08/05/EVPN-VXLAN/MAC1.png" alt="MAC1"></p>
 <p>2.Leaf1发送给Leaf2  Type2类型的BGP EVPN路由</p>
@@ -565,6 +569,20 @@ EVPN可以同时发布二层MAC信息和三层路由信息。
 <p><img src="/2021/08/05/EVPN-VXLAN/F2.png" alt="F2"></p>
 <p>4.Leaf1收到VXLAN报文后进行解封装，获取内层报文，并根据内层报文的目的MAC地址，从本地MAC表找到对应的出接口，发送给主机1</p>
 <p><img src="/2021/08/05/EVPN-VXLAN/F3.png" alt="F3"></p>
+<h2 id="不同网段三层互通"><a href="#不同网段三层互通" class="headerlink" title="不同网段三层互通"></a>不同网段三层互通</h2><p>分布式网关：Spine作为透传节点，Leaf作为三层网关</p>
+<h3 id="建立VXLAN隧道-1"><a href="#建立VXLAN隧道-1" class="headerlink" title="建立VXLAN隧道"></a>建立VXLAN隧道</h3><ol>
+<li>Host1上线时，Leaf1通过ARP学到了Host1的ARP表项，同时根据入接口，可以获得BD以及BD对应的二三层VNI信息和VPN信息<blockquote>
+<p><strong>三层VNI用来标识不同的VPN，VPN用来隔离不同租户</strong></p>
+</blockquote>
+</li>
+</ol>
+<p><img src="/2021/08/05/EVPN-VXLAN/%E4%B8%8D%E5%90%8C%E7%BD%91%E6%AE%B5%E4%B8%89%E5%B1%82%E4%BA%92%E9%80%9A1.png" alt="不同网段三层互通1"><br>2. Leaf1根据获取的信息，在本地对应的VPN中保存Host1的主机路由<br>3. Leaf1向Leaf2发送Type2类型的BGP EVPN路由<br><img src="/2021/08/05/EVPN-VXLAN/%E4%B8%8D%E5%90%8C%E7%BD%91%E6%AE%B5%E4%B8%89%E5%B1%82%E4%BA%92%E9%80%9A2.png" alt="不同网段三层互通2"><br>4. Type2主要包含了VTEP地址、主机IP、MAC地址、三层VNI和EVPN实例出方向的RT值<br>5. Leaf2首先检查RT是否匹配。如果匹配，Leaf2根据Type2路由中主机IP、MAC地址、三层VNI信息在VPN中保存Host1的路由。同时如果VTEP IP可达，Leaf1和Leaf2就成功通过BGP EVPN自动建立一条VXLAN隧道</p>
+<h3 id="转发流程"><a href="#转发流程" class="headerlink" title="转发流程"></a>转发流程</h3><ol>
+<li>隧道建立完后，当Host2向Host1发送报文时<br><img src="/2021/08/05/EVPN-VXLAN/%E4%B8%8D%E5%90%8C%E7%BD%91%E6%AE%B5%E4%B8%89%E5%B1%82%E4%BA%92%E9%80%9A3.png" alt="不同网段三层互通3"></li>
+<li>Leaf2收到主机2的报文后，首先根据报文入接口找到对应的BD，以及BD对应的VRF，然后在该VRF中，查找到至主机1 的路由，以及该路由对应的三层VNI信息。Leaf2根据查找到的信息进行VXLAN封装<br><img src="/2021/08/05/EVPN-VXLAN/%E4%B8%8D%E5%90%8C%E7%BD%91%E6%AE%B5%E4%B8%89%E5%B1%82%E4%BA%92%E9%80%9A4.png" alt="不同网段三层互通4"></li>
+<li>并将报文转发至leaf1，封装的VXLAN报文中会携带三层VNI信息，Leaf1接收到VXLAN报文后进行解封装，根据报文携带的三层VNI找到对应的VRF<br><img src="/2021/08/05/EVPN-VXLAN/%E4%B8%8D%E5%90%8C%E7%BD%91%E6%AE%B5%E4%B8%89%E5%B1%82%E4%BA%92%E9%80%9A5.png" alt="不同网段三层互通5"></li>
+<li>在该VRF路由表中查找到至主机1的路由，最后将报文转发至主机1<br><img src="/2021/08/05/EVPN-VXLAN/%E4%B8%8D%E5%90%8C%E7%BD%91%E6%AE%B5%E4%B8%89%E5%B1%82%E4%BA%92%E9%80%9A6.png" alt="不同网段三层互通6"></li>
+</ol>
 
     </div>
 
@@ -650,7 +668,7 @@ EVPN可以同时发布二层MAC信息和三层路由信息。
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#EVPN-VXLAN"><span class="nav-number">1.</span> <span class="nav-text">EVPN VXLAN</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#BGP-EVPN-%E7%BD%91%E7%BB%9C%E7%BB%84%E5%90%88%E6%A6%82%E5%BF%B5"><span class="nav-number">1.1.</span> <span class="nav-text">BGP EVPN 网络组合概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#BGP-EVPN%E7%9A%84%E4%BA%94%E7%A7%8D%E8%B7%AF%E7%94%B1"><span class="nav-number">1.2.</span> <span class="nav-text">BGP EVPN的五种路由</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#EVPN-Type-2%E8%B7%AF%E7%94%B1"><span class="nav-number">1.2.1.</span> <span class="nav-text">EVPN Type 2路由</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#EVPN-Type-3%E8%B7%AF%E7%94%B1"><span class="nav-number">1.2.2.</span> <span class="nav-text">EVPN Type 3路由</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#EVPN-Type-5%E8%B7%AF%E7%94%B1"><span class="nav-number">1.2.3.</span> <span class="nav-text">EVPN Type 5路由</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%80%BB%E7%BB%93%EF%BC%9A"><span class="nav-number">1.2.4.</span> <span class="nav-text">总结：</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%90%86%E8%A7%A3BGP-EVPN%E4%BD%9C%E4%B8%BAVXLAN%E6%8E%A7%E5%88%B6%E9%9D%A2%E7%9A%84%E5%B7%A5%E4%BD%9C%E8%BF%87%E7%A8%8B"><span class="nav-number">1.3.</span> <span class="nav-text">理解BGP EVPN作为VXLAN控制面的工作过程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8EVPN%E5%AD%A6%E4%B9%A0MAC%E5%9C%B0%E5%9D%80"><span class="nav-number">1.3.1.</span> <span class="nav-text">使用EVPN学习MAC地址</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%90%8C%E5%AD%90%E7%BD%91VXLAN%E9%9A%A7%E9%81%93%E7%9A%84%E5%BB%BA%E7%AB%8B"><span class="nav-number">1.3.2.</span> <span class="nav-text">同子网VXLAN隧道的建立</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B7%A8%E5%AD%90%E7%BD%91VXLAN%E9%9A%A7%E9%81%93%E5%BB%BA%E7%AB%8B"><span class="nav-number">1.3.3.</span> <span class="nav-text">跨子网VXLAN隧道建立</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BD%91%E6%AE%B5%E8%B7%AF%E7%94%B1%E5%8F%91%E5%B8%83"><span class="nav-number">1.3.4.</span> <span class="nav-text">网段路由发布</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#VXLAN-BGP-EVPN%E7%BD%91%E7%BB%9C%E4%B8%AD%E6%B5%81%E9%87%8F%E7%9A%84%E8%BD%AC%E5%8F%91%E8%BF%87%E7%A8%8B"><span class="nav-number">1.4.</span> <span class="nav-text">VXLAN BGP EVPN网络中流量的转发过程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%90%8C%E5%AD%90%E7%BD%91%E6%8A%A5%E6%96%87%E8%BD%AC%E5%8F%91"><span class="nav-number">1.4.1.</span> <span class="nav-text">同子网报文转发</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%90%8C%E5%AD%90%E7%BD%91%E5%B7%B2%E7%9F%A5%E5%8D%95%E6%92%AD%E6%8A%A5%E6%96%87%E8%BD%AC%E5%8F%91"><span class="nav-number">1.4.1.1.</span> <span class="nav-text">同子网已知单播报文转发</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%90%8C%E5%AD%90%E7%BD%91BUM%E6%8A%A5%E6%96%87%E8%BD%AC%E5%8F%91"><span class="nav-number">1.4.1.2.</span> <span class="nav-text">同子网BUM报文转发</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B7%A8%E5%AD%90%E7%BD%91%E6%8A%A5%E6%96%87%E8%BD%AC%E5%8F%91"><span class="nav-number">1.4.2.</span> <span class="nav-text">跨子网报文转发</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#VXLAN-BGP-EVPN%E7%BD%91%E7%BB%9C%E4%B8%AD%E7%9A%84ARP%E5%B9%BF%E6%92%AD%E6%8A%91%E5%88%B6"><span class="nav-number">1.5.</span> <span class="nav-text">VXLAN BGP EVPN网络中的ARP广播抑制</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ARP%E5%B9%BF%E6%92%AD%E5%8F%98%E5%8D%95%E6%92%AD"><span class="nav-number">1.5.1.</span> <span class="nav-text">ARP广播变单播</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ARP%E4%BA%8C%E5%B1%82%E4%BB%A3%E7%AD%94"><span class="nav-number">1.5.2.</span> <span class="nav-text">ARP二层代答</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%8C%E7%BD%91%E6%AE%B5%E9%80%9A%E4%BF%A1"><span class="nav-number">1.6.</span> <span class="nav-text">同网段通信</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BB%BA%E7%AB%8BVXLAN%E9%9A%A7%E9%81%93"><span class="nav-number">1.6.1.</span> <span class="nav-text">建立VXLAN隧道</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%80%BB%E7%BB%93%EF%BC%9A-1"><span class="nav-number">1.6.1.1.</span> <span class="nav-text">总结：</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%94%9F%E6%88%90MAC%E8%A1%A8"><span class="nav-number">1.6.2.</span> <span class="nav-text">生成MAC表</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%80%BB%E7%BB%93%EF%BC%9A-2"><span class="nav-number">1.6.2.1.</span> <span class="nav-text">总结：</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BD%AC%E5%8F%91%E8%BF%87%E7%A8%8B"><span class="nav-number">1.6.3.</span> <span class="nav-text">转发过程</span></a></li></ol></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#EVPN-VXLAN"><span class="nav-number">1.</span> <span class="nav-text">EVPN VXLAN</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#BGP-EVPN-%E7%BD%91%E7%BB%9C%E7%BB%84%E5%90%88%E6%A6%82%E5%BF%B5"><span class="nav-number">1.1.</span> <span class="nav-text">BGP EVPN 网络组合概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#BGP-EVPN%E7%9A%84%E4%BA%94%E7%A7%8D%E8%B7%AF%E7%94%B1"><span class="nav-number">1.2.</span> <span class="nav-text">BGP EVPN的五种路由</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#EVPN-Type-2%E8%B7%AF%E7%94%B1"><span class="nav-number">1.2.1.</span> <span class="nav-text">EVPN Type 2路由</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#EVPN-Type-3%E8%B7%AF%E7%94%B1"><span class="nav-number">1.2.2.</span> <span class="nav-text">EVPN Type 3路由</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#EVPN-Type-5%E8%B7%AF%E7%94%B1"><span class="nav-number">1.2.3.</span> <span class="nav-text">EVPN Type 5路由</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%80%BB%E7%BB%93%EF%BC%9A"><span class="nav-number">1.2.4.</span> <span class="nav-text">总结：</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%90%86%E8%A7%A3BGP-EVPN%E4%BD%9C%E4%B8%BAVXLAN%E6%8E%A7%E5%88%B6%E9%9D%A2%E7%9A%84%E5%B7%A5%E4%BD%9C%E8%BF%87%E7%A8%8B"><span class="nav-number">1.3.</span> <span class="nav-text">理解BGP EVPN作为VXLAN控制面的工作过程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8EVPN%E5%AD%A6%E4%B9%A0MAC%E5%9C%B0%E5%9D%80"><span class="nav-number">1.3.1.</span> <span class="nav-text">使用EVPN学习MAC地址</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%90%8C%E5%AD%90%E7%BD%91VXLAN%E9%9A%A7%E9%81%93%E7%9A%84%E5%BB%BA%E7%AB%8B"><span class="nav-number">1.3.2.</span> <span class="nav-text">同子网VXLAN隧道的建立</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B7%A8%E5%AD%90%E7%BD%91VXLAN%E9%9A%A7%E9%81%93%E5%BB%BA%E7%AB%8B"><span class="nav-number">1.3.3.</span> <span class="nav-text">跨子网VXLAN隧道建立</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BD%91%E6%AE%B5%E8%B7%AF%E7%94%B1%E5%8F%91%E5%B8%83"><span class="nav-number">1.3.4.</span> <span class="nav-text">网段路由发布</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#VXLAN-BGP-EVPN%E7%BD%91%E7%BB%9C%E4%B8%AD%E6%B5%81%E9%87%8F%E7%9A%84%E8%BD%AC%E5%8F%91%E8%BF%87%E7%A8%8B"><span class="nav-number">1.4.</span> <span class="nav-text">VXLAN BGP EVPN网络中流量的转发过程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%90%8C%E5%AD%90%E7%BD%91%E6%8A%A5%E6%96%87%E8%BD%AC%E5%8F%91"><span class="nav-number">1.4.1.</span> <span class="nav-text">同子网报文转发</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%90%8C%E5%AD%90%E7%BD%91%E5%B7%B2%E7%9F%A5%E5%8D%95%E6%92%AD%E6%8A%A5%E6%96%87%E8%BD%AC%E5%8F%91"><span class="nav-number">1.4.1.1.</span> <span class="nav-text">同子网已知单播报文转发</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%90%8C%E5%AD%90%E7%BD%91BUM%E6%8A%A5%E6%96%87%E8%BD%AC%E5%8F%91"><span class="nav-number">1.4.1.2.</span> <span class="nav-text">同子网BUM报文转发</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B7%A8%E5%AD%90%E7%BD%91%E6%8A%A5%E6%96%87%E8%BD%AC%E5%8F%91"><span class="nav-number">1.4.2.</span> <span class="nav-text">跨子网报文转发</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#VXLAN-BGP-EVPN%E7%BD%91%E7%BB%9C%E4%B8%AD%E7%9A%84ARP%E5%B9%BF%E6%92%AD%E6%8A%91%E5%88%B6"><span class="nav-number">1.5.</span> <span class="nav-text">VXLAN BGP EVPN网络中的ARP广播抑制</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ARP%E5%B9%BF%E6%92%AD%E5%8F%98%E5%8D%95%E6%92%AD"><span class="nav-number">1.5.1.</span> <span class="nav-text">ARP广播变单播</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ARP%E4%BA%8C%E5%B1%82%E4%BB%A3%E7%AD%94"><span class="nav-number">1.5.2.</span> <span class="nav-text">ARP二层代答</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%8C%E7%BD%91%E6%AE%B5%E4%BA%8C%E5%B1%82%E4%BA%92%E9%80%9A"><span class="nav-number">1.6.</span> <span class="nav-text">同网段二层互通</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BB%BA%E7%AB%8BVXLAN%E9%9A%A7%E9%81%93"><span class="nav-number">1.6.1.</span> <span class="nav-text">建立VXLAN隧道</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%80%BB%E7%BB%93%EF%BC%9A-1"><span class="nav-number">1.6.1.1.</span> <span class="nav-text">总结：</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%94%9F%E6%88%90MAC%E8%A1%A8"><span class="nav-number">1.6.2.</span> <span class="nav-text">生成MAC表</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%80%BB%E7%BB%93%EF%BC%9A-2"><span class="nav-number">1.6.2.1.</span> <span class="nav-text">总结：</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BD%AC%E5%8F%91%E8%BF%87%E7%A8%8B"><span class="nav-number">1.6.3.</span> <span class="nav-text">转发过程</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%8D%E5%90%8C%E7%BD%91%E6%AE%B5%E4%B8%89%E5%B1%82%E4%BA%92%E9%80%9A"><span class="nav-number">1.7.</span> <span class="nav-text">不同网段三层互通</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BB%BA%E7%AB%8BVXLAN%E9%9A%A7%E9%81%93-1"><span class="nav-number">1.7.1.</span> <span class="nav-text">建立VXLAN隧道</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BD%AC%E5%8F%91%E6%B5%81%E7%A8%8B"><span class="nav-number">1.7.2.</span> <span class="nav-text">转发流程</span></a></li></ol></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -666,20 +684,20 @@ EVPN可以同时发布二层MAC信息和三层路由信息。
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">38</span>
+          <span class="site-state-item-count">40</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-count">12</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">38</span>
+        <span class="site-state-item-count">40</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -756,7 +774,7 @@ EVPN可以同时发布二层MAC信息和三层路由信息。
       <i class="fa fa-chart-area"></i>
     </span>
       <span class="post-meta-item-text">站点总字数：</span>
-    <span title="站点总字数">91k</span>
+    <span title="站点总字数">95k</span>
 </div>
 
         
