@@ -1,51 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>ACL解析</title>
-    <url>/2021/07/23/ACL%E8%A7%A3%E6%9E%90/</url>
-    <content><![CDATA[<p>接入控制列表<br>Access Control Lists 接入控制列表 俗称防火墙</p>
-<span id="more"></span>
-
-<h1 id="ACL学习"><a href="#ACL学习" class="headerlink" title="ACL学习"></a>ACL学习</h1><h2 id="适用范围分类：安全ACLs和QoS-ACLs"><a href="#适用范围分类：安全ACLs和QoS-ACLs" class="headerlink" title="适用范围分类：安全ACLs和QoS ACLs"></a>适用范围分类：安全ACLs和QoS ACLs</h2><p>安全ACLs——控制哪些数据流允许从网络设备通过</p>
-<p>QoS策略——对数据流进行优先级分类和处理</p>
-<h2 id="组成："><a href="#组成：" class="headerlink" title="组成："></a>组成：</h2><p>ACLs —— 由ACE组成</p>
-<p>ACE接入控制列表表项 —— 申明了满足该表项的匹配条件和行为</p>
-<pre><code>示例：
-    10 permit ip host 1.1.1.1 any
-        * 10代表ACE序列号，越小越优先
-        * permit代表动作——允许 ，deny——拒绝
-        * Ip host 1.1.1.1 any表明报文必须是IP报文，且源IP必须是1.1.1.1 目的IP没限制
-</code></pre>
-<h2 id="工作原理："><a href="#工作原理：" class="headerlink" title="工作原理："></a>工作原理：</h2><ol>
-<li>当一个数据报进入一个端口，路由器检查这个数据报是否可路由。如果可以路由，检查这个端口是否有ACL控制进入数据报。如果有，根据ACL中的条件指令，检查数据报。如果数据报被允许的，就查询路由表，决定数据报的目标端口。</li>
-<li>路由器检查目标端口是否存在ACL控制流出的数据报。若不存在，这个数据报直接发送给目标端口。若存在，就再根据ACL进行取舍，再转发到目的端口。</li>
-<li>总结：一个入站数据报，由路由器处理器调入内存，读取数据报包头信息，如目标IP并搜索路由表，如有表项中有，则从路由表的选择接口转发（如果表项中没，丢弃），数据进入该接口的访问控制列表（如果没ACL，直接转发），按条件进行筛选。</li>
-</ol>
-<h2 id="两个方向："><a href="#两个方向：" class="headerlink" title="两个方向："></a>两个方向：</h2><ul>
-<li>出 out ：已经进入路由器，正离开路由器接口的数据包</li>
-<li>进 in ： 已到达路由器接口的数据包，将被路由器处理</li>
-</ul>
-<h2 id="使用："><a href="#使用：" class="headerlink" title="使用："></a>使用：</h2><h3 id="1-“3P”原则"><a href="#1-“3P”原则" class="headerlink" title="1.“3P”原则"></a>1.“3P”原则</h3><p>在路由器上应用ACL时，可以为每种协议（Per Protocol）、每个方向（Per Direction）和每个接口（Per Interface）配置一个ACL，一般称为“3P原则”。</p>
-<ol>
-<li>一个ACL只能基于一种协议，因此每种协议都需要配置单独的ACL。</li>
-<li>经过路由器接口的数据有进（ln）和出（Out）两个方向，因此在接口上配置访问控制列表也有进（In）和出（Out）两个方向。每个接口可以配置进方向的ACL，也可以配置出方向的ACL，或者两者都配置，但是一个ACL只能控制一个方向。</li>
-<li>一个ACL只能控制一个接口上的数据流量，无法同时控制多个接口上的数据流量。</li>
-</ol>
-<h3 id="2-语句顺序决定了对数据的控制顺序"><a href="#2-语句顺序决定了对数据的控制顺序" class="headerlink" title="2.语句顺序决定了对数据的控制顺序"></a>2.语句顺序决定了对数据的控制顺序</h3><p>ACL的语句是一种自上而下的逻辑排列关系。数据匹配过程中是依次对语句进行比较，一旦匹配成功则按照当前语句控制策略处理，不再与之后的语句进行比较。因此，正确的语句顺序才能得到所需的控制效果。</p>
-<h3 id="3-至少有一条允许（Permit）语句"><a href="#3-至少有一条允许（Permit）语句" class="headerlink" title="3.至少有一条允许（Permit）语句"></a>3.至少有一条允许（Permit）语句</h3><p>所有ACL的最后一条语句都是隐式拒绝语句，表示当所有语句都无法匹配时，将拒绝数据通过并自动丢弃数据，以防数据意外进入网络。因此，在写“拒绝（deny）”的ACL时，一定至少要有一条允许（Permit）语句，否则配置ACL的接口将拒绝任何数据通过，影响正常的网络通信。</p>
-<h3 id="4-最有限制性的语句应该放在ACL的靠前位置"><a href="#4-最有限制性的语句应该放在ACL的靠前位置" class="headerlink" title="4.最有限制性的语句应该放在ACL的靠前位置"></a>4.最有限制性的语句应该放在ACL的靠前位置</h3><p>最有限制性的语句放在ACL的靠前位置，可以首先过滤掉很多不符合条件的数据，节省后面语句的比较时间，从而提高路由器的工作效率。</p>
-<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p><a href="https://blog.csdn.net/ck784101777/article/details/97893744?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522162702611116780264055304%2522%252C%2522scm%2522%253A%252220140713.130102334..%2522%257D&request_id=162702611116780264055304&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~all~top_click~default-5-97893744.first_rank_v2_pc_rank_v29&utm_term=ACL&spm=1018.2226.3001.4187">ACL访问控制(华为)</a></p>
-<p><a href="https://blog.csdn.net/gaofei0428/article/details/111874262?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522162702611116780264055304%2522%252C%2522scm%2522%253A%252220140713.130102334..%2522%257D&request_id=162702611116780264055304&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~all~top_click~default-3-111874262.first_rank_v2_pc_rank_v29&utm_term=ACL&spm=1018.2226.3001.4187">ACL访问控制列表</a></p>
-]]></content>
-      <categories>
-        <category>数据通信</category>
-      </categories>
-      <tags>
-        <tag>数据通信</tag>
-        <tag>网络基础</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>ARP解析</title>
     <url>/2021/07/21/ARP%E8%A7%A3%E6%9E%90/</url>
     <content><![CDATA[<p>&emsp;&emsp;地址解析协议（Address Resolution Protocol），其基本功能为透过目标设备的IP地址，查询目标设备的MAC地址，以保证通信的顺利进行。它是IPv4中网络层必不可少的协议，不过在IPv6中已不再适用，并被邻居发现协议（NDP）所替代。</p>
@@ -124,6 +79,51 @@
       </tags>
   </entry>
   <entry>
+    <title>ACL解析</title>
+    <url>/2021/07/23/ACL%E8%A7%A3%E6%9E%90/</url>
+    <content><![CDATA[<p>接入控制列表<br>Access Control Lists 接入控制列表 俗称防火墙</p>
+<span id="more"></span>
+
+<h1 id="ACL学习"><a href="#ACL学习" class="headerlink" title="ACL学习"></a>ACL学习</h1><h2 id="适用范围分类：安全ACLs和QoS-ACLs"><a href="#适用范围分类：安全ACLs和QoS-ACLs" class="headerlink" title="适用范围分类：安全ACLs和QoS ACLs"></a>适用范围分类：安全ACLs和QoS ACLs</h2><p>安全ACLs——控制哪些数据流允许从网络设备通过</p>
+<p>QoS策略——对数据流进行优先级分类和处理</p>
+<h2 id="组成："><a href="#组成：" class="headerlink" title="组成："></a>组成：</h2><p>ACLs —— 由ACE组成</p>
+<p>ACE接入控制列表表项 —— 申明了满足该表项的匹配条件和行为</p>
+<pre><code>示例：
+    10 permit ip host 1.1.1.1 any
+        * 10代表ACE序列号，越小越优先
+        * permit代表动作——允许 ，deny——拒绝
+        * Ip host 1.1.1.1 any表明报文必须是IP报文，且源IP必须是1.1.1.1 目的IP没限制
+</code></pre>
+<h2 id="工作原理："><a href="#工作原理：" class="headerlink" title="工作原理："></a>工作原理：</h2><ol>
+<li>当一个数据报进入一个端口，路由器检查这个数据报是否可路由。如果可以路由，检查这个端口是否有ACL控制进入数据报。如果有，根据ACL中的条件指令，检查数据报。如果数据报被允许的，就查询路由表，决定数据报的目标端口。</li>
+<li>路由器检查目标端口是否存在ACL控制流出的数据报。若不存在，这个数据报直接发送给目标端口。若存在，就再根据ACL进行取舍，再转发到目的端口。</li>
+<li>总结：一个入站数据报，由路由器处理器调入内存，读取数据报包头信息，如目标IP并搜索路由表，如有表项中有，则从路由表的选择接口转发（如果表项中没，丢弃），数据进入该接口的访问控制列表（如果没ACL，直接转发），按条件进行筛选。</li>
+</ol>
+<h2 id="两个方向："><a href="#两个方向：" class="headerlink" title="两个方向："></a>两个方向：</h2><ul>
+<li>出 out ：已经进入路由器，正离开路由器接口的数据包</li>
+<li>进 in ： 已到达路由器接口的数据包，将被路由器处理</li>
+</ul>
+<h2 id="使用："><a href="#使用：" class="headerlink" title="使用："></a>使用：</h2><h3 id="1-“3P”原则"><a href="#1-“3P”原则" class="headerlink" title="1.“3P”原则"></a>1.“3P”原则</h3><p>在路由器上应用ACL时，可以为每种协议（Per Protocol）、每个方向（Per Direction）和每个接口（Per Interface）配置一个ACL，一般称为“3P原则”。</p>
+<ol>
+<li>一个ACL只能基于一种协议，因此每种协议都需要配置单独的ACL。</li>
+<li>经过路由器接口的数据有进（ln）和出（Out）两个方向，因此在接口上配置访问控制列表也有进（In）和出（Out）两个方向。每个接口可以配置进方向的ACL，也可以配置出方向的ACL，或者两者都配置，但是一个ACL只能控制一个方向。</li>
+<li>一个ACL只能控制一个接口上的数据流量，无法同时控制多个接口上的数据流量。</li>
+</ol>
+<h3 id="2-语句顺序决定了对数据的控制顺序"><a href="#2-语句顺序决定了对数据的控制顺序" class="headerlink" title="2.语句顺序决定了对数据的控制顺序"></a>2.语句顺序决定了对数据的控制顺序</h3><p>ACL的语句是一种自上而下的逻辑排列关系。数据匹配过程中是依次对语句进行比较，一旦匹配成功则按照当前语句控制策略处理，不再与之后的语句进行比较。因此，正确的语句顺序才能得到所需的控制效果。</p>
+<h3 id="3-至少有一条允许（Permit）语句"><a href="#3-至少有一条允许（Permit）语句" class="headerlink" title="3.至少有一条允许（Permit）语句"></a>3.至少有一条允许（Permit）语句</h3><p>所有ACL的最后一条语句都是隐式拒绝语句，表示当所有语句都无法匹配时，将拒绝数据通过并自动丢弃数据，以防数据意外进入网络。因此，在写“拒绝（deny）”的ACL时，一定至少要有一条允许（Permit）语句，否则配置ACL的接口将拒绝任何数据通过，影响正常的网络通信。</p>
+<h3 id="4-最有限制性的语句应该放在ACL的靠前位置"><a href="#4-最有限制性的语句应该放在ACL的靠前位置" class="headerlink" title="4.最有限制性的语句应该放在ACL的靠前位置"></a>4.最有限制性的语句应该放在ACL的靠前位置</h3><p>最有限制性的语句放在ACL的靠前位置，可以首先过滤掉很多不符合条件的数据，节省后面语句的比较时间，从而提高路由器的工作效率。</p>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p><a href="https://blog.csdn.net/ck784101777/article/details/97893744?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522162702611116780264055304%2522%252C%2522scm%2522%253A%252220140713.130102334..%2522%257D&request_id=162702611116780264055304&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~all~top_click~default-5-97893744.first_rank_v2_pc_rank_v29&utm_term=ACL&spm=1018.2226.3001.4187">ACL访问控制(华为)</a></p>
+<p><a href="https://blog.csdn.net/gaofei0428/article/details/111874262?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522162702611116780264055304%2522%252C%2522scm%2522%253A%252220140713.130102334..%2522%257D&request_id=162702611116780264055304&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~all~top_click~default-3-111874262.first_rank_v2_pc_rank_v29&utm_term=ACL&spm=1018.2226.3001.4187">ACL访问控制列表</a></p>
+]]></content>
+      <categories>
+        <category>数据通信</category>
+      </categories>
+      <tags>
+        <tag>网络基础</tag>
+        <tag>数据通信</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>BFD</title>
     <url>/2021/08/17/BFD/</url>
     <content><![CDATA[<p>双向转发检测BFD（Bidirectional Forwarding Detection）是一种全网统一的检测机制，用于快速检测、监控网络中链路或者IP路由的转发连通状况。为了减小设备故障对业务的影响，提高网络的可靠性，网络设备需要能够尽快检测到与相邻设备间的通信故障，以便及时采取措施，保证业务继续进行。在现有网络中，有些链路通常通过硬件检测信号，如SDH告警，检测链路故障，但并不是所有的介质都能够提供硬件检测。此时，应用就要依靠上层协议自身的Hello报文机制来进行故障检测。上层协议的检测时间都在1秒以上，这样的故障检测时间对某些应用来说是不能容忍的。同时，在一些小型三层网络中，如果没有部署路由协议，则无法使用路由协议的Hello报文机制来检测故障</p>
@@ -197,6 +197,38 @@ BFD通知本地OSPF进程BFD邻居不可达。
       </tags>
   </entry>
   <entry>
+    <title>Hexo+yilia左侧背景图片更换</title>
+    <url>/2021/07/23/Hexo-yilia%E5%B7%A6%E4%BE%A7%E8%83%8C%E6%99%AF%E5%9B%BE%E7%89%87%E6%9B%B4%E6%8D%A2/</url>
+    <content><![CDATA[<p>关于hexo+yilia的左侧替换原始背景方案</p>
+<span id="more"></span>
+<h2 id="修改主题配置"><a href="#修改主题配置" class="headerlink" title="修改主题配置"></a>修改主题配置</h2><h3 id="1-找到themes-yilia目录下的-config-yml-修改配置："><a href="#1-找到themes-yilia目录下的-config-yml-修改配置：" class="headerlink" title="1.找到themes\yilia目录下的_config.yml,修改配置："></a>1.找到<strong>themes\yilia</strong>目录下的_config.yml,修改配置：</h3><p>header 这一项修改为 #00000</p>
+<p><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9jZG4uYW55d2F5MTMxNC5jbi9pbWFnZTIwMTkwNzMwMTUwNDQ1LnBuZw?x-oss-process=image/format,png" alt="config.yml"></p>
+<h3 id="2-把你选好的背景图片放到themes-yilia-source目录下"><a href="#2-把你选好的背景图片放到themes-yilia-source目录下" class="headerlink" title="2.把你选好的背景图片放到themes\yilia\source目录下"></a>2.把你选好的背景图片放到<strong>themes\yilia\source</strong>目录下</h3><p>图像推荐大小：700 x 1200,出来的效果比较好</p>
+<p><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9jZG4uYW55d2F5MTMxNC5jbi9pbWFnZTIwMTkwNzMwMTUxMjMyLnBuZw?x-oss-process=image/format,png" alt="背景文件夹"></p>
+<h3 id="3-打开yilia-source目录下的main-xxxx-css-进行修改"><a href="#3-打开yilia-source目录下的main-xxxx-css-进行修改" class="headerlink" title="3.打开yilia\source目录下的main.xxxx.css,进行修改"></a>3.打开<strong>yilia\source</strong>目录下的main.xxxx.css,进行修改</h3><p>这里的xxxx是不确定的意思，有些人重新build后会和原版的不一样</p>
+<p>Crtl + F搜索 <strong>.left-col{ ，.left-col .overlay{ 以及 #mobile-nav .overlay</strong></p>
+<p><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9jZG4uYW55d2F5MTMxNC5jbi9pbWFnZTIwMTkwNzMwMTUyMTE2LnBuZw?x-oss-process=image/format,png" alt="1"></p>
+<p><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9jZG4uYW55d2F5MTMxNC5jbi9pbWFnZTIwMTkwNzMwMTUyNDMxLnBuZw?x-oss-process=image/format,png" alt="2"></p>
+<p><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9jZG4uYW55d2F5MTMxNC5jbi9pbWFnZTIwMTkwNzMwMTUyODA0LnBuZw?x-oss-process=image/format,png" alt="3"></p>
+<p>分别在括号里面加上属性：</p>
+<pre><code>1. background-image:url(&quot;图片文件名&quot;);
+</code></pre>
+<p>如果你的图片存储在网络上，可以不进行第2步，第3步添加的代码改成:</p>
+<pre><code>1. background-image:url(&quot;图片地址&quot;);
+</code></pre>
+<p>重新部署就行啦。</p>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><p><a href="https://blog.csdn.net/qq_40922859/article/details/102886979?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522162700245216780265456678%2522%252C%2522scm%2522%253A%252220140713.130102334..%2522%257D&request_id=162700245216780265456678&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~all~sobaiduend~default-1-102886979.first_rank_v2_pc_rank_v29&utm_term=yilia%E5%B7%A6%E4%BE%A7&spm=1018.2226.3001.4187">本该如此的博客</a></p>
+]]></content>
+      <categories>
+        <category>博客</category>
+      </categories>
+      <tags>
+        <tag>博客自定义</tag>
+        <tag>yilia</tag>
+        <tag>经验</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>LACP解析</title>
     <url>/2021/07/25/LACP%E8%A7%A3%E6%9E%90/</url>
     <content><![CDATA[<p>Link Aggregation Control Protocol，链路汇聚控制协议基于IEEE802.3ad标准。各厂家均支持的标准协议，LACP协议通过LACPDU（Link Aggregation Control Protocol Data Unit，链路汇聚控制协议数据单元）与对端交互信息,建立聚合端口AP ，<strong>处于动态聚合组中的接口会自动使能LACP 协议，该接口将通过发送LACPDU 向对端通告自己的系统LACP 协议优先级、系统MAC、端口的LACP 协议优先级、端口号和操作Key。</strong>对端接收到LACPDU 后，将其中的信息与其他接口所收到的信息进行比较，以选择能够进行聚合的接口，从而双方可以对接口处于聚合状态达成一致。</p>
@@ -248,41 +280,9 @@ BFD通知本地OSPF进程BFD邻居不可达。
         <category>数据通信</category>
       </categories>
       <tags>
-        <tag>数据通信</tag>
         <tag>数据链路层</tag>
+        <tag>数据通信</tag>
         <tag>交换机</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Hexo+yilia左侧背景图片更换</title>
-    <url>/2021/07/23/Hexo-yilia%E5%B7%A6%E4%BE%A7%E8%83%8C%E6%99%AF%E5%9B%BE%E7%89%87%E6%9B%B4%E6%8D%A2/</url>
-    <content><![CDATA[<p>关于hexo+yilia的左侧替换原始背景方案</p>
-<span id="more"></span>
-<h2 id="修改主题配置"><a href="#修改主题配置" class="headerlink" title="修改主题配置"></a>修改主题配置</h2><h3 id="1-找到themes-yilia目录下的-config-yml-修改配置："><a href="#1-找到themes-yilia目录下的-config-yml-修改配置：" class="headerlink" title="1.找到themes\yilia目录下的_config.yml,修改配置："></a>1.找到<strong>themes\yilia</strong>目录下的_config.yml,修改配置：</h3><p>header 这一项修改为 #00000</p>
-<p><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9jZG4uYW55d2F5MTMxNC5jbi9pbWFnZTIwMTkwNzMwMTUwNDQ1LnBuZw?x-oss-process=image/format,png" alt="config.yml"></p>
-<h3 id="2-把你选好的背景图片放到themes-yilia-source目录下"><a href="#2-把你选好的背景图片放到themes-yilia-source目录下" class="headerlink" title="2.把你选好的背景图片放到themes\yilia\source目录下"></a>2.把你选好的背景图片放到<strong>themes\yilia\source</strong>目录下</h3><p>图像推荐大小：700 x 1200,出来的效果比较好</p>
-<p><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9jZG4uYW55d2F5MTMxNC5jbi9pbWFnZTIwMTkwNzMwMTUxMjMyLnBuZw?x-oss-process=image/format,png" alt="背景文件夹"></p>
-<h3 id="3-打开yilia-source目录下的main-xxxx-css-进行修改"><a href="#3-打开yilia-source目录下的main-xxxx-css-进行修改" class="headerlink" title="3.打开yilia\source目录下的main.xxxx.css,进行修改"></a>3.打开<strong>yilia\source</strong>目录下的main.xxxx.css,进行修改</h3><p>这里的xxxx是不确定的意思，有些人重新build后会和原版的不一样</p>
-<p>Crtl + F搜索 <strong>.left-col{ ，.left-col .overlay{ 以及 #mobile-nav .overlay</strong></p>
-<p><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9jZG4uYW55d2F5MTMxNC5jbi9pbWFnZTIwMTkwNzMwMTUyMTE2LnBuZw?x-oss-process=image/format,png" alt="1"></p>
-<p><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9jZG4uYW55d2F5MTMxNC5jbi9pbWFnZTIwMTkwNzMwMTUyNDMxLnBuZw?x-oss-process=image/format,png" alt="2"></p>
-<p><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9jZG4uYW55d2F5MTMxNC5jbi9pbWFnZTIwMTkwNzMwMTUyODA0LnBuZw?x-oss-process=image/format,png" alt="3"></p>
-<p>分别在括号里面加上属性：</p>
-<pre><code>1. background-image:url(&quot;图片文件名&quot;);
-</code></pre>
-<p>如果你的图片存储在网络上，可以不进行第2步，第3步添加的代码改成:</p>
-<pre><code>1. background-image:url(&quot;图片地址&quot;);
-</code></pre>
-<p>重新部署就行啦。</p>
-<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><p><a href="https://blog.csdn.net/qq_40922859/article/details/102886979?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522162700245216780265456678%2522%252C%2522scm%2522%253A%252220140713.130102334..%2522%257D&request_id=162700245216780265456678&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~all~sobaiduend~default-1-102886979.first_rank_v2_pc_rank_v29&utm_term=yilia%E5%B7%A6%E4%BE%A7&spm=1018.2226.3001.4187">本该如此的博客</a></p>
-]]></content>
-      <categories>
-        <category>博客</category>
-      </categories>
-      <tags>
-        <tag>博客自定义</tag>
-        <tag>yilia</tag>
-        <tag>经验</tag>
       </tags>
   </entry>
   <entry>
@@ -300,8 +300,8 @@ BFD通知本地OSPF进程BFD邻居不可达。
         <category>数据通信</category>
       </categories>
       <tags>
-        <tag>数据通信</tag>
         <tag>数据链路层</tag>
+        <tag>数据通信</tag>
         <tag>网络</tag>
       </tags>
   </entry>
@@ -453,95 +453,6 @@ ILM
       <tags>
         <tag>数据通信</tag>
         <tag>网络</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>OSPF笔记</title>
-    <url>/2021/07/29/OSPF%E7%AC%94%E8%AE%B0/</url>
-    <content><![CDATA[<p>OSPF基本理解</p>
-<span id="more"></span>
-
-<h1 id="OSPF基础"><a href="#OSPF基础" class="headerlink" title="OSPF基础"></a>OSPF基础</h1><h2 id="五种报文三张表三个阶段"><a href="#五种报文三张表三个阶段" class="headerlink" title="五种报文三张表三个阶段"></a>五种报文三张表三个阶段</h2><h3 id="五种报文"><a href="#五种报文" class="headerlink" title="五种报文"></a>五种报文</h3><p>Hello:<br>携带参数，建立和维持邻居关系<br>在多路访问网络中选举DR、BDR<br>DBD:<br>携带LSA头部信息，向邻居描述LSDB<br>LSR:<br>向邻居请求特定的LSA<br>LSU:<br>携带LSA，向邻居通告拓扑信息<br>LSAck:<br>对LSU中的LSA进行确认</p>
-<h3 id="三张表"><a href="#三张表" class="headerlink" title="三张表"></a>三张表</h3><p>邻居表 —— 存储双向通信的OSPF路由器列表信息<br>拓扑表 —— 描述拓扑信息的LSA存储在LSDB中<br>路由表 —— 对LSA进行SPF计算，得到的最佳路由</p>
-<h3 id="三个阶段"><a href="#三个阶段" class="headerlink" title="三个阶段"></a>三个阶段</h3><p>1.通过Hello报文发现形成邻居 —— 形成邻居表<br>2.邻接路由器间泛洪LSA，直到LSDB同步 —— 形成LSDB<br>3.每台路由器进行SPF运算，得到最佳路由 —— 形成路由表</p>
-<blockquote>
-<h4 id="路由通告（第二阶段）详细"><a href="#路由通告（第二阶段）详细" class="headerlink" title="路由通告（第二阶段）详细"></a>路由通告（第二阶段）详细</h4><p>邻接路由器交换DBD，发现少了对方某条路由。<br>通过LSR请求缺失路由信息。<br>对方回应LSU发送缺失路由信息。<br>发送LSAck确认收到了需要的路由信息。<br>双方LSDB相同，路由通告结束。</p>
-</blockquote>
-<h2 id="工作状态总结"><a href="#工作状态总结" class="headerlink" title="工作状态总结"></a>工作状态总结</h2><p>(1) 启动进程，从接口发送Hello包<br>(2) 收到Hello包，检查参数，匹配，则把hello包中的router-id放入邻居表，标识为Init状态；并将该Router ID，添加到Hello包（自己将要从该接口发送出去的Hello包）的邻居列表中。<br>(3) 收到的hello包的邻居列表中含有自己的Router ID，则标识为Two-way状态。<br>(4) 点对点链路形成邻接关系，广播、NBMA网络类型的链路，进行DR选举。<br>(5) 形成邻接关系，进入exstart（准启动）状态。通过DBD报文选举主从路由器。<br>(6) 主从路由器选举完成，进入Exchange（交换）状态，通过DBD报文描述LSDB。<br>(7) 进入Loading状态，对链路状态数据库和收到的DBD的LSA头部进行比较，发现自己数据库中没有的LSA就发送LSR，向邻居请求该LSA；邻居收到LSR后，回应LSU；收到邻居发来的LSU，存储这些LSA到自己的链路状态数据库，并发送LSAck确认。<br>(8) 进入FULL状态，LSDB同步，同一个区域的OSPF路由器都拥有相同链路状态数据库<br>(9) 定期发送Hello包，维护邻居关系。<br>(10) 每台路由器独立进行SPF计算，选择最佳路径，放入路由表。</p>
-<h2 id="邻居邻接关系建立"><a href="#邻居邻接关系建立" class="headerlink" title="邻居邻接关系建立"></a>邻居邻接关系建立</h2><h3 id="建立邻居邻接"><a href="#建立邻居邻接" class="headerlink" title="建立邻居邻接"></a>建立邻居邻接</h3><p><font size="4" color="#F4A460">Down</font>第一步中，希望建立完全OSPF邻居邻接关系的路由器之间交换OSPF HELLO包。双方的OSPF邻居都处于Down状态，这是邻居会话的初始状态。<br><font size="4" color="#F4A460">Init</font>当路由器从邻居收到了一个HELLO包，但没有在邻居的HELLO包中看到自己的路由器ID时，它将转换为Init状态。在此状态中，路由器将记录所有的邻居路由器ID，并开始将它们包含在发给邻居的HELLO包中。<br><font size="4" color="#F4A460">2-Way</font>当路由器在从邻居收到的HELLO包中看到自己的路由器ID时，它将转为2-Way状态。这表示已和邻居之间建立了双向通信。在多路访问链路上，在2-Way状态将确定DR（指定路由器）和BDR（备份指定路由器）角色，这会优化广播网段中的信息交换过程。</p>
-<!--more-->
-
-<p><img src="/2021/07/29/OSPF%E7%AC%94%E8%AE%B0/OSPF%E5%BB%BA%E7%AB%8B%E9%82%BB%E6%8E%A5.png" alt="OSPF建立邻接"></p>
-<h3 id="同步OSPF数据库"><a href="#同步OSPF数据库" class="headerlink" title="同步OSPF数据库"></a>同步OSPF数据库</h3><p><font size="4" color="#F4A460">ExStart</font>下一步中，路由器开始交换OSPF数据库（OSPF DATABASE）内容。此过程第一阶段是确定主/从（MASTER/SLAVE）关系，并选择邻接建立的初始序列号。路由器通过交换DBD包来完成此操作。当路由器收到初始的DBD包时，它把发出这个DBD包的邻居状态转为ExStart，使用DBD携带的LSA填充自己的数据库汇总列表，并发送自己的空DBD包。在DBD交换过程中，有更高路由器ID的路由器将成为主路由器，它是唯一可以增加序列号值的路由器。<br><font size="4" color="#F4A460">Exchange</font>主/从关系选择完成后，可以开始交换数据库。此时邻居状态转为Exchange，在此状态通过发送包含数据库汇总列表中所有LSA头部的DBD包，向邻居描述自己的数据库。数据库汇总列表描述了路由器数据库中所有的LSA，但不包含OSPF数据库的具体内容。为了描述数据库内容，OSPF邻居必须交换一个或多个DBD包。<br><font size="4" color="#F4A460">Loading</font>路由器将自己的数据库汇总列表与从邻居收到的列表进行比较，如果有不同，它将缺失的LSA增加到链路状态请求列表中（LSR）。此时，邻居进入Loading状态。发送一个LSR包给邻居，请求LSR列表中缺失LSA的完整内容。邻居使用LSU包进行应答，其中包含缺失LSA的完整版本。<br><font size="4" color="#F4A460">Full</font>最后，当邻居拥有完整版本的LSDB后，两邻居状态都将变成Full，表示路由器上的数据库已同步且邻居完全邻接。P152</p>
-<p><img src="/2021/07/29/OSPF%E7%AC%94%E8%AE%B0/%E5%90%8C%E6%AD%A5OSPF%E6%95%B0%E6%8D%AE%E5%BA%93.png" alt="同步OSPF数据库"></p>
-<h2 id="LSA类型"><a href="#LSA类型" class="headerlink" title="LSA类型"></a>LSA类型</h2><p>LSA类型1 – 路由器LSA Router LSA<br>LSA类型2 – 网络LSA Network LSA<br>LSA类型3 – 网络汇总LSA Network Summary LSA<br>LSA类型4 –  ASBR汇总LSA ASBR Summary LSA<br>LSA类型5 – 自治系统外部LSA AS External LSA<br>LSA类型7 –  NSSA外部LSA NSSA External LSA</p>
-<table>
-<thead>
-<tr>
-<th align="left">LSA类型</th>
-<th align="left">由谁产生的</th>
-<th align="left">作用</th>
-<th align="left">路由表显示</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="left">LSA 1</td>
-<td align="left">每个OSPF路由器</td>
-<td align="left">描述区域内部与路由器直连的链路的信息</td>
-<td align="left">O</td>
-</tr>
-<tr>
-<td align="left">LSA 2</td>
-<td align="left">DR</td>
-<td align="left">描述广播型网络信息</td>
-<td align="left">O</td>
-</tr>
-<tr>
-<td align="left">LSA 3</td>
-<td align="left">ABR</td>
-<td align="left">描述区域间信息</td>
-<td align="left">O IA</td>
-</tr>
-<tr>
-<td align="left">LSA 4</td>
-<td align="left">ABR</td>
-<td align="left">描述ASBR可达信息</td>
-<td align="left">OIA</td>
-</tr>
-<tr>
-<td align="left">LSA 5</td>
-<td align="left">ASBR</td>
-<td align="left">描述引入的外部路由</td>
-<td align="left">O E2 / O E1</td>
-</tr>
-<tr>
-<td align="left">LSA 7</td>
-<td align="left">ASBR</td>
-<td align="left">在NSSA区域中描述引入的外部路由</td>
-<td align="left">O N2 / O N1</td>
-</tr>
-</tbody></table>
-<h2 id="区域类型"><a href="#区域类型" class="headerlink" title="区域类型"></a>区域类型</h2><h3 id="骨干区域"><a href="#骨干区域" class="headerlink" title="骨干区域"></a>骨干区域</h3><h3 id="标准区域"><a href="#标准区域" class="headerlink" title="标准区域"></a>标准区域</h3><pre><code>标准的OSPF区域，能发起也能接收区域内路由、区域间路由、外部路由
-骨干区域也是一个标准区域。
-</code></pre>
-<h3 id="特殊区域"><a href="#特殊区域" class="headerlink" title="特殊区域"></a><font color="#FF0000" size="5">特殊区域</font></h3><p>1、Stub 末梢区域 Stub Area 末梢区域，区域内路由器不需要根据特定的外部路由来选择离开区域的出口。区域的ABR会阻止5类LSA进入，减少了LSA数量，同时该区域的ABR会自动下发一条使用3类LSA描述的缺省路由。另外ABR依然会将区域间路由即３类LSA注入到stub区域。此时<font color="#FF0000" size="3.5">stub区域存在1类、2类、3类以及使用3类描述缺省路由的LSA。</font></p>
-<p>2、Totally Stub Area 在Stub基础上，<font color="#FF0000" size="3.5">进一步减少3类LSA，但是保留使用3类LSA描述的缺省路由。</font>stub 区域不能引入外部路由。</p>
-<p>3、非完全末梢区域（Not-So-Stub-Area） Stub 区域阻挡4、5类LSA进入区域，并且禁止接入此区域的路由器引入外部路由。当区域内的路由器需要引入外部路由时，stub不满足组网需要，但是也要使用stub的特性减少LSA数量。此时，使用NSSA。<font color="#FF0000" size="3.5">NSSA阻挡4、5类LSA进入区域，并且允许路由器引入少量的外部路由。被引入的外部路由以７类LSA描述</font>，并且７类LSA只能在NSSA区域内洪泛，不允许进入Area0，为了使的被NSSA引入的外部路由能够在OSPF其他区域内学习到，<font color="#FF0000" size="3.5">NSSA的 ABR会将7类LSA转换为5类LSA，然后注入到Area0，从而洪泛到其他区域</font>。另外NSSA中的ABR会下发7类LSA描述的缺省路由，指导路由转发到Area０区域。NSSA引入的外部路由，应该是末端组网，缺省路由不能指向此末端组网。</p>
-<p>4、Totally NSSA  <font color="#FF0000" size="3.5">NSSA的ABR将3类LSA阻挡，过滤掉域间路由，但是保留描述缺省路由的3类LSA。</font></p>
-<p><img src="/2021/07/29/OSPF%E7%AC%94%E8%AE%B0/OSPF%E7%89%B9%E6%AE%8A%E5%8C%BA%E5%9F%9F.png" alt="OSPF特殊区域"></p>
-<p><font size="3.5" color="#F4A460">大白话浓缩下</font></p>
-<p>stub过滤4,5类lsa，ABR会产生缺省的3类lsa，区域内不能引入外部路由</p>
-<p>total stub过滤3，4，5类lsa，ABR会产生缺省的3类lsa，区域内不能引入外部路由</p>
-<p>nssa过滤4，5类lsa，ABR会产生缺省的7类lsa，该区域能引入外部路由</p>
-<p>total nssa过滤3，4，5类lsa，ABR会产生缺省的3类lsa，该区域能引入外部路由</p>
-]]></content>
-      <categories>
-        <category>路由</category>
-      </categories>
-      <tags>
-        <tag>网络</tag>
-        <tag>路由</tag>
-        <tag>OSPF</tag>
       </tags>
   </entry>
   <entry>
@@ -760,6 +671,95 @@ BPDU处理变化:
         <tag>数据通信</tag>
         <tag>交换</tag>
         <tag>STP</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>OSPF笔记</title>
+    <url>/2021/07/29/OSPF%E7%AC%94%E8%AE%B0/</url>
+    <content><![CDATA[<p>OSPF基本理解</p>
+<span id="more"></span>
+
+<h1 id="OSPF基础"><a href="#OSPF基础" class="headerlink" title="OSPF基础"></a>OSPF基础</h1><h2 id="五种报文三张表三个阶段"><a href="#五种报文三张表三个阶段" class="headerlink" title="五种报文三张表三个阶段"></a>五种报文三张表三个阶段</h2><h3 id="五种报文"><a href="#五种报文" class="headerlink" title="五种报文"></a>五种报文</h3><p>Hello:<br>携带参数，建立和维持邻居关系<br>在多路访问网络中选举DR、BDR<br>DBD:<br>携带LSA头部信息，向邻居描述LSDB<br>LSR:<br>向邻居请求特定的LSA<br>LSU:<br>携带LSA，向邻居通告拓扑信息<br>LSAck:<br>对LSU中的LSA进行确认</p>
+<h3 id="三张表"><a href="#三张表" class="headerlink" title="三张表"></a>三张表</h3><p>邻居表 —— 存储双向通信的OSPF路由器列表信息<br>拓扑表 —— 描述拓扑信息的LSA存储在LSDB中<br>路由表 —— 对LSA进行SPF计算，得到的最佳路由</p>
+<h3 id="三个阶段"><a href="#三个阶段" class="headerlink" title="三个阶段"></a>三个阶段</h3><p>1.通过Hello报文发现形成邻居 —— 形成邻居表<br>2.邻接路由器间泛洪LSA，直到LSDB同步 —— 形成LSDB<br>3.每台路由器进行SPF运算，得到最佳路由 —— 形成路由表</p>
+<blockquote>
+<h4 id="路由通告（第二阶段）详细"><a href="#路由通告（第二阶段）详细" class="headerlink" title="路由通告（第二阶段）详细"></a>路由通告（第二阶段）详细</h4><p>邻接路由器交换DBD，发现少了对方某条路由。<br>通过LSR请求缺失路由信息。<br>对方回应LSU发送缺失路由信息。<br>发送LSAck确认收到了需要的路由信息。<br>双方LSDB相同，路由通告结束。</p>
+</blockquote>
+<h2 id="工作状态总结"><a href="#工作状态总结" class="headerlink" title="工作状态总结"></a>工作状态总结</h2><p>(1) 启动进程，从接口发送Hello包<br>(2) 收到Hello包，检查参数，匹配，则把hello包中的router-id放入邻居表，标识为Init状态；并将该Router ID，添加到Hello包（自己将要从该接口发送出去的Hello包）的邻居列表中。<br>(3) 收到的hello包的邻居列表中含有自己的Router ID，则标识为Two-way状态。<br>(4) 点对点链路形成邻接关系，广播、NBMA网络类型的链路，进行DR选举。<br>(5) 形成邻接关系，进入exstart（准启动）状态。通过DBD报文选举主从路由器。<br>(6) 主从路由器选举完成，进入Exchange（交换）状态，通过DBD报文描述LSDB。<br>(7) 进入Loading状态，对链路状态数据库和收到的DBD的LSA头部进行比较，发现自己数据库中没有的LSA就发送LSR，向邻居请求该LSA；邻居收到LSR后，回应LSU；收到邻居发来的LSU，存储这些LSA到自己的链路状态数据库，并发送LSAck确认。<br>(8) 进入FULL状态，LSDB同步，同一个区域的OSPF路由器都拥有相同链路状态数据库<br>(9) 定期发送Hello包，维护邻居关系。<br>(10) 每台路由器独立进行SPF计算，选择最佳路径，放入路由表。</p>
+<h2 id="邻居邻接关系建立"><a href="#邻居邻接关系建立" class="headerlink" title="邻居邻接关系建立"></a>邻居邻接关系建立</h2><h3 id="建立邻居邻接"><a href="#建立邻居邻接" class="headerlink" title="建立邻居邻接"></a>建立邻居邻接</h3><p><font size="4" color="#F4A460">Down</font>第一步中，希望建立完全OSPF邻居邻接关系的路由器之间交换OSPF HELLO包。双方的OSPF邻居都处于Down状态，这是邻居会话的初始状态。<br><font size="4" color="#F4A460">Init</font>当路由器从邻居收到了一个HELLO包，但没有在邻居的HELLO包中看到自己的路由器ID时，它将转换为Init状态。在此状态中，路由器将记录所有的邻居路由器ID，并开始将它们包含在发给邻居的HELLO包中。<br><font size="4" color="#F4A460">2-Way</font>当路由器在从邻居收到的HELLO包中看到自己的路由器ID时，它将转为2-Way状态。这表示已和邻居之间建立了双向通信。在多路访问链路上，在2-Way状态将确定DR（指定路由器）和BDR（备份指定路由器）角色，这会优化广播网段中的信息交换过程。</p>
+<!--more-->
+
+<p><img src="/2021/07/29/OSPF%E7%AC%94%E8%AE%B0/OSPF%E5%BB%BA%E7%AB%8B%E9%82%BB%E6%8E%A5.png" alt="OSPF建立邻接"></p>
+<h3 id="同步OSPF数据库"><a href="#同步OSPF数据库" class="headerlink" title="同步OSPF数据库"></a>同步OSPF数据库</h3><p><font size="4" color="#F4A460">ExStart</font>下一步中，路由器开始交换OSPF数据库（OSPF DATABASE）内容。此过程第一阶段是确定主/从（MASTER/SLAVE）关系，并选择邻接建立的初始序列号。路由器通过交换DBD包来完成此操作。当路由器收到初始的DBD包时，它把发出这个DBD包的邻居状态转为ExStart，使用DBD携带的LSA填充自己的数据库汇总列表，并发送自己的空DBD包。在DBD交换过程中，有更高路由器ID的路由器将成为主路由器，它是唯一可以增加序列号值的路由器。<br><font size="4" color="#F4A460">Exchange</font>主/从关系选择完成后，可以开始交换数据库。此时邻居状态转为Exchange，在此状态通过发送包含数据库汇总列表中所有LSA头部的DBD包，向邻居描述自己的数据库。数据库汇总列表描述了路由器数据库中所有的LSA，但不包含OSPF数据库的具体内容。为了描述数据库内容，OSPF邻居必须交换一个或多个DBD包。<br><font size="4" color="#F4A460">Loading</font>路由器将自己的数据库汇总列表与从邻居收到的列表进行比较，如果有不同，它将缺失的LSA增加到链路状态请求列表中（LSR）。此时，邻居进入Loading状态。发送一个LSR包给邻居，请求LSR列表中缺失LSA的完整内容。邻居使用LSU包进行应答，其中包含缺失LSA的完整版本。<br><font size="4" color="#F4A460">Full</font>最后，当邻居拥有完整版本的LSDB后，两邻居状态都将变成Full，表示路由器上的数据库已同步且邻居完全邻接。P152</p>
+<p><img src="/2021/07/29/OSPF%E7%AC%94%E8%AE%B0/%E5%90%8C%E6%AD%A5OSPF%E6%95%B0%E6%8D%AE%E5%BA%93.png" alt="同步OSPF数据库"></p>
+<h2 id="LSA类型"><a href="#LSA类型" class="headerlink" title="LSA类型"></a>LSA类型</h2><p>LSA类型1 – 路由器LSA Router LSA<br>LSA类型2 – 网络LSA Network LSA<br>LSA类型3 – 网络汇总LSA Network Summary LSA<br>LSA类型4 –  ASBR汇总LSA ASBR Summary LSA<br>LSA类型5 – 自治系统外部LSA AS External LSA<br>LSA类型7 –  NSSA外部LSA NSSA External LSA</p>
+<table>
+<thead>
+<tr>
+<th align="left">LSA类型</th>
+<th align="left">由谁产生的</th>
+<th align="left">作用</th>
+<th align="left">路由表显示</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">LSA 1</td>
+<td align="left">每个OSPF路由器</td>
+<td align="left">描述区域内部与路由器直连的链路的信息</td>
+<td align="left">O</td>
+</tr>
+<tr>
+<td align="left">LSA 2</td>
+<td align="left">DR</td>
+<td align="left">描述广播型网络信息</td>
+<td align="left">O</td>
+</tr>
+<tr>
+<td align="left">LSA 3</td>
+<td align="left">ABR</td>
+<td align="left">描述区域间信息</td>
+<td align="left">O IA</td>
+</tr>
+<tr>
+<td align="left">LSA 4</td>
+<td align="left">ABR</td>
+<td align="left">描述ASBR可达信息</td>
+<td align="left">OIA</td>
+</tr>
+<tr>
+<td align="left">LSA 5</td>
+<td align="left">ASBR</td>
+<td align="left">描述引入的外部路由</td>
+<td align="left">O E2 / O E1</td>
+</tr>
+<tr>
+<td align="left">LSA 7</td>
+<td align="left">ASBR</td>
+<td align="left">在NSSA区域中描述引入的外部路由</td>
+<td align="left">O N2 / O N1</td>
+</tr>
+</tbody></table>
+<h2 id="区域类型"><a href="#区域类型" class="headerlink" title="区域类型"></a>区域类型</h2><h3 id="骨干区域"><a href="#骨干区域" class="headerlink" title="骨干区域"></a>骨干区域</h3><h3 id="标准区域"><a href="#标准区域" class="headerlink" title="标准区域"></a>标准区域</h3><pre><code>标准的OSPF区域，能发起也能接收区域内路由、区域间路由、外部路由
+骨干区域也是一个标准区域。
+</code></pre>
+<h3 id="特殊区域"><a href="#特殊区域" class="headerlink" title="特殊区域"></a><font color="#FF0000" size="5">特殊区域</font></h3><p>1、Stub 末梢区域 Stub Area 末梢区域，区域内路由器不需要根据特定的外部路由来选择离开区域的出口。区域的ABR会阻止5类LSA进入，减少了LSA数量，同时该区域的ABR会自动下发一条使用3类LSA描述的缺省路由。另外ABR依然会将区域间路由即３类LSA注入到stub区域。此时<font color="#FF0000" size="3.5">stub区域存在1类、2类、3类以及使用3类描述缺省路由的LSA。</font></p>
+<p>2、Totally Stub Area 在Stub基础上，<font color="#FF0000" size="3.5">进一步减少3类LSA，但是保留使用3类LSA描述的缺省路由。</font>stub 区域不能引入外部路由。</p>
+<p>3、非完全末梢区域（Not-So-Stub-Area） Stub 区域阻挡4、5类LSA进入区域，并且禁止接入此区域的路由器引入外部路由。当区域内的路由器需要引入外部路由时，stub不满足组网需要，但是也要使用stub的特性减少LSA数量。此时，使用NSSA。<font color="#FF0000" size="3.5">NSSA阻挡4、5类LSA进入区域，并且允许路由器引入少量的外部路由。被引入的外部路由以７类LSA描述</font>，并且７类LSA只能在NSSA区域内洪泛，不允许进入Area0，为了使的被NSSA引入的外部路由能够在OSPF其他区域内学习到，<font color="#FF0000" size="3.5">NSSA的 ABR会将7类LSA转换为5类LSA，然后注入到Area0，从而洪泛到其他区域</font>。另外NSSA中的ABR会下发7类LSA描述的缺省路由，指导路由转发到Area０区域。NSSA引入的外部路由，应该是末端组网，缺省路由不能指向此末端组网。</p>
+<p>4、Totally NSSA  <font color="#FF0000" size="3.5">NSSA的ABR将3类LSA阻挡，过滤掉域间路由，但是保留描述缺省路由的3类LSA。</font></p>
+<p><img src="/2021/07/29/OSPF%E7%AC%94%E8%AE%B0/OSPF%E7%89%B9%E6%AE%8A%E5%8C%BA%E5%9F%9F.png" alt="OSPF特殊区域"></p>
+<p><font size="3.5" color="#F4A460">大白话浓缩下</font></p>
+<p>stub过滤4,5类lsa，ABR会产生缺省的3类lsa，区域内不能引入外部路由</p>
+<p>total stub过滤3，4，5类lsa，ABR会产生缺省的3类lsa，区域内不能引入外部路由</p>
+<p>nssa过滤4，5类lsa，ABR会产生缺省的7类lsa，该区域能引入外部路由</p>
+<p>total nssa过滤3，4，5类lsa，ABR会产生缺省的3类lsa，该区域能引入外部路由</p>
+]]></content>
+      <categories>
+        <category>路由</category>
+      </categories>
+      <tags>
+        <tag>网络</tag>
+        <tag>路由</tag>
+        <tag>OSPF</tag>
       </tags>
   </entry>
   <entry>
@@ -1008,6 +1008,35 @@ ConnectionPlugins：连接插件，Ansible和Host通信使用
       </tags>
   </entry>
   <entry>
+    <title>openstack</title>
+    <url>/2021/08/12/openstack/</url>
+    <content><![CDATA[<p>云操作系统（OpenStack），用于联动计算、存储、网络资源，OpenStack和控制器以及网络增值设备如负载均衡设备或防火墙设备采用plugin对接。</p>
+<span id="more"></span>
+
+<h1 id="OPENSTACK"><a href="#OPENSTACK" class="headerlink" title="OPENSTACK"></a>OPENSTACK</h1><h2 id="基础"><a href="#基础" class="headerlink" title="基础"></a>基础</h2><p><img src="/2021/08/12/openstack/%E6%95%B4%E4%BD%93%E6%9E%B6%E6%9E%84.png" alt="整体架构"></p>
+<h3 id="Openstack架构分布特点"><a href="#Openstack架构分布特点" class="headerlink" title="Openstack架构分布特点"></a>Openstack架构分布特点</h3><p>Openstack采用模块化的设计，每个功能由单一的模块组件提供，模块与模块之间使用标准的RPC远程过程调用机制，接口为Restful API。</p>
+<h3 id="RPC"><a href="#RPC" class="headerlink" title="RPC"></a>RPC</h3><p>RPC定义：Remote Procedure Call（远程过程调用），是从远程主机调用一个过程/函数的机制。<br>RPC目标：让远程过程（服务）调用透明化；Openstack整体组件间的通信机制采用的就是RPC的方式。</p>
+<p><img src="/2021/08/12/openstack/RPC.png" alt="RPC"></p>
+<h3 id="Restful-API"><a href="#Restful-API" class="headerlink" title="Restful API"></a>Restful API</h3><p>Restful api 是openstack各服务调用的接口，简单理解为可以通过网络去调用的函数。<br>⚫ 它是一种通过使用URL链接，通过HTTP协议里面，四个表示操作方式的动词：POST、GET、PUT、DELETE来对资源进行统一的操作。<br>⚫ Restful api的四大特点<br>➢ 使用HTTP方法；调用命令的CRUD(Create, Read, Update, Delete)，对应着HTTP的四个动作。<br>➢ 无状态；无需关注服务端对会话的保存，更易于实现集群、负载均衡等功能，实现组件间的松耦合。<br>➢ URI命名/组织采用类似目录结构；通过目录的方式，对资源进行管理。<br>➢ 采用XML、JSON传输信息；易于编程解读。</p>
+<h3 id="openstack的重要组件"><a href="#openstack的重要组件" class="headerlink" title="openstack的重要组件"></a>openstack的重要组件</h3><p>Nova —— 提供计算，按需响应包括生成，调度，回收虚拟机等<br>Neutron —— 提供网络连接<br>Cinder —— 提供块存储<br>Keystone —— 提供认证和授权<br>Glance —— 存储和检索虚拟机磁盘镜像</p>
+<h3 id="各组件关联关系"><a href="#各组件关联关系" class="headerlink" title="各组件关联关系"></a>各组件关联关系</h3><p><img src="/2021/08/12/openstack/%E9%87%8D%E8%A6%81%E7%BB%84%E4%BB%B6%E5%85%B3%E8%81%94%E5%85%B3%E7%B3%BB.png" alt="重要组件关联关系"></p>
+<h3 id="MQ"><a href="#MQ" class="headerlink" title="MQ"></a>MQ</h3><p>⚫ MQ全称为Message Queue，应用程序通过读写出入队列的消息（针对应用程序的数据）来通信，而无需专用连接来链接它们。<br>⚫ 服务内组件之间的消息全部通过MQ来进行转发，包括控制、查询、监控指标等。<br><img src="/2021/08/12/openstack/MQ%E4%BC%A0%E8%BE%93.png" alt="MQ传输"></p>
+<h4 id="RabbitMQ"><a href="#RabbitMQ" class="headerlink" title="RabbitMQ"></a>RabbitMQ</h4><p><strong>RabbitMQ的特点</strong><br>➢ 健壮的message（可靠性、灵活的routing、集群）<br>➢ 使用简单<br>➢ 支持所有主流操作系统<br>➢ 支持大量的平台</p>
+<p><img src="/2021/08/12/openstack/RMQ%E7%89%B9%E7%82%B9.png" alt="RMQ特点"></p>
+<p><strong>RabbitMQ中的角色</strong><br>➢ Producer：消息生产者，就是投递消息的程序。<br>➢ Consumer：消息消费者，就是接受消息的程序。<br><strong>RabbitMQ的工作流程</strong><br>RabbitMQ工作中有一下几个概念需要理解：<br>➢ Exchange：消息交换机制，它指定消息按什么规则，路由到哪个队列。<br>➢ Queue：消息队列载体，每个消息都会被投入到一个或多个队列。<br>➢ Binding：绑定，它的作用就是把exchange和queue按照路由规则绑定起来。<br>➢ Routing Key：路由关键字，exchange根据这个关键字进行消息投递。<br>➢ Connection： 就是一个TCP连接。Producer和Consumer都是通过TCP连接到RabbitMQ Server的。以后我们可以看到，程序的起始就是建立这个TCP连接。<br>➢ Channel：消息通道，是在TCP连接中的虚拟连接，在客户端的每个TCP连接里，可建立多个channel，每个channel代表一个会话任务</p>
+<p><strong>RabbitMQ高可用模式</strong><br>RabbitMQ作为整个openstack通讯的载体平台，如服务出现问题则会造成整个系统的瘫痪，所以现网对RabbitMQ基本是以集群的模式进行，常用集群分普通集群和镜像集群两种。</p>
+<p><img src="/2021/08/12/openstack/RabbitMQ%E9%AB%98%E5%8F%AF%E7%94%A8%E6%A8%A1%E5%BC%8F.png" alt="RabbitMQ高可用模式"></p>
+]]></content>
+      <categories>
+        <category>openstack</category>
+      </categories>
+      <tags>
+        <tag>网络</tag>
+        <tag>openstack</tag>
+        <tag>Apache</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Hello World</title>
     <url>/2021/07/20/hello-world/</url>
     <content><![CDATA[<p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
@@ -1231,35 +1260,6 @@ grep -i 关键字 file 忽略大小写
       </tags>
   </entry>
   <entry>
-    <title>openstack</title>
-    <url>/2021/08/12/openstack/</url>
-    <content><![CDATA[<p>云操作系统（OpenStack），用于联动计算、存储、网络资源，OpenStack和控制器以及网络增值设备如负载均衡设备或防火墙设备采用plugin对接。</p>
-<span id="more"></span>
-
-<h1 id="OPENSTACK"><a href="#OPENSTACK" class="headerlink" title="OPENSTACK"></a>OPENSTACK</h1><h2 id="基础"><a href="#基础" class="headerlink" title="基础"></a>基础</h2><p><img src="/2021/08/12/openstack/%E6%95%B4%E4%BD%93%E6%9E%B6%E6%9E%84.png" alt="整体架构"></p>
-<h3 id="Openstack架构分布特点"><a href="#Openstack架构分布特点" class="headerlink" title="Openstack架构分布特点"></a>Openstack架构分布特点</h3><p>Openstack采用模块化的设计，每个功能由单一的模块组件提供，模块与模块之间使用标准的RPC远程过程调用机制，接口为Restful API。</p>
-<h3 id="RPC"><a href="#RPC" class="headerlink" title="RPC"></a>RPC</h3><p>RPC定义：Remote Procedure Call（远程过程调用），是从远程主机调用一个过程/函数的机制。<br>RPC目标：让远程过程（服务）调用透明化；Openstack整体组件间的通信机制采用的就是RPC的方式。</p>
-<p><img src="/2021/08/12/openstack/RPC.png" alt="RPC"></p>
-<h3 id="Restful-API"><a href="#Restful-API" class="headerlink" title="Restful API"></a>Restful API</h3><p>Restful api 是openstack各服务调用的接口，简单理解为可以通过网络去调用的函数。<br>⚫ 它是一种通过使用URL链接，通过HTTP协议里面，四个表示操作方式的动词：POST、GET、PUT、DELETE来对资源进行统一的操作。<br>⚫ Restful api的四大特点<br>➢ 使用HTTP方法；调用命令的CRUD(Create, Read, Update, Delete)，对应着HTTP的四个动作。<br>➢ 无状态；无需关注服务端对会话的保存，更易于实现集群、负载均衡等功能，实现组件间的松耦合。<br>➢ URI命名/组织采用类似目录结构；通过目录的方式，对资源进行管理。<br>➢ 采用XML、JSON传输信息；易于编程解读。</p>
-<h3 id="openstack的重要组件"><a href="#openstack的重要组件" class="headerlink" title="openstack的重要组件"></a>openstack的重要组件</h3><p>Nova —— 提供计算，按需响应包括生成，调度，回收虚拟机等<br>Neutron —— 提供网络连接<br>Cinder —— 提供块存储<br>Keystone —— 提供认证和授权<br>Glance —— 存储和检索虚拟机磁盘镜像</p>
-<h3 id="各组件关联关系"><a href="#各组件关联关系" class="headerlink" title="各组件关联关系"></a>各组件关联关系</h3><p><img src="/2021/08/12/openstack/%E9%87%8D%E8%A6%81%E7%BB%84%E4%BB%B6%E5%85%B3%E8%81%94%E5%85%B3%E7%B3%BB.png" alt="重要组件关联关系"></p>
-<h3 id="MQ"><a href="#MQ" class="headerlink" title="MQ"></a>MQ</h3><p>⚫ MQ全称为Message Queue，应用程序通过读写出入队列的消息（针对应用程序的数据）来通信，而无需专用连接来链接它们。<br>⚫ 服务内组件之间的消息全部通过MQ来进行转发，包括控制、查询、监控指标等。<br><img src="/2021/08/12/openstack/MQ%E4%BC%A0%E8%BE%93.png" alt="MQ传输"></p>
-<h4 id="RabbitMQ"><a href="#RabbitMQ" class="headerlink" title="RabbitMQ"></a>RabbitMQ</h4><p><strong>RabbitMQ的特点</strong><br>➢ 健壮的message（可靠性、灵活的routing、集群）<br>➢ 使用简单<br>➢ 支持所有主流操作系统<br>➢ 支持大量的平台</p>
-<p><img src="/2021/08/12/openstack/RMQ%E7%89%B9%E7%82%B9.png" alt="RMQ特点"></p>
-<p><strong>RabbitMQ中的角色</strong><br>➢ Producer：消息生产者，就是投递消息的程序。<br>➢ Consumer：消息消费者，就是接受消息的程序。<br><strong>RabbitMQ的工作流程</strong><br>RabbitMQ工作中有一下几个概念需要理解：<br>➢ Exchange：消息交换机制，它指定消息按什么规则，路由到哪个队列。<br>➢ Queue：消息队列载体，每个消息都会被投入到一个或多个队列。<br>➢ Binding：绑定，它的作用就是把exchange和queue按照路由规则绑定起来。<br>➢ Routing Key：路由关键字，exchange根据这个关键字进行消息投递。<br>➢ Connection： 就是一个TCP连接。Producer和Consumer都是通过TCP连接到RabbitMQ Server的。以后我们可以看到，程序的起始就是建立这个TCP连接。<br>➢ Channel：消息通道，是在TCP连接中的虚拟连接，在客户端的每个TCP连接里，可建立多个channel，每个channel代表一个会话任务</p>
-<p><strong>RabbitMQ高可用模式</strong><br>RabbitMQ作为整个openstack通讯的载体平台，如服务出现问题则会造成整个系统的瘫痪，所以现网对RabbitMQ基本是以集群的模式进行，常用集群分普通集群和镜像集群两种。</p>
-<p><img src="/2021/08/12/openstack/RabbitMQ%E9%AB%98%E5%8F%AF%E7%94%A8%E6%A8%A1%E5%BC%8F.png" alt="RabbitMQ高可用模式"></p>
-]]></content>
-      <categories>
-        <category>openstack</category>
-      </categories>
-      <tags>
-        <tag>网络</tag>
-        <tag>openstack</tag>
-        <tag>Apache</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>openstack搭建笔记</title>
     <url>/2021/08/20/openstack%E6%90%AD%E5%BB%BA%E7%AC%94%E8%AE%B0/</url>
     <content><![CDATA[]]></content>
@@ -1380,6 +1380,68 @@ grep -i 关键字 file 忽略大小写
       </tags>
   </entry>
   <entry>
+    <title>Python列表的+=知识点</title>
+    <url>/2021/08/26/python%E5%88%97%E8%A1%A8%E7%9A%84-%E7%9F%A5%E8%AF%86%E7%82%B9/</url>
+    <content><![CDATA[<p>python列表的奇妙知识</p>
+<span id="more"></span>
+
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">demo</span>(<span class="params">num_list</span>):</span></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;函数开始&quot;</span>)</span><br><span class="line"></span><br><span class="line">    <span class="string">&quot;&quot;&quot;与普通的赋值不修改全局变量不同 列表的➕＝ 本质上是在调用列表的extend方法 所以其实是在用方法 会改变全局变量&quot;&quot;&quot;</span></span><br><span class="line">    num_list += num_list</span><br><span class="line"></span><br><span class="line">    <span class="built_in">print</span>(num_list)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;函数结束&quot;</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">gL_list = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]</span><br><span class="line">demo(gL_list)</span><br><span class="line"><span class="built_in">print</span>(gL_list)</span><br><span class="line"></span><br></pre></td></tr></table></figure>]]></content>
+      <categories>
+        <category>Python</category>
+      </categories>
+      <tags>
+        <tag>Python</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Python多值参数</title>
+    <url>/2021/08/26/python%E5%A4%9A%E5%80%BC%E5%8F%82%E6%95%B0/</url>
+    <content><![CDATA[<p>当函数的参数个数不确定时</p>
+<span id="more"></span>
+
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="string">&quot;&quot;&quot;一个函数能够处理的参数个数不确定 这时使用多值参数&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">&quot;&quot;&quot; 参数名前面 </span></span><br><span class="line"><span class="string">    一个*   存放元组参数   习惯命名 *args      是 arguments的缩写 有变量含义</span></span><br><span class="line"><span class="string">    两个*   存放字典参数   习惯命名 **kwargs   是 keyword的缩写   记忆键值对参数 </span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 基础演练</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;基础演练 的结果为 &#x27;</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">demo</span>(<span class="params">num, *args, **kwargs</span>):</span></span><br><span class="line">    <span class="built_in">print</span>(num)</span><br><span class="line">    <span class="built_in">print</span>(args)</span><br><span class="line">    <span class="built_in">print</span>(kwargs)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">demo(<span class="number">1</span>, <span class="number">2</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">3</span>, <span class="string">&quot;ww&quot;</span>, name=<span class="string">&quot;林昕&quot;</span>, age=<span class="string">&quot;20&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 累加 案例</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;累加案例 的结果为 &quot;</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">sumNumber</span>(<span class="params">*args</span>):</span></span><br><span class="line">    <span class="built_in">sum</span> = <span class="number">0</span></span><br><span class="line">    <span class="keyword">for</span> each <span class="keyword">in</span> args:</span><br><span class="line">        <span class="built_in">sum</span> += each</span><br><span class="line">    <span class="built_in">print</span>(<span class="built_in">sum</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">sumNumber(<span class="number">1</span>, <span class="number">9</span>, <span class="number">2</span>, <span class="number">8</span>)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 元组和字典的拆包</span></span><br><span class="line"></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">在调用多值参数的函数时 如果希望 </span></span><br><span class="line"><span class="string">将一个元组变量 直接传递给 args     使用方法为 ： 在元组变量前 增加一个*   </span></span><br><span class="line"><span class="string">将一个字典变量 直接传递给 kwargs                 在字典变量前 增加两个*</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;拆包演示 的结果为 &quot;</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">unpacking</span>(<span class="params">*args, **kwargs</span>):</span></span><br><span class="line">    <span class="built_in">print</span>(args)</span><br><span class="line">    <span class="built_in">print</span>(kwargs)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">gl_num = (<span class="number">1</span>, <span class="number">9</span>, <span class="number">2</span>, <span class="number">8</span>)</span><br><span class="line">gl_dict = &#123;<span class="string">&#x27;name&#x27;</span>: <span class="string">&#x27;林昕&#x27;</span>, <span class="string">&quot;age&quot;</span>: <span class="string">&#x27;20&#x27;</span>&#125;</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;没有使用拆包时 它都放进了元组里&quot;</span>)</span><br><span class="line">unpacking(gl_num, gl_dict)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;&#x27;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;使用了拆包后 分开放了&quot;</span>)</span><br><span class="line">unpacking(*gl_num, **gl_dict)</span><br></pre></td></tr></table></figure>]]></content>
+      <categories>
+        <category>Python</category>
+      </categories>
+      <tags>
+        <tag>Python</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Python缺省参数</title>
+    <url>/2021/08/26/python%E7%BC%BA%E7%9C%81%E5%8F%82%E6%95%B0/</url>
+    <content><![CDATA[<p>缺省函数就是指 在没有指定的情况下 使用默认保存的参数</p>
+<span id="more"></span>
+
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="string">&quot;&quot;&quot;定义缺省函数 就是在形参后面加个等号&quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">print_info</span>(<span class="params">name, gender=<span class="literal">True</span></span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;缺省参数必须在 参数列表末尾&quot;&quot;&quot;</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;调用多个缺省参数时 必须指定参数名&quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">    gender_text = <span class="string">&quot;男生&quot;</span></span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> gender:</span><br><span class="line">        gender_text = <span class="string">&quot;女生&quot;</span></span><br><span class="line"></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;%s 是 %s &quot;</span> % (name, gender_text))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">print_info(<span class="string">&quot;小郑&quot;</span>)</span><br><span class="line">print_info(<span class="string">&quot;海子姐&quot;</span>, <span class="literal">False</span>)</span><br></pre></td></tr></table></figure>]]></content>
+      <categories>
+        <category>Python</category>
+      </categories>
+      <tags>
+        <tag>Python</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Python装饰器</title>
+    <url>/2021/08/26/python%E8%A3%85%E9%A5%B0%E5%99%A8/</url>
+    <content><![CDATA[<p>python装饰器笔记</p>
+<span id="more"></span>
+
+<h1 id="例1-简简单单装饰器"><a href="#例1-简简单单装饰器" class="headerlink" title="例1.简简单单装饰器"></a>例1.简简单单装饰器</h1><figure class="highlight livecodeserver"><table><tr><td class="code"><pre><span class="line">import <span class="built_in">time</span></span><br><span class="line"></span><br><span class="line">def spend_time(<span class="function"><span class="keyword">function</span>):  # 装饰器函数</span></span><br><span class="line">    def inner():  </span><br><span class="line">        <span class="built_in">start</span> = <span class="built_in">time</span>.<span class="built_in">time</span>()</span><br><span class="line">        <span class="function"><span class="keyword">function</span>()</span></span><br><span class="line">        <span class="built_in">stop</span> = <span class="built_in">time</span>.<span class="built_in">time</span>()</span><br><span class="line">        print(f<span class="string">&quot;Spend &#123;stop - start&#125;s&quot;</span>)</span><br><span class="line"></span><br><span class="line">    <span class="literal">return</span> inner</span><br><span class="line">    <span class="comment"># 返回存放着 inner结果的 地址</span></span><br><span class="line">    <span class="comment"># 因为是地址  所以，需要实例化之后才能得到结果 ————实现了不修改原函数 就能添加功能 ————装饰器函数</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">@spend_time  <span class="comment"># 相当于 bar = spend_time(bar())    用 @[函数名] 来省略左边那一行代码 简洁</span></span><br><span class="line">def bar():</span><br><span class="line">    print(<span class="string">&quot;bar.....&quot;</span>)</span><br><span class="line">    <span class="built_in">time</span>.sleep(<span class="number">1.2</span>)</span><br><span class="line"></span><br><span class="line">运行结果</span><br><span class="line">bar.....</span><br><span class="line">Spend <span class="number">1.215440273284912</span>s</span><br></pre></td></tr></table></figure>
+
+<h1 id="例2-稍微复杂装饰器"><a href="#例2-稍微复杂装饰器" class="headerlink" title="例2.稍微复杂装饰器"></a>例2.稍微复杂装饰器</h1><figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> time</span><br><span class="line"></span><br><span class="line">def spend_time(<span class="function"><span class="keyword">function</span>):  # 装饰器函数</span></span><br><span class="line"><span class="function">    <span class="title">def</span> <span class="title">inner</span>(<span class="params">*x, **y</span>):  # 因为是直接执行 内嵌函数 所以内嵌函数也需要 *<span class="title">x</span>，**<span class="title">y</span> 来接受元素</span></span><br><span class="line"><span class="function">        <span class="title">start</span> = <span class="title">time</span>.<span class="title">time</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function">👉      <span class="function"><span class="keyword">function</span>(<span class="params">*x, **y</span>) # 真正执行<span class="title">addFunction</span>的地方</span></span></span><br><span class="line"><span class="function"><span class="function">        <span class="title">stop</span> = <span class="title">time</span>.<span class="title">time</span>(<span class="params"></span>)</span></span></span><br><span class="line"><span class="function"><span class="function">        <span class="title">print</span>(<span class="params">f<span class="string">&quot;Spend &#123;stop - start&#125;s&quot;</span></span>)</span></span></span><br><span class="line"><span class="function"><span class="function"></span></span></span><br><span class="line"><span class="function"><span class="function">    <span class="title">return</span> <span class="title">inner</span></span></span></span><br><span class="line"><span class="function"><span class="function"></span></span></span><br><span class="line"><span class="function"><span class="function">@<span class="title">spend_time</span> # 相当于 <span class="title">addFunction</span> = <span class="title">spend_time</span>(<span class="params">addFunction(*a, **b)</span>)</span></span></span><br><span class="line"><span class="function"><span class="function"><span class="title">def</span> <span class="title">addFunction</span>(<span class="params">*a, **b</span>): </span></span></span><br><span class="line"><span class="function"><span class="function">    <span class="title">sums</span> = 0</span></span></span><br><span class="line"><span class="function"><span class="function">    <span class="title">for</span> <span class="title">number</span> <span class="title">in</span> <span class="title">a</span>:</span></span></span><br><span class="line"><span class="function"><span class="function">        <span class="title">sums</span> += <span class="title">number</span></span></span></span><br><span class="line"><span class="function"><span class="function">    <span class="title">print</span>(<span class="params">sums</span>)</span></span></span><br><span class="line"><span class="function"><span class="function">    <span class="title">time</span>.<span class="title">sleep</span>(<span class="params"><span class="number">0.2</span></span>)</span></span></span><br><span class="line"><span class="function"><span class="function"></span></span></span><br><span class="line"><span class="function"><span class="function"><span class="title">addFunction</span>(<span class="params"><span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span></span>) # 相当于 <span class="title">addFunction</span> = <span class="title">spend_time</span>(<span class="params">addFunction(<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>)</span>)</span></span></span><br><span class="line"><span class="function"><span class="function">                       # <span class="title">addFunction</span>被当作实参传到<span class="title">spend_time</span>的<span class="function"><span class="keyword">function</span>中</span></span></span></span><br><span class="line"><span class="function"><span class="function"><span class="function">                       # (<span class="params"><span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span></span>)被当作是<span class="title">spend_time</span>的内嵌函数<span class="title">inner</span>的实参</span></span></span></span><br><span class="line"><span class="function"><span class="function"><span class="function">                       # 所以实际上函数是在<span class="title">inner</span>内执行 </span></span></span></span><br><span class="line"><span class="function"><span class="function"><span class="function">                       # 表面上<span class="function"><span class="keyword">function</span>(<span class="params">*x, **y</span>) 实际上是 <span class="title">addFunction</span>(<span class="params">*a, **b</span>) </span></span></span></span></span><br><span class="line"><span class="function"><span class="function"><span class="function"><span class="function">                       # 也就是说一旦<span class="function"><span class="keyword">function</span>不接受这些实参的话，比如👉 <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span></span></span></span></span></span></span><br><span class="line"><span class="function"><span class="function"><span class="function"><span class="function"><span class="function"><span class="function">                       # 那么虽然执行了<span class="title">addFunction</span>(<span class="params"><span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span></span>)但真正执行的是<span class="title">addFunction</span>(<span class="params"></span>)</span></span></span></span></span></span></span><br><span class="line"><span class="function"><span class="function"><span class="function"><span class="function"><span class="function"><span class="function">运行结果</span></span></span></span></span></span></span><br><span class="line"><span class="function"><span class="function"><span class="function"><span class="function"><span class="function"><span class="function">15</span></span></span></span></span></span></span><br><span class="line"><span class="function"><span class="function"><span class="function"><span class="function"><span class="function"><span class="function"><span class="title">Spend</span> 0.20099997520446777<span class="title">s</span></span></span></span></span></span></span></span><br></pre></td></tr></table></figure>
+
+<h2 id="function-的情况"><a href="#function-的情况" class="headerlink" title="function( )的情况"></a>function( )的情况</h2><figure class="highlight stylus"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="title">addFunction</span><span class="params">(<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>)</span></span></span><br><span class="line"></span><br><span class="line">运行结果</span><br><span class="line"><span class="number">0</span></span><br><span class="line">Spend <span class="number">0.20083141326904297s</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="function-5-的情况"><a href="#function-5-的情况" class="headerlink" title="function(5)的情况"></a>function(5)的情况</h2><figure class="highlight stylus"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="title">addFunction</span><span class="params">(<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>)</span></span></span><br><span class="line"></span><br><span class="line">运行结果</span><br><span class="line"><span class="number">5</span></span><br><span class="line">Spend <span class="number">0.20568037033081055s</span></span><br></pre></td></tr></table></figure>]]></content>
+      <categories>
+        <category>Python</category>
+      </categories>
+      <tags>
+        <tag>Python</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>shell</title>
     <url>/2021/08/19/shell/</url>
     <content><![CDATA[<p>shell实质上是用户、内核和系统硬件之间的接口，是学习正确的系统管理和安全保护最关键的方面之一。<br>简单层面上来看，shell脚本就是对多行命令的集合，深层次上，它是Linux的基础编程工具，可为系统管理员提供简单的工具开发。类似Windows的bat批处理脚本</p>
@@ -1494,6 +1556,38 @@ $0,1,2 // 0-脚本名 1-第一个参数 2-第二个参数
       </tags>
   </entry>
   <entry>
+    <title>关于hexo修改css问题</title>
+    <url>/2021/08/23/%E5%85%B3%E4%BA%8Ehexo%E9%83%A8%E7%BD%B2%E9%97%AE%E9%A2%98/</url>
+    <content><![CDATA[<p>解决hexo+next在本地部署成功，上传后失效问题</p>
+<span id="more"></span>
+
+<h1 id="问题1：重新部署css失效"><a href="#问题1：重新部署css失效" class="headerlink" title="问题1：重新部署css失效"></a>问题1：重新部署css失效</h1><p>hexo在每次推送更新的时候，都需要<u>清除缓存</u>，重新<u>部署静态文件</u>，再<u>推送更新</u>。<br>每次清除缓存时都会删除main.css文件，再根据配置文件生成新的main.css文件。<br>因为美观，我就自定义了博客的main.css文件，来修改页面的字体和样式。</p>
+<p>然而在下一次更新博客的时候，上自己的网站一看，修改的样式没了</p>
+<blockquote>
+<p>原因：当再次推送时，重新部署的静态文件.css不包含个人修改的<br>解决方案：先清除缓存，再部署静态文件，此时将修改好的main.css文件覆盖 <font color="#F08080">/根目录/public/css/main.css</font>。覆盖成功后，再推送更新</p>
+</blockquote>
+<p><img src="/2021/08/23/%E5%85%B3%E4%BA%8Ehexo%E9%83%A8%E7%BD%B2%E9%97%AE%E9%A2%98/main%E6%96%87%E4%BB%B6%E4%BD%8D%E7%BD%AE.png" alt="main文件位置"></p>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line">hexo cl</span><br><span class="line">hexo g</span><br><span class="line">手动去覆盖<span class="selector-tag">main</span><span class="selector-class">.css</span>，覆盖成功后</span><br><span class="line">hexo d</span><br></pre></td></tr></table></figure>
+
+<h1 id="问题2：增加功能失败"><a href="#问题2：增加功能失败" class="headerlink" title="问题2：增加功能失败"></a>问题2：增加功能失败</h1><p>问题描述：本地测试成功，但推送后网页上失效</p>
+<blockquote>
+<p>前提：本地测试成功——代表配置文件配置成功</p>
+</blockquote>
+<p>我在写了一些博客之后发现，想要查询以前写的内容很不方便，于是新增了搜索的功能<br>在本地测试成功的情况下，我推送了更新，但网站上的搜索功能却失效了<br>在确认配置文件正确后，使用F12查看了网页</p>
+<p><img src="/2021/08/23/%E5%85%B3%E4%BA%8Ehexo%E9%83%A8%E7%BD%B2%E9%97%AE%E9%A2%98/F12.png" alt="F12"></p>
+<p>发现本地测试页面渲染出的Html、css文件都和网站上部署后的不一样</p>
+<blockquote>
+<p>原因：因为我在<font color="#FF000">增加搜索功能前</font>修改了main.css并用这个main.css覆盖了系统重新部署的main.css，导致.css文件里并没有生成搜索功能该有的代码<br>解决方案：可以使用文本对比工具，将系统重新部署的main.css文件和之前修改的main.css对比，将新增功能的代码段落加入到修改的main.css中。当修改的main.css文件中有新增功能的段落后，部署的网站上就能正常使用功能了</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>博客</category>
+      </categories>
+      <tags>
+        <tag>hexo</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>vlan笔记</title>
     <url>/2021/07/22/%E4%BA%8C%E5%B1%82%E7%AB%AF%E5%8F%A3/</url>
     <content><![CDATA[<p><strong>OSI模型</strong>：OSI 是不同制造商的设备和应用软件在网络中进行通信的标准，此模型已经成为计算机间和网络间进行通信的主要结构模型。</p>
@@ -1581,35 +1675,52 @@ $0,1,2 // 0-脚本名 1-第一个参数 2-第二个参数
       </tags>
   </entry>
   <entry>
-    <title>关于hexo修改css问题</title>
-    <url>/2021/08/23/%E5%85%B3%E4%BA%8Ehexo%E9%83%A8%E7%BD%B2%E9%97%AE%E9%A2%98/</url>
-    <content><![CDATA[<p>解决hexo+next在本地部署成功，上传后失效问题</p>
+    <title>博客文档指南</title>
+    <url>/2021/07/20/%E5%8D%9A%E5%AE%A2%E7%BC%96%E5%86%99%E6%8C%87%E5%8D%97/</url>
+    <content><![CDATA[<p>根据<a href="https://blog.csdn.net/sanallen/article/details/92081911?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522162684851716780274192566%2522%252C%2522scm%2522%253A%252220140713.130102334..%2522%257D&request_id=162684851716780274192566&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~all~sobaiduend~default-1-92081911.first_rank_v2_pc_rank_v29&utm_term=markdown%E6%96%87%E6%A1%A3%E7%BC%96%E5%86%99%E6%8C%87%E5%8D%97&spm=1018.2226.3001.4187">Markdown文档编写指南</a>编写</p>
 <span id="more"></span>
-
-<h1 id="问题1：重新部署css失效"><a href="#问题1：重新部署css失效" class="headerlink" title="问题1：重新部署css失效"></a>问题1：重新部署css失效</h1><p>hexo在每次推送更新的时候，都需要<u>清除缓存</u>，重新<u>部署静态文件</u>，再<u>推送更新</u>。<br>每次清除缓存时都会删除main.css文件，再根据配置文件生成新的main.css文件。<br>因为美观，我就自定义了博客的main.css文件，来修改页面的字体和样式。</p>
-<p>然而在下一次更新博客的时候，上自己的网站一看，修改的样式没了</p>
-<blockquote>
-<p>原因：当再次推送时，重新部署的静态文件.css不包含个人修改的<br>解决方案：先清除缓存，再部署静态文件，此时将修改好的main.css文件覆盖 <font color="#F08080">/根目录/public/css/main.css</font>。覆盖成功后，再推送更新</p>
+<p>标题使用#一级 ##二级 ###三级 类推</p>
+<h2 id="段落"><a href="#段落" class="headerlink" title="段落"></a>段落</h2><p>两行之间空一行就能划分段落</p>
+<p>第一行段落</p>
+<p>第二行段落</p>
+<h2 id="区块引用"><a href="#区块引用" class="headerlink" title="区块引用"></a>区块引用</h2><blockquote>
+<p>对内容进行强调显示，会被高亮显示</p>
 </blockquote>
-<p><img src="/2021/08/23/%E5%85%B3%E4%BA%8Ehexo%E9%83%A8%E7%BD%B2%E9%97%AE%E9%A2%98/main%E6%96%87%E4%BB%B6%E4%BD%8D%E7%BD%AE.png" alt="main文件位置"></p>
-<figure class="highlight css"><table><tr><td class="code"><pre><span class="line">hexo cl</span><br><span class="line">hexo g</span><br><span class="line">手动去覆盖<span class="selector-tag">main</span><span class="selector-class">.css</span>，覆盖成功后</span><br><span class="line">hexo d</span><br></pre></td></tr></table></figure>
-
-<h1 id="问题2：增加功能失败"><a href="#问题2：增加功能失败" class="headerlink" title="问题2：增加功能失败"></a>问题2：增加功能失败</h1><p>问题描述：本地测试成功，但推送后网页上失效</p>
+<h2 id="超链接"><a href="#超链接" class="headerlink" title="超链接"></a>超链接</h2><p><a href="https://www.baidu.com/">百度</a></p>
+<h2 id="老婆！！"><a href="#老婆！！" class="headerlink" title="老婆！！"></a>老婆！！</h2><p><img src="https://img1.baidu.com/it/u=3661816073,3507776781&fm=26&fmt=auto&gp=0.jpg" alt="22"></p>
+<h2 id="无序列表"><a href="#无序列表" class="headerlink" title="无序列表"></a>无序列表</h2><ul>
+<li>first</li>
+<li>second</li>
+<li>third<h2 id="有序列表"><a href="#有序列表" class="headerlink" title="有序列表"></a>有序列表</h2></li>
+</ul>
+<ol>
+<li>第一行</li>
+<li>第二行</li>
+<li>第三行<h2 id="锚点"><a href="#锚点" class="headerlink" title="锚点"></a>锚点</h2>使用命名锚记可以在文档中设置标记，这些标记通常放在文档的特定主题处或顶部。然后可以创建到这些命名锚记的链接，这些链接可快速将访问者带到指定位置。</li>
+</ol>
+<p>创建到命名锚记的链接的过程分为两步。</p>
+<ul>
+<li>创建命名锚记</li>
+<li>创建 到该命名锚记的链接。</li>
+</ul>
+<p>反正就是用于文章快速定位，点击目录便可直接跳转到指定位置的。</p>
+<p>在这里我分享一下锚点在MarkDown编辑器中怎么使用：<br>首先是建立一个跳转的连接：</p>
+<p><a href="#jump">说明文字</a></p>
+<p>然后标记要跳转到的位置：</p>
+<p><span id="jump">跳转到的位置</span></p>
+<h2 id="空格是-amp-emsp；"><a href="#空格是-amp-emsp；" class="headerlink" title="空格是 &amp;emsp；"></a>空格是 &amp;emsp；</h2><h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><hr>
+<p>分割线 <em>斜体内容</em>  <strong>加粗内容</strong></p>
+<hr>
 <blockquote>
-<p>前提：本地测试成功——代表配置文件配置成功</p>
-</blockquote>
-<p>我在写了一些博客之后发现，想要查询以前写的内容很不方便，于是新增了搜索的功能<br>在本地测试成功的情况下，我推送了更新，但网站上的搜索功能却失效了<br>在确认配置文件正确后，使用F12查看了网页</p>
-<p><img src="/2021/08/23/%E5%85%B3%E4%BA%8Ehexo%E9%83%A8%E7%BD%B2%E9%97%AE%E9%A2%98/F12.png" alt="F12"></p>
-<p>发现本地测试页面渲染出的Html、css文件都和网站上部署后的不一样</p>
-<blockquote>
-<p>原因：因为我在<font color="#FF000">增加搜索功能前</font>修改了main.css并用这个main.css覆盖了系统重新部署的main.css，导致.css文件里并没有生成搜索功能该有的代码<br>解决方案：可以使用文本对比工具，将系统重新部署的main.css文件和之前修改的main.css对比，将新增功能的代码段落加入到修改的main.css中。当修改的main.css文件中有新增功能的段落后，部署的网站上就能正常使用功能了</p>
+<p>ctrl+shift+p 命令输入框<br>    – markdown 侧边阅览</p>
 </blockquote>
 ]]></content>
       <categories>
         <category>博客</category>
       </categories>
       <tags>
-        <tag>hexo</tag>
+        <tag>博客</tag>
+        <tag>编写指南</tag>
       </tags>
   </entry>
   <entry>
@@ -1671,52 +1782,20 @@ $0,1,2 // 0-脚本名 1-第一个参数 2-第二个参数
       </tags>
   </entry>
   <entry>
-    <title>博客文档指南</title>
-    <url>/2021/07/20/%E5%8D%9A%E5%AE%A2%E7%BC%96%E5%86%99%E6%8C%87%E5%8D%97/</url>
-    <content><![CDATA[<p>根据<a href="https://blog.csdn.net/sanallen/article/details/92081911?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522162684851716780274192566%2522%252C%2522scm%2522%253A%252220140713.130102334..%2522%257D&request_id=162684851716780274192566&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~all~sobaiduend~default-1-92081911.first_rank_v2_pc_rank_v29&utm_term=markdown%E6%96%87%E6%A1%A3%E7%BC%96%E5%86%99%E6%8C%87%E5%8D%97&spm=1018.2226.3001.4187">Markdown文档编写指南</a>编写</p>
+    <title>IPMI，MGMT口</title>
+    <url>/2021/08/13/%E5%90%84%E7%A7%8D%E6%8E%A5%E5%8F%A3/</url>
+    <content><![CDATA[<p>交换机上的各种接口</p>
 <span id="more"></span>
-<p>标题使用#一级 ##二级 ###三级 类推</p>
-<h2 id="段落"><a href="#段落" class="headerlink" title="段落"></a>段落</h2><p>两行之间空一行就能划分段落</p>
-<p>第一行段落</p>
-<p>第二行段落</p>
-<h2 id="区块引用"><a href="#区块引用" class="headerlink" title="区块引用"></a>区块引用</h2><blockquote>
-<p>对内容进行强调显示，会被高亮显示</p>
-</blockquote>
-<h2 id="超链接"><a href="#超链接" class="headerlink" title="超链接"></a>超链接</h2><p><a href="https://www.baidu.com/">百度</a></p>
-<h2 id="老婆！！"><a href="#老婆！！" class="headerlink" title="老婆！！"></a>老婆！！</h2><p><img src="https://img1.baidu.com/it/u=3661816073,3507776781&fm=26&fmt=auto&gp=0.jpg" alt="22"></p>
-<h2 id="无序列表"><a href="#无序列表" class="headerlink" title="无序列表"></a>无序列表</h2><ul>
-<li>first</li>
-<li>second</li>
-<li>third<h2 id="有序列表"><a href="#有序列表" class="headerlink" title="有序列表"></a>有序列表</h2></li>
-</ul>
-<ol>
-<li>第一行</li>
-<li>第二行</li>
-<li>第三行<h2 id="锚点"><a href="#锚点" class="headerlink" title="锚点"></a>锚点</h2>使用命名锚记可以在文档中设置标记，这些标记通常放在文档的特定主题处或顶部。然后可以创建到这些命名锚记的链接，这些链接可快速将访问者带到指定位置。</li>
-</ol>
-<p>创建到命名锚记的链接的过程分为两步。</p>
-<ul>
-<li>创建命名锚记</li>
-<li>创建 到该命名锚记的链接。</li>
-</ul>
-<p>反正就是用于文章快速定位，点击目录便可直接跳转到指定位置的。</p>
-<p>在这里我分享一下锚点在MarkDown编辑器中怎么使用：<br>首先是建立一个跳转的连接：</p>
-<p><a href="#jump">说明文字</a></p>
-<p>然后标记要跳转到的位置：</p>
-<p><span id="jump">跳转到的位置</span></p>
-<h2 id="空格是-amp-emsp；"><a href="#空格是-amp-emsp；" class="headerlink" title="空格是 &amp;emsp；"></a>空格是 &amp;emsp；</h2><h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><hr>
-<p>分割线 <em>斜体内容</em>  <strong>加粗内容</strong></p>
-<hr>
-<blockquote>
-<p>ctrl+shift+p 命令输入框<br>    – markdown 侧边阅览</p>
-</blockquote>
+
+<h1 id="MGMT口"><a href="#MGMT口" class="headerlink" title="MGMT口"></a>MGMT口</h1><p>MGMT是网络管理端口，可以直接用网线连接，登陆进防火墙以网页模式管理<br>1） 用户可以通过Ping、Tracert等命令探测MGMT 口上配置的IP地址是否可达，并在MGMT 口上通过Ping、Tracert命令探测远程IP是否可达，因此MGMT 口支持ICMP应用。<br>2）用户可以通过Telnet/SSH/SNMP/WEB等方式登录到MGMT 口对设备进行管理，并且登录时支持AAA验证（包括Radius 和Tacacs+这两种服务器认证方式），甚至在执行命令行时还需要支持Tacacs+授权。<br>3）设备的日志、告警等信息也可以通过MGMT 口发送到网管的日志服务器上。<br>4）MGMT 口支持Telnet Client，TFTP Client。<br>5）MGMT 口支持NTP/SNTP报文的收发以实现网络时间同步。<br>6）MGMT 口支持静态ARP绑定。 </p>
+<h1 id="IPMI口"><a href="#IPMI口" class="headerlink" title="IPMI口"></a>IPMI口</h1><p>IPMI，即智能平台管理接口（Intelligent Platform Management Interface），IPMI的核心是一个专用芯片/控制器(BMC)，独立于操作系统、BIOS和处理器，因此属于带外管理设备。正是因为如此，我们可以通过BMC来控制或者获取系统的各种信息，而不需要关注系统是否正常。比如，系统卡住了，可以通过ipmi reset系统，而不需要跑到机房断电；系统无法登录也可以远程屏幕查看是什么问题。</p>
 ]]></content>
       <categories>
-        <category>博客</category>
+        <category>交换机</category>
       </categories>
       <tags>
-        <tag>博客</tag>
-        <tag>编写指南</tag>
+        <tag>交换机</tag>
+        <tag>接口</tag>
       </tags>
   </entry>
   <entry>
@@ -1769,23 +1848,6 @@ $0,1,2 // 0-脚本名 1-第一个参数 2-第二个参数
       </categories>
       <tags>
         <tag>Github</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>IPMI，MGMT口</title>
-    <url>/2021/08/13/%E5%90%84%E7%A7%8D%E6%8E%A5%E5%8F%A3/</url>
-    <content><![CDATA[<p>交换机上的各种接口</p>
-<span id="more"></span>
-
-<h1 id="MGMT口"><a href="#MGMT口" class="headerlink" title="MGMT口"></a>MGMT口</h1><p>MGMT是网络管理端口，可以直接用网线连接，登陆进防火墙以网页模式管理<br>1） 用户可以通过Ping、Tracert等命令探测MGMT 口上配置的IP地址是否可达，并在MGMT 口上通过Ping、Tracert命令探测远程IP是否可达，因此MGMT 口支持ICMP应用。<br>2）用户可以通过Telnet/SSH/SNMP/WEB等方式登录到MGMT 口对设备进行管理，并且登录时支持AAA验证（包括Radius 和Tacacs+这两种服务器认证方式），甚至在执行命令行时还需要支持Tacacs+授权。<br>3）设备的日志、告警等信息也可以通过MGMT 口发送到网管的日志服务器上。<br>4）MGMT 口支持Telnet Client，TFTP Client。<br>5）MGMT 口支持NTP/SNTP报文的收发以实现网络时间同步。<br>6）MGMT 口支持静态ARP绑定。 </p>
-<h1 id="IPMI口"><a href="#IPMI口" class="headerlink" title="IPMI口"></a>IPMI口</h1><p>IPMI，即智能平台管理接口（Intelligent Platform Management Interface），IPMI的核心是一个专用芯片/控制器(BMC)，独立于操作系统、BIOS和处理器，因此属于带外管理设备。正是因为如此，我们可以通过BMC来控制或者获取系统的各种信息，而不需要关注系统是否正常。比如，系统卡住了，可以通过ipmi reset系统，而不需要跑到机房断电；系统无法登录也可以远程屏幕查看是什么问题。</p>
-]]></content>
-      <categories>
-        <category>交换机</category>
-      </categories>
-      <tags>
-        <tag>交换机</tag>
-        <tag>接口</tag>
       </tags>
   </entry>
   <entry>
