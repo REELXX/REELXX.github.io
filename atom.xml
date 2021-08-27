@@ -6,7 +6,7 @@
   <link href="http://example.com/atom.xml" rel="self"/>
   
   <link href="http://example.com/"/>
-  <updated>2021-08-26T08:35:48.753Z</updated>
+  <updated>2021-08-27T01:37:03.925Z</updated>
   <id>http://example.com/</id>
   
   <author>
@@ -15,6 +15,48 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>TCP</title>
+    <link href="http://example.com/2021/08/26/TCP/"/>
+    <id>http://example.com/2021/08/26/TCP/</id>
+    <published>2021-08-26T11:05:48.000Z</published>
+    <updated>2021-08-27T01:37:03.925Z</updated>
+    
+    <content type="html"><![CDATA[<p>传输控制协议</p><span id="more"></span><h1 id="TCP"><a href="#TCP" class="headerlink" title="TCP"></a>TCP</h1><h2 id="TCP三次握手"><a href="#TCP三次握手" class="headerlink" title="TCP三次握手"></a>TCP三次握手</h2><p><img src="/2021/08/26/TCP/%E4%B8%89%E6%AC%A1%E6%8F%A1%E6%89%8B.png" alt="三次握手"></p><p>刚开始, 客户端和服务器都处于 CLOSE 状态.<br>此时, 客户端向服务器主动发出连接请求, 服务器被动接受连接请求.</p><p>1, TCP服务器进程先创建传输控制块TCB, 时刻准备接受客户端进程的连接请求, 此时服务器就进入了 LISTEN（监听）状态<br>2, TCP客户端进程也是先创建传输控制块TCB, 然后向服务器发出连接请求报文，此时报文首部中的同步标志位SYN=1, 同时选择一个初始序列号 seq = x, 此时，TCP客户端进程进入了 SYN-SENT（同步已发送状态）状态。TCP规定, SYN报文段（SYN=1的报文段）不能携带数据，但需要消耗掉一个序号。<br>3, TCP服务器收到请求报文后, 如果同意连接, 则发出确认报文。确认报文中的 ACK=1, SYN=1, 确认序号是 x+1, 同时也要为自己初始化一个序列号 seq = y, 此时, TCP服务器进程进入了SYN-RCVD（同步收到）状态。这个报文也不能携带数据, 但是同样要消耗一个序号。<br>4, TCP客户端进程收到确认后还, 要向服务器给出确认。确认报文的ACK=1，确认序号是 y+1，自己的序列号是 x+1.<br>5, 此时，TCP连接建立，客户端进入ESTABLISHED（已建立连接）状态。当服务器收到客户端的确认后也进入ESTABLISHED状态，此后双方就可以开始通信了。</p><p>为什么不用两次?</p><ul><li>主要是为了防止已经失效的连接请求报文突然又传送到了服务器，从而产生错误。如果使用的是两次握手建立连接，假设有这样一种场景，客户端发送的第一个请求连接并且没有丢失，只是因为在网络中滞留的时间太长了，由于TCP的客户端迟迟没有收到确认报文，以为服务器没有收到，此时重新向服务器发送这条报文，此后客户端和服务器经过两次握手完成连接，传输数据，然后关闭连接。此时之前滞留的那一次请求连接，因为网络通畅了, 到达了服务器，这个报文本该是失效的，但是，两次握手的机制将会让客户端和服务器再次建立连接，这将导致不必要的错误和资源的费。</li><li>如果采用的是三次握手，就算是那一次失效的报文传送过来了，服务端接受到了那条失效报文并且回复了确认报文，但是客户端不会再次发出确认。由于服务器收不到确认，就知道客户端并没有请求连接。</li></ul><p>为什么不用四次?</p><ul><li>因为三次已经可以满足需要了, 四次就多余了.</li></ul><h2 id="四次挥手"><a href="#四次挥手" class="headerlink" title="四次挥手"></a>四次挥手</h2><p>再来看看何为四次挥手.<br><img src="/2021/08/26/TCP/%E5%9B%9B%E6%AC%A1%E6%8C%A5%E6%89%8B.png" alt="四次挥手"></p><p>数据传输完毕后，双方都可以释放连接.<br>此时客户端和服务器都是处于ESTABLISHED状态，然后客户端主动断开连接，服务器被动断开连接.</p><p>1, 客户端进程发出连接释放报文，并且停止发送数据。<br>释放数据报文首部，FIN=1，其序列号为seq=u（等于前面已经传送过来的数据的最后一个字节的序号加1），此时客户端进入FIN-WAIT-1（终止等待1）状态。 TCP规定，FIN报文段即使不携带数据，也要消耗一个序号。<br>2, 服务器收到连接释放报文，发出确认报文，ACK=1，确认序号为 u+1，并且带上自己的序列号seq=v，此时服务端就进入了CLOSE-WAIT（关闭等待）状态。<br>TCP服务器通知高层的应用进程，客户端向服务器的方向就释放了，这时候处于半关闭状态，即客户端已经没有数据要发送了，但是服务器若发送数据，客户端依然要接受。这个状态还要持续一段时间，也就是整个CLOSE-WAIT状态持续的时间。<br>3, 客户端收到服务器的确认请求后，此时客户端就进入FIN-WAIT-2（终止等待2）状态，等待服务器发送连接释放报文（在这之前还需要接受服务器发送的最终数据）<br>4, 服务器将最后的数据发送完毕后，就向客户端发送连接释放报文，FIN=1，确认序号为v+1，由于在半关闭状态，服务器很可能又发送了一些数据，假定此时的序列号为seq=w，此时，服务器就进入了LAST-ACK（最后确认）状态，等待客户端的确认。<br>5, 客户端收到服务器的连接释放报文后，必须发出确认，ACK=1，确认序号为w+1，而自己的序列号是u+1，此时，客户端就进入了TIME-WAIT（时间等待）状态。注意此时TCP连接还没有释放，必须经过2∗MSL（最长报文段寿命）的时间后，当客户端撤销相应的TCB后，才进入CLOSED状态。<br>6, 服务器只要收到了客户端发出的确认，立即进入CLOSED状态。同样，撤销TCB后，就结束了这次的TCP连接。可以看到，服务器结束TCP连接的时间要比客户端早一些。</p><p>为什么最后客户端还要等待 2*MSL的时间呢?</p><ul><li><p>MSL（Maximum Segment Lifetime），TCP允许不同的实现可以设置不同的MSL值。</p></li><li><p>第一，保证客户端发送的最后一个ACK报文能够到达服务器，因为这个ACK报文可能丢失，站在服务器的角度看来，我已经发送了FIN+ACK报文请求断开了，客户端还没有给我回应，应该是我发送的请求断开报文它没有收到，于是服务器又会重新发送一次，而客户端就能在这个2MSL时间段内收到这个重传的报文，接着给出回应报文，并且会重启2MSL计时器。</p></li><li><p>第二，防止类似与“三次握手”中提到了的“已经失效的连接请求报文段”出现在本连接中。客户端发送完最后一个确认报文后，在这个2MSL时间中，就可以使本连接持续的时间内所产生的所有报文段都从网络中消失。这样新的连接中不会出现旧连接的请求报文。</p></li></ul><p>为什么建立连接是三次握手，关闭连接确是四次挥手呢？</p><ul><li>建立连接的时候， 服务器在LISTEN状态下，收到建立连接请求的SYN报文后，把ACK和SYN放在一个报文里发送给客户端。而关闭连接时，服务器收到对方的FIN报文时，仅仅表示对方不再发送数据了但是还能接收数据，而自己也未必全部数据都发送给对方了，所以己方可以立即关闭，也可以发送一些数据给对方后，再发送FIN报文给对方来表示同意现在关闭连接，因此，己方ACK和FIN一般都会分开发送，从而导致多了一次。</li></ul><p>如果已经建立了连接, 但是客户端突发故障了怎么办?</p><ul><li>TCP设有一个保活计时器，显然，客户端如果出现故障，服务器不能一直等下去，白白浪费资源。服务器每收到一次客户端的请求后都会重新复位这个计时器，时间通常是设置为2小时，若两小时还没有收到客户端的任何数据，服务器就会发送一个探测报文段，以后每隔75分钟发送一次。若一连发送10个探测报文仍然没反应，服务器就认为客户端出了故障，接着就关闭连接。</li></ul>]]></content>
+    
+    
+    <summary type="html">&lt;p&gt;传输控制协议&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="数据通信" scheme="http://example.com/categories/%E6%95%B0%E6%8D%AE%E9%80%9A%E4%BF%A1/"/>
+    
+    
+    <category term="数据通信" scheme="http://example.com/tags/%E6%95%B0%E6%8D%AE%E9%80%9A%E4%BF%A1/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>报文</title>
+    <link href="http://example.com/2021/08/26/%E6%8A%A5%E6%96%87/"/>
+    <id>http://example.com/2021/08/26/%E6%8A%A5%E6%96%87/</id>
+    <published>2021-08-26T11:05:31.000Z</published>
+    <updated>2021-08-26T11:31:53.688Z</updated>
+    
+    <content type="html"><![CDATA[<p>报文结构</p><span id="more"></span><h1 id="IPv4报文结构"><a href="#IPv4报文结构" class="headerlink" title="IPv4报文结构"></a>IPv4报文结构</h1><p><img src="/2021/08/26/%E6%8A%A5%E6%96%87/ipv4.png" alt="ipv4"><br><strong>第一行</strong><br>版本号、IHL、服务类型ToS、总长度<br>记录包的数据、特殊服务的处理方式等<br><strong>第二行</strong><br>标识符、标记符、片段漂移Flagments Offset<br>保证接收者按照正确顺序重组数据包<br><strong>第三行</strong><br>TTL、协议号、头部校验<br>防止环路、协议、检查数据包头部是否改变<br><strong>后面</strong><br>源目IP地址<br>IP OPTION</p><h1 id="TCP报文结构"><a href="#TCP报文结构" class="headerlink" title="TCP报文结构"></a>TCP报文结构</h1><p><img src="/2021/08/26/%E6%8A%A5%E6%96%87/tcp.png" alt="tcp"><br><strong>第一行</strong><br>源目端口——保证唯一TCP连接<br><strong>第二行</strong><br>序号<br><strong>第三行</strong><br>确认号<br><strong>第四行</strong><br>头部长度——报头最长60字节，固定20字节<br>保留位<br>控制位——6位，包含ACK,FIN,SYN,PSH,URG,RST<br>窗口——滑动窗口大小，用来告诉发送端接收端缓存大小，以此控制发送端发送速率，达到流量控制<br><strong>第五行</strong><br>检验和<br>紧急指针<br><strong>第六行</strong><br>选项<br>填充<br><strong>后面</strong><br>数据</p>]]></content>
+    
+    
+    <summary type="html">&lt;p&gt;报文结构&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="数据通信" scheme="http://example.com/categories/%E6%95%B0%E6%8D%AE%E9%80%9A%E4%BF%A1/"/>
+    
+    
+    <category term="数据通信" scheme="http://example.com/tags/%E6%95%B0%E6%8D%AE%E9%80%9A%E4%BF%A1/"/>
+    
+  </entry>
   
   <entry>
     <title>Python装饰器</title>
@@ -387,46 +429,6 @@
     
     
     
-    
-  </entry>
-  
-  <entry>
-    <title>交换机版本升级</title>
-    <link href="http://example.com/2021/08/16/%E9%94%90%E6%8D%B7%E4%BA%A4%E6%8D%A2%E6%9C%BA%E7%89%88%E6%9C%AC%E5%8D%87%E7%BA%A7/"/>
-    <id>http://example.com/2021/08/16/%E9%94%90%E6%8D%B7%E4%BA%A4%E6%8D%A2%E6%9C%BA%E7%89%88%E6%9C%AC%E5%8D%87%E7%BA%A7/</id>
-    <published>2021-08-16T03:38:04.000Z</published>
-    <updated>2021-08-17T09:39:14.426Z</updated>
-    
-    <content type="html"><![CDATA[<p>不同方式升级交换机版本</p><span id="more"></span><h1 id="U盘升级"><a href="#U盘升级" class="headerlink" title="U盘升级"></a>U盘升级</h1><p>1、查看U盘文件:dir usb<br>2、用U盘上传更新文件：</p><figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">Switch</span>#upgrade usb<span class="number">0</span>:N<span class="number">18000</span>_RG<span class="number">0</span>S<span class="number">11</span>.<span class="number">0</span>(<span class="number">1</span>)B<span class="number">2</span>_CM_<span class="number">08050053</span>_install.bin</span><br></pre></td></tr></table></figure><p>——&gt;usb0与机架包的名字中间不要有空格,即usb0:与N18000中间不要有空格<br>3、通过show upgrade status查看交换机升级情况(确定所有引擎/板卡/FE板卡是success状态),升级完成后通过命令reload重启交换机<br>4、重启完成后,通过show version detail查看交换机版本</p><h1 id="TFTP升级"><a href="#TFTP升级" class="headerlink" title="TFTP升级"></a>TFTP升级</h1><p>电脑和交换机先要能ping通<br>1、配置IP地址:</p><figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Switch&gt;enable</span><br><span class="line">Switch<span class="selector-id">#configure</span> terminal</span><br><span class="line"><span class="function"><span class="title">Switch</span><span class="params">(config)</span></span><span class="selector-id">#interface</span> vlan <span class="number">1</span></span><br><span class="line"><span class="function"><span class="title">Switch</span><span class="params">(config-if)</span></span><span class="selector-id">#ip</span> <span class="selector-tag">address</span> <span class="number">192.168</span>.<span class="number">1.1</span> <span class="number">255.255</span>.<span class="number">255.0</span></span><br><span class="line"><span class="function"><span class="title">Switch</span><span class="params">(config-if)</span></span>#exit</span><br></pre></td></tr></table></figure><p>2、将文件拷贝至交换机:</p><figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">Switch</span>#copy tftp://<span class="number">192.168.1.2</span>/N<span class="number">1800</span>e_RGOS<span class="number">11</span>.<span class="number">0</span>(<span class="number">1</span>)B<span class="number">2</span>_CM_<span class="number">08050053</span>_insta<span class="number">1</span>l.bin flash:/N<span class="number">18000</span>_RGOS<span class="number">11</span>.<span class="number">0</span>(<span class="number">1</span>)B<span class="number">2</span>_CM_<span class="number">08050053</span>_instal<span class="number">1</span>.bin</span><br></pre></td></tr></table></figure><p>—-&gt;192.168.1.2是电脑的IP地址;N18000_RGOS11.0(1)B2_CM_08e50053_instal1.bin是电脑上的主程序文件名;<br>3、升级:</p><figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">Switch</span>#upgrade flash:N<span class="number">18000</span>_RGOS<span class="number">11</span>.<span class="number">0</span>(<span class="number">1</span>)B<span class="number">2</span>_CM_<span class="number">08050053</span>_install.bin</span><br></pre></td></tr></table></figure><p>4、通过show upgrade status确定交换机升级情况,升级完成后通过命令reload重启交换机<br>5、重启完成后,通过show version detail查看交换机版本</p><h1 id="带外管理MGMT口"><a href="#带外管理MGMT口" class="headerlink" title="带外管理MGMT口"></a>带外管理MGMT口</h1><blockquote><p>该接口独立于业务接口，专门作为交换机管理<br>MGMT口测试需要携带OOB参数：<font color="#E9764A">ping oob 192.168.1.1<font></font></font></p></blockquote><p><strong>MGMT口升级</strong><br>1、配置IP地址:</p><figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Switch&gt;enable</span><br><span class="line">Switch<span class="selector-id">#configure</span> terminal</span><br><span class="line"><span class="function"><span class="title">Switch</span><span class="params">(config)</span></span><span class="selector-id">#interface</span> mgmt <span class="number">0</span></span><br><span class="line"><span class="function"><span class="title">Switch</span><span class="params">(config-if)</span></span> <span class="selector-id">#ip</span> <span class="selector-tag">address</span> <span class="number">192.168</span>.<span class="number">1.1</span> <span class="number">255.255</span>.<span class="number">255.0</span></span><br><span class="line"><span class="function"><span class="title">Switch</span><span class="params">(config-if)</span></span>#exit</span><br></pre></td></tr></table></figure><p>2、将文件拷贝至交换机:</p><figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">Switch</span>#copy oob_tftp ://<span class="number">192.168.1.2</span>/N<span class="number">1800</span>e_RGOS<span class="number">11</span>.<span class="number">0</span>(<span class="number">1</span>)B<span class="number">2</span>_CM_<span class="number">08050053</span>_install.binflash:/N<span class="number">18000</span>_RGOS<span class="number">11</span>.<span class="number">0</span>(<span class="number">1</span>)B<span class="number">2</span>_CM_<span class="number">08050053</span>_install.bin</span><br></pre></td></tr></table></figure><p>—-&gt;192.168.1.2是电脑的IP地址;N18000_RGOS11.0(1)B2_CM_08050853_install.bin是电脑上的主程序文件名;rgos.bin是放入交换机上的主程序名称<br>3、升级:</p><figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">Switch</span>#upgrade flash:N<span class="number">18000</span>_RGOS<span class="number">11</span>.<span class="number">0</span>(<span class="number">1</span>)B<span class="number">2</span>_CM_<span class="number">08050053</span>_install.bin</span><br></pre></td></tr></table></figure><p>4、通过show upgrade status确定交换机升级情况,升级完成后通过命令reload重启交换机<br>5、重启完成后,通过show version detail查看交换机版本</p>]]></content>
-    
-    
-    <summary type="html">&lt;p&gt;不同方式升级交换机版本&lt;/p&gt;</summary>
-    
-    
-    
-    
-  </entry>
-  
-  <entry>
-    <title>IPMI，MGMT口</title>
-    <link href="http://example.com/2021/08/13/%E5%90%84%E7%A7%8D%E6%8E%A5%E5%8F%A3/"/>
-    <id>http://example.com/2021/08/13/%E5%90%84%E7%A7%8D%E6%8E%A5%E5%8F%A3/</id>
-    <published>2021-08-13T03:42:06.000Z</published>
-    <updated>2021-08-17T08:26:42.777Z</updated>
-    
-    <content type="html"><![CDATA[<p>交换机上的各种接口</p><span id="more"></span><h1 id="MGMT口"><a href="#MGMT口" class="headerlink" title="MGMT口"></a>MGMT口</h1><p>MGMT是网络管理端口，可以直接用网线连接，登陆进防火墙以网页模式管理<br>1） 用户可以通过Ping、Tracert等命令探测MGMT 口上配置的IP地址是否可达，并在MGMT 口上通过Ping、Tracert命令探测远程IP是否可达，因此MGMT 口支持ICMP应用。<br>2）用户可以通过Telnet/SSH/SNMP/WEB等方式登录到MGMT 口对设备进行管理，并且登录时支持AAA验证（包括Radius 和Tacacs+这两种服务器认证方式），甚至在执行命令行时还需要支持Tacacs+授权。<br>3）设备的日志、告警等信息也可以通过MGMT 口发送到网管的日志服务器上。<br>4）MGMT 口支持Telnet Client，TFTP Client。<br>5）MGMT 口支持NTP/SNTP报文的收发以实现网络时间同步。<br>6）MGMT 口支持静态ARP绑定。 </p><h1 id="IPMI口"><a href="#IPMI口" class="headerlink" title="IPMI口"></a>IPMI口</h1><p>IPMI，即智能平台管理接口（Intelligent Platform Management Interface），IPMI的核心是一个专用芯片/控制器(BMC)，独立于操作系统、BIOS和处理器，因此属于带外管理设备。正是因为如此，我们可以通过BMC来控制或者获取系统的各种信息，而不需要关注系统是否正常。比如，系统卡住了，可以通过ipmi reset系统，而不需要跑到机房断电；系统无法登录也可以远程屏幕查看是什么问题。</p>]]></content>
-    
-    
-    <summary type="html">&lt;p&gt;交换机上的各种接口&lt;/p&gt;</summary>
-    
-    
-    
-    <category term="交换机" scheme="http://example.com/categories/%E4%BA%A4%E6%8D%A2%E6%9C%BA/"/>
-    
-    
-    <category term="交换机" scheme="http://example.com/tags/%E4%BA%A4%E6%8D%A2%E6%9C%BA/"/>
-    
-    <category term="接口" scheme="http://example.com/tags/%E6%8E%A5%E5%8F%A3/"/>
     
   </entry>
   
