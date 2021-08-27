@@ -24,7 +24,7 @@
 
   <meta name="description" content="传输控制协议">
 <meta property="og:type" content="article">
-<meta property="og:title" content="TCP">
+<meta property="og:title" content="TCP解析">
 <meta property="og:url" content="http://example.com/2021/08/26/TCP/index.html">
 <meta property="og:site_name" content="郑林昕的博客">
 <meta property="og:description" content="传输控制协议">
@@ -32,7 +32,7 @@
 <meta property="og:image" content="http://example.com/2021/08/26/TCP/%E4%B8%89%E6%AC%A1%E6%8F%A1%E6%89%8B.png">
 <meta property="og:image" content="http://example.com/2021/08/26/TCP/%E5%9B%9B%E6%AC%A1%E6%8C%A5%E6%89%8B.png">
 <meta property="article:published_time" content="2021-08-26T11:05:48.000Z">
-<meta property="article:modified_time" content="2021-08-27T01:37:03.925Z">
+<meta property="article:modified_time" content="2021-08-27T12:04:03.721Z">
 <meta property="article:author" content="郑林昕">
 <meta property="article:tag" content="数据通信">
 <meta name="twitter:card" content="summary">
@@ -51,7 +51,7 @@
   };
 </script>
 
-  <title>TCP | 郑林昕的博客</title>
+  <title>TCP解析 | 郑林昕的博客</title>
   
 
 
@@ -210,7 +210,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          TCP
+          TCP解析
         </h1>
 
         <div class="post-meta">
@@ -227,7 +227,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-08-27 09:37:03" itemprop="dateModified" datetime="2021-08-27T09:37:03+08:00">2021-08-27</time>
+                <time title="修改时间：2021-08-27 20:04:03" itemprop="dateModified" datetime="2021-08-27T20:04:03+08:00">2021-08-27</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -267,7 +267,7 @@
 </ul>
 <h2 id="四次挥手"><a href="#四次挥手" class="headerlink" title="四次挥手"></a>四次挥手</h2><p>再来看看何为四次挥手.<br><img src="/2021/08/26/TCP/%E5%9B%9B%E6%AC%A1%E6%8C%A5%E6%89%8B.png" alt="四次挥手"></p>
 <p>数据传输完毕后，双方都可以释放连接.<br>此时客户端和服务器都是处于ESTABLISHED状态，然后客户端主动断开连接，服务器被动断开连接.</p>
-<p>1, 客户端进程发出连接释放报文，并且停止发送数据。<br>释放数据报文首部，FIN=1，其序列号为seq=u（等于前面已经传送过来的数据的最后一个字节的序号加1），此时客户端进入FIN-WAIT-1（终止等待1）状态。 TCP规定，FIN报文段即使不携带数据，也要消耗一个序号。<br>2, 服务器收到连接释放报文，发出确认报文，ACK=1，确认序号为 u+1，并且带上自己的序列号seq=v，此时服务端就进入了CLOSE-WAIT（关闭等待）状态。<br>TCP服务器通知高层的应用进程，客户端向服务器的方向就释放了，这时候处于半关闭状态，即客户端已经没有数据要发送了，但是服务器若发送数据，客户端依然要接受。这个状态还要持续一段时间，也就是整个CLOSE-WAIT状态持续的时间。<br>3, 客户端收到服务器的确认请求后，此时客户端就进入FIN-WAIT-2（终止等待2）状态，等待服务器发送连接释放报文（在这之前还需要接受服务器发送的最终数据）<br>4, 服务器将最后的数据发送完毕后，就向客户端发送连接释放报文，FIN=1，确认序号为v+1，由于在半关闭状态，服务器很可能又发送了一些数据，假定此时的序列号为seq=w，此时，服务器就进入了LAST-ACK（最后确认）状态，等待客户端的确认。<br>5, 客户端收到服务器的连接释放报文后，必须发出确认，ACK=1，确认序号为w+1，而自己的序列号是u+1，此时，客户端就进入了TIME-WAIT（时间等待）状态。注意此时TCP连接还没有释放，必须经过2∗MSL（最长报文段寿命）的时间后，当客户端撤销相应的TCB后，才进入CLOSED状态。<br>6, 服务器只要收到了客户端发出的确认，立即进入CLOSED状态。同样，撤销TCB后，就结束了这次的TCP连接。可以看到，服务器结束TCP连接的时间要比客户端早一些。</p>
+<p>1, 客户端进程发出连接释放报文，并且停止发送数据。<br>释放数据报文首部，FIN=1，其序列号为seq=u（等于前面已经传送过来的数据的最后一个字节的序号加1），此时客户端进入FIN-WAIT-1（终止等待1）状态。 TCP规定，FIN报文段即使不携带数据，也要消耗一个序号。<br>2, 服务器收到连接释放报文，发出确认报文，ACK=1，确认序号为 u+1，并且带上自己的序列号seq=v，此时服务端就进入了CLOSE-WAIT（关闭等待）状态。<br>TCP服务器通知高层的应用进程，客户端向服务器的方向就释放了，这时候处于半关闭状态，即客户端已经没有数据要发送了，但是服务器若发送数据，客户端依然要接受。这个状态还要持续一段时间，也就是整个CLOSE-WAIT状态持续的时间。<br>3, 客户端收到服务器的确认请求后，此时客户端就进入FIN-WAIT-2（终止等待2）状态，等待服务器发送连接释放报文（在这之前还需要接受服务器发送的最终数据）<br>4, 服务器将最后的数据发送完毕后，就向客户端发送连接释放报文，FIN=1，确认序号为u+1，由于在半关闭状态，服务器很可能又发送了一些数据，假定此时的序列号为seq=w，此时，服务器就进入了LAST-ACK（最后确认）状态，等待客户端的确认。<br>5, 客户端收到服务器的连接释放报文后，必须发出确认，ACK=1，确认序号为w+1，而自己的序列号是u+1，此时，客户端就进入了TIME-WAIT（时间等待）状态。注意此时TCP连接还没有释放，必须经过2∗MSL（最长报文段寿命）的时间后，当客户端撤销相应的TCB后，才进入CLOSED状态。<br>6, 服务器只要收到了客户端发出的确认，立即进入CLOSED状态。同样，撤销TCB后，就结束了这次的TCP连接。可以看到，服务器结束TCP连接的时间要比客户端早一些。</p>
 <p>为什么最后客户端还要等待 2*MSL的时间呢?</p>
 <ul>
 <li><p>MSL（Maximum Segment Lifetime），TCP允许不同的实现可以设置不同的MSL值。</p>
@@ -285,6 +285,27 @@
 <ul>
 <li>TCP设有一个保活计时器，显然，客户端如果出现故障，服务器不能一直等下去，白白浪费资源。服务器每收到一次客户端的请求后都会重新复位这个计时器，时间通常是设置为2小时，若两小时还没有收到客户端的任何数据，服务器就会发送一个探测报文段，以后每隔75分钟发送一次。若一连发送10个探测报文仍然没反应，服务器就认为客户端出了故障，接着就关闭连接。</li>
 </ul>
+<h2 id="TCP-小结"><a href="#TCP-小结" class="headerlink" title="TCP 小结"></a>TCP 小结</h2><p>为什么TCP这么复杂?</p>
+<blockquote>
+<p>因为既要保证可靠性, 同时又要尽可能提高性能.</p>
+</blockquote>
+<p>保证可靠性的机制</p>
+<blockquote>
+<p>校验和<br>序列号(按序到达)<br>确认应答<br>超时重传<br>连接管理<br>流量控制<br>拥塞控制</p>
+</blockquote>
+<p>提高性能的机制</p>
+<blockquote>
+<p>滑动窗口<br>快速重传<br>延迟应答<br>捎带应答</p>
+</blockquote>
+<p>定时器</p>
+<blockquote>
+<p>超时重传定时器<br>保活定时器<br>TIME_WAIT定时器</p>
+</blockquote>
+<p>基于 TCP 的应用层协议</p>
+<blockquote>
+<p>HTTP<br>HTTPS<br>SSH<br>Telnet<br>FTP<br>SMTP<br>…</p>
+</blockquote>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p><a target="_blank" rel="noopener" href="https://blog.csdn.net/sinat_36629696/article/details/80740678?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522162997757616780274110436%2522%252C%2522scm%2522%253A%252220140713.130102334..%2522%257D&request_id=162997757616780274110436&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~all~top_positive~default-1-80740678.ecpm_v1_rank_v29&utm_term=TCP&spm=1018.2226.3001.4187">TCP 详解</a></p>
 
     </div>
 
@@ -365,7 +386,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#TCP"><span class="nav-number">1.</span> <span class="nav-text">TCP</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#TCP%E4%B8%89%E6%AC%A1%E6%8F%A1%E6%89%8B"><span class="nav-number">1.1.</span> <span class="nav-text">TCP三次握手</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%9B%E6%AC%A1%E6%8C%A5%E6%89%8B"><span class="nav-number">1.2.</span> <span class="nav-text">四次挥手</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#TCP"><span class="nav-number">1.</span> <span class="nav-text">TCP</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#TCP%E4%B8%89%E6%AC%A1%E6%8F%A1%E6%89%8B"><span class="nav-number">1.1.</span> <span class="nav-text">TCP三次握手</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%9B%E6%AC%A1%E6%8C%A5%E6%89%8B"><span class="nav-number">1.2.</span> <span class="nav-text">四次挥手</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#TCP-%E5%B0%8F%E7%BB%93"><span class="nav-number">1.3.</span> <span class="nav-text">TCP 小结</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">2.</span> <span class="nav-text">参考</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -471,7 +492,7 @@
       <i class="fa fa-chart-area"></i>
     </span>
       <span class="post-meta-item-text">站点总字数：</span>
-    <span title="站点总字数">101k</span>
+    <span title="站点总字数">102k</span>
 </div>
 
         

@@ -763,7 +763,7 @@ BPDU处理变化:
       </tags>
   </entry>
   <entry>
-    <title>TCP</title>
+    <title>TCP解析</title>
     <url>/2021/08/26/TCP/</url>
     <content><![CDATA[<p>传输控制协议</p>
 <span id="more"></span>
@@ -782,7 +782,7 @@ BPDU处理变化:
 </ul>
 <h2 id="四次挥手"><a href="#四次挥手" class="headerlink" title="四次挥手"></a>四次挥手</h2><p>再来看看何为四次挥手.<br><img src="/2021/08/26/TCP/%E5%9B%9B%E6%AC%A1%E6%8C%A5%E6%89%8B.png" alt="四次挥手"></p>
 <p>数据传输完毕后，双方都可以释放连接.<br>此时客户端和服务器都是处于ESTABLISHED状态，然后客户端主动断开连接，服务器被动断开连接.</p>
-<p>1, 客户端进程发出连接释放报文，并且停止发送数据。<br>释放数据报文首部，FIN=1，其序列号为seq=u（等于前面已经传送过来的数据的最后一个字节的序号加1），此时客户端进入FIN-WAIT-1（终止等待1）状态。 TCP规定，FIN报文段即使不携带数据，也要消耗一个序号。<br>2, 服务器收到连接释放报文，发出确认报文，ACK=1，确认序号为 u+1，并且带上自己的序列号seq=v，此时服务端就进入了CLOSE-WAIT（关闭等待）状态。<br>TCP服务器通知高层的应用进程，客户端向服务器的方向就释放了，这时候处于半关闭状态，即客户端已经没有数据要发送了，但是服务器若发送数据，客户端依然要接受。这个状态还要持续一段时间，也就是整个CLOSE-WAIT状态持续的时间。<br>3, 客户端收到服务器的确认请求后，此时客户端就进入FIN-WAIT-2（终止等待2）状态，等待服务器发送连接释放报文（在这之前还需要接受服务器发送的最终数据）<br>4, 服务器将最后的数据发送完毕后，就向客户端发送连接释放报文，FIN=1，确认序号为v+1，由于在半关闭状态，服务器很可能又发送了一些数据，假定此时的序列号为seq=w，此时，服务器就进入了LAST-ACK（最后确认）状态，等待客户端的确认。<br>5, 客户端收到服务器的连接释放报文后，必须发出确认，ACK=1，确认序号为w+1，而自己的序列号是u+1，此时，客户端就进入了TIME-WAIT（时间等待）状态。注意此时TCP连接还没有释放，必须经过2∗MSL（最长报文段寿命）的时间后，当客户端撤销相应的TCB后，才进入CLOSED状态。<br>6, 服务器只要收到了客户端发出的确认，立即进入CLOSED状态。同样，撤销TCB后，就结束了这次的TCP连接。可以看到，服务器结束TCP连接的时间要比客户端早一些。</p>
+<p>1, 客户端进程发出连接释放报文，并且停止发送数据。<br>释放数据报文首部，FIN=1，其序列号为seq=u（等于前面已经传送过来的数据的最后一个字节的序号加1），此时客户端进入FIN-WAIT-1（终止等待1）状态。 TCP规定，FIN报文段即使不携带数据，也要消耗一个序号。<br>2, 服务器收到连接释放报文，发出确认报文，ACK=1，确认序号为 u+1，并且带上自己的序列号seq=v，此时服务端就进入了CLOSE-WAIT（关闭等待）状态。<br>TCP服务器通知高层的应用进程，客户端向服务器的方向就释放了，这时候处于半关闭状态，即客户端已经没有数据要发送了，但是服务器若发送数据，客户端依然要接受。这个状态还要持续一段时间，也就是整个CLOSE-WAIT状态持续的时间。<br>3, 客户端收到服务器的确认请求后，此时客户端就进入FIN-WAIT-2（终止等待2）状态，等待服务器发送连接释放报文（在这之前还需要接受服务器发送的最终数据）<br>4, 服务器将最后的数据发送完毕后，就向客户端发送连接释放报文，FIN=1，确认序号为u+1，由于在半关闭状态，服务器很可能又发送了一些数据，假定此时的序列号为seq=w，此时，服务器就进入了LAST-ACK（最后确认）状态，等待客户端的确认。<br>5, 客户端收到服务器的连接释放报文后，必须发出确认，ACK=1，确认序号为w+1，而自己的序列号是u+1，此时，客户端就进入了TIME-WAIT（时间等待）状态。注意此时TCP连接还没有释放，必须经过2∗MSL（最长报文段寿命）的时间后，当客户端撤销相应的TCB后，才进入CLOSED状态。<br>6, 服务器只要收到了客户端发出的确认，立即进入CLOSED状态。同样，撤销TCB后，就结束了这次的TCP连接。可以看到，服务器结束TCP连接的时间要比客户端早一些。</p>
 <p>为什么最后客户端还要等待 2*MSL的时间呢?</p>
 <ul>
 <li><p>MSL（Maximum Segment Lifetime），TCP允许不同的实现可以设置不同的MSL值。</p>
@@ -800,34 +800,33 @@ BPDU处理变化:
 <ul>
 <li>TCP设有一个保活计时器，显然，客户端如果出现故障，服务器不能一直等下去，白白浪费资源。服务器每收到一次客户端的请求后都会重新复位这个计时器，时间通常是设置为2小时，若两小时还没有收到客户端的任何数据，服务器就会发送一个探测报文段，以后每隔75分钟发送一次。若一连发送10个探测报文仍然没反应，服务器就认为客户端出了故障，接着就关闭连接。</li>
 </ul>
+<h2 id="TCP-小结"><a href="#TCP-小结" class="headerlink" title="TCP 小结"></a>TCP 小结</h2><p>为什么TCP这么复杂?</p>
+<blockquote>
+<p>因为既要保证可靠性, 同时又要尽可能提高性能.</p>
+</blockquote>
+<p>保证可靠性的机制</p>
+<blockquote>
+<p>校验和<br>序列号(按序到达)<br>确认应答<br>超时重传<br>连接管理<br>流量控制<br>拥塞控制</p>
+</blockquote>
+<p>提高性能的机制</p>
+<blockquote>
+<p>滑动窗口<br>快速重传<br>延迟应答<br>捎带应答</p>
+</blockquote>
+<p>定时器</p>
+<blockquote>
+<p>超时重传定时器<br>保活定时器<br>TIME_WAIT定时器</p>
+</blockquote>
+<p>基于 TCP 的应用层协议</p>
+<blockquote>
+<p>HTTP<br>HTTPS<br>SSH<br>Telnet<br>FTP<br>SMTP<br>…</p>
+</blockquote>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p><a href="https://blog.csdn.net/sinat_36629696/article/details/80740678?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522162997757616780274110436%2522%252C%2522scm%2522%253A%252220140713.130102334..%2522%257D&request_id=162997757616780274110436&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~all~top_positive~default-1-80740678.ecpm_v1_rank_v29&utm_term=TCP&spm=1018.2226.3001.4187">TCP 详解</a></p>
 ]]></content>
       <categories>
         <category>数据通信</category>
       </categories>
       <tags>
         <tag>数据通信</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>VAP</title>
-    <url>/2021/08/11/VAP/</url>
-    <content><![CDATA[<div class="hbe hbe-container" id="hexo-blog-encrypt" data-wpm="Oh, this is an invalid password. Check and try again, please." data-whm="OOPS, these decrypted content may changed, but you can still have a look.">
-  <script id="hbeData" type="hbeData" data-hmacdigest="ff0c6ea39a7037cf670311274314c1b3adbb9632a2347afc72a37bd93c73478a">f6139c82e97dc16a5fc8c8565b4be2a6d93f96eb084eb17eca70bf462341fd0ddc4c8fffc318e67430a5d503d847966d89c7284a955ceec27fd7601cf6063a85ed548ee0b3cacc9454908123cdaf77285d0c5b2355af0ac86e12354da1affb647b67d610cca3633be073ddcd9eb8f8accc12e0b2d2227a4e05575fd9eb8a92b0a183fb53c5d67568b07e552b9f7e94b1efcb6de2a7ea45156426ba06c39d78df3f453cff58e5f241a5e31f5d7e9857ce4a895507c6d38a8e6a6d1d9a33e286a92de60db3efe174e0a084f2189b831f236b6c464512196ca7f1bfb83bb0a0270fad39d8320010d7ae80c2b02d1fd6bd173e5c0b6efabb77a1c9d68b13b575e6c50108ce2c15396e82f4d608a4ad1752cbc6faecb6b15c817442d28308c57823a205634aba20804cd685cb59af2280251c9c73e35b276f85c5bd2ee891d1f49f337c6c4af869ccee7cdf27452b09e2161ae34359329f4c4b9b069ab1eae837e77a983605ca2a7cfcdc1acd2ba630c94015110f536d2716de8b0e2716796d950e7f773f3acb6dbfa758244237e59bed96d8d234ee70f5060b12dbe047508d4182317765e5d3f4481a7db30a9b0014b0ae1b441a516a08e056cbcd0cede5b2f5b784eae4be02571393fb801113e420996e05804701716b38f43531da4624a681e9d3ef4663d2cbc96dc9742928ffceaee49d815e8fcbd49f579bf72f3d226e17742c170efc6d933e055b5dccb8debaca65520e6a8a2ab8804a345ed4c12e52f6663d54cacf11172fb0c46562f82ab1f8fcba66f6a4b2b940a98c07fc4e11b3918e69b4987c6c6162febb841aa564a927a1f5d1fafe96c7865a3108a3f8c397aac474d494005197f6d8da37e78542f6bdae38bce828bad56e6b8c53489c5486cbac94156f1b2276c0d5affd090c9e69325f5f5279c71bfe8c517a057af753c888337ffdfa717985420a2938d457ea5e3a0927c35b3343a265f109a467b053464397d4fa2287f63c76b9bec86b3c427621214193bc11e7787dc9a1a776e0b9218698f5114db7f0158ced7783a0f516be0102b007d89fc76619ce9ced5d8e421cec03f04b9a432f379ed55813aeadad4ddebeef7c972faa35b7f154f950f4269f633650188c69396b0a82fd1bc984cbbd6268c16676b8e9c481e9bf4678e326bf4ae2ee1709a9d62f63cdb5dab0518bbe77e5e96d89c781b2151599d03fdcd6e747bf569bbdd9588741dde1aa0386d4189eee8bba1a415a8f1ff40805bb930b7e864d80cdeb63da95fc913fbb693c4fc1133774e72a80f9564c52bbdb78c02bc3e94c877c466e2426af9d9902c0ddf98e8b85daf1bb33e44215d7b54a07a1716e7b9d8a0e52b8c00c52913411b1c21be87d6f500ec05d02bc4413f341deee7b35a7a8a842604b5ef4dace0adb886599e43791ed9317f9a1e8673ea4b1c3da46a5a9f101ba03e5aa240c24dde98595a066959d693aa7747fffe789e2f234e6f6fbc00284867ed600de07c9a12f1a06b957858f0d11f02450bebeca0ce5654c3b490a326a0e723585dbe0d6a8c911519f2aaf990f95916459334c028672f6ee4a5dcfa830e7d84494f87b777606149871ba51a35be467e5dbcb6dd194c5810fb55b7795f7a93069fa79f495d9e680dbaf2f9e45f6f3976515a1589b5f5ecb837815bc115184e756489cf87b73a4ae0e4b91fd3108b1632d35bf7d142c030e46f75bd87f3b616be70219a90df53e520a0b92eed12e057c3abcafd89b20d102eb5e90113fec14585f0b999c759b423059f1a164edcc40ced34c9975860b31474a984a8199727d029877de18c753ab7c6779856dc1dff9eb9b3bf6ba63a83fad295df2a2fdb6073d4c2bc01f29a7d847562e11f4a7c017126e35545bb50f221a31057cc9f1eb34e4f9cb4188320e62911baad8ea22f855b3d8e6c28113e1a878c90782b967fbcd1012a7d9eb8d7d27659001fac5272ca8ccd2bcefef51f2042dcde6d60a2f13960f9e2c98e534a588487d8adc4d64a9f6068e612205c57d83a4ef528559fe80fc6b25451f8e388c8d0f9f299c28241a05bc23b58e2cc4eed4d758d031641f85c45a74d3c72afab1178fcffd4bc886569a4af81765d64d3b69b808ff7ac073e5180e8ec28d55ead360010d0c0aa449bec40e7c08eb0385499025508c3f77ff22ac94636ccc759e42c975fe8e3c0bd3cef6b27804fe108729ed1af807acc152620dab9fc14c480dbae98c034f0e532908aea64a04fb4ae1fe3b05c093f6e9fcc26aa4ceba6cbd755e00698c20dc5c05734f48f46ddd7aaed2877d39d4ee792ca6fbe8860f7270a832a6ced169713f065ff0622a1cda5f6ac37e12bb759503ceefe5966411dd479ea265606c28d5da31fc58bad4987accb1920c4d7475884a4bfa3099cfcde409966ab31ad02967e999fbe7a6290291f14ecd4700d2ac114f9ceec96e74f1bda4acc640767c67680dcf2b2b8c03228e9aa48d4f6b9c54652c6af0b0e40a13451e207906cd97c30953ed5c48e315929bb6c277f1db18cfb9857b36edd8087cbaf4c2550235209e9c90e844fd5b1ee7d30e6b4415b31fe11aef2dad447196e88a3fa6aeb16639d11e558a3ce9c4c45827ce06f77af9fd1f3b1e09310c5efe3ee014a3fd584f7bd09ca6a1d22487cd0c0cd08d8c2089bca6b0cf6d9fcd5cff23993a1cb65dfb6d0e329db96fa929b913bb68c7bc786a515fb7aac89ac309037cde7be7093f5ab498bf8076baa62d4f7c1c281f3d4375a14be3c0d4dec719d25716733bd3bda8b48c4fc90b61c174c250192f0b2a333bd2f49f9bb3b25c052bbbb789a51f7f466eb385b6b46811e26fceb327d91381823b1eafbd284b5d0f6e1baf749770a4eac93dbb764c92f5eddcae487d29d30d4a7dc0f9ed519427a7f5bc4baa7f0f7942320edc96343f37dc0d9f710f225233691e7a4d34bf35a9c9ae984f526b4ce91a6e8b27adc9eb23b7c2bbe152a4a5b525019fe60ae356aa8131f7a3f19ef9929a96aef1b94452dd5d80f7055a0b015997564931517782d4110fee844bd5a7db2d62d936e396174a1d64d3af79e3850595f7a3aa9a22b55c6ef031a690cc9cdc9459d11e37087528a8b75c6310a3f8c9eeb1b544c36f65f39eba8f346f101d1c71f6866f0b19ee766de97371c1717f31dffce738c3f6bbc51b8ed24c305e866c330271f0c881a31fe9bb03543a118828241d2c513c3aa186d03715117fbbce93fd9d500aeb977d62ab115037d3c267fc8e024a7cc0e6e090f66ab9a1e2b10ca5f233d63f2fa9247164bc2977776d9f74f7410da25e1cf02973a11d88c40c9bbc7b6591cb6786b5126382f097d679a4d28d761f78cf5612250b5a32c81edba1fb2d3e81cd242afd01cd5a823ccae2fb09e8c78b92737743ff449510ddfada7dc0d66c21ff7bf9e1fe93a3251e0800f9c17212b77a37ae6ec9684d386c2a99e697037c744815b18b1f3962a28e37ae5a32524fe0e8197f0ef2d66a8ea46790c9e55e7ee9c1f52fa62fe9dec49b9048e8763da99d37391e57f18bb886c46d9727a300d3aa807e2fae6afa454f6ac5c1b0aaf6230cd6290fe15f7ab90e01c28c6dc8508ad86bbb4e417edac665d2c4b2f57dd89b685be144ab2e91b4d98da1d81892fe35a60990449c794823c2eaab7f99dbd477c0d2efb4f6440cbecba7cb139b7ff27e46ea247aff24623127493a85338612953b4bb68e46c75bc247987884c887b207472a1feb78c125ff04ac89a96de6da505b53da1f6f4befffd3952ba54caf137e952a19e088c6937a639afac305b9653507bf6e11b3db53b57992f40b6fa5513613ffcf529977841396d109342b2b0770b95c8593c11c4993f2a650d0f557dfcdf42a5103f136b48e2b5354b3a77c9ef4546e81c7e3f43e8c073c48ec1ebcdfdea331f2c5ccb2ff34db6f27bbdcf6539d6985426799e7fe04ce4b844c119b49c9a916463501d750fd969191b4f75d9576c43f554c7452ceed2eccd212483eaedb41e4cfa09b0c5f13822d2ee1c0c517a7f79b8967303d3e10f6b469ca8585e7c4d2d4e8d5cbabdc61c93d94a244a4d1f58ac819a3b36080f7d42cb01d3cd43d455e94f8fcc2b6589a747bc4de9e5523bde67b516353d99f9c455249f340e15d3b556c919f5ba45b5d3a6b88f3aea0ace1f11c279ffbc01b1af0a37075edd9c9452199f0a28d5421ecdb6d29926bcc1b7f7da5d7ec98f1fcb1dff70c7467f388c7526f9e0e1223361062374f812342c0b2d65d42e43a11e7f83b59fa1c7fdb40969cf083ae3ca73c2c52bb16e3a8d8964c6adbd9eabb9d442745e087dc7e71a44a334ce7c3b2699a67c01fe33db9a1da3c3f27e69bd6f992113cf1afedf0160482dc96141ab6cb7d7d5ce1805d971f223a2005a361116ac83ac40917eada439ecc8b2fd7c99a3deea48ef942f6a1d3abeb9a140a54a11cf8cc068704bec284a263e4a9cb42e4fac50eb34a05d5cae1f0aa4f790d17523bed4cfd1e0d99833997af1fbdea25281d20d92e17d198a04a5722693b9754ca52ef31e6b6b84ade201d18d78ab2dcb88b66c26c0e96593831dffaa03fa14939f86750882048b52dcf56e0cb40d24a39706e015c858425e6fe4a7ef83ce0539cd4490982512a426f3857183afa7b7adcc0b19d50f83662c7be7b250d02956a48dd792d513323167598fb8bd28b951691f5fb929add4d3c98cd9547f8a7e5e1f729b585a0a0fb56b5f9f29bb4cda3906549db2cd8ffe2f6cc4fd89d755e2a1b4e676a56ebb50fa9ee316d13a422a3c42bb761052c6f6067943c8d1d812a08e82b55a7570ea4ff96bd22630d01b1ca57790d1abf1a6b042252224f57db379576756be6a67ce5845afc5a228f166c303474858a120232e7adfd997b0bd4b21deac7840a252049a4bb59c0a3fe73d06546e8936945f76bf23ba74d6474d31126c4f383b3ae1ca0e88b7ef9275a45c6dce2d0ad14a7adcbdeea617d7bc397729dd0ed6d907b7e2686add01b629fe86e7e49e20a81f95b9b6ee7b228a1e7e114c191282a3ca1304b2f376a5b9b27566a889d5137a82c695350f10108c7ced52e955813ceeea66c75261cfb4813d44a216e7ce1cc402fe6c00e0ec38d31200d33788b57e7b8043d502c3b20f5331a1d752b769ef7217daa9cb3f1fb7c8fbd5b71b46f438bdf9b978f119904134a527760712fab11cb8144a21ec47b2e9b26b1b2ed46dd7ad61661e90712970125037516b4b7af09783a9f9f3aa8ad27776fe8dad34bb35886554d839ff7b4630433f3bda492fee4da0ca4887b818fb1f7f6166d9d28551bdaa7def2e1f1fc324e515cde39c5d97cce9e41dba8db701e55e57f01ee393f4bae715290766934b8c63efc1441070dd280cfa94116037ff4b3b8b96d2cdf8f52ae3f709b889a15d4d707ddbb7c9f36585011de4711d872ab6d12cae0f903bdf9f2fc7847182ad3e4a991bb05c1708abfcee4c87b0ea9dac660407902963b2f7ab22111ed81b90e46841f79cb611a8ee8d2d702a8827bc427b478c1afcafc653f0d9f5b75a6a934b3646e04ae503e04746f4dd4fca8420a6fdcbd171bc84c0667c9e27cafbe820866c9562d640bf0a1d5672862ee428885e1c2fbdc3bbc6cd982ba1dbe3288dfd6589d5f4c03c1afd5a42ece34fd8103ece6c8b4eaab792f95600241289f702312c0d1ff02459e1618eb815be00100e8ded7e65bf59150ef6a9075caafa7158460e8211b3ef947df61e114ed6cf7c3dc7769ca3397c69fcf74b4cbb593a50085a07228c8c5c81d8323e639e2634a3dc50c7294581153f06e00c9428d6c0d41e9c5eff33859c405d440e28850e3b8a82f7f32935de1bf60b96522b4f91fc99b08a7fd1993cb6dcb7d8aaddef3fe2f932b78d2cd3c51445104ffdb18f22330958e84d6ac6f9961adda8eba1e0be4a3940c68549e68f808343cb30a86a4aedc059bfe5ef4c0056452a0c3e8d54c5829493f08fdfa092a6b1c798432e9ae0e5f45df7f591117d8fb94bc738057ea265423e8f9302c4514debd13f5e5b224c35f997f90d8d4daf33ed41461a9525a5a2fa9385428bcf29a50d692742963696e6b72620b3338e8411e0e27c3683d3366a61804223810da10ba6247e858c324f77b09cd8fb20328f72a8753f2b57ccb65d817190565bb1f5ca63eda15640865046bc1c3dc083a20ce0117c701856678bb965fa3666e4d4c668271515403c82d07493c51b41e38f147ef65a4ec0d65d2d0e41e438fe2864c73b05953371649397337179797b88b6e585be28e82e6a51f2d8ec9cbdfe12042762a2b804e0b0eb65de93b46c563cb84c9f352f0b9f9ce3692d6eae0c8607b295ecd325950a0eeddbbc013b3b7bd5d377b6c1b1de0446d0b8497976dd1d5cc6db9b6dceead2d53bfb74fb77b694c8f15eb01c691f972b3aa8633208d83e10f59a08d32c6be57697db6bea08e491d1e21b032df4093c399dec61d7db7c682e31e985c26ba157a436c2229051852ad7d17a3878d493e1607f4f7b1f7a93bda940ea58d5c00a9324940305144b0c36f5798ed604e3281b4816c5f9edf19cf6da58540a9d2b02d33d32b4fc02d9157e967346294cac31a42e6db17d0429763e8e5925c32fb6615e5ab02c6757ee63f85cad7ffa612c2beb107db31b763f7843f2dbb0792d0fbf6ed23d6fc74d545b2ac2b74284f5c8b717fea21afccd754c55defbfcd0a4804d1c81d0ae10cf36815b3704ef0a5972cce8371111ac4061ede8c608d0fbd58a56c06c11ee3543d4f303189dd6da3d2c1634cc4d1808c9a91c62808638673b2627b7a84b9eed165abc6992bdb4aa12f1abe8e00f019047a5e8440ae02913078cb0db34445480e07fcc66e5a8562d4eda38536df7b17314b8d18fd61909ca6590bca6e2928591afa894070b6b32af704c04d46af328d69c63a6df00316178069b353dcf3394efdd2afe80ee546b873b69fe220e2e45c348bfc0e9f7451e078db61236977dad844d55b0d29efdc9fa4e332ff46189f83b6894a061c026347c803dae35c0df9731f042eaf989f5580fe58320010541354d92751f26b318be950a493c8cb198ecd7042f9d1d66848d0be6dcc5807d42bb6108f96eeac48996de11e2b0af8cf1b4a9cc6f9ffb1172f592ee359e7e7c337339bd83daa4e8a20e05a81b21b3252a68df8f5a264cd5b055aeb376fa1ab4d7a9902182b055d7ed6888967ab9196977a23b6ecb6eb2d31b98ce2af1a86e058f182cd0e987ec92ea57823e8e022f89c2fcca8ca4e361c9a2e35d3e8abaaf652ef1d6e28f1af1469fe5cabcf48bf595e6e664198d9cb0577cea27ac9e9cbce8804436ee7403e8117212787e85f30a113a510c44669ba3ec6a6f231e3f58be4e1b8e291f685f18b0f8da10c7390e32c7cb3cfd72761958f6c31c5e2798bbd882d3f819e8891bca928914e84eb5ba6</script>
-  <div class="hbe hbe-content">
-    <div class="hbe hbe-input hbe-input-default">
-      <input class="hbe hbe-input-field hbe-input-field-default" type="password" id="hbePass">
-      <label class="hbe hbe-input-label hbe-input-label-default" for="hbePass">
-        <span class="hbe hbe-input-label-content hbe-input-label-content-default">Hey, password is required here.</span>
-      </label>
-    </div>
-  </div>
-</div>
-<script data-pjax src="/lib/hbe.js"></script><link href="/css/hbe.style.css" rel="stylesheet" type="text/css">]]></content>
-      <categories>
-        <category>虚拟化</category>
-      </categories>
-      <tags>
-        <tag>虚拟化技术</tag>
       </tags>
   </entry>
   <entry>
@@ -863,6 +862,28 @@ BPDU处理变化:
       <tags>
         <tag>VPN</tag>
         <tag>路由</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>VAP</title>
+    <url>/2021/08/11/VAP/</url>
+    <content><![CDATA[<div class="hbe hbe-container" id="hexo-blog-encrypt" data-wpm="Oh, this is an invalid password. Check and try again, please." data-whm="OOPS, these decrypted content may changed, but you can still have a look.">
+  <script id="hbeData" type="hbeData" data-hmacdigest="ff0c6ea39a7037cf670311274314c1b3adbb9632a2347afc72a37bd93c73478a">f6139c82e97dc16a5fc8c8565b4be2a6d93f96eb084eb17eca70bf462341fd0ddc4c8fffc318e67430a5d503d847966d89c7284a955ceec27fd7601cf6063a85ed548ee0b3cacc9454908123cdaf77285d0c5b2355af0ac86e12354da1affb647b67d610cca3633be073ddcd9eb8f8accc12e0b2d2227a4e05575fd9eb8a92b0a183fb53c5d67568b07e552b9f7e94b1efcb6de2a7ea45156426ba06c39d78df3f453cff58e5f241a5e31f5d7e9857ce4a895507c6d38a8e6a6d1d9a33e286a92de60db3efe174e0a084f2189b831f236b6c464512196ca7f1bfb83bb0a0270fad39d8320010d7ae80c2b02d1fd6bd173e5c0b6efabb77a1c9d68b13b575e6c50108ce2c15396e82f4d608a4ad1752cbc6faecb6b15c817442d28308c57823a205634aba20804cd685cb59af2280251c9c73e35b276f85c5bd2ee891d1f49f337c6c4af869ccee7cdf27452b09e2161ae34359329f4c4b9b069ab1eae837e77a983605ca2a7cfcdc1acd2ba630c94015110f536d2716de8b0e2716796d950e7f773f3acb6dbfa758244237e59bed96d8d234ee70f5060b12dbe047508d4182317765e5d3f4481a7db30a9b0014b0ae1b441a516a08e056cbcd0cede5b2f5b784eae4be02571393fb801113e420996e05804701716b38f43531da4624a681e9d3ef4663d2cbc96dc9742928ffceaee49d815e8fcbd49f579bf72f3d226e17742c170efc6d933e055b5dccb8debaca65520e6a8a2ab8804a345ed4c12e52f6663d54cacf11172fb0c46562f82ab1f8fcba66f6a4b2b940a98c07fc4e11b3918e69b4987c6c6162febb841aa564a927a1f5d1fafe96c7865a3108a3f8c397aac474d494005197f6d8da37e78542f6bdae38bce828bad56e6b8c53489c5486cbac94156f1b2276c0d5affd090c9e69325f5f5279c71bfe8c517a057af753c888337ffdfa717985420a2938d457ea5e3a0927c35b3343a265f109a467b053464397d4fa2287f63c76b9bec86b3c427621214193bc11e7787dc9a1a776e0b9218698f5114db7f0158ced7783a0f516be0102b007d89fc76619ce9ced5d8e421cec03f04b9a432f379ed55813aeadad4ddebeef7c972faa35b7f154f950f4269f633650188c69396b0a82fd1bc984cbbd6268c16676b8e9c481e9bf4678e326bf4ae2ee1709a9d62f63cdb5dab0518bbe77e5e96d89c781b2151599d03fdcd6e747bf569bbdd9588741dde1aa0386d4189eee8bba1a415a8f1ff40805bb930b7e864d80cdeb63da95fc913fbb693c4fc1133774e72a80f9564c52bbdb78c02bc3e94c877c466e2426af9d9902c0ddf98e8b85daf1bb33e44215d7b54a07a1716e7b9d8a0e52b8c00c52913411b1c21be87d6f500ec05d02bc4413f341deee7b35a7a8a842604b5ef4dace0adb886599e43791ed9317f9a1e8673ea4b1c3da46a5a9f101ba03e5aa240c24dde98595a066959d693aa7747fffe789e2f234e6f6fbc00284867ed600de07c9a12f1a06b957858f0d11f02450bebeca0ce5654c3b490a326a0e723585dbe0d6a8c911519f2aaf990f95916459334c028672f6ee4a5dcfa830e7d84494f87b777606149871ba51a35be467e5dbcb6dd194c5810fb55b7795f7a93069fa79f495d9e680dbaf2f9e45f6f3976515a1589b5f5ecb837815bc115184e756489cf87b73a4ae0e4b91fd3108b1632d35bf7d142c030e46f75bd87f3b616be70219a90df53e520a0b92eed12e057c3abcafd89b20d102eb5e90113fec14585f0b999c759b423059f1a164edcc40ced34c9975860b31474a984a8199727d029877de18c753ab7c6779856dc1dff9eb9b3bf6ba63a83fad295df2a2fdb6073d4c2bc01f29a7d847562e11f4a7c017126e35545bb50f221a31057cc9f1eb34e4f9cb4188320e62911baad8ea22f855b3d8e6c28113e1a878c90782b967fbcd1012a7d9eb8d7d27659001fac5272ca8ccd2bcefef51f2042dcde6d60a2f13960f9e2c98e534a588487d8adc4d64a9f6068e612205c57d83a4ef528559fe80fc6b25451f8e388c8d0f9f299c28241a05bc23b58e2cc4eed4d758d031641f85c45a74d3c72afab1178fcffd4bc886569a4af81765d64d3b69b808ff7ac073e5180e8ec28d55ead360010d0c0aa449bec40e7c08eb0385499025508c3f77ff22ac94636ccc759e42c975fe8e3c0bd3cef6b27804fe108729ed1af807acc152620dab9fc14c480dbae98c034f0e532908aea64a04fb4ae1fe3b05c093f6e9fcc26aa4ceba6cbd755e00698c20dc5c05734f48f46ddd7aaed2877d39d4ee792ca6fbe8860f7270a832a6ced169713f065ff0622a1cda5f6ac37e12bb759503ceefe5966411dd479ea265606c28d5da31fc58bad4987accb1920c4d7475884a4bfa3099cfcde409966ab31ad02967e999fbe7a6290291f14ecd4700d2ac114f9ceec96e74f1bda4acc640767c67680dcf2b2b8c03228e9aa48d4f6b9c54652c6af0b0e40a13451e207906cd97c30953ed5c48e315929bb6c277f1db18cfb9857b36edd8087cbaf4c2550235209e9c90e844fd5b1ee7d30e6b4415b31fe11aef2dad447196e88a3fa6aeb16639d11e558a3ce9c4c45827ce06f77af9fd1f3b1e09310c5efe3ee014a3fd584f7bd09ca6a1d22487cd0c0cd08d8c2089bca6b0cf6d9fcd5cff23993a1cb65dfb6d0e329db96fa929b913bb68c7bc786a515fb7aac89ac309037cde7be7093f5ab498bf8076baa62d4f7c1c281f3d4375a14be3c0d4dec719d25716733bd3bda8b48c4fc90b61c174c250192f0b2a333bd2f49f9bb3b25c052bbbb789a51f7f466eb385b6b46811e26fceb327d91381823b1eafbd284b5d0f6e1baf749770a4eac93dbb764c92f5eddcae487d29d30d4a7dc0f9ed519427a7f5bc4baa7f0f7942320edc96343f37dc0d9f710f225233691e7a4d34bf35a9c9ae984f526b4ce91a6e8b27adc9eb23b7c2bbe152a4a5b525019fe60ae356aa8131f7a3f19ef9929a96aef1b94452dd5d80f7055a0b015997564931517782d4110fee844bd5a7db2d62d936e396174a1d64d3af79e3850595f7a3aa9a22b55c6ef031a690cc9cdc9459d11e37087528a8b75c6310a3f8c9eeb1b544c36f65f39eba8f346f101d1c71f6866f0b19ee766de97371c1717f31dffce738c3f6bbc51b8ed24c305e866c330271f0c881a31fe9bb03543a118828241d2c513c3aa186d03715117fbbce93fd9d500aeb977d62ab115037d3c267fc8e024a7cc0e6e090f66ab9a1e2b10ca5f233d63f2fa9247164bc2977776d9f74f7410da25e1cf02973a11d88c40c9bbc7b6591cb6786b5126382f097d679a4d28d761f78cf5612250b5a32c81edba1fb2d3e81cd242afd01cd5a823ccae2fb09e8c78b92737743ff449510ddfada7dc0d66c21ff7bf9e1fe93a3251e0800f9c17212b77a37ae6ec9684d386c2a99e697037c744815b18b1f3962a28e37ae5a32524fe0e8197f0ef2d66a8ea46790c9e55e7ee9c1f52fa62fe9dec49b9048e8763da99d37391e57f18bb886c46d9727a300d3aa807e2fae6afa454f6ac5c1b0aaf6230cd6290fe15f7ab90e01c28c6dc8508ad86bbb4e417edac665d2c4b2f57dd89b685be144ab2e91b4d98da1d81892fe35a60990449c794823c2eaab7f99dbd477c0d2efb4f6440cbecba7cb139b7ff27e46ea247aff24623127493a85338612953b4bb68e46c75bc247987884c887b207472a1feb78c125ff04ac89a96de6da505b53da1f6f4befffd3952ba54caf137e952a19e088c6937a639afac305b9653507bf6e11b3db53b57992f40b6fa5513613ffcf529977841396d109342b2b0770b95c8593c11c4993f2a650d0f557dfcdf42a5103f136b48e2b5354b3a77c9ef4546e81c7e3f43e8c073c48ec1ebcdfdea331f2c5ccb2ff34db6f27bbdcf6539d6985426799e7fe04ce4b844c119b49c9a916463501d750fd969191b4f75d9576c43f554c7452ceed2eccd212483eaedb41e4cfa09b0c5f13822d2ee1c0c517a7f79b8967303d3e10f6b469ca8585e7c4d2d4e8d5cbabdc61c93d94a244a4d1f58ac819a3b36080f7d42cb01d3cd43d455e94f8fcc2b6589a747bc4de9e5523bde67b516353d99f9c455249f340e15d3b556c919f5ba45b5d3a6b88f3aea0ace1f11c279ffbc01b1af0a37075edd9c9452199f0a28d5421ecdb6d29926bcc1b7f7da5d7ec98f1fcb1dff70c7467f388c7526f9e0e1223361062374f812342c0b2d65d42e43a11e7f83b59fa1c7fdb40969cf083ae3ca73c2c52bb16e3a8d8964c6adbd9eabb9d442745e087dc7e71a44a334ce7c3b2699a67c01fe33db9a1da3c3f27e69bd6f992113cf1afedf0160482dc96141ab6cb7d7d5ce1805d971f223a2005a361116ac83ac40917eada439ecc8b2fd7c99a3deea48ef942f6a1d3abeb9a140a54a11cf8cc068704bec284a263e4a9cb42e4fac50eb34a05d5cae1f0aa4f790d17523bed4cfd1e0d99833997af1fbdea25281d20d92e17d198a04a5722693b9754ca52ef31e6b6b84ade201d18d78ab2dcb88b66c26c0e96593831dffaa03fa14939f86750882048b52dcf56e0cb40d24a39706e015c858425e6fe4a7ef83ce0539cd4490982512a426f3857183afa7b7adcc0b19d50f83662c7be7b250d02956a48dd792d513323167598fb8bd28b951691f5fb929add4d3c98cd9547f8a7e5e1f729b585a0a0fb56b5f9f29bb4cda3906549db2cd8ffe2f6cc4fd89d755e2a1b4e676a56ebb50fa9ee316d13a422a3c42bb761052c6f6067943c8d1d812a08e82b55a7570ea4ff96bd22630d01b1ca57790d1abf1a6b042252224f57db379576756be6a67ce5845afc5a228f166c303474858a120232e7adfd997b0bd4b21deac7840a252049a4bb59c0a3fe73d06546e8936945f76bf23ba74d6474d31126c4f383b3ae1ca0e88b7ef9275a45c6dce2d0ad14a7adcbdeea617d7bc397729dd0ed6d907b7e2686add01b629fe86e7e49e20a81f95b9b6ee7b228a1e7e114c191282a3ca1304b2f376a5b9b27566a889d5137a82c695350f10108c7ced52e955813ceeea66c75261cfb4813d44a216e7ce1cc402fe6c00e0ec38d31200d33788b57e7b8043d502c3b20f5331a1d752b769ef7217daa9cb3f1fb7c8fbd5b71b46f438bdf9b978f119904134a527760712fab11cb8144a21ec47b2e9b26b1b2ed46dd7ad61661e90712970125037516b4b7af09783a9f9f3aa8ad27776fe8dad34bb35886554d839ff7b4630433f3bda492fee4da0ca4887b818fb1f7f6166d9d28551bdaa7def2e1f1fc324e515cde39c5d97cce9e41dba8db701e55e57f01ee393f4bae715290766934b8c63efc1441070dd280cfa94116037ff4b3b8b96d2cdf8f52ae3f709b889a15d4d707ddbb7c9f36585011de4711d872ab6d12cae0f903bdf9f2fc7847182ad3e4a991bb05c1708abfcee4c87b0ea9dac660407902963b2f7ab22111ed81b90e46841f79cb611a8ee8d2d702a8827bc427b478c1afcafc653f0d9f5b75a6a934b3646e04ae503e04746f4dd4fca8420a6fdcbd171bc84c0667c9e27cafbe820866c9562d640bf0a1d5672862ee428885e1c2fbdc3bbc6cd982ba1dbe3288dfd6589d5f4c03c1afd5a42ece34fd8103ece6c8b4eaab792f95600241289f702312c0d1ff02459e1618eb815be00100e8ded7e65bf59150ef6a9075caafa7158460e8211b3ef947df61e114ed6cf7c3dc7769ca3397c69fcf74b4cbb593a50085a07228c8c5c81d8323e639e2634a3dc50c7294581153f06e00c9428d6c0d41e9c5eff33859c405d440e28850e3b8a82f7f32935de1bf60b96522b4f91fc99b08a7fd1993cb6dcb7d8aaddef3fe2f932b78d2cd3c51445104ffdb18f22330958e84d6ac6f9961adda8eba1e0be4a3940c68549e68f808343cb30a86a4aedc059bfe5ef4c0056452a0c3e8d54c5829493f08fdfa092a6b1c798432e9ae0e5f45df7f591117d8fb94bc738057ea265423e8f9302c4514debd13f5e5b224c35f997f90d8d4daf33ed41461a9525a5a2fa9385428bcf29a50d692742963696e6b72620b3338e8411e0e27c3683d3366a61804223810da10ba6247e858c324f77b09cd8fb20328f72a8753f2b57ccb65d817190565bb1f5ca63eda15640865046bc1c3dc083a20ce0117c701856678bb965fa3666e4d4c668271515403c82d07493c51b41e38f147ef65a4ec0d65d2d0e41e438fe2864c73b05953371649397337179797b88b6e585be28e82e6a51f2d8ec9cbdfe12042762a2b804e0b0eb65de93b46c563cb84c9f352f0b9f9ce3692d6eae0c8607b295ecd325950a0eeddbbc013b3b7bd5d377b6c1b1de0446d0b8497976dd1d5cc6db9b6dceead2d53bfb74fb77b694c8f15eb01c691f972b3aa8633208d83e10f59a08d32c6be57697db6bea08e491d1e21b032df4093c399dec61d7db7c682e31e985c26ba157a436c2229051852ad7d17a3878d493e1607f4f7b1f7a93bda940ea58d5c00a9324940305144b0c36f5798ed604e3281b4816c5f9edf19cf6da58540a9d2b02d33d32b4fc02d9157e967346294cac31a42e6db17d0429763e8e5925c32fb6615e5ab02c6757ee63f85cad7ffa612c2beb107db31b763f7843f2dbb0792d0fbf6ed23d6fc74d545b2ac2b74284f5c8b717fea21afccd754c55defbfcd0a4804d1c81d0ae10cf36815b3704ef0a5972cce8371111ac4061ede8c608d0fbd58a56c06c11ee3543d4f303189dd6da3d2c1634cc4d1808c9a91c62808638673b2627b7a84b9eed165abc6992bdb4aa12f1abe8e00f019047a5e8440ae02913078cb0db34445480e07fcc66e5a8562d4eda38536df7b17314b8d18fd61909ca6590bca6e2928591afa894070b6b32af704c04d46af328d69c63a6df00316178069b353dcf3394efdd2afe80ee546b873b69fe220e2e45c348bfc0e9f7451e078db61236977dad844d55b0d29efdc9fa4e332ff46189f83b6894a061c026347c803dae35c0df9731f042eaf989f5580fe58320010541354d92751f26b318be950a493c8cb198ecd7042f9d1d66848d0be6dcc5807d42bb6108f96eeac48996de11e2b0af8cf1b4a9cc6f9ffb1172f592ee359e7e7c337339bd83daa4e8a20e05a81b21b3252a68df8f5a264cd5b055aeb376fa1ab4d7a9902182b055d7ed6888967ab9196977a23b6ecb6eb2d31b98ce2af1a86e058f182cd0e987ec92ea57823e8e022f89c2fcca8ca4e361c9a2e35d3e8abaaf652ef1d6e28f1af1469fe5cabcf48bf595e6e664198d9cb0577cea27ac9e9cbce8804436ee7403e8117212787e85f30a113a510c44669ba3ec6a6f231e3f58be4e1b8e291f685f18b0f8da10c7390e32c7cb3cfd72761958f6c31c5e2798bbd882d3f819e8891bca928914e84eb5ba6</script>
+  <div class="hbe hbe-content">
+    <div class="hbe hbe-input hbe-input-default">
+      <input class="hbe hbe-input-field hbe-input-field-default" type="password" id="hbePass">
+      <label class="hbe hbe-input-label hbe-input-label-default" for="hbePass">
+        <span class="hbe hbe-input-label-content hbe-input-label-content-default">Hey, password is required here.</span>
+      </label>
+    </div>
+  </div>
+</div>
+<script data-pjax src="/lib/hbe.js"></script><link href="/css/hbe.style.css" rel="stylesheet" type="text/css">]]></content>
+      <categories>
+        <category>虚拟化</category>
+      </categories>
+      <tags>
+        <tag>虚拟化技术</tag>
       </tags>
   </entry>
   <entry>
@@ -1689,6 +1710,64 @@ $0,1,2 // 0-脚本名 1-第一个参数 2-第二个参数
       </tags>
   </entry>
   <entry>
+    <title>交换机数据平面，控制平面和管理平面的分离</title>
+    <url>/2021/07/22/%E5%85%B3%E4%BA%8E%E6%95%B0%E6%8D%AE%E5%B9%B3%E9%9D%A2%EF%BC%8C%E6%8E%A7%E5%88%B6%E5%B9%B3%E9%9D%A2%E5%92%8C%E8%BD%AC%E5%8F%91%E5%B9%B3%E9%9D%A2%E7%9A%84%E5%88%86%E7%A6%BB%E9%97%AE%E9%A2%98/</url>
+    <content><![CDATA[<p><a href="#jump">三平面分离的详细解析</a></p>
+<span id="more"></span>
+<p><span id="back"></span></p>
+<h1 id="交换机数据平面，控制平面和管理平面的分离"><a href="#交换机数据平面，控制平面和管理平面的分离" class="headerlink" title="交换机数据平面，控制平面和管理平面的分离"></a>交换机数据平面，控制平面和管理平面的分离</h1><h2 id="交换机的工作原理"><a href="#交换机的工作原理" class="headerlink" title="交换机的工作原理"></a>交换机的工作原理</h2><p>目的MAC转发<br>源MAC学习<br>BUM泛洪</p>
+<blockquote>
+<h2 id="交换机控制平面："><a href="#交换机控制平面：" class="headerlink" title="交换机控制平面："></a>交换机控制平面：</h2><p>&emsp;&emsp;交换机的控制平面用于控制和管理所有网络协议的运行，比如OSPF协议，RIP协议，BGP协议等。控制平面提供了数据平面数据处理转发前所必须的各种网络信息和转发查询表项。</p>
+</blockquote>
+<blockquote>
+<h2 id="交换机数据平面："><a href="#交换机数据平面：" class="headerlink" title="交换机数据平面："></a>交换机数据平面：</h2><p>&emsp;&emsp;交换机的基本任务是处理和转发交换机各不同端口上各种类型的数据， L2/L3/ACL/QOS/组播/安全防护等各种具体的数据处理转发过程，都属于交换机数据平面的任务范畴 。</p>
+</blockquote>
+<blockquote>
+<h2 id="交换机管理平面："><a href="#交换机管理平面：" class="headerlink" title="交换机管理平面："></a>交换机管理平面：</h2><p>&emsp;&emsp;交换机的管理平面是提供给网络工程师 使用TELNET、WEB、SSH、SNMP、RMON等方式来管理设备，并支持、理解和执行网络工程师对于网络设备各种网络协议的设置命令。管理平面必须预先设置好控制平面中各种协议的相关参数，并支持在必要时刻对控制平面的运行进行干预。</p>
+</blockquote>
+<p><strong>三平面组合就是交换机的基本工作：</strong></p>
+<p>&emsp;&emsp;处理不同接口上各种类型的数据，对于数据处理过程中各种具体的处理转发过程，例如L2/L3/ACL/QOS/组播/安全防护等各种网络功能的具体执行，都划分为交换机的数据平面；而控制平面用于控制各种网络协议的运行，例如控制OSPF、ARP、STP等等协议的正常运行，控制平面提供了对网络环境的准确认识，提供了数据平面数据处理转发前所必须的各种网络信息和转发查询表项；至于管理平面的功能是提供给网络工程师使用TELNET、WEB、SSH、SNMP、RMON等方式管理设备的各种管理接口，并支持、理解和执行网络工程师对于网络设备各种网络功能的设置命令。</p>
+<h2 id="三个层面划分的报文"><a href="#三个层面划分的报文" class="headerlink" title="三个层面划分的报文"></a>三个层面划分的报文</h2><blockquote>
+<p>对于交换机设备，数据的路由和交换过程主要由硬件完成；CPU主要对控制流、管理流和部分硬件无法处理的数据流进行处理，同时提供交互界面提供用户进行本地管理配置</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>层面</th>
+<th>报文类型</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>管理面</td>
+<td>ip4-packet-local,ip6-packet-local</td>
+</tr>
+<tr>
+<td>数据面</td>
+<td>unknown-ipmc,unknown-ipmcv6,ttl,ip4-packet-other,ip6-packet-other…</td>
+</tr>
+<tr>
+<td>控制面</td>
+<td>tp-guard,dot1x,rldp,rerp,bpdu,isis dhcps,gvrp,ripng,igmp,mpls,ospf…</td>
+</tr>
+</tbody></table>
+<p><span id="jump"></span><br><a href="#back">查看交换机原理</a></p>
+<p>　　为什么需要对数据平面、控制平面和管理平面进行相互的分离呢?</p>
+<p>&emsp;&emsp;首先三者对于主机资源的消耗为：数据平面&gt;&gt;控制平面&gt;&gt;管理平面</p>
+<p>&emsp;&emsp;假设这几个平面不进行任何的分离，数据平面和控制、管理平面使用共用的主机资源，在大数据流量、复杂应用环境下数据平面由于承担着繁重的日常任务将可能消耗绝大部分资源，这对于整个交换机系统无疑是灾难性的，因为在某些极端的情况下，控制平面将没有充分的资源来保障运行，这就意味网络设备失去了对设备所处网络环境的真实了解，网络设备将立即陷于非正常工作状态甚至瘫痪状态，而网络工程师也没有资源使用管理平面对网络设备的运行进行干预，所以数据平面需要严格地与控制平面、管理平面进行分离。</p>
+<p>&emsp;&emsp;管理平面所要求的系统资源是最低的，分离出一定的系统资源独立运行管理平面并不影响控制平面的运行，反而能保证控制平面的正常运行。假设，当网络环境频繁变动、网络协议剧烈动荡的情况下，控制平面将占用大多数资源，这时候网络已经无法正常运行，出现了问题，需要网络工程师即使对网络进行维护和整改。管理平面的分离让网络工程师可以在控制平面出现异常状况（网络出现异常）的时候依然拥有足够的资源打开设备的管理界面，通过改变或终止某个协议、端口的运行来阻止异常网络环境对网络设备的剧烈影响，最终修复好网络环境，使得控制平面得以正常运行。</p>
+<p>&emsp;&emsp;通过采用数据平面、控制平面、管理平面相互分离的结构模型，保证了大量的数据处理不影响管理和控制，而在路由和环境复杂条件下，控制平面不影响管理平面，高度保证了系统安全稳定性。</p>
+<p>&emsp;&emsp;“三平面分离”技术注重于保护核心设备在病毒和攻击环境下依然提供正常的网络设备管理，满足在线地定位和解决安全问题，在稳定性设计上优于传统的“两平面分离”技术。</p>
+<h1 id="详细参考"><a href="#详细参考" class="headerlink" title="详细参考"></a>详细参考</h1><p><a href="https://blog.csdn.net/chpstudy/article/details/62423072?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522162693636016780255272782%2522%252C%2522scm%2522%253A%252220140713.130102334.pc%255Fall.%2522%257D&request_id=162693636016780255272782&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~all~first_rank_v2~rank_v29-5-62423072.first_rank_v2_pc_rank_v29&utm_term=%E4%BA%A4%E6%8D%A2%E6%9C%BA%E7%9A%84%E4%B8%89%E5%B9%B3%E9%9D%A2%E5%88%86%E7%A6%BB%E6%9E%B6%E6%9E%84&spm=1018.2226.3001.4187">数据平面、控制平面、管理平面</a></p>
+]]></content>
+      <categories>
+        <category>交换机</category>
+      </categories>
+      <tags>
+        <tag>交换机</tag>
+        <tag>交换机原理</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>关于hexo修改css问题</title>
     <url>/2021/08/23/%E5%85%B3%E4%BA%8Ehexo%E9%83%A8%E7%BD%B2%E9%97%AE%E9%A2%98/</url>
     <content><![CDATA[<p>解决hexo+next在本地部署成功，上传后失效问题</p>
@@ -1770,64 +1849,6 @@ $0,1,2 // 0-脚本名 1-第一个参数 2-第二个参数
       </tags>
   </entry>
   <entry>
-    <title>交换机数据平面，控制平面和管理平面的分离</title>
-    <url>/2021/07/22/%E5%85%B3%E4%BA%8E%E6%95%B0%E6%8D%AE%E5%B9%B3%E9%9D%A2%EF%BC%8C%E6%8E%A7%E5%88%B6%E5%B9%B3%E9%9D%A2%E5%92%8C%E8%BD%AC%E5%8F%91%E5%B9%B3%E9%9D%A2%E7%9A%84%E5%88%86%E7%A6%BB%E9%97%AE%E9%A2%98/</url>
-    <content><![CDATA[<p><a href="#jump">三平面分离的详细解析</a></p>
-<span id="more"></span>
-<p><span id="back"></span></p>
-<h1 id="交换机数据平面，控制平面和管理平面的分离"><a href="#交换机数据平面，控制平面和管理平面的分离" class="headerlink" title="交换机数据平面，控制平面和管理平面的分离"></a>交换机数据平面，控制平面和管理平面的分离</h1><h2 id="交换机的工作原理"><a href="#交换机的工作原理" class="headerlink" title="交换机的工作原理"></a>交换机的工作原理</h2><p>目的MAC转发<br>源MAC学习<br>BUM泛洪</p>
-<blockquote>
-<h2 id="交换机控制平面："><a href="#交换机控制平面：" class="headerlink" title="交换机控制平面："></a>交换机控制平面：</h2><p>&emsp;&emsp;交换机的控制平面用于控制和管理所有网络协议的运行，比如OSPF协议，RIP协议，BGP协议等。控制平面提供了数据平面数据处理转发前所必须的各种网络信息和转发查询表项。</p>
-</blockquote>
-<blockquote>
-<h2 id="交换机数据平面："><a href="#交换机数据平面：" class="headerlink" title="交换机数据平面："></a>交换机数据平面：</h2><p>&emsp;&emsp;交换机的基本任务是处理和转发交换机各不同端口上各种类型的数据， L2/L3/ACL/QOS/组播/安全防护等各种具体的数据处理转发过程，都属于交换机数据平面的任务范畴 。</p>
-</blockquote>
-<blockquote>
-<h2 id="交换机管理平面："><a href="#交换机管理平面：" class="headerlink" title="交换机管理平面："></a>交换机管理平面：</h2><p>&emsp;&emsp;交换机的管理平面是提供给网络工程师 使用TELNET、WEB、SSH、SNMP、RMON等方式来管理设备，并支持、理解和执行网络工程师对于网络设备各种网络协议的设置命令。管理平面必须预先设置好控制平面中各种协议的相关参数，并支持在必要时刻对控制平面的运行进行干预。</p>
-</blockquote>
-<p><strong>三平面组合就是交换机的基本工作：</strong></p>
-<p>&emsp;&emsp;处理不同接口上各种类型的数据，对于数据处理过程中各种具体的处理转发过程，例如L2/L3/ACL/QOS/组播/安全防护等各种网络功能的具体执行，都划分为交换机的数据平面；而控制平面用于控制各种网络协议的运行，例如控制OSPF、ARP、STP等等协议的正常运行，控制平面提供了对网络环境的准确认识，提供了数据平面数据处理转发前所必须的各种网络信息和转发查询表项；至于管理平面的功能是提供给网络工程师使用TELNET、WEB、SSH、SNMP、RMON等方式管理设备的各种管理接口，并支持、理解和执行网络工程师对于网络设备各种网络功能的设置命令。</p>
-<h2 id="三个层面划分的报文"><a href="#三个层面划分的报文" class="headerlink" title="三个层面划分的报文"></a>三个层面划分的报文</h2><blockquote>
-<p>对于交换机设备，数据的路由和交换过程主要由硬件完成；CPU主要对控制流、管理流和部分硬件无法处理的数据流进行处理，同时提供交互界面提供用户进行本地管理配置</p>
-</blockquote>
-<table>
-<thead>
-<tr>
-<th>层面</th>
-<th>报文类型</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>管理面</td>
-<td>ip4-packet-local,ip6-packet-local</td>
-</tr>
-<tr>
-<td>数据面</td>
-<td>unknown-ipmc,unknown-ipmcv6,ttl,ip4-packet-other,ip6-packet-other…</td>
-</tr>
-<tr>
-<td>控制面</td>
-<td>tp-guard,dot1x,rldp,rerp,bpdu,isis dhcps,gvrp,ripng,igmp,mpls,ospf…</td>
-</tr>
-</tbody></table>
-<p><span id="jump"></span><br><a href="#back">查看交换机原理</a></p>
-<p>　　为什么需要对数据平面、控制平面和管理平面进行相互的分离呢?</p>
-<p>&emsp;&emsp;首先三者对于主机资源的消耗为：数据平面&gt;&gt;控制平面&gt;&gt;管理平面</p>
-<p>&emsp;&emsp;假设这几个平面不进行任何的分离，数据平面和控制、管理平面使用共用的主机资源，在大数据流量、复杂应用环境下数据平面由于承担着繁重的日常任务将可能消耗绝大部分资源，这对于整个交换机系统无疑是灾难性的，因为在某些极端的情况下，控制平面将没有充分的资源来保障运行，这就意味网络设备失去了对设备所处网络环境的真实了解，网络设备将立即陷于非正常工作状态甚至瘫痪状态，而网络工程师也没有资源使用管理平面对网络设备的运行进行干预，所以数据平面需要严格地与控制平面、管理平面进行分离。</p>
-<p>&emsp;&emsp;管理平面所要求的系统资源是最低的，分离出一定的系统资源独立运行管理平面并不影响控制平面的运行，反而能保证控制平面的正常运行。假设，当网络环境频繁变动、网络协议剧烈动荡的情况下，控制平面将占用大多数资源，这时候网络已经无法正常运行，出现了问题，需要网络工程师即使对网络进行维护和整改。管理平面的分离让网络工程师可以在控制平面出现异常状况（网络出现异常）的时候依然拥有足够的资源打开设备的管理界面，通过改变或终止某个协议、端口的运行来阻止异常网络环境对网络设备的剧烈影响，最终修复好网络环境，使得控制平面得以正常运行。</p>
-<p>&emsp;&emsp;通过采用数据平面、控制平面、管理平面相互分离的结构模型，保证了大量的数据处理不影响管理和控制，而在路由和环境复杂条件下，控制平面不影响管理平面，高度保证了系统安全稳定性。</p>
-<p>&emsp;&emsp;“三平面分离”技术注重于保护核心设备在病毒和攻击环境下依然提供正常的网络设备管理，满足在线地定位和解决安全问题，在稳定性设计上优于传统的“两平面分离”技术。</p>
-<h1 id="详细参考"><a href="#详细参考" class="headerlink" title="详细参考"></a>详细参考</h1><p><a href="https://blog.csdn.net/chpstudy/article/details/62423072?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522162693636016780255272782%2522%252C%2522scm%2522%253A%252220140713.130102334.pc%255Fall.%2522%257D&request_id=162693636016780255272782&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~all~first_rank_v2~rank_v29-5-62423072.first_rank_v2_pc_rank_v29&utm_term=%E4%BA%A4%E6%8D%A2%E6%9C%BA%E7%9A%84%E4%B8%89%E5%B9%B3%E9%9D%A2%E5%88%86%E7%A6%BB%E6%9E%B6%E6%9E%84&spm=1018.2226.3001.4187">数据平面、控制平面、管理平面</a></p>
-]]></content>
-      <categories>
-        <category>交换机</category>
-      </categories>
-      <tags>
-        <tag>交换机</tag>
-        <tag>交换机原理</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>IPMI，MGMT口</title>
     <url>/2021/08/13/%E5%90%84%E7%A7%8D%E6%8E%A5%E5%8F%A3/</url>
     <content><![CDATA[<p>交换机上的各种接口</p>
@@ -1903,39 +1924,16 @@ $0,1,2 // 0-脚本名 1-第一个参数 2-第二个参数
 <span id="more"></span>
 
 <h1 id="IPv4报文结构"><a href="#IPv4报文结构" class="headerlink" title="IPv4报文结构"></a>IPv4报文结构</h1><p><img src="/2021/08/26/%E6%8A%A5%E6%96%87/ipv4.png" alt="ipv4"><br><strong>第一行</strong><br>版本号、IHL、服务类型ToS、总长度<br>记录包的数据、特殊服务的处理方式等<br><strong>第二行</strong><br>标识符、标记符、片段漂移Flagments Offset<br>保证接收者按照正确顺序重组数据包<br><strong>第三行</strong><br>TTL、协议号、头部校验<br>防止环路、协议、检查数据包头部是否改变<br><strong>后面</strong><br>源目IP地址<br>IP OPTION</p>
-<h1 id="TCP报文结构"><a href="#TCP报文结构" class="headerlink" title="TCP报文结构"></a>TCP报文结构</h1><p><img src="/2021/08/26/%E6%8A%A5%E6%96%87/tcp.png" alt="tcp"><br><strong>第一行</strong><br>源目端口——保证唯一TCP连接<br><strong>第二行</strong><br>序号<br><strong>第三行</strong><br>确认号<br><strong>第四行</strong><br>头部长度——报头最长60字节，固定20字节<br>保留位<br>控制位——6位，包含ACK,FIN,SYN,PSH,URG,RST<br>窗口——滑动窗口大小，用来告诉发送端接收端缓存大小，以此控制发送端发送速率，达到流量控制<br><strong>第五行</strong><br>检验和<br>紧急指针<br><strong>第六行</strong><br>选项<br>填充<br><strong>后面</strong><br>数据</p>
+<h1 id="TCP报文结构"><a href="#TCP报文结构" class="headerlink" title="TCP报文结构"></a>TCP报文结构</h1><p><img src="/2021/08/26/%E6%8A%A5%E6%96%87/tcp.png" alt="tcp"><br><strong>第一行</strong><br>源目端口——保证唯一TCP连接<br><strong>第二行</strong><br>序号<br><strong>第三行</strong><br>确认号<br><strong>第四行</strong><br>头部长度——报头最长60字节，固定20字节<br>保留位<br>控制位——6位，包含ACK,FIN,SYN,PSH,URG,RST</p>
+<blockquote>
+<p>URG: 标识紧急指针是否有效<br>ACK: 标识确认序号是否有效<br>PSH: 用来提示接收端应用程序立刻将数据从tcp缓冲区读走<br>RST: 要求重新建立连接. 我们把含有RST标识的报文称为复位报文段<br>SYN: 请求建立连接. 我们把含有SYN标识的报文称为同步报文段<br>FIN: 通知对端, 本端即将关闭. 我们把含有FIN标识的报文称为结束报文段<br>窗口——滑动窗口大小，用来告诉发送端接收端缓存大小，以此控制发送端发送速率，达到流量控制<br><strong>第五行</strong><br>检验和<br>紧急指针<br><strong>第六行</strong><br>选项<br>填充<br><strong>后面</strong><br>数据</p>
+</blockquote>
 ]]></content>
       <categories>
         <category>数据通信</category>
       </categories>
       <tags>
         <tag>数据通信</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>数据中心架构</title>
-    <url>/2021/08/25/%E6%95%B0%E6%8D%AE%E4%B8%AD%E5%BF%83%E6%9E%B6%E6%9E%84/</url>
-    <content><![CDATA[<p>Leaf-Spine网络架构好处</p>
-<span id="more"></span>
-
-<h1 id="名词解释"><a href="#名词解释" class="headerlink" title="名词解释"></a>名词解释</h1><p><strong>结构名词</strong><br>POD：数据中心的一个区域单位，包含交换机和服务器<br>Fabric：POD内使用的网络架构就是IP Fabric （还没搞明白是什么 只知道Leaf-Spine<br>DCI：POD和POD间的互联区域<br><strong>设备名词</strong><br>Spine（Core）：核心节点，连接各个Leaf<br>Leaf（TOR）：叶子节点，连接服务器、防火墙、负载均衡等<br>Border Leaf：Leaf功能节点，与数据中心外网连接，作为流量的出口设备</p>
-<h1 id="数据中心架构"><a href="#数据中心架构" class="headerlink" title="数据中心架构"></a>数据中心架构</h1><p><img src="/2021/08/25/%E6%95%B0%E6%8D%AE%E4%B8%AD%E5%BF%83%E6%9E%B6%E6%9E%84/%E7%BB%84%E7%BD%91%E8%AE%BE%E8%AE%A1.png" alt="组网设计"></p>
-<p><strong>好处</strong>：</p>
-<pre><code>控制面多活，提高冗余
-转发面多活
-网关下沉，控制广播域，全路由转发易维护
-</code></pre>
-<p><strong>为什么这种架构</strong>    </p>
-<pre><code>数据中心多东西向流量，少南北向流量
-方便横向扩展
-全路由转发减少二层环路，方便运维
-</code></pre>
-]]></content>
-      <categories>
-        <category>数据中心</category>
-      </categories>
-      <tags>
-        <tag>数据中心</tag>
       </tags>
   </entry>
   <entry>
@@ -1986,6 +1984,32 @@ $0,1,2 // 0-脚本名 1-第一个参数 2-第二个参数
         <tag>网络</tag>
         <tag>路由</tag>
         <tag>OSPF</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>数据中心架构</title>
+    <url>/2021/08/25/%E6%95%B0%E6%8D%AE%E4%B8%AD%E5%BF%83%E6%9E%B6%E6%9E%84/</url>
+    <content><![CDATA[<p>Leaf-Spine网络架构好处</p>
+<span id="more"></span>
+
+<h1 id="名词解释"><a href="#名词解释" class="headerlink" title="名词解释"></a>名词解释</h1><p><strong>结构名词</strong><br>POD：数据中心的一个区域单位，包含交换机和服务器<br>Fabric：POD内使用的网络架构就是IP Fabric （还没搞明白是什么 只知道Leaf-Spine<br>DCI：POD和POD间的互联区域<br><strong>设备名词</strong><br>Spine（Core）：核心节点，连接各个Leaf<br>Leaf（TOR）：叶子节点，连接服务器、防火墙、负载均衡等<br>Border Leaf：Leaf功能节点，与数据中心外网连接，作为流量的出口设备</p>
+<h1 id="数据中心架构"><a href="#数据中心架构" class="headerlink" title="数据中心架构"></a>数据中心架构</h1><p><img src="/2021/08/25/%E6%95%B0%E6%8D%AE%E4%B8%AD%E5%BF%83%E6%9E%B6%E6%9E%84/%E7%BB%84%E7%BD%91%E8%AE%BE%E8%AE%A1.png" alt="组网设计"></p>
+<p><strong>好处</strong>：</p>
+<pre><code>控制面多活，提高冗余
+转发面多活
+网关下沉，控制广播域，全路由转发易维护
+</code></pre>
+<p><strong>为什么这种架构</strong>    </p>
+<pre><code>数据中心多东西向流量，少南北向流量
+方便横向扩展
+全路由转发减少二层环路，方便运维
+</code></pre>
+]]></content>
+      <categories>
+        <category>数据中心</category>
+      </categories>
+      <tags>
+        <tag>数据中心</tag>
       </tags>
   </entry>
   <entry>
