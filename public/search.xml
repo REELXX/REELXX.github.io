@@ -286,71 +286,6 @@ BFD通知本地OSPF进程BFD邻居不可达。
       </tags>
   </entry>
   <entry>
-    <title>LLDP协议解析</title>
-    <url>/2021/07/23/LLDP%E5%8D%8F%E8%AE%AE%E8%A7%A3%E6%9E%90/</url>
-    <content><![CDATA[<p>链路层发现协议基本概念</p>
-<span id="more"></span>
-
-<h1 id="链路层发现协议"><a href="#链路层发现协议" class="headerlink" title="链路层发现协议"></a>链路层发现协议</h1><h2 id="概述1："><a href="#概述1：" class="headerlink" title="概述1："></a>概述1：</h2><p>LLDP（Link Layer Discovery Protocol，链路层发现协议）就是用于这个目的的协议。LLDP定义在802.1ab中,它是一个二层协议，它提供了一种标准的链路层发现方式。LLDP协议使得接入网络的一台设备可以将其主要的能力，管理地址，设备标识，接口标识等信息发送给接入同一个局域网络的其它设备。当一个设备从网络中接收到其它设备的这些信息时，它就将这些信息以MIB的形式存储起来。<br>这些MIB信息可用于发现设备的物理拓扑结构以及管理配置信息。需要注意的是LLDP仅仅被设计用于进行信息通告，它被用于通告一个设备的信息并可以获得其它设备的信息，进而得到相关的MIB信息。它不是一个配置、控制协议，无法通过该协议对远端设备进行配置，它只是提供了关于网络拓扑以及管理配置的信息，这些信息可以被用于管理、配置的目的，如何用取决于信息的使用者。</p>
-<h2 id="概述2："><a href="#概述2：" class="headerlink" title="概述2："></a>概述2：</h2><p>LLDP（Link Layer Discovery Protocol，链路层发现协议）是由IEEE 802.1AB定义的一种链路层发现协议。通过LLDP协议能够进行拓扑的发现及掌握拓扑的变化情况。LLDP将设备本地的信息组织成TLV的格式（Type/Lenth/Value，类型/长度/值）封装在LLDPDU（LLDP data unit，链路层发现协议数据单元）中发送给邻居设备，同时它将邻居设备发送的LLDPDU以MIB（Management Information Base，管理信息库）的形式存储起来，提供给网络管理系统访问。<br>通过LLDP，网络管理系统可以掌握拓扑的连接情况，比如设备的哪些端口与其它设备相连接，链路连接两端的端口的速率、双工是否匹配等，管理员可以根据这些信息快速地定位及排查故障。</p>
-<h2 id="LLDP工作模式"><a href="#LLDP工作模式" class="headerlink" title="LLDP工作模式"></a>LLDP工作模式</h2><p>LLDP提供了三种工作模式：<br>• TxRx：即发送也接收LLDPDU。<br>• Rx Only：只接收不发送LLDPDU。<br>• Tx Only：只发送不接收LLDPDU。<br>当端口的LLDP工作模式发生变化时，端口将对协议状态机进行初始化操作，通过配置端口初始化的延迟时间，可以避免由于工作模式频繁改变而导致端口不断地进行初始化操作。</p>
-<h2 id="待补充"><a href="#待补充" class="headerlink" title="待补充"></a>待补充</h2><h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><p><a href="https://blog.csdn.net/goodluckwhh/article/details/10948065?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522162702451016780262582058%2522%252C%2522scm%2522%253A%252220140713.130102334..%2522%257D&request_id=162702451016780262582058&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~all~top_positive~default-1-10948065.first_rank_v2_pc_rank_v29&utm_term=lldp&spm=1018.2226.3001.4187">数据链路层学习之LLDP</a></p>
-]]></content>
-      <categories>
-        <category>数据通信</category>
-      </categories>
-      <tags>
-        <tag>数据通信</tag>
-        <tag>数据链路层</tag>
-        <tag>网络</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>MPLS VPN</title>
-    <url>/2021/07/27/MPLS-VPN/</url>
-    <content><![CDATA[<p>BGP/MPLS IP VPN是一种L3VPN（Layer 3 Virtual Private Network）。它使用BGP（Border Gateway Protocol）在服务提供商骨干网上发布VPN路由，使用MPLS（Multiprotocol Label Switch）在服务提供商骨干网上转发VPN报文。这里的IP是指VPN承载的是IP（Internet Protocol）报文。</p>
-<span id="more"></span>
-
-<p><img src="/2021/07/27/MPLS-VPN/VPN%E6%A8%A1%E5%9E%8B.png" alt="MPLS IP VPN模型"><br>图：BGP/MPLS IP VPN模型</p>
-<p>BGP/MPLS IP VPN的基本模型由三部分组成：CE、PE和P。</p>
-<pre><code>• CE（Customer Edge）：用户网络边缘设备，有接口直接与服务提供商网络相连。CE可以是路由器或交换机，也可以是一台主机。通常情况下，CE“感知”不到VPN的存在，也不需要支持MPLS。
-• PE（Provider Edge）：是服务提供商网络的边缘设备，与CE直接相连。在MPLS网络中，对VPN的所有处理都发生在PE上，对PE性能要求较高。
-• P（Provider）：服务提供商网络中的骨干设备，不与CE直接相连。P设备只需要具备基本MPLS转发能力，不维护VPN信息。
-</code></pre>
-<p>PE和P设备仅由服务提供商管理；CE设备仅由用户管理，除非用户把管理权委托给服务提供商。</p>
-<p>一台PE设备可以接入多台CE设备。一台CE设备也可以连接属于相同或不同服务提供商的多台PE设备。</p>
-<h1 id="MPLS-VPN的原理描述"><a href="#MPLS-VPN的原理描述" class="headerlink" title="MPLS VPN的原理描述"></a>MPLS VPN的原理描述</h1><h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念:"></a>基本概念:</h2><h3 id="Site"><a href="#Site" class="headerlink" title="Site:"></a>Site:</h3><pre><code>• Site是指相互之间具备IP连通性的一组IP系统，并且，这组IP系统的IP连通性不需通过运营商网络实现。
-• Site的划分是根据设备的拓扑关系，而不是地理位置，尽管在大多数情况下一个Site中的设备地理位置相邻。地理位置隔离的两组IP系统，如果它们使用专线互联，不需要通过运营商网络就可以互通，这两组IP系统也组成一个Site。
-• 一个Site中的设备可以属于多个VPN，换言之，一个Site可以属于多个VPN。
-• Site通过CE连接到运营商网络，一个Site可以包含多个CE，但一个CE只属于一个Site。
-    根据Site的情况，建议CE设备选择方案如下：
-    如果Site只是一台主机，则这台主机就作为CE设备；
-    如果Site是单个子网，则使用交换机作为CE设备；
-    如果Site是多个子网，则使用路由器作为CE设备。
-    对于多个连接到同一运营商网络的Site，通过制定策略，可以将它们划分为不同的集合（set），只有属于相同集合的Site之间才能通过运营商网络互访，这种集合就是VPN。
-</code></pre>
-<h3 id="地址空间重叠："><a href="#地址空间重叠：" class="headerlink" title="地址空间重叠："></a>地址空间重叠：</h3><p>VPN是一种私有网络，不同的VPN独立管理自己的地址范围，也称为地址空间（address space）。不同VPN的地址空间可能会在一定范围内重合，例如，VPN1和VPN2都使用10.110.10.0/24网段地址，这就发生了地址空间的重叠（address spaces overlapping）。</p>
-<p>以下两种情况允许VPN使用重叠的地址空间：</p>
-<pre><code>• 两个VPN没有共同的Site
-• 两个VPN有共同的Site，但此Site中的设备不与两个VPN中使用重叠地址空间的设备互访
-</code></pre>
-<h3 id="VPN示例："><a href="#VPN示例：" class="headerlink" title="VPN示例："></a>VPN示例：</h3><p>在BGP/MPLS IP VPN中，不同VPN之间的路由隔离通过VPN实例（VPN-instance）实现。<br>PE为每个直接相连的Site建立并维护专门的VPN实例，VPN实例中包含对应Site的VPN成员关系和路由规则。具体来说，VPN实例中的信息包括：IP路由表、标签转发表、与VPN实例绑定的接口以及VPN实例的管理信息。VPN实例的管理信息包括RD（Route Distinguisher，路由标识符）、路由过滤策略、成员接口列表等。</p>
-<h3 id="VPN、Site、VPN实例之间的关系如下："><a href="#VPN、Site、VPN实例之间的关系如下：" class="headerlink" title="VPN、Site、VPN实例之间的关系如下："></a>VPN、Site、VPN实例之间的关系如下：</h3><pre><code>• VPN是多个Site的组合。一个Site可以属于多个VPN。
-• 每一个Site在PE上都关联一个VPN实例。VPN实例综合了它所关联的Site的VPN成员关系和路由规则。多个Site根据VPN实例的规则组合成一个VPN。
-• VPN实例与VPN不是一一对应的关系，VPN实例与Site之间存在一一对应的关系。
-</code></pre>
-<p><font color="#E99">VPN实例也称为VPN路由转发表VRF（VPN Routing and Forwarding table）。PE上存在多个路由转发表，包括一个公网路由转发表，以及一个或多个VPN路由转发表。</font></p>
-]]></content>
-      <categories>
-        <category>VPN</category>
-      </categories>
-      <tags>
-        <tag>数据通信</tag>
-        <tag>网络</tag>
-        <tag>VPN</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>MPLS学习笔记</title>
     <url>/2021/07/26/MPLS%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/</url>
     <content><![CDATA[<p>多协议标签交换MPLS（Multiprotocol Label Switching）是一种IP（Internet Protocol）骨干网技术。MPLS在无连接的IP网络上引入面向连接的标签交换概念，将第三层路由技术和第二层交换技术相结合，充分发挥了IP路由的灵活性和二层交换的简捷性。<br>MPLS起源于IPv4（Internet Protocol version 4），其核心技术可扩展到多种网络协议，包括IPv6（Internet Protocol version 6）、IPX（Internet Packet Exchange）和CLNP（Connectionless Network Protocol）等。MPLS中的“Multiprotocol”指的就是支持多种网络协议。</p>
@@ -456,6 +391,71 @@ ILM
       </tags>
   </entry>
   <entry>
+    <title>LLDP协议解析</title>
+    <url>/2021/07/23/LLDP%E5%8D%8F%E8%AE%AE%E8%A7%A3%E6%9E%90/</url>
+    <content><![CDATA[<p>链路层发现协议基本概念</p>
+<span id="more"></span>
+
+<h1 id="链路层发现协议"><a href="#链路层发现协议" class="headerlink" title="链路层发现协议"></a>链路层发现协议</h1><h2 id="概述1："><a href="#概述1：" class="headerlink" title="概述1："></a>概述1：</h2><p>LLDP（Link Layer Discovery Protocol，链路层发现协议）就是用于这个目的的协议。LLDP定义在802.1ab中,它是一个二层协议，它提供了一种标准的链路层发现方式。LLDP协议使得接入网络的一台设备可以将其主要的能力，管理地址，设备标识，接口标识等信息发送给接入同一个局域网络的其它设备。当一个设备从网络中接收到其它设备的这些信息时，它就将这些信息以MIB的形式存储起来。<br>这些MIB信息可用于发现设备的物理拓扑结构以及管理配置信息。需要注意的是LLDP仅仅被设计用于进行信息通告，它被用于通告一个设备的信息并可以获得其它设备的信息，进而得到相关的MIB信息。它不是一个配置、控制协议，无法通过该协议对远端设备进行配置，它只是提供了关于网络拓扑以及管理配置的信息，这些信息可以被用于管理、配置的目的，如何用取决于信息的使用者。</p>
+<h2 id="概述2："><a href="#概述2：" class="headerlink" title="概述2："></a>概述2：</h2><p>LLDP（Link Layer Discovery Protocol，链路层发现协议）是由IEEE 802.1AB定义的一种链路层发现协议。通过LLDP协议能够进行拓扑的发现及掌握拓扑的变化情况。LLDP将设备本地的信息组织成TLV的格式（Type/Lenth/Value，类型/长度/值）封装在LLDPDU（LLDP data unit，链路层发现协议数据单元）中发送给邻居设备，同时它将邻居设备发送的LLDPDU以MIB（Management Information Base，管理信息库）的形式存储起来，提供给网络管理系统访问。<br>通过LLDP，网络管理系统可以掌握拓扑的连接情况，比如设备的哪些端口与其它设备相连接，链路连接两端的端口的速率、双工是否匹配等，管理员可以根据这些信息快速地定位及排查故障。</p>
+<h2 id="LLDP工作模式"><a href="#LLDP工作模式" class="headerlink" title="LLDP工作模式"></a>LLDP工作模式</h2><p>LLDP提供了三种工作模式：<br>• TxRx：即发送也接收LLDPDU。<br>• Rx Only：只接收不发送LLDPDU。<br>• Tx Only：只发送不接收LLDPDU。<br>当端口的LLDP工作模式发生变化时，端口将对协议状态机进行初始化操作，通过配置端口初始化的延迟时间，可以避免由于工作模式频繁改变而导致端口不断地进行初始化操作。</p>
+<h2 id="待补充"><a href="#待补充" class="headerlink" title="待补充"></a>待补充</h2><h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><p><a href="https://blog.csdn.net/goodluckwhh/article/details/10948065?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522162702451016780262582058%2522%252C%2522scm%2522%253A%252220140713.130102334..%2522%257D&request_id=162702451016780262582058&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~all~top_positive~default-1-10948065.first_rank_v2_pc_rank_v29&utm_term=lldp&spm=1018.2226.3001.4187">数据链路层学习之LLDP</a></p>
+]]></content>
+      <categories>
+        <category>数据通信</category>
+      </categories>
+      <tags>
+        <tag>数据通信</tag>
+        <tag>数据链路层</tag>
+        <tag>网络</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>MPLS VPN</title>
+    <url>/2021/07/27/MPLS-VPN/</url>
+    <content><![CDATA[<p>BGP/MPLS IP VPN是一种L3VPN（Layer 3 Virtual Private Network）。它使用BGP（Border Gateway Protocol）在服务提供商骨干网上发布VPN路由，使用MPLS（Multiprotocol Label Switch）在服务提供商骨干网上转发VPN报文。这里的IP是指VPN承载的是IP（Internet Protocol）报文。</p>
+<span id="more"></span>
+
+<p><img src="/2021/07/27/MPLS-VPN/VPN%E6%A8%A1%E5%9E%8B.png" alt="MPLS IP VPN模型"><br>图：BGP/MPLS IP VPN模型</p>
+<p>BGP/MPLS IP VPN的基本模型由三部分组成：CE、PE和P。</p>
+<pre><code>• CE（Customer Edge）：用户网络边缘设备，有接口直接与服务提供商网络相连。CE可以是路由器或交换机，也可以是一台主机。通常情况下，CE“感知”不到VPN的存在，也不需要支持MPLS。
+• PE（Provider Edge）：是服务提供商网络的边缘设备，与CE直接相连。在MPLS网络中，对VPN的所有处理都发生在PE上，对PE性能要求较高。
+• P（Provider）：服务提供商网络中的骨干设备，不与CE直接相连。P设备只需要具备基本MPLS转发能力，不维护VPN信息。
+</code></pre>
+<p>PE和P设备仅由服务提供商管理；CE设备仅由用户管理，除非用户把管理权委托给服务提供商。</p>
+<p>一台PE设备可以接入多台CE设备。一台CE设备也可以连接属于相同或不同服务提供商的多台PE设备。</p>
+<h1 id="MPLS-VPN的原理描述"><a href="#MPLS-VPN的原理描述" class="headerlink" title="MPLS VPN的原理描述"></a>MPLS VPN的原理描述</h1><h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念:"></a>基本概念:</h2><h3 id="Site"><a href="#Site" class="headerlink" title="Site:"></a>Site:</h3><pre><code>• Site是指相互之间具备IP连通性的一组IP系统，并且，这组IP系统的IP连通性不需通过运营商网络实现。
+• Site的划分是根据设备的拓扑关系，而不是地理位置，尽管在大多数情况下一个Site中的设备地理位置相邻。地理位置隔离的两组IP系统，如果它们使用专线互联，不需要通过运营商网络就可以互通，这两组IP系统也组成一个Site。
+• 一个Site中的设备可以属于多个VPN，换言之，一个Site可以属于多个VPN。
+• Site通过CE连接到运营商网络，一个Site可以包含多个CE，但一个CE只属于一个Site。
+    根据Site的情况，建议CE设备选择方案如下：
+    如果Site只是一台主机，则这台主机就作为CE设备；
+    如果Site是单个子网，则使用交换机作为CE设备；
+    如果Site是多个子网，则使用路由器作为CE设备。
+    对于多个连接到同一运营商网络的Site，通过制定策略，可以将它们划分为不同的集合（set），只有属于相同集合的Site之间才能通过运营商网络互访，这种集合就是VPN。
+</code></pre>
+<h3 id="地址空间重叠："><a href="#地址空间重叠：" class="headerlink" title="地址空间重叠："></a>地址空间重叠：</h3><p>VPN是一种私有网络，不同的VPN独立管理自己的地址范围，也称为地址空间（address space）。不同VPN的地址空间可能会在一定范围内重合，例如，VPN1和VPN2都使用10.110.10.0/24网段地址，这就发生了地址空间的重叠（address spaces overlapping）。</p>
+<p>以下两种情况允许VPN使用重叠的地址空间：</p>
+<pre><code>• 两个VPN没有共同的Site
+• 两个VPN有共同的Site，但此Site中的设备不与两个VPN中使用重叠地址空间的设备互访
+</code></pre>
+<h3 id="VPN示例："><a href="#VPN示例：" class="headerlink" title="VPN示例："></a>VPN示例：</h3><p>在BGP/MPLS IP VPN中，不同VPN之间的路由隔离通过VPN实例（VPN-instance）实现。<br>PE为每个直接相连的Site建立并维护专门的VPN实例，VPN实例中包含对应Site的VPN成员关系和路由规则。具体来说，VPN实例中的信息包括：IP路由表、标签转发表、与VPN实例绑定的接口以及VPN实例的管理信息。VPN实例的管理信息包括RD（Route Distinguisher，路由标识符）、路由过滤策略、成员接口列表等。</p>
+<h3 id="VPN、Site、VPN实例之间的关系如下："><a href="#VPN、Site、VPN实例之间的关系如下：" class="headerlink" title="VPN、Site、VPN实例之间的关系如下："></a>VPN、Site、VPN实例之间的关系如下：</h3><pre><code>• VPN是多个Site的组合。一个Site可以属于多个VPN。
+• 每一个Site在PE上都关联一个VPN实例。VPN实例综合了它所关联的Site的VPN成员关系和路由规则。多个Site根据VPN实例的规则组合成一个VPN。
+• VPN实例与VPN不是一一对应的关系，VPN实例与Site之间存在一一对应的关系。
+</code></pre>
+<p><font color="#E99">VPN实例也称为VPN路由转发表VRF（VPN Routing and Forwarding table）。PE上存在多个路由转发表，包括一个公网路由转发表，以及一个或多个VPN路由转发表。</font></p>
+]]></content>
+      <categories>
+        <category>VPN</category>
+      </categories>
+      <tags>
+        <tag>数据通信</tag>
+        <tag>网络</tag>
+        <tag>VPN</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>OSPF笔记</title>
     <url>/2021/07/29/OSPF%E7%AC%94%E8%AE%B0/</url>
     <content><![CDATA[<p>OSPF基本理解</p>
@@ -542,25 +542,6 @@ ILM
         <tag>网络</tag>
         <tag>路由</tag>
         <tag>OSPF</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Python——pipreqs</title>
-    <url>/2021/08/18/Python%E2%80%94%E2%80%94pipreqs/</url>
-    <content><![CDATA[<p>解决Python项目在不同环境没法运行的问题，通过pipreqs库导出所需要的包</p>
-<span id="more"></span>
-
-<figure class="highlight jboss-cli"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 安装</span></span><br><span class="line">pip install pipreqs</span><br><span class="line"><span class="comment"># 在项目下运行</span></span><br><span class="line">pipreqs <span class="string">./</span> <span class="params">--encoding=utf8</span></span><br></pre></td></tr></table></figure>
-<p>执行完后，在项目下会生成<font color="#E9764A">requirements.txt</font>文件，项目中的组件和包都会在其中<br><img src="/2021/08/18/Python%E2%80%94%E2%80%94pipreqs/1.png" alt="1"></p>
-<blockquote>
-<p>当用pycharm打开项目时，只要项目下有requirements.txt文件，就会提示是否要安装没有的组件和包<br><img src="/2021/08/18/Python%E2%80%94%E2%80%94pipreqs/2.png" alt="2"></p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>Python</category>
-      </categories>
-      <tags>
-        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -780,7 +761,7 @@ BPDU处理变化:
 <ul>
 <li>因为三次已经可以满足需要了, 四次就多余了.</li>
 </ul>
-<h2 id="四次挥手"><a href="#四次挥手" class="headerlink" title="四次挥手"></a>四次挥手</h2><p>再来看看何为四次挥手.<br><img src="/2021/08/26/TCP/%E5%9B%9B%E6%AC%A1%E6%8C%A5%E6%89%8B.png" alt="四次挥手"></p>
+<h2 id="TCP四次挥手"><a href="#TCP四次挥手" class="headerlink" title="TCP四次挥手"></a>TCP四次挥手</h2><p>再来看看何为四次挥手.<br><img src="/2021/08/26/TCP/%E5%9B%9B%E6%AC%A1%E6%8C%A5%E6%89%8B.png" alt="四次挥手"></p>
 <p>数据传输完毕后，双方都可以释放连接.<br>此时客户端和服务器都是处于ESTABLISHED状态，然后客户端主动断开连接，服务器被动断开连接.</p>
 <p>1, 客户端进程发出连接释放报文，并且停止发送数据。<br>释放数据报文首部，FIN=1，其序列号为seq=u（等于前面已经传送过来的数据的最后一个字节的序号加1），此时客户端进入FIN-WAIT-1（终止等待1）状态。 TCP规定，FIN报文段即使不携带数据，也要消耗一个序号。<br>2, 服务器收到连接释放报文，发出确认报文，ACK=1，确认序号为 u+1，并且带上自己的序列号seq=v，此时服务端就进入了CLOSE-WAIT（关闭等待）状态。<br>TCP服务器通知高层的应用进程，客户端向服务器的方向就释放了，这时候处于半关闭状态，即客户端已经没有数据要发送了，但是服务器若发送数据，客户端依然要接受。这个状态还要持续一段时间，也就是整个CLOSE-WAIT状态持续的时间。<br>3, 客户端收到服务器的确认请求后，此时客户端就进入FIN-WAIT-2（终止等待2）状态，等待服务器发送连接释放报文（在这之前还需要接受服务器发送的最终数据）<br>4, 服务器将最后的数据发送完毕后，就向客户端发送连接释放报文，FIN=1，确认序号为u+1，由于在半关闭状态，服务器很可能又发送了一些数据，假定此时的序列号为seq=w，此时，服务器就进入了LAST-ACK（最后确认）状态，等待客户端的确认。<br>5, 客户端收到服务器的连接释放报文后，必须发出确认，ACK=1，确认序号为w+1，而自己的序列号是u+1，此时，客户端就进入了TIME-WAIT（时间等待）状态。注意此时TCP连接还没有释放，必须经过2∗MSL（最长报文段寿命）的时间后，当客户端撤销相应的TCB后，才进入CLOSED状态。<br>6, 服务器只要收到了客户端发出的确认，立即进入CLOSED状态。同样，撤销TCB后，就结束了这次的TCP连接。可以看到，服务器结束TCP连接的时间要比客户端早一些。</p>
 <p>为什么最后客户端还要等待 2*MSL的时间呢?</p>
@@ -821,12 +802,54 @@ BPDU处理变化:
 <p>HTTP<br>HTTPS<br>SSH<br>Telnet<br>FTP<br>SMTP<br>…</p>
 </blockquote>
 <h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p><a href="https://blog.csdn.net/sinat_36629696/article/details/80740678?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522162997757616780274110436%2522%252C%2522scm%2522%253A%252220140713.130102334..%2522%257D&request_id=162997757616780274110436&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~all~top_positive~default-1-80740678.ecpm_v1_rank_v29&utm_term=TCP&spm=1018.2226.3001.4187">TCP 详解</a></p>
+<h1 id="TCP学习网站"><a href="#TCP学习网站" class="headerlink" title="TCP学习网站"></a>TCP学习网站</h1><p><a href="http://www.52im.net/thread-513-1-1.html">TCP协议上部分：理论基础</a><br><a href="http://www.52im.net/thread-515-1-1.html">TCP协议下部分：RTT、滑动窗口、拥塞处理</a></p>
 ]]></content>
       <categories>
         <category>数据通信</category>
       </categories>
       <tags>
         <tag>数据通信</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Python——pipreqs</title>
+    <url>/2021/08/18/Python%E2%80%94%E2%80%94pipreqs/</url>
+    <content><![CDATA[<p>解决Python项目在不同环境没法运行的问题，通过pipreqs库导出所需要的包</p>
+<span id="more"></span>
+
+<figure class="highlight jboss-cli"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 安装</span></span><br><span class="line">pip install pipreqs</span><br><span class="line"><span class="comment"># 在项目下运行</span></span><br><span class="line">pipreqs <span class="string">./</span> <span class="params">--encoding=utf8</span></span><br></pre></td></tr></table></figure>
+<p>执行完后，在项目下会生成<font color="#E9764A">requirements.txt</font>文件，项目中的组件和包都会在其中<br><img src="/2021/08/18/Python%E2%80%94%E2%80%94pipreqs/1.png" alt="1"></p>
+<blockquote>
+<p>当用pycharm打开项目时，只要项目下有requirements.txt文件，就会提示是否要安装没有的组件和包<br><img src="/2021/08/18/Python%E2%80%94%E2%80%94pipreqs/2.png" alt="2"></p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>Python</category>
+      </categories>
+      <tags>
+        <tag>Python</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>VAP</title>
+    <url>/2021/08/11/VAP/</url>
+    <content><![CDATA[<div class="hbe hbe-container" id="hexo-blog-encrypt" data-wpm="Oh, this is an invalid password. Check and try again, please." data-whm="OOPS, these decrypted content may changed, but you can still have a look.">
+  <script id="hbeData" type="hbeData" data-hmacdigest="ff0c6ea39a7037cf670311274314c1b3adbb9632a2347afc72a37bd93c73478a">f6139c82e97dc16a5fc8c8565b4be2a6d93f96eb084eb17eca70bf462341fd0ddc4c8fffc318e67430a5d503d847966d89c7284a955ceec27fd7601cf6063a85ed548ee0b3cacc9454908123cdaf77285d0c5b2355af0ac86e12354da1affb647b67d610cca3633be073ddcd9eb8f8accc12e0b2d2227a4e05575fd9eb8a92b0a183fb53c5d67568b07e552b9f7e94b1efcb6de2a7ea45156426ba06c39d78df3f453cff58e5f241a5e31f5d7e9857ce4a895507c6d38a8e6a6d1d9a33e286a92de60db3efe174e0a084f2189b831f236b6c464512196ca7f1bfb83bb0a0270fad39d8320010d7ae80c2b02d1fd6bd173e5c0b6efabb77a1c9d68b13b575e6c50108ce2c15396e82f4d608a4ad1752cbc6faecb6b15c817442d28308c57823a205634aba20804cd685cb59af2280251c9c73e35b276f85c5bd2ee891d1f49f337c6c4af869ccee7cdf27452b09e2161ae34359329f4c4b9b069ab1eae837e77a983605ca2a7cfcdc1acd2ba630c94015110f536d2716de8b0e2716796d950e7f773f3acb6dbfa758244237e59bed96d8d234ee70f5060b12dbe047508d4182317765e5d3f4481a7db30a9b0014b0ae1b441a516a08e056cbcd0cede5b2f5b784eae4be02571393fb801113e420996e05804701716b38f43531da4624a681e9d3ef4663d2cbc96dc9742928ffceaee49d815e8fcbd49f579bf72f3d226e17742c170efc6d933e055b5dccb8debaca65520e6a8a2ab8804a345ed4c12e52f6663d54cacf11172fb0c46562f82ab1f8fcba66f6a4b2b940a98c07fc4e11b3918e69b4987c6c6162febb841aa564a927a1f5d1fafe96c7865a3108a3f8c397aac474d494005197f6d8da37e78542f6bdae38bce828bad56e6b8c53489c5486cbac94156f1b2276c0d5affd090c9e69325f5f5279c71bfe8c517a057af753c888337ffdfa717985420a2938d457ea5e3a0927c35b3343a265f109a467b053464397d4fa2287f63c76b9bec86b3c427621214193bc11e7787dc9a1a776e0b9218698f5114db7f0158ced7783a0f516be0102b007d89fc76619ce9ced5d8e421cec03f04b9a432f379ed55813aeadad4ddebeef7c972faa35b7f154f950f4269f633650188c69396b0a82fd1bc984cbbd6268c16676b8e9c481e9bf4678e326bf4ae2ee1709a9d62f63cdb5dab0518bbe77e5e96d89c781b2151599d03fdcd6e747bf569bbdd9588741dde1aa0386d4189eee8bba1a415a8f1ff40805bb930b7e864d80cdeb63da95fc913fbb693c4fc1133774e72a80f9564c52bbdb78c02bc3e94c877c466e2426af9d9902c0ddf98e8b85daf1bb33e44215d7b54a07a1716e7b9d8a0e52b8c00c52913411b1c21be87d6f500ec05d02bc4413f341deee7b35a7a8a842604b5ef4dace0adb886599e43791ed9317f9a1e8673ea4b1c3da46a5a9f101ba03e5aa240c24dde98595a066959d693aa7747fffe789e2f234e6f6fbc00284867ed600de07c9a12f1a06b957858f0d11f02450bebeca0ce5654c3b490a326a0e723585dbe0d6a8c911519f2aaf990f95916459334c028672f6ee4a5dcfa830e7d84494f87b777606149871ba51a35be467e5dbcb6dd194c5810fb55b7795f7a93069fa79f495d9e680dbaf2f9e45f6f3976515a1589b5f5ecb837815bc115184e756489cf87b73a4ae0e4b91fd3108b1632d35bf7d142c030e46f75bd87f3b616be70219a90df53e520a0b92eed12e057c3abcafd89b20d102eb5e90113fec14585f0b999c759b423059f1a164edcc40ced34c9975860b31474a984a8199727d029877de18c753ab7c6779856dc1dff9eb9b3bf6ba63a83fad295df2a2fdb6073d4c2bc01f29a7d847562e11f4a7c017126e35545bb50f221a31057cc9f1eb34e4f9cb4188320e62911baad8ea22f855b3d8e6c28113e1a878c90782b967fbcd1012a7d9eb8d7d27659001fac5272ca8ccd2bcefef51f2042dcde6d60a2f13960f9e2c98e534a588487d8adc4d64a9f6068e612205c57d83a4ef528559fe80fc6b25451f8e388c8d0f9f299c28241a05bc23b58e2cc4eed4d758d031641f85c45a74d3c72afab1178fcffd4bc886569a4af81765d64d3b69b808ff7ac073e5180e8ec28d55ead360010d0c0aa449bec40e7c08eb0385499025508c3f77ff22ac94636ccc759e42c975fe8e3c0bd3cef6b27804fe108729ed1af807acc152620dab9fc14c480dbae98c034f0e532908aea64a04fb4ae1fe3b05c093f6e9fcc26aa4ceba6cbd755e00698c20dc5c05734f48f46ddd7aaed2877d39d4ee792ca6fbe8860f7270a832a6ced169713f065ff0622a1cda5f6ac37e12bb759503ceefe5966411dd479ea265606c28d5da31fc58bad4987accb1920c4d7475884a4bfa3099cfcde409966ab31ad02967e999fbe7a6290291f14ecd4700d2ac114f9ceec96e74f1bda4acc640767c67680dcf2b2b8c03228e9aa48d4f6b9c54652c6af0b0e40a13451e207906cd97c30953ed5c48e315929bb6c277f1db18cfb9857b36edd8087cbaf4c2550235209e9c90e844fd5b1ee7d30e6b4415b31fe11aef2dad447196e88a3fa6aeb16639d11e558a3ce9c4c45827ce06f77af9fd1f3b1e09310c5efe3ee014a3fd584f7bd09ca6a1d22487cd0c0cd08d8c2089bca6b0cf6d9fcd5cff23993a1cb65dfb6d0e329db96fa929b913bb68c7bc786a515fb7aac89ac309037cde7be7093f5ab498bf8076baa62d4f7c1c281f3d4375a14be3c0d4dec719d25716733bd3bda8b48c4fc90b61c174c250192f0b2a333bd2f49f9bb3b25c052bbbb789a51f7f466eb385b6b46811e26fceb327d91381823b1eafbd284b5d0f6e1baf749770a4eac93dbb764c92f5eddcae487d29d30d4a7dc0f9ed519427a7f5bc4baa7f0f7942320edc96343f37dc0d9f710f225233691e7a4d34bf35a9c9ae984f526b4ce91a6e8b27adc9eb23b7c2bbe152a4a5b525019fe60ae356aa8131f7a3f19ef9929a96aef1b94452dd5d80f7055a0b015997564931517782d4110fee844bd5a7db2d62d936e396174a1d64d3af79e3850595f7a3aa9a22b55c6ef031a690cc9cdc9459d11e37087528a8b75c6310a3f8c9eeb1b544c36f65f39eba8f346f101d1c71f6866f0b19ee766de97371c1717f31dffce738c3f6bbc51b8ed24c305e866c330271f0c881a31fe9bb03543a118828241d2c513c3aa186d03715117fbbce93fd9d500aeb977d62ab115037d3c267fc8e024a7cc0e6e090f66ab9a1e2b10ca5f233d63f2fa9247164bc2977776d9f74f7410da25e1cf02973a11d88c40c9bbc7b6591cb6786b5126382f097d679a4d28d761f78cf5612250b5a32c81edba1fb2d3e81cd242afd01cd5a823ccae2fb09e8c78b92737743ff449510ddfada7dc0d66c21ff7bf9e1fe93a3251e0800f9c17212b77a37ae6ec9684d386c2a99e697037c744815b18b1f3962a28e37ae5a32524fe0e8197f0ef2d66a8ea46790c9e55e7ee9c1f52fa62fe9dec49b9048e8763da99d37391e57f18bb886c46d9727a300d3aa807e2fae6afa454f6ac5c1b0aaf6230cd6290fe15f7ab90e01c28c6dc8508ad86bbb4e417edac665d2c4b2f57dd89b685be144ab2e91b4d98da1d81892fe35a60990449c794823c2eaab7f99dbd477c0d2efb4f6440cbecba7cb139b7ff27e46ea247aff24623127493a85338612953b4bb68e46c75bc247987884c887b207472a1feb78c125ff04ac89a96de6da505b53da1f6f4befffd3952ba54caf137e952a19e088c6937a639afac305b9653507bf6e11b3db53b57992f40b6fa5513613ffcf529977841396d109342b2b0770b95c8593c11c4993f2a650d0f557dfcdf42a5103f136b48e2b5354b3a77c9ef4546e81c7e3f43e8c073c48ec1ebcdfdea331f2c5ccb2ff34db6f27bbdcf6539d6985426799e7fe04ce4b844c119b49c9a916463501d750fd969191b4f75d9576c43f554c7452ceed2eccd212483eaedb41e4cfa09b0c5f13822d2ee1c0c517a7f79b8967303d3e10f6b469ca8585e7c4d2d4e8d5cbabdc61c93d94a244a4d1f58ac819a3b36080f7d42cb01d3cd43d455e94f8fcc2b6589a747bc4de9e5523bde67b516353d99f9c455249f340e15d3b556c919f5ba45b5d3a6b88f3aea0ace1f11c279ffbc01b1af0a37075edd9c9452199f0a28d5421ecdb6d29926bcc1b7f7da5d7ec98f1fcb1dff70c7467f388c7526f9e0e1223361062374f812342c0b2d65d42e43a11e7f83b59fa1c7fdb40969cf083ae3ca73c2c52bb16e3a8d8964c6adbd9eabb9d442745e087dc7e71a44a334ce7c3b2699a67c01fe33db9a1da3c3f27e69bd6f992113cf1afedf0160482dc96141ab6cb7d7d5ce1805d971f223a2005a361116ac83ac40917eada439ecc8b2fd7c99a3deea48ef942f6a1d3abeb9a140a54a11cf8cc068704bec284a263e4a9cb42e4fac50eb34a05d5cae1f0aa4f790d17523bed4cfd1e0d99833997af1fbdea25281d20d92e17d198a04a5722693b9754ca52ef31e6b6b84ade201d18d78ab2dcb88b66c26c0e96593831dffaa03fa14939f86750882048b52dcf56e0cb40d24a39706e015c858425e6fe4a7ef83ce0539cd4490982512a426f3857183afa7b7adcc0b19d50f83662c7be7b250d02956a48dd792d513323167598fb8bd28b951691f5fb929add4d3c98cd9547f8a7e5e1f729b585a0a0fb56b5f9f29bb4cda3906549db2cd8ffe2f6cc4fd89d755e2a1b4e676a56ebb50fa9ee316d13a422a3c42bb761052c6f6067943c8d1d812a08e82b55a7570ea4ff96bd22630d01b1ca57790d1abf1a6b042252224f57db379576756be6a67ce5845afc5a228f166c303474858a120232e7adfd997b0bd4b21deac7840a252049a4bb59c0a3fe73d06546e8936945f76bf23ba74d6474d31126c4f383b3ae1ca0e88b7ef9275a45c6dce2d0ad14a7adcbdeea617d7bc397729dd0ed6d907b7e2686add01b629fe86e7e49e20a81f95b9b6ee7b228a1e7e114c191282a3ca1304b2f376a5b9b27566a889d5137a82c695350f10108c7ced52e955813ceeea66c75261cfb4813d44a216e7ce1cc402fe6c00e0ec38d31200d33788b57e7b8043d502c3b20f5331a1d752b769ef7217daa9cb3f1fb7c8fbd5b71b46f438bdf9b978f119904134a527760712fab11cb8144a21ec47b2e9b26b1b2ed46dd7ad61661e90712970125037516b4b7af09783a9f9f3aa8ad27776fe8dad34bb35886554d839ff7b4630433f3bda492fee4da0ca4887b818fb1f7f6166d9d28551bdaa7def2e1f1fc324e515cde39c5d97cce9e41dba8db701e55e57f01ee393f4bae715290766934b8c63efc1441070dd280cfa94116037ff4b3b8b96d2cdf8f52ae3f709b889a15d4d707ddbb7c9f36585011de4711d872ab6d12cae0f903bdf9f2fc7847182ad3e4a991bb05c1708abfcee4c87b0ea9dac660407902963b2f7ab22111ed81b90e46841f79cb611a8ee8d2d702a8827bc427b478c1afcafc653f0d9f5b75a6a934b3646e04ae503e04746f4dd4fca8420a6fdcbd171bc84c0667c9e27cafbe820866c9562d640bf0a1d5672862ee428885e1c2fbdc3bbc6cd982ba1dbe3288dfd6589d5f4c03c1afd5a42ece34fd8103ece6c8b4eaab792f95600241289f702312c0d1ff02459e1618eb815be00100e8ded7e65bf59150ef6a9075caafa7158460e8211b3ef947df61e114ed6cf7c3dc7769ca3397c69fcf74b4cbb593a50085a07228c8c5c81d8323e639e2634a3dc50c7294581153f06e00c9428d6c0d41e9c5eff33859c405d440e28850e3b8a82f7f32935de1bf60b96522b4f91fc99b08a7fd1993cb6dcb7d8aaddef3fe2f932b78d2cd3c51445104ffdb18f22330958e84d6ac6f9961adda8eba1e0be4a3940c68549e68f808343cb30a86a4aedc059bfe5ef4c0056452a0c3e8d54c5829493f08fdfa092a6b1c798432e9ae0e5f45df7f591117d8fb94bc738057ea265423e8f9302c4514debd13f5e5b224c35f997f90d8d4daf33ed41461a9525a5a2fa9385428bcf29a50d692742963696e6b72620b3338e8411e0e27c3683d3366a61804223810da10ba6247e858c324f77b09cd8fb20328f72a8753f2b57ccb65d817190565bb1f5ca63eda15640865046bc1c3dc083a20ce0117c701856678bb965fa3666e4d4c668271515403c82d07493c51b41e38f147ef65a4ec0d65d2d0e41e438fe2864c73b05953371649397337179797b88b6e585be28e82e6a51f2d8ec9cbdfe12042762a2b804e0b0eb65de93b46c563cb84c9f352f0b9f9ce3692d6eae0c8607b295ecd325950a0eeddbbc013b3b7bd5d377b6c1b1de0446d0b8497976dd1d5cc6db9b6dceead2d53bfb74fb77b694c8f15eb01c691f972b3aa8633208d83e10f59a08d32c6be57697db6bea08e491d1e21b032df4093c399dec61d7db7c682e31e985c26ba157a436c2229051852ad7d17a3878d493e1607f4f7b1f7a93bda940ea58d5c00a9324940305144b0c36f5798ed604e3281b4816c5f9edf19cf6da58540a9d2b02d33d32b4fc02d9157e967346294cac31a42e6db17d0429763e8e5925c32fb6615e5ab02c6757ee63f85cad7ffa612c2beb107db31b763f7843f2dbb0792d0fbf6ed23d6fc74d545b2ac2b74284f5c8b717fea21afccd754c55defbfcd0a4804d1c81d0ae10cf36815b3704ef0a5972cce8371111ac4061ede8c608d0fbd58a56c06c11ee3543d4f303189dd6da3d2c1634cc4d1808c9a91c62808638673b2627b7a84b9eed165abc6992bdb4aa12f1abe8e00f019047a5e8440ae02913078cb0db34445480e07fcc66e5a8562d4eda38536df7b17314b8d18fd61909ca6590bca6e2928591afa894070b6b32af704c04d46af328d69c63a6df00316178069b353dcf3394efdd2afe80ee546b873b69fe220e2e45c348bfc0e9f7451e078db61236977dad844d55b0d29efdc9fa4e332ff46189f83b6894a061c026347c803dae35c0df9731f042eaf989f5580fe58320010541354d92751f26b318be950a493c8cb198ecd7042f9d1d66848d0be6dcc5807d42bb6108f96eeac48996de11e2b0af8cf1b4a9cc6f9ffb1172f592ee359e7e7c337339bd83daa4e8a20e05a81b21b3252a68df8f5a264cd5b055aeb376fa1ab4d7a9902182b055d7ed6888967ab9196977a23b6ecb6eb2d31b98ce2af1a86e058f182cd0e987ec92ea57823e8e022f89c2fcca8ca4e361c9a2e35d3e8abaaf652ef1d6e28f1af1469fe5cabcf48bf595e6e664198d9cb0577cea27ac9e9cbce8804436ee7403e8117212787e85f30a113a510c44669ba3ec6a6f231e3f58be4e1b8e291f685f18b0f8da10c7390e32c7cb3cfd72761958f6c31c5e2798bbd882d3f819e8891bca928914e84eb5ba6</script>
+  <div class="hbe hbe-content">
+    <div class="hbe hbe-input hbe-input-default">
+      <input class="hbe hbe-input-field hbe-input-field-default" type="password" id="hbePass">
+      <label class="hbe hbe-input-label hbe-input-label-default" for="hbePass">
+        <span class="hbe hbe-input-label-content hbe-input-label-content-default">Hey, password is required here.</span>
+      </label>
+    </div>
+  </div>
+</div>
+<script data-pjax src="/lib/hbe.js"></script><link href="/css/hbe.style.css" rel="stylesheet" type="text/css">]]></content>
+      <categories>
+        <category>虚拟化</category>
+      </categories>
+      <tags>
+        <tag>虚拟化技术</tag>
       </tags>
   </entry>
   <entry>
@@ -862,28 +885,6 @@ BPDU处理变化:
       <tags>
         <tag>VPN</tag>
         <tag>路由</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>VAP</title>
-    <url>/2021/08/11/VAP/</url>
-    <content><![CDATA[<div class="hbe hbe-container" id="hexo-blog-encrypt" data-wpm="Oh, this is an invalid password. Check and try again, please." data-whm="OOPS, these decrypted content may changed, but you can still have a look.">
-  <script id="hbeData" type="hbeData" data-hmacdigest="ff0c6ea39a7037cf670311274314c1b3adbb9632a2347afc72a37bd93c73478a">f6139c82e97dc16a5fc8c8565b4be2a6d93f96eb084eb17eca70bf462341fd0ddc4c8fffc318e67430a5d503d847966d89c7284a955ceec27fd7601cf6063a85ed548ee0b3cacc9454908123cdaf77285d0c5b2355af0ac86e12354da1affb647b67d610cca3633be073ddcd9eb8f8accc12e0b2d2227a4e05575fd9eb8a92b0a183fb53c5d67568b07e552b9f7e94b1efcb6de2a7ea45156426ba06c39d78df3f453cff58e5f241a5e31f5d7e9857ce4a895507c6d38a8e6a6d1d9a33e286a92de60db3efe174e0a084f2189b831f236b6c464512196ca7f1bfb83bb0a0270fad39d8320010d7ae80c2b02d1fd6bd173e5c0b6efabb77a1c9d68b13b575e6c50108ce2c15396e82f4d608a4ad1752cbc6faecb6b15c817442d28308c57823a205634aba20804cd685cb59af2280251c9c73e35b276f85c5bd2ee891d1f49f337c6c4af869ccee7cdf27452b09e2161ae34359329f4c4b9b069ab1eae837e77a983605ca2a7cfcdc1acd2ba630c94015110f536d2716de8b0e2716796d950e7f773f3acb6dbfa758244237e59bed96d8d234ee70f5060b12dbe047508d4182317765e5d3f4481a7db30a9b0014b0ae1b441a516a08e056cbcd0cede5b2f5b784eae4be02571393fb801113e420996e05804701716b38f43531da4624a681e9d3ef4663d2cbc96dc9742928ffceaee49d815e8fcbd49f579bf72f3d226e17742c170efc6d933e055b5dccb8debaca65520e6a8a2ab8804a345ed4c12e52f6663d54cacf11172fb0c46562f82ab1f8fcba66f6a4b2b940a98c07fc4e11b3918e69b4987c6c6162febb841aa564a927a1f5d1fafe96c7865a3108a3f8c397aac474d494005197f6d8da37e78542f6bdae38bce828bad56e6b8c53489c5486cbac94156f1b2276c0d5affd090c9e69325f5f5279c71bfe8c517a057af753c888337ffdfa717985420a2938d457ea5e3a0927c35b3343a265f109a467b053464397d4fa2287f63c76b9bec86b3c427621214193bc11e7787dc9a1a776e0b9218698f5114db7f0158ced7783a0f516be0102b007d89fc76619ce9ced5d8e421cec03f04b9a432f379ed55813aeadad4ddebeef7c972faa35b7f154f950f4269f633650188c69396b0a82fd1bc984cbbd6268c16676b8e9c481e9bf4678e326bf4ae2ee1709a9d62f63cdb5dab0518bbe77e5e96d89c781b2151599d03fdcd6e747bf569bbdd9588741dde1aa0386d4189eee8bba1a415a8f1ff40805bb930b7e864d80cdeb63da95fc913fbb693c4fc1133774e72a80f9564c52bbdb78c02bc3e94c877c466e2426af9d9902c0ddf98e8b85daf1bb33e44215d7b54a07a1716e7b9d8a0e52b8c00c52913411b1c21be87d6f500ec05d02bc4413f341deee7b35a7a8a842604b5ef4dace0adb886599e43791ed9317f9a1e8673ea4b1c3da46a5a9f101ba03e5aa240c24dde98595a066959d693aa7747fffe789e2f234e6f6fbc00284867ed600de07c9a12f1a06b957858f0d11f02450bebeca0ce5654c3b490a326a0e723585dbe0d6a8c911519f2aaf990f95916459334c028672f6ee4a5dcfa830e7d84494f87b777606149871ba51a35be467e5dbcb6dd194c5810fb55b7795f7a93069fa79f495d9e680dbaf2f9e45f6f3976515a1589b5f5ecb837815bc115184e756489cf87b73a4ae0e4b91fd3108b1632d35bf7d142c030e46f75bd87f3b616be70219a90df53e520a0b92eed12e057c3abcafd89b20d102eb5e90113fec14585f0b999c759b423059f1a164edcc40ced34c9975860b31474a984a8199727d029877de18c753ab7c6779856dc1dff9eb9b3bf6ba63a83fad295df2a2fdb6073d4c2bc01f29a7d847562e11f4a7c017126e35545bb50f221a31057cc9f1eb34e4f9cb4188320e62911baad8ea22f855b3d8e6c28113e1a878c90782b967fbcd1012a7d9eb8d7d27659001fac5272ca8ccd2bcefef51f2042dcde6d60a2f13960f9e2c98e534a588487d8adc4d64a9f6068e612205c57d83a4ef528559fe80fc6b25451f8e388c8d0f9f299c28241a05bc23b58e2cc4eed4d758d031641f85c45a74d3c72afab1178fcffd4bc886569a4af81765d64d3b69b808ff7ac073e5180e8ec28d55ead360010d0c0aa449bec40e7c08eb0385499025508c3f77ff22ac94636ccc759e42c975fe8e3c0bd3cef6b27804fe108729ed1af807acc152620dab9fc14c480dbae98c034f0e532908aea64a04fb4ae1fe3b05c093f6e9fcc26aa4ceba6cbd755e00698c20dc5c05734f48f46ddd7aaed2877d39d4ee792ca6fbe8860f7270a832a6ced169713f065ff0622a1cda5f6ac37e12bb759503ceefe5966411dd479ea265606c28d5da31fc58bad4987accb1920c4d7475884a4bfa3099cfcde409966ab31ad02967e999fbe7a6290291f14ecd4700d2ac114f9ceec96e74f1bda4acc640767c67680dcf2b2b8c03228e9aa48d4f6b9c54652c6af0b0e40a13451e207906cd97c30953ed5c48e315929bb6c277f1db18cfb9857b36edd8087cbaf4c2550235209e9c90e844fd5b1ee7d30e6b4415b31fe11aef2dad447196e88a3fa6aeb16639d11e558a3ce9c4c45827ce06f77af9fd1f3b1e09310c5efe3ee014a3fd584f7bd09ca6a1d22487cd0c0cd08d8c2089bca6b0cf6d9fcd5cff23993a1cb65dfb6d0e329db96fa929b913bb68c7bc786a515fb7aac89ac309037cde7be7093f5ab498bf8076baa62d4f7c1c281f3d4375a14be3c0d4dec719d25716733bd3bda8b48c4fc90b61c174c250192f0b2a333bd2f49f9bb3b25c052bbbb789a51f7f466eb385b6b46811e26fceb327d91381823b1eafbd284b5d0f6e1baf749770a4eac93dbb764c92f5eddcae487d29d30d4a7dc0f9ed519427a7f5bc4baa7f0f7942320edc96343f37dc0d9f710f225233691e7a4d34bf35a9c9ae984f526b4ce91a6e8b27adc9eb23b7c2bbe152a4a5b525019fe60ae356aa8131f7a3f19ef9929a96aef1b94452dd5d80f7055a0b015997564931517782d4110fee844bd5a7db2d62d936e396174a1d64d3af79e3850595f7a3aa9a22b55c6ef031a690cc9cdc9459d11e37087528a8b75c6310a3f8c9eeb1b544c36f65f39eba8f346f101d1c71f6866f0b19ee766de97371c1717f31dffce738c3f6bbc51b8ed24c305e866c330271f0c881a31fe9bb03543a118828241d2c513c3aa186d03715117fbbce93fd9d500aeb977d62ab115037d3c267fc8e024a7cc0e6e090f66ab9a1e2b10ca5f233d63f2fa9247164bc2977776d9f74f7410da25e1cf02973a11d88c40c9bbc7b6591cb6786b5126382f097d679a4d28d761f78cf5612250b5a32c81edba1fb2d3e81cd242afd01cd5a823ccae2fb09e8c78b92737743ff449510ddfada7dc0d66c21ff7bf9e1fe93a3251e0800f9c17212b77a37ae6ec9684d386c2a99e697037c744815b18b1f3962a28e37ae5a32524fe0e8197f0ef2d66a8ea46790c9e55e7ee9c1f52fa62fe9dec49b9048e8763da99d37391e57f18bb886c46d9727a300d3aa807e2fae6afa454f6ac5c1b0aaf6230cd6290fe15f7ab90e01c28c6dc8508ad86bbb4e417edac665d2c4b2f57dd89b685be144ab2e91b4d98da1d81892fe35a60990449c794823c2eaab7f99dbd477c0d2efb4f6440cbecba7cb139b7ff27e46ea247aff24623127493a85338612953b4bb68e46c75bc247987884c887b207472a1feb78c125ff04ac89a96de6da505b53da1f6f4befffd3952ba54caf137e952a19e088c6937a639afac305b9653507bf6e11b3db53b57992f40b6fa5513613ffcf529977841396d109342b2b0770b95c8593c11c4993f2a650d0f557dfcdf42a5103f136b48e2b5354b3a77c9ef4546e81c7e3f43e8c073c48ec1ebcdfdea331f2c5ccb2ff34db6f27bbdcf6539d6985426799e7fe04ce4b844c119b49c9a916463501d750fd969191b4f75d9576c43f554c7452ceed2eccd212483eaedb41e4cfa09b0c5f13822d2ee1c0c517a7f79b8967303d3e10f6b469ca8585e7c4d2d4e8d5cbabdc61c93d94a244a4d1f58ac819a3b36080f7d42cb01d3cd43d455e94f8fcc2b6589a747bc4de9e5523bde67b516353d99f9c455249f340e15d3b556c919f5ba45b5d3a6b88f3aea0ace1f11c279ffbc01b1af0a37075edd9c9452199f0a28d5421ecdb6d29926bcc1b7f7da5d7ec98f1fcb1dff70c7467f388c7526f9e0e1223361062374f812342c0b2d65d42e43a11e7f83b59fa1c7fdb40969cf083ae3ca73c2c52bb16e3a8d8964c6adbd9eabb9d442745e087dc7e71a44a334ce7c3b2699a67c01fe33db9a1da3c3f27e69bd6f992113cf1afedf0160482dc96141ab6cb7d7d5ce1805d971f223a2005a361116ac83ac40917eada439ecc8b2fd7c99a3deea48ef942f6a1d3abeb9a140a54a11cf8cc068704bec284a263e4a9cb42e4fac50eb34a05d5cae1f0aa4f790d17523bed4cfd1e0d99833997af1fbdea25281d20d92e17d198a04a5722693b9754ca52ef31e6b6b84ade201d18d78ab2dcb88b66c26c0e96593831dffaa03fa14939f86750882048b52dcf56e0cb40d24a39706e015c858425e6fe4a7ef83ce0539cd4490982512a426f3857183afa7b7adcc0b19d50f83662c7be7b250d02956a48dd792d513323167598fb8bd28b951691f5fb929add4d3c98cd9547f8a7e5e1f729b585a0a0fb56b5f9f29bb4cda3906549db2cd8ffe2f6cc4fd89d755e2a1b4e676a56ebb50fa9ee316d13a422a3c42bb761052c6f6067943c8d1d812a08e82b55a7570ea4ff96bd22630d01b1ca57790d1abf1a6b042252224f57db379576756be6a67ce5845afc5a228f166c303474858a120232e7adfd997b0bd4b21deac7840a252049a4bb59c0a3fe73d06546e8936945f76bf23ba74d6474d31126c4f383b3ae1ca0e88b7ef9275a45c6dce2d0ad14a7adcbdeea617d7bc397729dd0ed6d907b7e2686add01b629fe86e7e49e20a81f95b9b6ee7b228a1e7e114c191282a3ca1304b2f376a5b9b27566a889d5137a82c695350f10108c7ced52e955813ceeea66c75261cfb4813d44a216e7ce1cc402fe6c00e0ec38d31200d33788b57e7b8043d502c3b20f5331a1d752b769ef7217daa9cb3f1fb7c8fbd5b71b46f438bdf9b978f119904134a527760712fab11cb8144a21ec47b2e9b26b1b2ed46dd7ad61661e90712970125037516b4b7af09783a9f9f3aa8ad27776fe8dad34bb35886554d839ff7b4630433f3bda492fee4da0ca4887b818fb1f7f6166d9d28551bdaa7def2e1f1fc324e515cde39c5d97cce9e41dba8db701e55e57f01ee393f4bae715290766934b8c63efc1441070dd280cfa94116037ff4b3b8b96d2cdf8f52ae3f709b889a15d4d707ddbb7c9f36585011de4711d872ab6d12cae0f903bdf9f2fc7847182ad3e4a991bb05c1708abfcee4c87b0ea9dac660407902963b2f7ab22111ed81b90e46841f79cb611a8ee8d2d702a8827bc427b478c1afcafc653f0d9f5b75a6a934b3646e04ae503e04746f4dd4fca8420a6fdcbd171bc84c0667c9e27cafbe820866c9562d640bf0a1d5672862ee428885e1c2fbdc3bbc6cd982ba1dbe3288dfd6589d5f4c03c1afd5a42ece34fd8103ece6c8b4eaab792f95600241289f702312c0d1ff02459e1618eb815be00100e8ded7e65bf59150ef6a9075caafa7158460e8211b3ef947df61e114ed6cf7c3dc7769ca3397c69fcf74b4cbb593a50085a07228c8c5c81d8323e639e2634a3dc50c7294581153f06e00c9428d6c0d41e9c5eff33859c405d440e28850e3b8a82f7f32935de1bf60b96522b4f91fc99b08a7fd1993cb6dcb7d8aaddef3fe2f932b78d2cd3c51445104ffdb18f22330958e84d6ac6f9961adda8eba1e0be4a3940c68549e68f808343cb30a86a4aedc059bfe5ef4c0056452a0c3e8d54c5829493f08fdfa092a6b1c798432e9ae0e5f45df7f591117d8fb94bc738057ea265423e8f9302c4514debd13f5e5b224c35f997f90d8d4daf33ed41461a9525a5a2fa9385428bcf29a50d692742963696e6b72620b3338e8411e0e27c3683d3366a61804223810da10ba6247e858c324f77b09cd8fb20328f72a8753f2b57ccb65d817190565bb1f5ca63eda15640865046bc1c3dc083a20ce0117c701856678bb965fa3666e4d4c668271515403c82d07493c51b41e38f147ef65a4ec0d65d2d0e41e438fe2864c73b05953371649397337179797b88b6e585be28e82e6a51f2d8ec9cbdfe12042762a2b804e0b0eb65de93b46c563cb84c9f352f0b9f9ce3692d6eae0c8607b295ecd325950a0eeddbbc013b3b7bd5d377b6c1b1de0446d0b8497976dd1d5cc6db9b6dceead2d53bfb74fb77b694c8f15eb01c691f972b3aa8633208d83e10f59a08d32c6be57697db6bea08e491d1e21b032df4093c399dec61d7db7c682e31e985c26ba157a436c2229051852ad7d17a3878d493e1607f4f7b1f7a93bda940ea58d5c00a9324940305144b0c36f5798ed604e3281b4816c5f9edf19cf6da58540a9d2b02d33d32b4fc02d9157e967346294cac31a42e6db17d0429763e8e5925c32fb6615e5ab02c6757ee63f85cad7ffa612c2beb107db31b763f7843f2dbb0792d0fbf6ed23d6fc74d545b2ac2b74284f5c8b717fea21afccd754c55defbfcd0a4804d1c81d0ae10cf36815b3704ef0a5972cce8371111ac4061ede8c608d0fbd58a56c06c11ee3543d4f303189dd6da3d2c1634cc4d1808c9a91c62808638673b2627b7a84b9eed165abc6992bdb4aa12f1abe8e00f019047a5e8440ae02913078cb0db34445480e07fcc66e5a8562d4eda38536df7b17314b8d18fd61909ca6590bca6e2928591afa894070b6b32af704c04d46af328d69c63a6df00316178069b353dcf3394efdd2afe80ee546b873b69fe220e2e45c348bfc0e9f7451e078db61236977dad844d55b0d29efdc9fa4e332ff46189f83b6894a061c026347c803dae35c0df9731f042eaf989f5580fe58320010541354d92751f26b318be950a493c8cb198ecd7042f9d1d66848d0be6dcc5807d42bb6108f96eeac48996de11e2b0af8cf1b4a9cc6f9ffb1172f592ee359e7e7c337339bd83daa4e8a20e05a81b21b3252a68df8f5a264cd5b055aeb376fa1ab4d7a9902182b055d7ed6888967ab9196977a23b6ecb6eb2d31b98ce2af1a86e058f182cd0e987ec92ea57823e8e022f89c2fcca8ca4e361c9a2e35d3e8abaaf652ef1d6e28f1af1469fe5cabcf48bf595e6e664198d9cb0577cea27ac9e9cbce8804436ee7403e8117212787e85f30a113a510c44669ba3ec6a6f231e3f58be4e1b8e291f685f18b0f8da10c7390e32c7cb3cfd72761958f6c31c5e2798bbd882d3f819e8891bca928914e84eb5ba6</script>
-  <div class="hbe hbe-content">
-    <div class="hbe hbe-input hbe-input-default">
-      <input class="hbe hbe-input-field hbe-input-field-default" type="password" id="hbePass">
-      <label class="hbe hbe-input-label hbe-input-label-default" for="hbePass">
-        <span class="hbe hbe-input-label-content hbe-input-label-content-default">Hey, password is required here.</span>
-      </label>
-    </div>
-  </div>
-</div>
-<script data-pjax src="/lib/hbe.js"></script><link href="/css/hbe.style.css" rel="stylesheet" type="text/css">]]></content>
-      <categories>
-        <category>虚拟化</category>
-      </categories>
-      <tags>
-        <tag>虚拟化技术</tag>
       </tags>
   </entry>
   <entry>
@@ -1034,64 +1035,38 @@ ConnectionPlugins：连接插件，Ansible和Host通信使用
       </tags>
   </entry>
   <entry>
-    <title>DHCP</title>
-    <url>/2021/08/25/dhcp/</url>
-    <content><![CDATA[<p>DHCP（Dynamic Host Configuration Protocol，动态主机配置协议），前身是BOOTP协议，是一个局域网的网络协议，使用UDP协议工作，统一使用两个IANA分配的端口：67（服务器端），68（客户端）。DHCP通常被用于局域网环境，主要作用是集中的管理、分配IP地址，使client动态的获得IP地址、Gateway地址、DNS服务器地址等信息，并能够提升地址的使用率。简单来说，DHCP就是一个不需要账号密码登录的、自动给内网机器分配IP地址等信息的协议。</p>
+    <title>nat</title>
+    <url>/2021/09/01/nat/</url>
+    <content><![CDATA[<p>NAT解析</p>
 <span id="more"></span>
 
-<h1 id="DHCP"><a href="#DHCP" class="headerlink" title="DHCP"></a>DHCP</h1><h2 id="DHCP报文"><a href="#DHCP报文" class="headerlink" title="DHCP报文"></a>DHCP报文</h2><p>DHCP discover<br>DHCP offer<br>DHCP request<br>DHCP ack</p>
-<p>DHCP服务器——UDP67号端口<br>DHCP客户端——UDP68号端口<br>先有服务器67才能有客户端68</p>
-<h2 id="DHCP四步租约过程"><a href="#DHCP四步租约过程" class="headerlink" title="DHCP四步租约过程"></a>DHCP四步租约过程</h2><p>DHCP租约过程分为4步：</p>
-<p>①客户机请求IP（客户机发DHCPDISCOVER广播包）；</p>
-<p>②服务器响应（服务器发DHCPOFFER广播包）；</p>
-<p>③客户机选择IP（客户机发DHCPREQUEST广播包）；</p>
-<p>④服务器确定租约（服务器发DHCPACK/DHCPNAK广播包）。</p>
-<p><strong>详解4步租约过程：</strong><br><strong>第1步：客户机请求IP</strong><br><font color="#E9764A"><strong>客户机请求IP也称为DHCPDISCOVER</strong></font>。</p>
-<p>当一个DHCP客户机启动时，会自动将自己的IP地址配置成0.0.0.0，由于使用0.0.0.0不能进行正常通信，所以客户机就必须通过DHCP服务器来获取一个合法的地址。由于客户机不知道DHCP服务器的IP地址，<font color="#E9764A"><strong>所以它使用0.0.0.0的地址作为源地址，使用UDP68端口作为源端口，使用255.255.255.255作为目标地址，使用UDP67端口作为目的端口来广播请求IP地址信息</strong></font>（见图一）。广播信息中包含了DHCP客户机的MAC地址和计算机名，以便使DHCP服务器能确定是哪个客户机发送的请求。</p>
-<p>DHCP客户机总是试图重新租用它接收过的最后一个IP地址，这给网络带来一定的稳定性。</p>
-<p>因为此时，DHCP客户端没有分配到IP地址，也不知道DHCP服务器或DHCP中继的IP地址，所以在DHCP DISCOVER报文中Ciaddr（客户端IP地址）、Yiaddr（被分配的DHCP客户端IP地址）、<font color="#E9764A"><strong>Siaddr（下一个为DHCP客户端分配IP地址的DHCP服务器地址）</strong></font>、Giaddr（DHCP中继IP地址）这四个字段均为0.0.0.0，如下所示。另外，从中可以看到，在CHADDR字段和DHCP选项中Client Identifier字段中都标识了DHCP客户端网卡MAC地址。</p>
-<p>图一：客户机请求IP<br><img src="/2021/08/25/dhcp/dhcpdiscover.png" alt="dhcpdiscover"></p>
-<p><strong>第2步：服务器响应</strong><br><font color="#E9764A"><strong>服务器响应也称为DHCPOFFER</strong></font>。</p>
-<p>当DHCP服务器接收到客户机请求IP地址的信息时，它就在自己的IP地址池中查找是否有合法的IP地址提供给客户机。如果有，DHCP服务器就将此IP地址做上标记，加入到DHCPOFFER的消息中，然后DHCP服务器就广播一则包括下列信息的DHCPOFFER消息：</p>
-<p>DHCP客户机的MAC地址；DHCP服务器提供的合法IP地址；子网掩码；默认网关（路由）；租约的期限；DHCP服务器的IP地址。</p>
-<p>因为DHCP客户机还没有IP地址，所以<font color="#E9764A"><strong>DHCP服务器使用自己的IP地址作为源地址，使用UDP67端口作为源端口，使用255.255.255.255作为目标地址，使用UDP68端口作为目的端口来广播DHCPOFFER信息</strong></font>（见图二）。</p>
-<p>图二：服务器响应<br><img src="/2021/08/25/dhcp/dhcpoffer.png" alt="dhcpoffer"></p>
-<p><strong>第3步：客户机选择IP</strong><br><font color="#E9764A"><strong>客户机选择IP，也称为DHCPREQUEST</strong></font>。</p>
-<p>DHCP客户机从接收到的第一个DHCPOFFER消息中选择IP地址，发出IP地址的DHCP服务器将该地址保留，这样该地址就不能提供给另一个DHCP客户机。当客户机从第一个DHCP服务器接收DHCPOFFER并选择IP地址后，DHCP租约的第三过程发生。客户机将DHCPREQUEST消息广播到所有的DHCP服务器，表明它接受提供的内容。DHCPREQUEST消息包括为该客户机提供IP配置的服务器的服务标识符（IP地址）。DHCP服务器查看服务器标识符字段，以确定它自己是否被选择为指定的客户机提供IP地址，如果那些DHCPOFFER被拒绝，则DHCP服务器会取消提供并保留其IP地址以用于下一个IP租约请求。</p>
-<p>在客户机选择IP的过程中，虽然客户机选择了IP地址，但是还没有配置IP地址，而在一个网络中可能有几个DHCP服务器，所以<font color="#E9764A"><strong>客户机仍然使用0.0.0.0的地址作为源地址，使用UDP68端口作为源端口，使用255.255.255.255作为目标地址，使用UDP67端口作为目的端口来广播DHCPREQUEST信息</strong></font>（见图三）。</p>
-<p>图三：客户机选择IP<br><img src="/2021/08/25/dhcp/dhcprequest.png" alt="dhcprequest"></p>
-<p><strong>第4步：服务器确认租约</strong><br><font color="#E9764A"><strong>服务器确认租约，也称为DHCPACK/DHCPNAK</strong></font>。</p>
-<p>DHCP服务器接收到DHCPREQUEST消息后，以DHCPACK消息的形式向客户机广播成功的确认，该消息包含有IP地址的有效租约和其他可能配置的信息。虽然服务器确认了客户机的租约请求，但是客户机还没有收到服务器的DHCPACK消息，所以<font color="#E9764A"><strong>服务器仍然使用自己的IP地址作为源地址，使用UDP67端口作为源端口，使用255.255.255.255作为目标地址，使用UDP68端口作为目的端口来广播DHCPACK信息</strong></font>（见图四）。当客户机收到DHCPACK消息时，它就配置了IP地址，完成了TCP/IP的初始化。</p>
-<p>如果DHCPREQUEST不成功，例如客户机试图租约先前的IP地址，但该IP地址不再可用，或者因为客户机移到其他子网，该IP无效时，DHCP服务器将广播否定确认消息DHCPNAK。当客户机接收到不成功的确认时，它将重新开始DHCP租约过程</p>
-<p>如果DHCP客户机无法找到DHCP服务器，它将从TCP/IP的B类网段169.254.0.0中挑选一个IP地址作为自己的IP地址，继续每隔5分钟尝试与DHCP服务器进行通讯，一旦与DHCP服务器取得联系，则客户机放弃自动配置的IP地址，而使用DHCP服务器分配的IP地址。<br>如果一台DHCP客户机有两个或者多个网卡，则DHCP服务器会为每个网卡分配一个唯一而有效的IP地址。</p>
-<p>图四：服务器确认租约<br><img src="/2021/08/25/dhcp/dhcpack.png" alt="dhcpack"></p>
-<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p><a href="https://blog.csdn.net/frank_jb/article/details/108877109?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522162986065416780265435106%2522%252C%2522scm%2522%253A%252220140713.130102334.pc%255Fall.%2522%257D&request_id=162986065416780265435106&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~all~first_rank_ecpm_v1~rank_v29_ecpm-5-108877109.ecpm_v1_rank_v29&utm_term=DHCP%E5%B7%A5%E4%BD%9C%E8%BF%87%E7%A8%8B%E4%BB%A5%E5%8F%8A%E6%8A%A5%E6%96%87&spm=1018.2226.3001.4187">DHCP协议说明及报文</a></p>
+<h1 id="NAT"><a href="#NAT" class="headerlink" title="NAT"></a>NAT</h1><h2 id="基本概述"><a href="#基本概述" class="headerlink" title="基本概述"></a>基本概述</h2><p>NAT网络地址转换<br>RFC1918规定了三个保留地址段落：：10.0.0.0-10.255.255.255；172.16.0.0-172.31.255.255；192.168.0.0-192.168.255.255。这三个范围分别处于A,B,C类的地址段，不向特定的用户分配，被IANA作为私有地址保留。这些地址可以在任何组织或企业内部使用，和其他Internet地址的区别就是，仅能在内部使用，不能作为全球路由地址。这就是说，出了组织的管理范围这些地址就不再有意义，无论是作为源地址，还是目的地址。对于一个封闭的组织，如果其网络不连接到Internet，就可以使用这些地址而不用向IANA提出申请，而在内部的路由管理和报文传递方式与其他网络没有差异。</p>
+<p>对于有Internet访问需求而内部又使用私有地址的网络，就要在组织的出口位置部署NAT网关，在报文离开私网进入Internet时，将源IP替换为公网地址，通常是出口设备的接口地址。一个对外的访问请求在到达目标以后，表现为由本组织出口设备发起，因此被请求的服务端可将响应由Internet发回出口网关。出口网关再将目的地址替换为私网的源主机地址，发回内部。这样一次由私网主机向公网服务端的请求和响应就在通信两端均无感知的情况下完成了。依据这种模型，数量庞大的内网主机就不再需要公有IP地址了。</p>
+<blockquote>
+<p>1）网络被分为私网和公网两个部分，NAT网关设置在私网到公网的路由出口位置，双向流量必须都要经过NAT网关；<br>2）网络访问只能先由私网侧发起，公网无法主动访问私网主机；<br>3）NAT网关在两个访问方向上完成两次地址的转换或翻译，出方向做源信息替换，入方向做目的信息替换；<br>4）NAT网关的存在对通信双方是保持透明的；<br>5）NAT网关为了实现双向翻译的功能，需要维护一张关联表，把会话的信息保存下来。</p>
+</blockquote>
+<h2 id="NAT模型"><a href="#NAT模型" class="headerlink" title="NAT模型"></a>NAT模型</h2><p><strong>静态NAT</strong><br>私网和公网地址一对一</p>
+<p><strong>动态NAT</strong><br>私网和公网地址多对多</p>
+<p><strong>重载NAT</strong><br>利用端口号将多个私网地址映射到一个公网地址。使用端口号来标识私网主机</p>
+<h1 id="NAT的限制"><a href="#NAT的限制" class="headerlink" title="NAT的限制"></a>NAT的限制</h1><h2 id="IP的P2P服务模型"><a href="#IP的P2P服务模型" class="headerlink" title="IP的P2P服务模型"></a>IP的P2P服务模型</h2><p>IP协议的一个重要贡献是把世界变得平等。</p>
+<p>在理论上，具有IP地址的每个站点在协议层面有相当的获取服务和提供服务的能力，不同的IP地址之间没有差异。人们熟知的服务器和客户机实际是在应用协议层上的角色区分，而在网络层和传输层没有差异。一个具有IP地址的主机既可以是客户机，也可以是服务器，大部分情况下，既是客户机，也是服务器。端到端对等看起来是很平常的事情，而意义并不寻常。但在以往的技术中，很多协议体系下的网络限定了终端的能力。</p>
+<p>正是IP的这个开放性，使得TCP/IP协议族可以提供丰富的功能，为应用实现提供了广阔平台。因为所有的IP主机都可以服务器的形式出现，所以通讯设计可以更加灵活。使用UNIX/LINUX的系统充分利用了这个特性，使得任何一个主机都可以建立自己的HTTP、SMTP、POP3、DNS、DHCP等服务。</p>
+<p>与此同时，很多应用也是把客户端和服务器的角色组合起来完成功能。例如在VoIP应用中，用户端向注册服务器登录自己的IP地址和端口信息过程中，主机是客户端；而在呼叫到达时，呼叫处理服务器向用户端发送呼叫请求时，用户端实际工作在服务器模式下。在语音媒体流信道建立过程后，通讯双向发送语音数据，发送端是客户模式，接收端是服务器模式。</p>
+<p>而在P2P的应用中，一个用户的主机既为下载的客户，同时也向其他客户提供数据，是一种C/S混合的模型。上层应用之所以能这样设计，是因为IP协议栈定义了这样的能力。试想一下，如果IP提供的能力不对等，那么每个通信会话都只能是单方向发起的，这会极大限制通信的能力。</p>
+<p>细心的读者会发现，前面介绍NAT的一个特性正是这样一种限制。没错，<font color="#E9764A">NAT最大的弊端正在于此——破坏了IP端到端通信的能力</font>。</p>
+<h2 id="NAT的弊端"><a href="#NAT的弊端" class="headerlink" title="NAT的弊端"></a>NAT的弊端</h2><p>NAT在解决IPv4地址短缺问题上，并非没有副作用，其实存在很多问题。</p>
+<p><strong>首先：</strong><font color="#E9764A">NAT使IP会话的保持时效变短</font>。因为一个会话建立后会在NAT设备上建立一个关联表，在会话静默的这段时间，NAT网关会进行老化操作。这是任何一个NAT网关必须做的事情，因为IP和端口资源有限，通信的需求无限，所以必须在会话结束后回收资源。通常TCP会话通过协商的方式主动关闭连接，NAT网关可以跟踪这些报文，但总是存在例外的情况，要依赖自己的定时器去回收资源。而基于UDP的通信协议很难确定何时通信结束，所以NAT网关主要依赖超时机制回收外部端口。通过定时器老化回收会带来一个问题，如果应用需要维持连接的时间大于NAT网关的设置，通信就会意外中断。因为网关回收相关转换表资源以后，新的数据到达时就找不到相关的转换信息，必须建立新的连接。当这个新数据是由公网侧向私网侧发送时，就会发生无法触发新连接建立，也不能通知到私网侧的主机去重建连接的情况。这时候通信就会中断，不能自动恢复。即使新数据是从私网侧发向公网侧，因为重建的会话表往往使用不同于之前的公网IP和端口地址，公网侧主机也无法对应到之前的通信上，导致用户可感知的连接中断。NAT网关要把回收空闲连接的时间设置到不发生持续的资源流失，又维持大部分连接不被意外中断，是一件比较有难度的事情。在NAT已经普及化的时代，很多应用协议的设计者已经考虑到了这种情况，所以一般会设置一个连接保活的机制，即在一段时间没有数据需要发送时，主动发送一个NAT能感知到而又没有实际数据的保活消息，这么做的主要目的就是重置NAT的会话定时器。</p>
+<p><strong>其次：</strong><font color="#E9764A">NAT在实现上将多个内部主机发出的连接复用到一个IP上，这就使依赖IP进行主机跟踪的机制都失效了</font>。如网络管理中需要的基于网络流量分析的应用无法跟踪到终端用户与流量的具体行为的关系。基于用户行为的日志分析也变得困难，因为一个IP被很多用户共享，如果存在恶意的用户行为，很难定位到发起连接的那个主机。即便有一些机制提供了在NAT网关上进行连接跟踪的方法，但是把这种变换关系接续起来也困难重重。基于IP的用户授权不再可靠，因为拥有一个IP的不等于一个用户或主机。一个服务器也不能简单把同一IP的访问视作同一主机发起的，不能进行关联。有些服务器设置有连接限制，同一时刻只接纳来自一个IP的有限访问(有时是仅一个访问)，这会造成不同用户之间的服务抢占和排队。有时服务器端这样做是出于DOS攻击防护的考虑，因为一个用户正常情况下不应该建立大量的连接请求，过度使用服务资源被理解为攻击行为。但是这在NAT存在时不能简单按照连接数判断。总之，因为NAT隐蔽了通信的一端，把简单的事情复杂化了。</p>
+<p><strong>我们来深入理解NAT一下对IP端到端模型的破坏力：</strong><font color="#E9764A">NAT通过修改IP首部的信息变换通信的地址</font>。但是在这个转换过程中只能基于一个会话单位。当一个应用需要保持多个双向连接时，麻烦就很大。NAT不能理解多个会话之间的关联性，无法保证转换符合应用需要的规则。当NAT网关拥有多个公有IP地址时，一组关联会话可能被分配到不同的公网地址，这通常是服务器端无法接受的。更为严重的是，当公网侧的主机要主动向私网侧发送数据时，NAT网关没有转换这个连接需要的关联表，这个数据包无法到达私网侧的主机。这些反方向发送数据的连接总有应用协议的约定或在初始建立的会话中进行过协商。但是因为NAT工作在网络层和传输层，无法理解应用层协议的行为，对这些信息是无知的。NAT希望自己对通信双方是透明的，但是在这些情况下这是一种奢望。</p>
+<p><strong>此外：</strong><font color="#E9764A">NAT工作机制依赖于修改IP包头的信息，这会妨碍一些安全协议的工作</font>。因为NAT篡改了IP地址、传输层端口号和校验和，这会导致认证协议彻底不能工作，因为认证目的就是要保证这些信息在传输过程中没有变化。对于一些隧道协议，NAT的存在也导致了额外的问题，因为隧道协议通常用外层地址标识隧道实体，穿过NAT的隧道会有IP复用关系，在另一端需要小心处理。ICMP是一种网络控制协议，它的工作原理也是在两个主机之间传递差错和控制消息，因为IP的对应关系被重新映射，ICMP也要进行复用和解复用处理，很多情况下因为ICMP报文载荷无法提供足够的信息，解复用会失败。IP分片机制是在信息源端或网络路径上，需要发送的IP报文尺寸大于路径实际能承载最大尺寸时，IP协议层会将一个报文分成多个片断发送，然后在接收端重组这些片断恢复原始报文。IP这样的分片机制会导致传输层的信息只包括在第一个分片中，NAT难以识别后续分片与关联表的对应关系，因此需要特殊处理。</p>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p><a href="http://www.52im.net/thread-50-1-1.html">转发：《P2P技术详解》：NAT详解</a></p>
 ]]></content>
       <categories>
         <category>数据通信</category>
       </categories>
       <tags>
-        <tag>DHCP</tag>
+        <tag>数据通信</tag>
       </tags>
-  </entry>
-  <entry>
-    <title>Hello World</title>
-    <url>/2021/07/20/hello-world/</url>
-    <content><![CDATA[<p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
-<span id="more"></span>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
-]]></content>
   </entry>
   <entry>
     <title>Linux</title>
@@ -1327,9 +1302,87 @@ grep -i 关键字 file 忽略大小写
       </tags>
   </entry>
   <entry>
+    <title>Hello World</title>
+    <url>/2021/07/20/hello-world/</url>
+    <content><![CDATA[<p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
+<span id="more"></span>
+<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p>
+<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p>
+<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p>
+<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
+]]></content>
+  </entry>
+  <entry>
     <title>openstack搭建笔记</title>
     <url>/2021/08/20/openstack%E6%90%AD%E5%BB%BA%E7%AC%94%E8%AE%B0/</url>
     <content><![CDATA[]]></content>
+  </entry>
+  <entry>
+    <title>ovs</title>
+    <url>/2021/08/23/ovs/</url>
+    <content><![CDATA[<p>Open vSwitch简称OVS，OVS是一个支持多层数据转发的高质量虚拟交换机，主要部署在服务器上，相比传统交换机具有很好的编程扩展性，同时具备传统交换机实现的网络隔离和数据转发功能，运行在每个实现虚拟化的物理机器上，并提供远程管理。OVS提供了两种在虚拟化环境中远程管理的协议：一个是OpenFlow，通过流表来管理交换机的行为，一个是OVSDB管理协议，用来暴露交换机的端口状态。其中OpenFlow协议可用于定于SDN网络，实现网络转发平面和控制平面分离。</p>
+<span id="more"></span>
+<h1 id="OVS"><a href="#OVS" class="headerlink" title="OVS"></a>OVS</h1><h2 id="物理交换机和虚拟交换机的通信模型"><a href="#物理交换机和虚拟交换机的通信模型" class="headerlink" title="物理交换机和虚拟交换机的通信模型"></a>物理交换机和虚拟交换机的通信模型</h2><p>SDN控制器控制<font color="#FF000">物理交换机（SDN网关）</font>转发：SDN控制器<font color="#FF000">发送欺骗BGP报文至SDN网关</font>，告知SDN网关路由下一跳是虚机交换机，最终形成路由表项；同时通过<font color="#FF000">netconf下发EVPN VXLAN相关配置至SDN网关</font><br>SDN控制器控制<font color="#FF000">虚机交换机（OVS）转发</font>：SDN控制器通过<font color="#FF000">Openflow协议下发流表至OVS</font>，OVS通过流表进行转发</p>
+<h2 id="OVS内部接口"><a href="#OVS内部接口" class="headerlink" title="OVS内部接口"></a>OVS内部接口</h2><p>OVS默认会存在2个网桥：br-ex与br-int。其中，<font color="#FF000">br-ex</font>网桥上连外部物理网卡，<font color="#FF000">实现外网网络对接</font>，下连br-int网桥；<font color="#FF000">br-int</font>为虚机接入网桥，上连br-ex网桥，下连虚机，<font color="#FF000">为虚机提供基础的二层服务</font>；<br>Br-ex网桥上存在2种端口：dpdkbond和br-ex接口。其中，dpdkbond接口可以是聚合接口，是连接外部接口，成员口标识是dpdkbondp1、 dpdkbondp2；<font color="#FF000">br-ex接口是实现Overlay和封装与解封装</font>。<br>Br-int网桥存在3种端口，vhu、ot和br-int接口。其中，vhu接口是连接虚机的接口；Ot接口是虚拟隧道接口（不封装vxlan），主要是作为内部连接使用，<font color="#FF000">同时ot接口与br-ex接口是多对一的连接关系，通过远端IP进行区分</font>；br-int接口是管理接口，但是锐捷本次没有使用，故该接口是DOWN状态</p>
+<p><img src="/2021/08/23/ovs/ovs%E5%86%85%E9%83%A8%E6%8E%A5%E5%8F%A3.png" alt="ovs内部接口"></p>
+<h2 id="OVS转发原理"><a href="#OVS转发原理" class="headerlink" title="OVS转发原理"></a>OVS转发原理</h2><p><font color="#FF000">步骤一、</font><br>Vhu收到VM发出的ICMP请求报文后，该报文通过流表将报文转发，出接口是ot1<br><font color="#FF000">步骤二、</font><br>（1）ot1根据静态路由配置（SDN控制器逻辑下发），将报文转发至br-ex网桥的br-ex接口；<br>（2）将报文送到br-ex时，将隧道封装的流表拷贝到br-ex，并且在br-ex网桥完成VXLAN的封装<br><font color="#FF000">步骤三、</font><br>br-ex接口是进行传统转发，封装后的报文通过mac地址转发。mac地址表中，目的端口是dpdkbond接口，目的mac为br-ex接口网关地址的mac<br><font color="#800080">步骤四、</font><br>待上联主机回应ICMP应答到br-ex后，br-ex接口是进行传统转发，封装后的报文通过mac地址表查询。Mac地址表中，目的端口是br-ex接口，目的mac地址是br-ex接口的MAC。<br><font color="#800080">步骤五、</font><br>Br-ex接口解封装VXLAN报文，由于br-ex和ot口是1对多关系，通过get隧道配置查看远端IP找到对应的ot口，直接通过内部逻辑转成对应OT接口，无需通过路由转发<br><font color="#800080">步骤六、</font><br>ot1收到报文后通过流表将报文转发，出接口是vhu接口</p>
+<p><img src="/2021/08/23/ovs/ovs%E8%BD%AC%E5%8F%91%E6%B5%81%E7%A8%8B.png" alt="ovs转发流程"></p>
+]]></content>
+      <categories>
+        <category>openstack</category>
+      </categories>
+      <tags>
+        <tag>openstack</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>DHCP</title>
+    <url>/2021/08/25/dhcp/</url>
+    <content><![CDATA[<p>DHCP（Dynamic Host Configuration Protocol，动态主机配置协议），前身是BOOTP协议，是一个局域网的网络协议，使用UDP协议工作，统一使用两个IANA分配的端口：67（服务器端），68（客户端）。DHCP通常被用于局域网环境，主要作用是集中的管理、分配IP地址，使client动态的获得IP地址、Gateway地址、DNS服务器地址等信息，并能够提升地址的使用率。简单来说，DHCP就是一个不需要账号密码登录的、自动给内网机器分配IP地址等信息的协议。</p>
+<span id="more"></span>
+
+<h1 id="DHCP"><a href="#DHCP" class="headerlink" title="DHCP"></a>DHCP</h1><h2 id="DHCP报文"><a href="#DHCP报文" class="headerlink" title="DHCP报文"></a>DHCP报文</h2><p>DHCP discover<br>DHCP offer<br>DHCP request<br>DHCP ack</p>
+<p>DHCP服务器——UDP67号端口<br>DHCP客户端——UDP68号端口<br>先有服务器67才能有客户端68</p>
+<h2 id="DHCP四步租约过程"><a href="#DHCP四步租约过程" class="headerlink" title="DHCP四步租约过程"></a>DHCP四步租约过程</h2><p>DHCP租约过程分为4步：</p>
+<p>①客户机请求IP（客户机发DHCPDISCOVER广播包）；</p>
+<p>②服务器响应（服务器发DHCPOFFER广播包）；</p>
+<p>③客户机选择IP（客户机发DHCPREQUEST广播包）；</p>
+<p>④服务器确定租约（服务器发DHCPACK/DHCPNAK广播包）。</p>
+<p><strong>详解4步租约过程：</strong><br><strong>第1步：客户机请求IP</strong><br><font color="#E9764A"><strong>客户机请求IP也称为DHCPDISCOVER</strong></font>。</p>
+<p>当一个DHCP客户机启动时，会自动将自己的IP地址配置成0.0.0.0，由于使用0.0.0.0不能进行正常通信，所以客户机就必须通过DHCP服务器来获取一个合法的地址。由于客户机不知道DHCP服务器的IP地址，<font color="#E9764A"><strong>所以它使用0.0.0.0的地址作为源地址，使用UDP68端口作为源端口，使用255.255.255.255作为目标地址，使用UDP67端口作为目的端口来广播请求IP地址信息</strong></font>（见图一）。广播信息中包含了DHCP客户机的MAC地址和计算机名，以便使DHCP服务器能确定是哪个客户机发送的请求。</p>
+<p>DHCP客户机总是试图重新租用它接收过的最后一个IP地址，这给网络带来一定的稳定性。</p>
+<p>因为此时，DHCP客户端没有分配到IP地址，也不知道DHCP服务器或DHCP中继的IP地址，所以在DHCP DISCOVER报文中Ciaddr（客户端IP地址）、Yiaddr（被分配的DHCP客户端IP地址）、<font color="#E9764A"><strong>Siaddr（下一个为DHCP客户端分配IP地址的DHCP服务器地址）</strong></font>、Giaddr（DHCP中继IP地址）这四个字段均为0.0.0.0，如下所示。另外，从中可以看到，在CHADDR字段和DHCP选项中Client Identifier字段中都标识了DHCP客户端网卡MAC地址。</p>
+<p>图一：客户机请求IP<br><img src="/2021/08/25/dhcp/dhcpdiscover.png" alt="dhcpdiscover"></p>
+<p><strong>第2步：服务器响应</strong><br><font color="#E9764A"><strong>服务器响应也称为DHCPOFFER</strong></font>。</p>
+<p>当DHCP服务器接收到客户机请求IP地址的信息时，它就在自己的IP地址池中查找是否有合法的IP地址提供给客户机。如果有，DHCP服务器就将此IP地址做上标记，加入到DHCPOFFER的消息中，然后DHCP服务器就广播一则包括下列信息的DHCPOFFER消息：</p>
+<p>DHCP客户机的MAC地址；DHCP服务器提供的合法IP地址；子网掩码；默认网关（路由）；租约的期限；DHCP服务器的IP地址。</p>
+<p>因为DHCP客户机还没有IP地址，所以<font color="#E9764A"><strong>DHCP服务器使用自己的IP地址作为源地址，使用UDP67端口作为源端口，使用255.255.255.255作为目标地址，使用UDP68端口作为目的端口来广播DHCPOFFER信息</strong></font>（见图二）。</p>
+<p>图二：服务器响应<br><img src="/2021/08/25/dhcp/dhcpoffer.png" alt="dhcpoffer"></p>
+<p><strong>第3步：客户机选择IP</strong><br><font color="#E9764A"><strong>客户机选择IP，也称为DHCPREQUEST</strong></font>。</p>
+<p>DHCP客户机从接收到的第一个DHCPOFFER消息中选择IP地址，发出IP地址的DHCP服务器将该地址保留，这样该地址就不能提供给另一个DHCP客户机。当客户机从第一个DHCP服务器接收DHCPOFFER并选择IP地址后，DHCP租约的第三过程发生。客户机将DHCPREQUEST消息广播到所有的DHCP服务器，表明它接受提供的内容。DHCPREQUEST消息包括为该客户机提供IP配置的服务器的服务标识符（IP地址）。DHCP服务器查看服务器标识符字段，以确定它自己是否被选择为指定的客户机提供IP地址，如果那些DHCPOFFER被拒绝，则DHCP服务器会取消提供并保留其IP地址以用于下一个IP租约请求。</p>
+<p>在客户机选择IP的过程中，虽然客户机选择了IP地址，但是还没有配置IP地址，而在一个网络中可能有几个DHCP服务器，所以<font color="#E9764A"><strong>客户机仍然使用0.0.0.0的地址作为源地址，使用UDP68端口作为源端口，使用255.255.255.255作为目标地址，使用UDP67端口作为目的端口来广播DHCPREQUEST信息</strong></font>（见图三）。</p>
+<p>图三：客户机选择IP<br><img src="/2021/08/25/dhcp/dhcprequest.png" alt="dhcprequest"></p>
+<p><strong>第4步：服务器确认租约</strong><br><font color="#E9764A"><strong>服务器确认租约，也称为DHCPACK/DHCPNAK</strong></font>。</p>
+<p>DHCP服务器接收到DHCPREQUEST消息后，以DHCPACK消息的形式向客户机广播成功的确认，该消息包含有IP地址的有效租约和其他可能配置的信息。虽然服务器确认了客户机的租约请求，但是客户机还没有收到服务器的DHCPACK消息，所以<font color="#E9764A"><strong>服务器仍然使用自己的IP地址作为源地址，使用UDP67端口作为源端口，使用255.255.255.255作为目标地址，使用UDP68端口作为目的端口来广播DHCPACK信息</strong></font>（见图四）。当客户机收到DHCPACK消息时，它就配置了IP地址，完成了TCP/IP的初始化。</p>
+<p>如果DHCPREQUEST不成功，例如客户机试图租约先前的IP地址，但该IP地址不再可用，或者因为客户机移到其他子网，该IP无效时，DHCP服务器将广播否定确认消息DHCPNAK。当客户机接收到不成功的确认时，它将重新开始DHCP租约过程</p>
+<p>如果DHCP客户机无法找到DHCP服务器，它将从TCP/IP的B类网段169.254.0.0中挑选一个IP地址作为自己的IP地址，继续每隔5分钟尝试与DHCP服务器进行通讯，一旦与DHCP服务器取得联系，则客户机放弃自动配置的IP地址，而使用DHCP服务器分配的IP地址。<br>如果一台DHCP客户机有两个或者多个网卡，则DHCP服务器会为每个网卡分配一个唯一而有效的IP地址。</p>
+<p>图四：服务器确认租约<br><img src="/2021/08/25/dhcp/dhcpack.png" alt="dhcpack"></p>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p><a href="https://blog.csdn.net/frank_jb/article/details/108877109?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522162986065416780265435106%2522%252C%2522scm%2522%253A%252220140713.130102334.pc%255Fall.%2522%257D&request_id=162986065416780265435106&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~all~first_rank_ecpm_v1~rank_v29_ecpm-5-108877109.ecpm_v1_rank_v29&utm_term=DHCP%E5%B7%A5%E4%BD%9C%E8%BF%87%E7%A8%8B%E4%BB%A5%E5%8F%8A%E6%8A%A5%E6%96%87&spm=1018.2226.3001.4187">DHCP协议说明及报文</a></p>
+]]></content>
+      <categories>
+        <category>数据通信</category>
+      </categories>
+      <tags>
+        <tag>DHCP</tag>
+      </tags>
   </entry>
   <entry>
     <title>openstack重要组件</title>
@@ -1425,24 +1478,6 @@ grep -i 关键字 file 忽略大小写
       </categories>
       <tags>
         <tag>Linux</tag>
-        <tag>openstack</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>ovs</title>
-    <url>/2021/08/23/ovs/</url>
-    <content><![CDATA[<p>Open vSwitch简称OVS，OVS是一个支持多层数据转发的高质量虚拟交换机，主要部署在服务器上，相比传统交换机具有很好的编程扩展性，同时具备传统交换机实现的网络隔离和数据转发功能，运行在每个实现虚拟化的物理机器上，并提供远程管理。OVS提供了两种在虚拟化环境中远程管理的协议：一个是OpenFlow，通过流表来管理交换机的行为，一个是OVSDB管理协议，用来暴露交换机的端口状态。其中OpenFlow协议可用于定于SDN网络，实现网络转发平面和控制平面分离。</p>
-<span id="more"></span>
-<h1 id="OVS"><a href="#OVS" class="headerlink" title="OVS"></a>OVS</h1><h2 id="物理交换机和虚拟交换机的通信模型"><a href="#物理交换机和虚拟交换机的通信模型" class="headerlink" title="物理交换机和虚拟交换机的通信模型"></a>物理交换机和虚拟交换机的通信模型</h2><p>SDN控制器控制<font color="#FF000">物理交换机（SDN网关）</font>转发：SDN控制器<font color="#FF000">发送欺骗BGP报文至SDN网关</font>，告知SDN网关路由下一跳是虚机交换机，最终形成路由表项；同时通过<font color="#FF000">netconf下发EVPN VXLAN相关配置至SDN网关</font><br>SDN控制器控制<font color="#FF000">虚机交换机（OVS）转发</font>：SDN控制器通过<font color="#FF000">Openflow协议下发流表至OVS</font>，OVS通过流表进行转发</p>
-<h2 id="OVS内部接口"><a href="#OVS内部接口" class="headerlink" title="OVS内部接口"></a>OVS内部接口</h2><p>OVS默认会存在2个网桥：br-ex与br-int。其中，<font color="#FF000">br-ex</font>网桥上连外部物理网卡，<font color="#FF000">实现外网网络对接</font>，下连br-int网桥；<font color="#FF000">br-int</font>为虚机接入网桥，上连br-ex网桥，下连虚机，<font color="#FF000">为虚机提供基础的二层服务</font>；<br>Br-ex网桥上存在2种端口：dpdkbond和br-ex接口。其中，dpdkbond接口可以是聚合接口，是连接外部接口，成员口标识是dpdkbondp1、 dpdkbondp2；<font color="#FF000">br-ex接口是实现Overlay和封装与解封装</font>。<br>Br-int网桥存在3种端口，vhu、ot和br-int接口。其中，vhu接口是连接虚机的接口；Ot接口是虚拟隧道接口（不封装vxlan），主要是作为内部连接使用，<font color="#FF000">同时ot接口与br-ex接口是多对一的连接关系，通过远端IP进行区分</font>；br-int接口是管理接口，但是锐捷本次没有使用，故该接口是DOWN状态</p>
-<p><img src="/2021/08/23/ovs/ovs%E5%86%85%E9%83%A8%E6%8E%A5%E5%8F%A3.png" alt="ovs内部接口"></p>
-<h2 id="OVS转发原理"><a href="#OVS转发原理" class="headerlink" title="OVS转发原理"></a>OVS转发原理</h2><p><font color="#FF000">步骤一、</font><br>Vhu收到VM发出的ICMP请求报文后，该报文通过流表将报文转发，出接口是ot1<br><font color="#FF000">步骤二、</font><br>（1）ot1根据静态路由配置（SDN控制器逻辑下发），将报文转发至br-ex网桥的br-ex接口；<br>（2）将报文送到br-ex时，将隧道封装的流表拷贝到br-ex，并且在br-ex网桥完成VXLAN的封装<br><font color="#FF000">步骤三、</font><br>br-ex接口是进行传统转发，封装后的报文通过mac地址转发。mac地址表中，目的端口是dpdkbond接口，目的mac为br-ex接口网关地址的mac<br><font color="#800080">步骤四、</font><br>待上联主机回应ICMP应答到br-ex后，br-ex接口是进行传统转发，封装后的报文通过mac地址表查询。Mac地址表中，目的端口是br-ex接口，目的mac地址是br-ex接口的MAC。<br><font color="#800080">步骤五、</font><br>Br-ex接口解封装VXLAN报文，由于br-ex和ot口是1对多关系，通过get隧道配置查看远端IP找到对应的ot口，直接通过内部逻辑转成对应OT接口，无需通过路由转发<br><font color="#800080">步骤六、</font><br>ot1收到报文后通过流表将报文转发，出接口是vhu接口</p>
-<p><img src="/2021/08/23/ovs/ovs%E8%BD%AC%E5%8F%91%E6%B5%81%E7%A8%8B.png" alt="ovs转发流程"></p>
-]]></content>
-      <categories>
-        <category>openstack</category>
-      </categories>
-      <tags>
         <tag>openstack</tag>
       </tags>
   </entry>
@@ -1800,6 +1835,23 @@ $0,1,2 // 0-脚本名 1-第一个参数 2-第二个参数
       </tags>
   </entry>
   <entry>
+    <title>IPMI，MGMT口</title>
+    <url>/2021/08/13/%E5%90%84%E7%A7%8D%E6%8E%A5%E5%8F%A3/</url>
+    <content><![CDATA[<p>交换机上的各种接口</p>
+<span id="more"></span>
+
+<h1 id="MGMT口"><a href="#MGMT口" class="headerlink" title="MGMT口"></a>MGMT口</h1><p>MGMT是网络管理端口，可以直接用网线连接，登陆进防火墙以网页模式管理<br>1） 用户可以通过Ping、Tracert等命令探测MGMT 口上配置的IP地址是否可达，并在MGMT 口上通过Ping、Tracert命令探测远程IP是否可达，因此MGMT 口支持ICMP应用。<br>2）用户可以通过Telnet/SSH/SNMP/WEB等方式登录到MGMT 口对设备进行管理，并且登录时支持AAA验证（包括Radius 和Tacacs+这两种服务器认证方式），甚至在执行命令行时还需要支持Tacacs+授权。<br>3）设备的日志、告警等信息也可以通过MGMT 口发送到网管的日志服务器上。<br>4）MGMT 口支持Telnet Client，TFTP Client。<br>5）MGMT 口支持NTP/SNTP报文的收发以实现网络时间同步。<br>6）MGMT 口支持静态ARP绑定。 </p>
+<h1 id="IPMI口"><a href="#IPMI口" class="headerlink" title="IPMI口"></a>IPMI口</h1><p>IPMI，即智能平台管理接口（Intelligent Platform Management Interface），IPMI的核心是一个专用芯片/控制器(BMC)，独立于操作系统、BIOS和处理器，因此属于带外管理设备。正是因为如此，我们可以通过BMC来控制或者获取系统的各种信息，而不需要关注系统是否正常。比如，系统卡住了，可以通过ipmi reset系统，而不需要跑到机房断电；系统无法登录也可以远程屏幕查看是什么问题。</p>
+]]></content>
+      <categories>
+        <category>交换机</category>
+      </categories>
+      <tags>
+        <tag>交换机</tag>
+        <tag>接口</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>博客文档指南</title>
     <url>/2021/07/20/%E5%8D%9A%E5%AE%A2%E7%BC%96%E5%86%99%E6%8C%87%E5%8D%97/</url>
     <content><![CDATA[<p>根据<a href="https://blog.csdn.net/sanallen/article/details/92081911?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522162684851716780274192566%2522%252C%2522scm%2522%253A%252220140713.130102334..%2522%257D&request_id=162684851716780274192566&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~all~sobaiduend~default-1-92081911.first_rank_v2_pc_rank_v29&utm_term=markdown%E6%96%87%E6%A1%A3%E7%BC%96%E5%86%99%E6%8C%87%E5%8D%97&spm=1018.2226.3001.4187">Markdown文档编写指南</a>编写</p>
@@ -1846,23 +1898,6 @@ $0,1,2 // 0-脚本名 1-第一个参数 2-第二个参数
       <tags>
         <tag>博客</tag>
         <tag>编写指南</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>IPMI，MGMT口</title>
-    <url>/2021/08/13/%E5%90%84%E7%A7%8D%E6%8E%A5%E5%8F%A3/</url>
-    <content><![CDATA[<p>交换机上的各种接口</p>
-<span id="more"></span>
-
-<h1 id="MGMT口"><a href="#MGMT口" class="headerlink" title="MGMT口"></a>MGMT口</h1><p>MGMT是网络管理端口，可以直接用网线连接，登陆进防火墙以网页模式管理<br>1） 用户可以通过Ping、Tracert等命令探测MGMT 口上配置的IP地址是否可达，并在MGMT 口上通过Ping、Tracert命令探测远程IP是否可达，因此MGMT 口支持ICMP应用。<br>2）用户可以通过Telnet/SSH/SNMP/WEB等方式登录到MGMT 口对设备进行管理，并且登录时支持AAA验证（包括Radius 和Tacacs+这两种服务器认证方式），甚至在执行命令行时还需要支持Tacacs+授权。<br>3）设备的日志、告警等信息也可以通过MGMT 口发送到网管的日志服务器上。<br>4）MGMT 口支持Telnet Client，TFTP Client。<br>5）MGMT 口支持NTP/SNTP报文的收发以实现网络时间同步。<br>6）MGMT 口支持静态ARP绑定。 </p>
-<h1 id="IPMI口"><a href="#IPMI口" class="headerlink" title="IPMI口"></a>IPMI口</h1><p>IPMI，即智能平台管理接口（Intelligent Platform Management Interface），IPMI的核心是一个专用芯片/控制器(BMC)，独立于操作系统、BIOS和处理器，因此属于带外管理设备。正是因为如此，我们可以通过BMC来控制或者获取系统的各种信息，而不需要关注系统是否正常。比如，系统卡住了，可以通过ipmi reset系统，而不需要跑到机房断电；系统无法登录也可以远程屏幕查看是什么问题。</p>
-]]></content>
-      <categories>
-        <category>交换机</category>
-      </categories>
-      <tags>
-        <tag>交换机</tag>
-        <tag>接口</tag>
       </tags>
   </entry>
   <entry>
@@ -1926,8 +1961,9 @@ $0,1,2 // 0-脚本名 1-第一个参数 2-第二个参数
 <h1 id="IPv4报文结构"><a href="#IPv4报文结构" class="headerlink" title="IPv4报文结构"></a>IPv4报文结构</h1><p><img src="/2021/08/26/%E6%8A%A5%E6%96%87/ipv4.png" alt="ipv4"><br><strong>第一行</strong><br>版本号、IHL、服务类型ToS、总长度<br>记录包的数据、特殊服务的处理方式等<br><strong>第二行</strong><br>标识符、标记符、片段漂移Flagments Offset<br>保证接收者按照正确顺序重组数据包<br><strong>第三行</strong><br>TTL、协议号、头部校验<br>防止环路、协议、检查数据包头部是否改变<br><strong>后面</strong><br>源目IP地址<br>IP OPTION</p>
 <h1 id="TCP报文结构"><a href="#TCP报文结构" class="headerlink" title="TCP报文结构"></a>TCP报文结构</h1><p><img src="/2021/08/26/%E6%8A%A5%E6%96%87/tcp.png" alt="tcp"><br><strong>第一行</strong><br>源目端口——保证唯一TCP连接<br><strong>第二行</strong><br>序号<br><strong>第三行</strong><br>确认号<br><strong>第四行</strong><br>头部长度——报头最长60字节，固定20字节<br>保留位<br>控制位——6位，包含ACK,FIN,SYN,PSH,URG,RST</p>
 <blockquote>
-<p>URG: 标识紧急指针是否有效<br>ACK: 标识确认序号是否有效<br>PSH: 用来提示接收端应用程序立刻将数据从tcp缓冲区读走<br>RST: 要求重新建立连接. 我们把含有RST标识的报文称为复位报文段<br>SYN: 请求建立连接. 我们把含有SYN标识的报文称为同步报文段<br>FIN: 通知对端, 本端即将关闭. 我们把含有FIN标识的报文称为结束报文段<br>窗口——滑动窗口大小，用来告诉发送端接收端缓存大小，以此控制发送端发送速率，达到流量控制<br><strong>第五行</strong><br>检验和<br>紧急指针<br><strong>第六行</strong><br>选项<br>填充<br><strong>后面</strong><br>数据</p>
+<p>URG: 标识紧急指针是否有效<br>ACK: 标识确认序号是否有效<br>PSH: 用来提示接收端应用程序立刻将数据从tcp缓冲区读走<br>RST: 要求重新建立连接. 我们把含有RST标识的报文称为复位报文段<br>SYN: 请求建立连接. 我们把含有SYN标识的报文称为同步报文段<br>FIN: 通知对端, 本端即将关闭. 我们把含有FIN标识的报文称为结束报文段</p>
 </blockquote>
+<p>窗口——滑动窗口大小，用来告诉发送端接收端缓存大小，以此控制发送端发送速率，达到流量控制<br><strong>第五行</strong><br>检验和<br>紧急指针<br><strong>第六行</strong><br>选项<br>填充<br><strong>后面</strong><br>数据</p>
 ]]></content>
       <categories>
         <category>数据通信</category>
@@ -2010,6 +2046,81 @@ $0,1,2 // 0-脚本名 1-第一个参数 2-第二个参数
       </categories>
       <tags>
         <tag>数据中心</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>时间复杂度</title>
+    <url>/2021/08/31/%E6%97%B6%E9%97%B4%E5%A4%8D%E6%9D%82%E5%BA%A6/</url>
+    <content><![CDATA[<p>对于同一问题，我们给出两种解决算法，在两种算法的实现中，我们对程序执行的时间进行了测算，发现两段程序执行的时间相差悬殊（214.583347秒相比于0.182897秒），由此我们可以得出结论：实现算法程序的执行时间可以反应出算法的效率，即算法的优劣。</p>
+<span id="more"></span>
+
+<h1 id="时间复杂度和“大O记法”"><a href="#时间复杂度和“大O记法”" class="headerlink" title="时间复杂度和“大O记法”"></a>时间复杂度和“大O记法”</h1><p>我们假定计算机执行算法每一个基本操作的时间是固定的一个时间单位，那么有多少个基本操作就代表会花费多少时间单位。算然对于不同的机器环境而言，确切的单位时间是不同的，但是对于算法进行多少个基本操作（即花费多少时间单位）在规模数量级上却是相同的，由此可以忽略机器环境的影响而客观的反应算法的时间效率。</p>
+<p>对于算法的时间效率，我们可以用“大O记法”来表示。</p>
+<p><strong>“大O记法”：</strong><font color="#E9764A">对于单调的整数函数f，如果存在一个整数函数g和实常数c&gt;0，使得对于充分大的n总有f(n)&lt;=c*g(n)，就说函数g是f的一个渐近函数（忽略常数），记为f(n)=O(g(n))。也就是说，在趋向无穷的极限意义下，函数f的增长速度受到函数g的约束，亦即函数f与函数g的特征相似</font></p>
+<p><strong>时间复杂度：</strong><font color="#E9764A">假设存在函数g，使得算法A处理规模为n的问题示例所用时间为T(n)=O(g(n))，则称O(g(n))为算法A的渐近时间复杂度，简称时间复杂度，记为T(n)</font></p>
+<h1 id="如何理解“大O记法”"><a href="#如何理解“大O记法”" class="headerlink" title="如何理解“大O记法”"></a>如何理解“大O记法”</h1><p>对于算法进行特别具体的细致分析虽然很好，但在实践中的实际价值有限。对于算法的时间性质和空间性质，最重要的是其数量级和趋势，这些是分析算法效率的主要部分。而计量算法基本操作数量的规模函数中那些常量因子可以忽略不计。<font color="#E9764A"><strong>例如，可以认为3n²和100n²属于同一个量级，如果两个算法处理同样规模实例的代价分别为这两个函数，就认为它们的效率“差不多”，都为n²级</strong></font></p>
+<h1 id="时间复杂度的基本运算原则"><a href="#时间复杂度的基本运算原则" class="headerlink" title="时间复杂度的基本运算原则"></a>时间复杂度的基本运算原则</h1><ol>
+<li>基本操作，即只有常数项，认为其时间复杂度为O(1)</li>
+<li>顺序结构，时间复杂度按加法进行计算</li>
+<li>循环结构，时间复杂度按乘法进行计算</li>
+<li>分支结构，时间复杂度取最大值</li>
+<li>判断一个算法的效率时，往往只需要关注操作数量的最高次项，其它次要项和常数项可以忽略</li>
+<li>在没有特殊说明时，我们所分析的算法的时间复杂度都是指最坏时间复杂度</li>
+</ol>
+<h1 id="常见时间复杂度"><a href="#常见时间复杂度" class="headerlink" title="常见时间复杂度"></a>常见时间复杂度</h1><table>
+<thead>
+<tr>
+<th>执行次数函数举例</th>
+<th>阶</th>
+<th>非正式术语</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>12</td>
+<td>O(1)</td>
+<td>常数阶</td>
+</tr>
+<tr>
+<td>2n+3</td>
+<td>O(n)</td>
+<td>线性阶</td>
+</tr>
+<tr>
+<td>3n2+2n+1</td>
+<td>O(n²)</td>
+<td>平方阶</td>
+</tr>
+<tr>
+<td>5log2n+20</td>
+<td>O(logn)</td>
+<td>对数阶</td>
+</tr>
+<tr>
+<td>2n+3nlog2n+19</td>
+<td>O(nlogn)</td>
+<td>nlogn阶</td>
+</tr>
+<tr>
+<td>6n3+2n2+3n+4</td>
+<td>O(n³)</td>
+<td>立方阶</td>
+</tr>
+<tr>
+<td>2n</td>
+<td>O(2^n)</td>
+<td>指数阶</td>
+</tr>
+</tbody></table>
+<h1 id="算法分析"><a href="#算法分析" class="headerlink" title="算法分析"></a>算法分析</h1><figure class="highlight apache"><table><tr><td class="code"><pre><span class="line"><span class="attribute">for</span> a in range(<span class="number">0</span>, <span class="number">1001</span>):</span><br><span class="line">    <span class="attribute">for</span> b in range(<span class="number">0</span>, <span class="number">1001</span>):</span><br><span class="line">        <span class="attribute">for</span> c in range(<span class="number">0</span>, <span class="number">1001</span>):</span><br><span class="line">            <span class="attribute">if</span> a**<span class="number">2</span> + b**<span class="number">2</span> == c**<span class="number">2</span> and a+b+c == <span class="number">1000</span>:</span><br><span class="line">                <span class="attribute">print</span>(<span class="string">&quot;a, b, c: %d, %d, %d&quot;</span> % (a, b, c))</span><br></pre></td></tr></table></figure>
+<p><strong>时间复杂度：</strong><br>T(n) = O(n<em>n</em>n) = O(n³)</p>
+<figure class="highlight apache"><table><tr><td class="code"><pre><span class="line"><span class="attribute">for</span> a in range(<span class="number">0</span>, <span class="number">1001</span>):</span><br><span class="line">    <span class="attribute">for</span> b in range(<span class="number">0</span>, <span class="number">1001</span>-a):</span><br><span class="line">        <span class="attribute">c</span> = <span class="number">1000</span> - a - b</span><br><span class="line">        <span class="attribute">if</span> a**<span class="number">2</span> + b**<span class="number">2</span> == c**<span class="number">2</span>:</span><br><span class="line">            <span class="attribute">print</span>(<span class="string">&quot;a, b, c: %d, %d, %d&quot;</span> % (a, b, c))</span><br></pre></td></tr></table></figure>
+<p><strong>时间复杂度：</strong><br>T(n) = O(n*n) = O(n²)</p>
+]]></content>
+      <categories>
+        <category>数据结构</category>
+      </categories>
+      <tags>
+        <tag>数据结构</tag>
       </tags>
   </entry>
   <entry>
@@ -2300,6 +2411,23 @@ $0,1,2 // 0-脚本名 1-第一个参数 2-第二个参数
         <tag>虚拟化</tag>
         <tag>SDN</tag>
         <tag>控制器</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>链表</title>
+    <url>/2021/08/30/%E9%93%BE%E8%A1%A8/</url>
+    <content><![CDATA[<p>我们为了解决问题，需要将数据保存下来，然后根据数据的存储方式来设计算法实现进行处理，那么数据的存储方式不同就会导致需要不同的算法进行处理。我们希望算法解决问题的效率越快越好，于是我们就需要考虑数据究竟如何保存的问题，这就是数据结构。</p>
+<span id="more"></span>
+
+<h1 id="算法与数据结构的区别"><a href="#算法与数据结构的区别" class="headerlink" title="算法与数据结构的区别"></a>算法与数据结构的区别</h1><p>数据结构指数据对象中数据元素之间的关系。<br>高效的程序需要在数据结构的基础上设计和选择算法。</p>
+<p><strong>程序 = 数据结构 + 算法</strong><br><strong>总结：算法是为了解决实际问题而设计的，数据结构是算法需要处理的问题载体</strong></p>
+<h1 id="单向链表"><a href="#单向链表" class="headerlink" title="单向链表"></a>单向链表</h1><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">节点的实现</span></span><br><span class="line"><span class="string">class SingleNode(object):</span></span><br><span class="line"><span class="string">    # 单链表的节点</span></span><br><span class="line"><span class="string">    def __init__(self,item):</span></span><br><span class="line"><span class="string">        # _item存放数据元素</span></span><br><span class="line"><span class="string">        self.item = item</span></span><br><span class="line"><span class="string">        # _next是下一个节点的标识</span></span><br><span class="line"><span class="string">        self.next = None</span></span><br><span class="line"><span class="string">    # python中等号的意思为 将变量指向某个地址 比如 a=10 将a指向了存放10的地址 比如109323281251</span></span><br><span class="line"><span class="string">    # next = 下一个节点的标识 就是将next指向了下一个节点的地址</span></span><br><span class="line"><span class="string">    # ！！！  做到了单链表的 [元素][next]——[元素][next]     </span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Node</span>(<span class="params"><span class="built_in">object</span></span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;节点&quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, elem</span>):</span></span><br><span class="line">        self.elem = elem</span><br><span class="line">        self.<span class="built_in">next</span> = <span class="literal">None</span></span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">单链表的操作：</span></span><br><span class="line"><span class="string">is_empty() 链表是否为空</span></span><br><span class="line"><span class="string">length() 链表长度</span></span><br><span class="line"><span class="string">travel() 遍历整个链表</span></span><br><span class="line"><span class="string">add(item) 链表头部添加元素</span></span><br><span class="line"><span class="string">append(item) 链表尾部添加元素</span></span><br><span class="line"><span class="string">insert(pos, item) 指定位置添加元素</span></span><br><span class="line"><span class="string">remove(item) 删除节点</span></span><br><span class="line"><span class="string">search(item) 查找节点是否存在</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">singleLinkList</span>(<span class="params"><span class="built_in">object</span></span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;单链表&quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, node=<span class="literal">None</span></span>):</span></span><br><span class="line">        self._head = node</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">is_empty</span>(<span class="params">self</span>):</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;链表是否为空&quot;&quot;&quot;</span></span><br><span class="line">        <span class="keyword">return</span> self._head == <span class="literal">None</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">length</span>(<span class="params">self</span>):</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;返回链表长度&quot;&quot;&quot;</span></span><br><span class="line">        <span class="comment"># cur用来遍历节点</span></span><br><span class="line">        cur = self._head</span><br><span class="line"></span><br><span class="line">        <span class="comment"># cur = self._head = node</span></span><br><span class="line">        <span class="comment"># 所以后面循环中 会有 cur = cur.next = node.next 把游标cur 移到下一个节点</span></span><br><span class="line">        <span class="comment"># count用来计数</span></span><br><span class="line"></span><br><span class="line">        count = <span class="number">0</span></span><br><span class="line">        <span class="keyword">while</span> cur != <span class="literal">None</span>:</span><br><span class="line">            cur = cur.<span class="built_in">next</span></span><br><span class="line">            count += <span class="number">1</span></span><br><span class="line">        <span class="comment"># 把游标 cur 指向第一个节点 如果第一个节点不是None 计数+1</span></span><br><span class="line">        <span class="keyword">return</span> count</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">travel</span>(<span class="params">self</span>):</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;遍历整个列表&quot;&quot;&quot;</span></span><br><span class="line">        cur = self._head</span><br><span class="line">        <span class="keyword">while</span> cur != <span class="literal">None</span>:</span><br><span class="line">            <span class="built_in">print</span>(cur.elem, end=<span class="string">&quot; &quot;</span>)</span><br><span class="line">            cur = cur.<span class="built_in">next</span></span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&#x27; &#x27;</span>)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">add</span>(<span class="params">self, elem</span>):</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;链表头部添加元素&quot;&quot;&quot;</span></span><br><span class="line">        node = Node(elem)</span><br><span class="line">        self._head, node.<span class="built_in">next</span> = node, self._head</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">append</span>(<span class="params">self, elem</span>):</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;链表尾部添加元素&quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">        <span class="comment"># cur = self._head</span></span><br><span class="line">        <span class="comment"># while cur != None:</span></span><br><span class="line">        <span class="comment">#     cur = cur.next</span></span><br><span class="line">        <span class="comment"># cur.elem = elem</span></span><br><span class="line">        <span class="comment"># cur.next = None</span></span><br><span class="line">        <span class="comment"># 当cur = None的时候说明已经到了最后一个节点的Next 空节点</span></span><br><span class="line">        <span class="comment"># cur指向空节点 在空节点上创建Node 就是添加元素 个人理解</span></span><br><span class="line"></span><br><span class="line">        node = Node(elem)</span><br><span class="line">        <span class="keyword">if</span> self.is_empty():</span><br><span class="line">            <span class="comment"># 如果链表是空，就是直接添加节点</span></span><br><span class="line">            self._head = node</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            cur = self._head</span><br><span class="line">            <span class="keyword">while</span> cur.<span class="built_in">next</span> != <span class="literal">None</span>:</span><br><span class="line">                cur = cur.<span class="built_in">next</span></span><br><span class="line">            cur.<span class="built_in">next</span> = node</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">insert</span>(<span class="params">self, pos, elem</span>):</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;指定位置添加元素&quot;&quot;&quot;</span></span><br><span class="line">        <span class="keyword">if</span> pos &lt;= <span class="number">0</span>:</span><br><span class="line">            self.add(elem)</span><br><span class="line">        <span class="keyword">elif</span> pos &gt; (self.length() - <span class="number">1</span>):</span><br><span class="line">            self.append(elem)</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            cur = self._head</span><br><span class="line">            i = <span class="number">1</span></span><br><span class="line">            node = Node(elem)</span><br><span class="line">            <span class="keyword">while</span> i &lt; pos:</span><br><span class="line">                i += <span class="number">1</span></span><br><span class="line">                cur = cur.<span class="built_in">next</span></span><br><span class="line">            <span class="comment"># 当循环退出后 cur找到前一个节点</span></span><br><span class="line"></span><br><span class="line">            node.<span class="built_in">next</span> = cur.<span class="built_in">next</span></span><br><span class="line">            cur.<span class="built_in">next</span> = node</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">remove</span>(<span class="params">self, elem</span>):</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;移除指定元素&quot;&quot;&quot;</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;还需要加个是否为空的判断&quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">        <span class="comment"># cur = self._head</span></span><br><span class="line">        <span class="comment"># # 如果第一节点就是要删除的元素 那么直接让self._head指向第二节点</span></span><br><span class="line">        <span class="comment"># if cur.elem == elem:</span></span><br><span class="line">        <span class="comment">#     self._head = cur.next</span></span><br><span class="line">        <span class="comment"># # 现在第一位不是要删除的了</span></span><br><span class="line">        <span class="comment"># # 那么假设 cur指向第一节点 behind指向第二节点 只要behind.elem是要删除的元素</span></span><br><span class="line">        <span class="comment"># # 就让cur.next指向 behind.next就可以实现第一节点指向第三节点 丢弃第二节点</span></span><br><span class="line">        <span class="comment"># # 实现删除功能</span></span><br><span class="line">        <span class="comment"># else:</span></span><br><span class="line">        <span class="comment">#     behind = cur.next</span></span><br><span class="line">        <span class="comment">#     while behind != None:</span></span><br><span class="line">        <span class="comment">#         if behind.elem == elem:</span></span><br><span class="line">        <span class="comment">#             cur.next = behind.next</span></span><br><span class="line">        <span class="comment">#</span></span><br><span class="line">        <span class="comment">#         cur = behind</span></span><br><span class="line">        <span class="comment">#         behind = cur.next</span></span><br><span class="line"></span><br><span class="line">        cur = self._head</span><br><span class="line">        pre = <span class="literal">None</span></span><br><span class="line">        <span class="keyword">while</span> cur != <span class="literal">None</span>:</span><br><span class="line">            <span class="comment"># 判断元素</span></span><br><span class="line">            <span class="keyword">if</span> cur.elem == elem:</span><br><span class="line">                <span class="comment"># 判断是否头节点</span></span><br><span class="line">                <span class="keyword">if</span> cur == self._head:</span><br><span class="line">                    self._head = cur.<span class="built_in">next</span></span><br><span class="line">                <span class="keyword">else</span>:</span><br><span class="line">                    pre.<span class="built_in">next</span> = cur.<span class="built_in">next</span></span><br><span class="line">                <span class="keyword">break</span></span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                pre = cur</span><br><span class="line">                cur = cur.<span class="built_in">next</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">search</span>(<span class="params">self, elem</span>):</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;查询指定元素&quot;&quot;&quot;</span></span><br><span class="line">        cur = self._head</span><br><span class="line">        <span class="keyword">while</span> cur != <span class="literal">None</span>:</span><br><span class="line">            <span class="keyword">if</span> cur.elem == elem:</span><br><span class="line">                <span class="built_in">print</span>(<span class="string">&#x27;存在&#x27;</span>)</span><br><span class="line">                <span class="keyword">break</span></span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                cur = cur.<span class="built_in">next</span></span><br><span class="line">        <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&quot;__main__&quot;</span>:</span><br><span class="line">    ll = singleLinkList()</span><br><span class="line">    <span class="built_in">print</span>(ll.is_empty())</span><br><span class="line">    <span class="built_in">print</span>(ll.length())</span><br><span class="line">    ll.append(<span class="number">3</span>)</span><br><span class="line">    ll.append(<span class="number">4</span>)</span><br><span class="line">    ll.add(<span class="number">2</span>)</span><br><span class="line">    ll.add(<span class="number">1</span>)</span><br><span class="line">    <span class="comment"># 1 2 3 4</span></span><br><span class="line">    ll.insert(<span class="number">1</span>, <span class="number">100</span>)</span><br><span class="line">    ll.travel()</span><br><span class="line">    <span class="comment"># 1 100 2 3 4</span></span><br><span class="line">    ll.insert(<span class="number">3</span>, <span class="number">200</span>)</span><br><span class="line">    <span class="comment"># 1 100 2 200 3 4</span></span><br><span class="line">    ll.travel()</span><br><span class="line">    ll.remove(<span class="number">4</span>)</span><br><span class="line">    ll.travel()</span><br><span class="line"></span><br></pre></td></tr></table></figure>]]></content>
+      <categories>
+        <category>数据结构</category>
+      </categories>
+      <tags>
+        <tag>数据结构</tag>
       </tags>
   </entry>
   <entry>
