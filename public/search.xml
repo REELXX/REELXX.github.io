@@ -171,6 +171,32 @@ BFD通知本地OSPF进程BFD邻居不可达。
 ]]></content>
   </entry>
   <entry>
+    <title>Django框架下，用sqlite3实现登录系统</title>
+    <url>/2021/08/17/Django%E6%A1%86%E6%9E%B6%E4%B8%8B%EF%BC%8C%E7%94%A8sqlite3%E5%AE%9E%E7%8E%B0%E7%99%BB%E5%BD%95%E7%B3%BB%E7%BB%9F/</url>
+    <content><![CDATA[<p>在Django框架下，自带sqlite3数据库。在21年的比赛中用sqlite3库实现了用户登录注册</p>
+<span id="more"></span>
+
+<p>一开始我想直接使用 models.[model名].objects.的方法从数据库中获取对应数据在后端进行账号密码匹对<br><img src="/2021/08/17/Django%E6%A1%86%E6%9E%B6%E4%B8%8B%EF%BC%8C%E7%94%A8sqlite3%E5%AE%9E%E7%8E%B0%E7%99%BB%E5%BD%95%E7%B3%BB%E7%BB%9F/modelsobject.png" alt="modelsobject"></p>
+<p>曾经用这个方法返回表单给前端，显示用户数据</p>
+<p>但这个方法在后端得到的数据是NULL<br>所以使用了sqlite3在Python的库</p>
+<blockquote>
+<p>获取用户信息</p>
+</blockquote>
+<figure class="highlight vim"><table><tr><td class="code"><pre><span class="line">import sqlite3</span><br><span class="line"></span><br><span class="line"><span class="keyword">con</span> = sqlite3.connect(<span class="string">&#x27;db.sqlite3&#x27;</span>)</span><br><span class="line">cur = <span class="keyword">con</span>.<span class="built_in">cursor</span>()</span><br><span class="line">sql = <span class="string">&#x27;select * from [数据库名：在DB Changes中看]&#x27;</span></span><br><span class="line"><span class="keyword">try</span>:</span><br><span class="line">    cur.<span class="keyword">execute</span>(sql)</span><br><span class="line">    # 获取所有数据</span><br><span class="line">    person_all = cur.fetchall()</span><br><span class="line">    # <span class="keyword">print</span>(person_all)</span><br><span class="line">    # 遍历</span><br><span class="line">    <span class="keyword">for</span> <span class="keyword">p</span> in person_al<span class="variable">l:</span></span><br><span class="line">        # 创建一组组新的用户信息字典 放入peopleInfo 用户名:密码</span><br><span class="line">        peopleInfo = &#123;<span class="keyword">p</span>[<span class="number">1</span>]: <span class="keyword">p</span>[<span class="number">3</span>]&#125;</span><br><span class="line">        # 创建用户名:邮箱</span><br><span class="line">        peopleEmail = &#123;<span class="keyword">p</span>[<span class="number">1</span>]: <span class="keyword">p</span>[<span class="number">2</span>]&#125;</span><br><span class="line">        # 将每个字典更新到nameAndPasswd 做成所有用户信息合集</span><br><span class="line">        nameAndPasswd.<span class="keyword">update</span>(peopleInfo)</span><br><span class="line">        nameAndEmail.<span class="keyword">update</span>(peopleEmail)</span><br><span class="line">        # <span class="keyword">print</span>(<span class="keyword">p</span>)</span><br><span class="line">except Exception <span class="keyword">as</span> <span class="keyword">e</span>:</span><br><span class="line">    <span class="keyword">print</span>(<span class="keyword">e</span>)</span><br><span class="line">    <span class="keyword">print</span>(<span class="string">&#x27;查询失败&#x27;</span>)</span><br><span class="line"><span class="keyword">finally</span>:</span><br><span class="line">    # 关闭游标</span><br><span class="line">    cur.<span class="keyword">close</span>()</span><br><span class="line">    # 关闭连接</span><br><span class="line">    <span class="keyword">con</span>.<span class="keyword">close</span>()</span><br></pre></td></tr></table></figure>
+<p>因为我建立的数据库是（pk，用户名，邮箱，密码），用for循环遍历每一组<br>将每一组的<strong>p[1]——用户名</strong>，<strong>p[3]——密码</strong><font color="#E974">组成一个新的字典</font>再<font color="#E974A">更新到信息合集nameAndPasswd中</font>，当for遍历完的时候，nameAndPasswd中就会有所有用户的账号密码键值对了</p>
+<blockquote>
+<p>登录<br>使用了字典的内置方法 <font color="#E9764A">dict.get(key,default=None)返回指定键的值</font>，用此方法获得的数据库指定账号的<strong>密码</strong>，拿来和输入的密码做比较</p>
+</blockquote>
+<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="meta"># 获得页面填写的账号信息</span></span><br><span class="line">nameSignIN = request.POST.<span class="keyword">get</span>(<span class="string">&#x27;accountSignIn&#x27;</span>)</span><br><span class="line">passwordSignIN = request.POST.<span class="keyword">get</span>(<span class="string">&#x27;passwordSignIn&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> nameAndPasswd.<span class="keyword">get</span>(nameSignIN) == passwordSignIN:</span><br><span class="line">    <span class="keyword">return</span> render(request, <span class="string">&#x27;???.html&#x27;</span>)</span><br><span class="line">    <span class="meta"># 密码正确</span></span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">    <span class="meta"># 密码错误</span></span><br></pre></td></tr></table></figure>]]></content>
+      <categories>
+        <category>Python</category>
+      </categories>
+      <tags>
+        <tag>Django</tag>
+        <tag>Python</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Hexo+yilia左侧背景图片更换</title>
     <url>/2021/07/23/Hexo-yilia%E5%B7%A6%E4%BE%A7%E8%83%8C%E6%99%AF%E5%9B%BE%E7%89%87%E6%9B%B4%E6%8D%A2/</url>
     <content><![CDATA[<p>关于hexo+yilia的左侧替换原始背景方案</p>
@@ -203,29 +229,48 @@ BFD通知本地OSPF进程BFD邻居不可达。
       </tags>
   </entry>
   <entry>
-    <title>Django框架下，用sqlite3实现登录系统</title>
-    <url>/2021/08/17/Django%E6%A1%86%E6%9E%B6%E4%B8%8B%EF%BC%8C%E7%94%A8sqlite3%E5%AE%9E%E7%8E%B0%E7%99%BB%E5%BD%95%E7%B3%BB%E7%BB%9F/</url>
-    <content><![CDATA[<p>在Django框架下，自带sqlite3数据库。在21年的比赛中用sqlite3库实现了用户登录注册</p>
+    <title>MPLS VPN</title>
+    <url>/2021/07/27/MPLS-VPN/</url>
+    <content><![CDATA[<p>BGP/MPLS IP VPN是一种L3VPN（Layer 3 Virtual Private Network）。它使用BGP（Border Gateway Protocol）在服务提供商骨干网上发布VPN路由，使用MPLS（Multiprotocol Label Switch）在服务提供商骨干网上转发VPN报文。这里的IP是指VPN承载的是IP（Internet Protocol）报文。</p>
 <span id="more"></span>
 
-<p>一开始我想直接使用 models.[model名].objects.的方法从数据库中获取对应数据在后端进行账号密码匹对<br><img src="/2021/08/17/Django%E6%A1%86%E6%9E%B6%E4%B8%8B%EF%BC%8C%E7%94%A8sqlite3%E5%AE%9E%E7%8E%B0%E7%99%BB%E5%BD%95%E7%B3%BB%E7%BB%9F/modelsobject.png" alt="modelsobject"></p>
-<p>曾经用这个方法返回表单给前端，显示用户数据</p>
-<p>但这个方法在后端得到的数据是NULL<br>所以使用了sqlite3在Python的库</p>
-<blockquote>
-<p>获取用户信息</p>
-</blockquote>
-<figure class="highlight vim"><table><tr><td class="code"><pre><span class="line">import sqlite3</span><br><span class="line"></span><br><span class="line"><span class="keyword">con</span> = sqlite3.connect(<span class="string">&#x27;db.sqlite3&#x27;</span>)</span><br><span class="line">cur = <span class="keyword">con</span>.<span class="built_in">cursor</span>()</span><br><span class="line">sql = <span class="string">&#x27;select * from [数据库名：在DB Changes中看]&#x27;</span></span><br><span class="line"><span class="keyword">try</span>:</span><br><span class="line">    cur.<span class="keyword">execute</span>(sql)</span><br><span class="line">    # 获取所有数据</span><br><span class="line">    person_all = cur.fetchall()</span><br><span class="line">    # <span class="keyword">print</span>(person_all)</span><br><span class="line">    # 遍历</span><br><span class="line">    <span class="keyword">for</span> <span class="keyword">p</span> in person_al<span class="variable">l:</span></span><br><span class="line">        # 创建一组组新的用户信息字典 放入peopleInfo 用户名:密码</span><br><span class="line">        peopleInfo = &#123;<span class="keyword">p</span>[<span class="number">1</span>]: <span class="keyword">p</span>[<span class="number">3</span>]&#125;</span><br><span class="line">        # 创建用户名:邮箱</span><br><span class="line">        peopleEmail = &#123;<span class="keyword">p</span>[<span class="number">1</span>]: <span class="keyword">p</span>[<span class="number">2</span>]&#125;</span><br><span class="line">        # 将每个字典更新到nameAndPasswd 做成所有用户信息合集</span><br><span class="line">        nameAndPasswd.<span class="keyword">update</span>(peopleInfo)</span><br><span class="line">        nameAndEmail.<span class="keyword">update</span>(peopleEmail)</span><br><span class="line">        # <span class="keyword">print</span>(<span class="keyword">p</span>)</span><br><span class="line">except Exception <span class="keyword">as</span> <span class="keyword">e</span>:</span><br><span class="line">    <span class="keyword">print</span>(<span class="keyword">e</span>)</span><br><span class="line">    <span class="keyword">print</span>(<span class="string">&#x27;查询失败&#x27;</span>)</span><br><span class="line"><span class="keyword">finally</span>:</span><br><span class="line">    # 关闭游标</span><br><span class="line">    cur.<span class="keyword">close</span>()</span><br><span class="line">    # 关闭连接</span><br><span class="line">    <span class="keyword">con</span>.<span class="keyword">close</span>()</span><br></pre></td></tr></table></figure>
-<p>因为我建立的数据库是（pk，用户名，邮箱，密码），用for循环遍历每一组<br>将每一组的<strong>p[1]——用户名</strong>，<strong>p[3]——密码</strong><font color="#E974">组成一个新的字典</font>再<font color="#E974A">更新到信息合集nameAndPasswd中</font>，当for遍历完的时候，nameAndPasswd中就会有所有用户的账号密码键值对了</p>
-<blockquote>
-<p>登录<br>使用了字典的内置方法 <font color="#E9764A">dict.get(key,default=None)返回指定键的值</font>，用此方法获得的数据库指定账号的<strong>密码</strong>，拿来和输入的密码做比较</p>
-</blockquote>
-<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="meta"># 获得页面填写的账号信息</span></span><br><span class="line">nameSignIN = request.POST.<span class="keyword">get</span>(<span class="string">&#x27;accountSignIn&#x27;</span>)</span><br><span class="line">passwordSignIN = request.POST.<span class="keyword">get</span>(<span class="string">&#x27;passwordSignIn&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> nameAndPasswd.<span class="keyword">get</span>(nameSignIN) == passwordSignIN:</span><br><span class="line">    <span class="keyword">return</span> render(request, <span class="string">&#x27;???.html&#x27;</span>)</span><br><span class="line">    <span class="meta"># 密码正确</span></span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">    <span class="meta"># 密码错误</span></span><br></pre></td></tr></table></figure>]]></content>
+<p><img src="/2021/07/27/MPLS-VPN/VPN%E6%A8%A1%E5%9E%8B.png" alt="MPLS IP VPN模型"><br>图：BGP/MPLS IP VPN模型</p>
+<p>BGP/MPLS IP VPN的基本模型由三部分组成：CE、PE和P。</p>
+<pre><code>• CE（Customer Edge）：用户网络边缘设备，有接口直接与服务提供商网络相连。CE可以是路由器或交换机，也可以是一台主机。通常情况下，CE“感知”不到VPN的存在，也不需要支持MPLS。
+• PE（Provider Edge）：是服务提供商网络的边缘设备，与CE直接相连。在MPLS网络中，对VPN的所有处理都发生在PE上，对PE性能要求较高。
+• P（Provider）：服务提供商网络中的骨干设备，不与CE直接相连。P设备只需要具备基本MPLS转发能力，不维护VPN信息。
+</code></pre>
+<p>PE和P设备仅由服务提供商管理；CE设备仅由用户管理，除非用户把管理权委托给服务提供商。</p>
+<p>一台PE设备可以接入多台CE设备。一台CE设备也可以连接属于相同或不同服务提供商的多台PE设备。</p>
+<h1 id="MPLS-VPN的原理描述"><a href="#MPLS-VPN的原理描述" class="headerlink" title="MPLS VPN的原理描述"></a>MPLS VPN的原理描述</h1><h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念:"></a>基本概念:</h2><h3 id="Site"><a href="#Site" class="headerlink" title="Site:"></a>Site:</h3><pre><code>• Site是指相互之间具备IP连通性的一组IP系统，并且，这组IP系统的IP连通性不需通过运营商网络实现。
+• Site的划分是根据设备的拓扑关系，而不是地理位置，尽管在大多数情况下一个Site中的设备地理位置相邻。地理位置隔离的两组IP系统，如果它们使用专线互联，不需要通过运营商网络就可以互通，这两组IP系统也组成一个Site。
+• 一个Site中的设备可以属于多个VPN，换言之，一个Site可以属于多个VPN。
+• Site通过CE连接到运营商网络，一个Site可以包含多个CE，但一个CE只属于一个Site。
+    根据Site的情况，建议CE设备选择方案如下：
+    如果Site只是一台主机，则这台主机就作为CE设备；
+    如果Site是单个子网，则使用交换机作为CE设备；
+    如果Site是多个子网，则使用路由器作为CE设备。
+    对于多个连接到同一运营商网络的Site，通过制定策略，可以将它们划分为不同的集合（set），只有属于相同集合的Site之间才能通过运营商网络互访，这种集合就是VPN。
+</code></pre>
+<h3 id="地址空间重叠："><a href="#地址空间重叠：" class="headerlink" title="地址空间重叠："></a>地址空间重叠：</h3><p>VPN是一种私有网络，不同的VPN独立管理自己的地址范围，也称为地址空间（address space）。不同VPN的地址空间可能会在一定范围内重合，例如，VPN1和VPN2都使用10.110.10.0/24网段地址，这就发生了地址空间的重叠（address spaces overlapping）。</p>
+<p>以下两种情况允许VPN使用重叠的地址空间：</p>
+<pre><code>• 两个VPN没有共同的Site
+• 两个VPN有共同的Site，但此Site中的设备不与两个VPN中使用重叠地址空间的设备互访
+</code></pre>
+<h3 id="VPN示例："><a href="#VPN示例：" class="headerlink" title="VPN示例："></a>VPN示例：</h3><p>在BGP/MPLS IP VPN中，不同VPN之间的路由隔离通过VPN实例（VPN-instance）实现。<br>PE为每个直接相连的Site建立并维护专门的VPN实例，VPN实例中包含对应Site的VPN成员关系和路由规则。具体来说，VPN实例中的信息包括：IP路由表、标签转发表、与VPN实例绑定的接口以及VPN实例的管理信息。VPN实例的管理信息包括RD（Route Distinguisher，路由标识符）、路由过滤策略、成员接口列表等。</p>
+<h3 id="VPN、Site、VPN实例之间的关系如下："><a href="#VPN、Site、VPN实例之间的关系如下：" class="headerlink" title="VPN、Site、VPN实例之间的关系如下："></a>VPN、Site、VPN实例之间的关系如下：</h3><pre><code>• VPN是多个Site的组合。一个Site可以属于多个VPN。
+• 每一个Site在PE上都关联一个VPN实例。VPN实例综合了它所关联的Site的VPN成员关系和路由规则。多个Site根据VPN实例的规则组合成一个VPN。
+• VPN实例与VPN不是一一对应的关系，VPN实例与Site之间存在一一对应的关系。
+</code></pre>
+<p><font color="#E99">VPN实例也称为VPN路由转发表VRF（VPN Routing and Forwarding table）。PE上存在多个路由转发表，包括一个公网路由转发表，以及一个或多个VPN路由转发表。</font></p>
+]]></content>
       <categories>
-        <category>Python</category>
+        <category>VPN</category>
       </categories>
       <tags>
-        <tag>Django</tag>
-        <tag>Python</tag>
+        <tag>数据通信</tag>
+        <tag>网络</tag>
+        <tag>VPN</tag>
       </tags>
   </entry>
   <entry>
@@ -283,71 +328,6 @@ BFD通知本地OSPF进程BFD邻居不可达。
         <tag>数据通信</tag>
         <tag>数据链路层</tag>
         <tag>交换机</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>LLDP协议解析</title>
-    <url>/2021/07/23/LLDP%E5%8D%8F%E8%AE%AE%E8%A7%A3%E6%9E%90/</url>
-    <content><![CDATA[<p>链路层发现协议基本概念</p>
-<span id="more"></span>
-
-<h1 id="链路层发现协议"><a href="#链路层发现协议" class="headerlink" title="链路层发现协议"></a>链路层发现协议</h1><h2 id="概述1："><a href="#概述1：" class="headerlink" title="概述1："></a>概述1：</h2><p>LLDP（Link Layer Discovery Protocol，链路层发现协议）就是用于这个目的的协议。LLDP定义在802.1ab中,它是一个二层协议，它提供了一种标准的链路层发现方式。LLDP协议使得接入网络的一台设备可以将其主要的能力，管理地址，设备标识，接口标识等信息发送给接入同一个局域网络的其它设备。当一个设备从网络中接收到其它设备的这些信息时，它就将这些信息以MIB的形式存储起来。<br>这些MIB信息可用于发现设备的物理拓扑结构以及管理配置信息。需要注意的是LLDP仅仅被设计用于进行信息通告，它被用于通告一个设备的信息并可以获得其它设备的信息，进而得到相关的MIB信息。它不是一个配置、控制协议，无法通过该协议对远端设备进行配置，它只是提供了关于网络拓扑以及管理配置的信息，这些信息可以被用于管理、配置的目的，如何用取决于信息的使用者。</p>
-<h2 id="概述2："><a href="#概述2：" class="headerlink" title="概述2："></a>概述2：</h2><p>LLDP（Link Layer Discovery Protocol，链路层发现协议）是由IEEE 802.1AB定义的一种链路层发现协议。通过LLDP协议能够进行拓扑的发现及掌握拓扑的变化情况。LLDP将设备本地的信息组织成TLV的格式（Type/Lenth/Value，类型/长度/值）封装在LLDPDU（LLDP data unit，链路层发现协议数据单元）中发送给邻居设备，同时它将邻居设备发送的LLDPDU以MIB（Management Information Base，管理信息库）的形式存储起来，提供给网络管理系统访问。<br>通过LLDP，网络管理系统可以掌握拓扑的连接情况，比如设备的哪些端口与其它设备相连接，链路连接两端的端口的速率、双工是否匹配等，管理员可以根据这些信息快速地定位及排查故障。</p>
-<h2 id="LLDP工作模式"><a href="#LLDP工作模式" class="headerlink" title="LLDP工作模式"></a>LLDP工作模式</h2><p>LLDP提供了三种工作模式：<br>• TxRx：即发送也接收LLDPDU。<br>• Rx Only：只接收不发送LLDPDU。<br>• Tx Only：只发送不接收LLDPDU。<br>当端口的LLDP工作模式发生变化时，端口将对协议状态机进行初始化操作，通过配置端口初始化的延迟时间，可以避免由于工作模式频繁改变而导致端口不断地进行初始化操作。</p>
-<h2 id="待补充"><a href="#待补充" class="headerlink" title="待补充"></a>待补充</h2><h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><p><a href="https://blog.csdn.net/goodluckwhh/article/details/10948065?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522162702451016780262582058%2522%252C%2522scm%2522%253A%252220140713.130102334..%2522%257D&request_id=162702451016780262582058&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~all~top_positive~default-1-10948065.first_rank_v2_pc_rank_v29&utm_term=lldp&spm=1018.2226.3001.4187">数据链路层学习之LLDP</a></p>
-]]></content>
-      <categories>
-        <category>数据通信</category>
-      </categories>
-      <tags>
-        <tag>数据通信</tag>
-        <tag>数据链路层</tag>
-        <tag>网络</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>MPLS VPN</title>
-    <url>/2021/07/27/MPLS-VPN/</url>
-    <content><![CDATA[<p>BGP/MPLS IP VPN是一种L3VPN（Layer 3 Virtual Private Network）。它使用BGP（Border Gateway Protocol）在服务提供商骨干网上发布VPN路由，使用MPLS（Multiprotocol Label Switch）在服务提供商骨干网上转发VPN报文。这里的IP是指VPN承载的是IP（Internet Protocol）报文。</p>
-<span id="more"></span>
-
-<p><img src="/2021/07/27/MPLS-VPN/VPN%E6%A8%A1%E5%9E%8B.png" alt="MPLS IP VPN模型"><br>图：BGP/MPLS IP VPN模型</p>
-<p>BGP/MPLS IP VPN的基本模型由三部分组成：CE、PE和P。</p>
-<pre><code>• CE（Customer Edge）：用户网络边缘设备，有接口直接与服务提供商网络相连。CE可以是路由器或交换机，也可以是一台主机。通常情况下，CE“感知”不到VPN的存在，也不需要支持MPLS。
-• PE（Provider Edge）：是服务提供商网络的边缘设备，与CE直接相连。在MPLS网络中，对VPN的所有处理都发生在PE上，对PE性能要求较高。
-• P（Provider）：服务提供商网络中的骨干设备，不与CE直接相连。P设备只需要具备基本MPLS转发能力，不维护VPN信息。
-</code></pre>
-<p>PE和P设备仅由服务提供商管理；CE设备仅由用户管理，除非用户把管理权委托给服务提供商。</p>
-<p>一台PE设备可以接入多台CE设备。一台CE设备也可以连接属于相同或不同服务提供商的多台PE设备。</p>
-<h1 id="MPLS-VPN的原理描述"><a href="#MPLS-VPN的原理描述" class="headerlink" title="MPLS VPN的原理描述"></a>MPLS VPN的原理描述</h1><h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念:"></a>基本概念:</h2><h3 id="Site"><a href="#Site" class="headerlink" title="Site:"></a>Site:</h3><pre><code>• Site是指相互之间具备IP连通性的一组IP系统，并且，这组IP系统的IP连通性不需通过运营商网络实现。
-• Site的划分是根据设备的拓扑关系，而不是地理位置，尽管在大多数情况下一个Site中的设备地理位置相邻。地理位置隔离的两组IP系统，如果它们使用专线互联，不需要通过运营商网络就可以互通，这两组IP系统也组成一个Site。
-• 一个Site中的设备可以属于多个VPN，换言之，一个Site可以属于多个VPN。
-• Site通过CE连接到运营商网络，一个Site可以包含多个CE，但一个CE只属于一个Site。
-    根据Site的情况，建议CE设备选择方案如下：
-    如果Site只是一台主机，则这台主机就作为CE设备；
-    如果Site是单个子网，则使用交换机作为CE设备；
-    如果Site是多个子网，则使用路由器作为CE设备。
-    对于多个连接到同一运营商网络的Site，通过制定策略，可以将它们划分为不同的集合（set），只有属于相同集合的Site之间才能通过运营商网络互访，这种集合就是VPN。
-</code></pre>
-<h3 id="地址空间重叠："><a href="#地址空间重叠：" class="headerlink" title="地址空间重叠："></a>地址空间重叠：</h3><p>VPN是一种私有网络，不同的VPN独立管理自己的地址范围，也称为地址空间（address space）。不同VPN的地址空间可能会在一定范围内重合，例如，VPN1和VPN2都使用10.110.10.0/24网段地址，这就发生了地址空间的重叠（address spaces overlapping）。</p>
-<p>以下两种情况允许VPN使用重叠的地址空间：</p>
-<pre><code>• 两个VPN没有共同的Site
-• 两个VPN有共同的Site，但此Site中的设备不与两个VPN中使用重叠地址空间的设备互访
-</code></pre>
-<h3 id="VPN示例："><a href="#VPN示例：" class="headerlink" title="VPN示例："></a>VPN示例：</h3><p>在BGP/MPLS IP VPN中，不同VPN之间的路由隔离通过VPN实例（VPN-instance）实现。<br>PE为每个直接相连的Site建立并维护专门的VPN实例，VPN实例中包含对应Site的VPN成员关系和路由规则。具体来说，VPN实例中的信息包括：IP路由表、标签转发表、与VPN实例绑定的接口以及VPN实例的管理信息。VPN实例的管理信息包括RD（Route Distinguisher，路由标识符）、路由过滤策略、成员接口列表等。</p>
-<h3 id="VPN、Site、VPN实例之间的关系如下："><a href="#VPN、Site、VPN实例之间的关系如下：" class="headerlink" title="VPN、Site、VPN实例之间的关系如下："></a>VPN、Site、VPN实例之间的关系如下：</h3><pre><code>• VPN是多个Site的组合。一个Site可以属于多个VPN。
-• 每一个Site在PE上都关联一个VPN实例。VPN实例综合了它所关联的Site的VPN成员关系和路由规则。多个Site根据VPN实例的规则组合成一个VPN。
-• VPN实例与VPN不是一一对应的关系，VPN实例与Site之间存在一一对应的关系。
-</code></pre>
-<p><font color="#E99">VPN实例也称为VPN路由转发表VRF（VPN Routing and Forwarding table）。PE上存在多个路由转发表，包括一个公网路由转发表，以及一个或多个VPN路由转发表。</font></p>
-]]></content>
-      <categories>
-        <category>VPN</category>
-      </categories>
-      <tags>
-        <tag>数据通信</tag>
-        <tag>网络</tag>
-        <tag>VPN</tag>
       </tags>
   </entry>
   <entry>
@@ -456,6 +436,26 @@ ILM
       </tags>
   </entry>
   <entry>
+    <title>LLDP协议解析</title>
+    <url>/2021/07/23/LLDP%E5%8D%8F%E8%AE%AE%E8%A7%A3%E6%9E%90/</url>
+    <content><![CDATA[<p>链路层发现协议基本概念</p>
+<span id="more"></span>
+
+<h1 id="链路层发现协议"><a href="#链路层发现协议" class="headerlink" title="链路层发现协议"></a>链路层发现协议</h1><h2 id="概述1："><a href="#概述1：" class="headerlink" title="概述1："></a>概述1：</h2><p>LLDP（Link Layer Discovery Protocol，链路层发现协议）就是用于这个目的的协议。LLDP定义在802.1ab中,它是一个二层协议，它提供了一种标准的链路层发现方式。LLDP协议使得接入网络的一台设备可以将其主要的能力，管理地址，设备标识，接口标识等信息发送给接入同一个局域网络的其它设备。当一个设备从网络中接收到其它设备的这些信息时，它就将这些信息以MIB的形式存储起来。<br>这些MIB信息可用于发现设备的物理拓扑结构以及管理配置信息。需要注意的是LLDP仅仅被设计用于进行信息通告，它被用于通告一个设备的信息并可以获得其它设备的信息，进而得到相关的MIB信息。它不是一个配置、控制协议，无法通过该协议对远端设备进行配置，它只是提供了关于网络拓扑以及管理配置的信息，这些信息可以被用于管理、配置的目的，如何用取决于信息的使用者。</p>
+<h2 id="概述2："><a href="#概述2：" class="headerlink" title="概述2："></a>概述2：</h2><p>LLDP（Link Layer Discovery Protocol，链路层发现协议）是由IEEE 802.1AB定义的一种链路层发现协议。通过LLDP协议能够进行拓扑的发现及掌握拓扑的变化情况。LLDP将设备本地的信息组织成TLV的格式（Type/Lenth/Value，类型/长度/值）封装在LLDPDU（LLDP data unit，链路层发现协议数据单元）中发送给邻居设备，同时它将邻居设备发送的LLDPDU以MIB（Management Information Base，管理信息库）的形式存储起来，提供给网络管理系统访问。<br>通过LLDP，网络管理系统可以掌握拓扑的连接情况，比如设备的哪些端口与其它设备相连接，链路连接两端的端口的速率、双工是否匹配等，管理员可以根据这些信息快速地定位及排查故障。</p>
+<h2 id="LLDP工作模式"><a href="#LLDP工作模式" class="headerlink" title="LLDP工作模式"></a>LLDP工作模式</h2><p>LLDP提供了三种工作模式：<br>• TxRx：即发送也接收LLDPDU。<br>• Rx Only：只接收不发送LLDPDU。<br>• Tx Only：只发送不接收LLDPDU。<br>当端口的LLDP工作模式发生变化时，端口将对协议状态机进行初始化操作，通过配置端口初始化的延迟时间，可以避免由于工作模式频繁改变而导致端口不断地进行初始化操作。</p>
+<h2 id="待补充"><a href="#待补充" class="headerlink" title="待补充"></a>待补充</h2><h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><p><a href="https://blog.csdn.net/goodluckwhh/article/details/10948065?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522162702451016780262582058%2522%252C%2522scm%2522%253A%252220140713.130102334..%2522%257D&request_id=162702451016780262582058&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~all~top_positive~default-1-10948065.first_rank_v2_pc_rank_v29&utm_term=lldp&spm=1018.2226.3001.4187">数据链路层学习之LLDP</a></p>
+]]></content>
+      <categories>
+        <category>数据通信</category>
+      </categories>
+      <tags>
+        <tag>数据通信</tag>
+        <tag>数据链路层</tag>
+        <tag>网络</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>OSPF笔记</title>
     <url>/2021/07/29/OSPF%E7%AC%94%E8%AE%B0/</url>
     <content><![CDATA[<p>OSPF基本理解</p>
@@ -545,6 +545,93 @@ ILM
       </tags>
   </entry>
   <entry>
+    <title>Python——pipreqs</title>
+    <url>/2021/08/18/Python%E2%80%94%E2%80%94pipreqs/</url>
+    <content><![CDATA[<p>解决Python项目在不同环境没法运行的问题，通过pipreqs库导出所需要的包</p>
+<span id="more"></span>
+
+<figure class="highlight jboss-cli"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 安装</span></span><br><span class="line">pip install pipreqs</span><br><span class="line"><span class="comment"># 在项目下运行</span></span><br><span class="line">pipreqs <span class="string">./</span> <span class="params">--encoding=utf8</span></span><br></pre></td></tr></table></figure>
+<p>执行完后，在项目下会生成<font color="#E9764A">requirements.txt</font>文件，项目中的组件和包都会在其中<br><img src="/2021/08/18/Python%E2%80%94%E2%80%94pipreqs/1.png" alt="1"></p>
+<blockquote>
+<p>当用pycharm打开项目时，只要项目下有requirements.txt文件，就会提示是否要安装没有的组件和包<br><img src="/2021/08/18/Python%E2%80%94%E2%80%94pipreqs/2.png" alt="2"></p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>Python</category>
+      </categories>
+      <tags>
+        <tag>Python</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>TCP解析</title>
+    <url>/2021/08/26/TCP/</url>
+    <content><![CDATA[<p>传输控制协议</p>
+<span id="more"></span>
+
+<h1 id="TCP"><a href="#TCP" class="headerlink" title="TCP"></a>TCP</h1><h2 id="TCP三次握手"><a href="#TCP三次握手" class="headerlink" title="TCP三次握手"></a>TCP三次握手</h2><p><img src="/2021/08/26/TCP/%E4%B8%89%E6%AC%A1%E6%8F%A1%E6%89%8B.png" alt="三次握手"></p>
+<p>刚开始, 客户端和服务器都处于 CLOSE 状态.<br>此时, 客户端向服务器主动发出连接请求, 服务器被动接受连接请求.</p>
+<p>1, TCP服务器进程先创建传输控制块TCB, 时刻准备接受客户端进程的连接请求, 此时服务器就进入了 LISTEN（监听）状态<br>2, TCP客户端进程也是先创建传输控制块TCB, 然后向服务器发出连接请求报文，此时报文首部中的同步标志位SYN=1, 同时选择一个初始序列号 seq = x, 此时，TCP客户端进程进入了 SYN-SENT（同步已发送状态）状态。TCP规定, SYN报文段（SYN=1的报文段）不能携带数据，但需要消耗掉一个序号。<br>3, TCP服务器收到请求报文后, 如果同意连接, 则发出确认报文。确认报文中的 ACK=1, SYN=1, 确认序号是 x+1, 同时也要为自己初始化一个序列号 seq = y, 此时, TCP服务器进程进入了SYN-RCVD（同步收到）状态。这个报文也不能携带数据, 但是同样要消耗一个序号。<br>4, TCP客户端进程收到确认后还, 要向服务器给出确认。确认报文的ACK=1，确认序号是 y+1，自己的序列号是 x+1.<br>5, 此时，TCP连接建立，客户端进入ESTABLISHED（已建立连接）状态。当服务器收到客户端的确认后也进入ESTABLISHED状态，此后双方就可以开始通信了。</p>
+<p>为什么不用两次?</p>
+<ul>
+<li>主要是为了防止已经失效的连接请求报文突然又传送到了服务器，从而产生错误。如果使用的是两次握手建立连接，假设有这样一种场景，客户端发送的第一个请求连接并且没有丢失，只是因为在网络中滞留的时间太长了，由于TCP的客户端迟迟没有收到确认报文，以为服务器没有收到，此时重新向服务器发送这条报文，此后客户端和服务器经过两次握手完成连接，传输数据，然后关闭连接。此时之前滞留的那一次请求连接，因为网络通畅了, 到达了服务器，这个报文本该是失效的，但是，两次握手的机制将会让客户端和服务器再次建立连接，这将导致不必要的错误和资源的费。</li>
+<li>如果采用的是三次握手，就算是那一次失效的报文传送过来了，服务端接受到了那条失效报文并且回复了确认报文，但是客户端不会再次发出确认。由于服务器收不到确认，就知道客户端并没有请求连接。</li>
+</ul>
+<p>为什么不用四次?</p>
+<ul>
+<li>因为三次已经可以满足需要了, 四次就多余了.</li>
+</ul>
+<h2 id="TCP四次挥手"><a href="#TCP四次挥手" class="headerlink" title="TCP四次挥手"></a>TCP四次挥手</h2><p>再来看看何为四次挥手.<br><img src="/2021/08/26/TCP/%E5%9B%9B%E6%AC%A1%E6%8C%A5%E6%89%8B.png" alt="四次挥手"></p>
+<p>数据传输完毕后，双方都可以释放连接.<br>此时客户端和服务器都是处于ESTABLISHED状态，然后客户端主动断开连接，服务器被动断开连接.</p>
+<p>1, 客户端进程发出连接释放报文，并且停止发送数据。<br>释放数据报文首部，FIN=1，其序列号为seq=u（等于前面已经传送过来的数据的最后一个字节的序号加1），此时客户端进入FIN-WAIT-1（终止等待1）状态。 TCP规定，FIN报文段即使不携带数据，也要消耗一个序号。<br>2, 服务器收到连接释放报文，发出确认报文，ACK=1，确认序号为 u+1，并且带上自己的序列号seq=v，此时服务端就进入了CLOSE-WAIT（关闭等待）状态。<br>TCP服务器通知高层的应用进程，客户端向服务器的方向就释放了，这时候处于半关闭状态，即客户端已经没有数据要发送了，但是服务器若发送数据，客户端依然要接受。这个状态还要持续一段时间，也就是整个CLOSE-WAIT状态持续的时间。<br>3, 客户端收到服务器的确认请求后，此时客户端就进入FIN-WAIT-2（终止等待2）状态，等待服务器发送连接释放报文（在这之前还需要接受服务器发送的最终数据）<br>4, 服务器将最后的数据发送完毕后，就向客户端发送连接释放报文，FIN=1，确认序号为u+1，由于在半关闭状态，服务器很可能又发送了一些数据，假定此时的序列号为seq=w，此时，服务器就进入了LAST-ACK（最后确认）状态，等待客户端的确认。<br>5, 客户端收到服务器的连接释放报文后，必须发出确认，ACK=1，确认序号为w+1，而自己的序列号是u+1，此时，客户端就进入了TIME-WAIT（时间等待）状态。注意此时TCP连接还没有释放，必须经过2∗MSL（最长报文段寿命）的时间后，当客户端撤销相应的TCB后，才进入CLOSED状态。<br>6, 服务器只要收到了客户端发出的确认，立即进入CLOSED状态。同样，撤销TCB后，就结束了这次的TCP连接。可以看到，服务器结束TCP连接的时间要比客户端早一些。</p>
+<p>为什么最后客户端还要等待 2*MSL的时间呢?</p>
+<ul>
+<li><p>MSL（Maximum Segment Lifetime），TCP允许不同的实现可以设置不同的MSL值。</p>
+</li>
+<li><p>第一，保证客户端发送的最后一个ACK报文能够到达服务器，因为这个ACK报文可能丢失，站在服务器的角度看来，我已经发送了FIN+ACK报文请求断开了，客户端还没有给我回应，应该是我发送的请求断开报文它没有收到，于是服务器又会重新发送一次，而客户端就能在这个2MSL时间段内收到这个重传的报文，接着给出回应报文，并且会重启2MSL计时器。</p>
+</li>
+<li><p>第二，防止类似与“三次握手”中提到了的“已经失效的连接请求报文段”出现在本连接中。客户端发送完最后一个确认报文后，在这个2MSL时间中，就可以使本连接持续的时间内所产生的所有报文段都从网络中消失。这样新的连接中不会出现旧连接的请求报文。</p>
+</li>
+</ul>
+<p>为什么建立连接是三次握手，关闭连接确是四次挥手呢？</p>
+<ul>
+<li>建立连接的时候， 服务器在LISTEN状态下，收到建立连接请求的SYN报文后，把ACK和SYN放在一个报文里发送给客户端。而关闭连接时，服务器收到对方的FIN报文时，仅仅表示对方不再发送数据了但是还能接收数据，而自己也未必全部数据都发送给对方了，所以己方可以立即关闭，也可以发送一些数据给对方后，再发送FIN报文给对方来表示同意现在关闭连接，因此，己方ACK和FIN一般都会分开发送，从而导致多了一次。</li>
+</ul>
+<p>如果已经建立了连接, 但是客户端突发故障了怎么办?</p>
+<ul>
+<li>TCP设有一个保活计时器，显然，客户端如果出现故障，服务器不能一直等下去，白白浪费资源。服务器每收到一次客户端的请求后都会重新复位这个计时器，时间通常是设置为2小时，若两小时还没有收到客户端的任何数据，服务器就会发送一个探测报文段，以后每隔75分钟发送一次。若一连发送10个探测报文仍然没反应，服务器就认为客户端出了故障，接着就关闭连接。</li>
+</ul>
+<h2 id="TCP-小结"><a href="#TCP-小结" class="headerlink" title="TCP 小结"></a>TCP 小结</h2><p>为什么TCP这么复杂?</p>
+<blockquote>
+<p>因为既要保证可靠性, 同时又要尽可能提高性能.</p>
+</blockquote>
+<p>保证可靠性的机制</p>
+<blockquote>
+<p>校验和<br>序列号(按序到达)<br>确认应答<br>超时重传<br>连接管理<br>流量控制<br>拥塞控制</p>
+</blockquote>
+<p>提高性能的机制</p>
+<blockquote>
+<p>滑动窗口<br>快速重传<br>延迟应答<br>捎带应答</p>
+</blockquote>
+<p>定时器</p>
+<blockquote>
+<p>超时重传定时器<br>保活定时器<br>TIME_WAIT定时器</p>
+</blockquote>
+<p>基于 TCP 的应用层协议</p>
+<blockquote>
+<p>HTTP<br>HTTPS<br>SSH<br>Telnet<br>FTP<br>SMTP<br>…</p>
+</blockquote>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p><a href="https://blog.csdn.net/sinat_36629696/article/details/80740678?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522162997757616780274110436%2522%252C%2522scm%2522%253A%252220140713.130102334..%2522%257D&request_id=162997757616780274110436&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~all~top_positive~default-1-80740678.ecpm_v1_rank_v29&utm_term=TCP&spm=1018.2226.3001.4187">TCP 详解</a></p>
+<h1 id="TCP学习网站"><a href="#TCP学习网站" class="headerlink" title="TCP学习网站"></a>TCP学习网站</h1><p><a href="http://www.52im.net/thread-513-1-1.html">TCP协议上部分：理论基础</a><br><a href="http://www.52im.net/thread-515-1-1.html">TCP协议下部分：RTT、滑动窗口、拥塞处理</a></p>
+]]></content>
+      <categories>
+        <category>数据通信</category>
+      </categories>
+      <tags>
+        <tag>数据通信</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>SPAN</title>
     <url>/2021/08/17/SPAN/</url>
     <content><![CDATA[<p>SPAN，全称为Switched Port Analyzer，直译为交换端口分析器。是一种交换机的端口镜像技术。作用主要是为了给某种网络分析器提供网络数据流，SPAN并不会影响源端口的数据交换，它只是将源端口发送或接收的数据包副本发送到监控端口</p>
@@ -611,25 +698,6 @@ ILM
       <tags>
         <tag>端口镜像</tag>
         <tag>运维</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Python——pipreqs</title>
-    <url>/2021/08/18/Python%E2%80%94%E2%80%94pipreqs/</url>
-    <content><![CDATA[<p>解决Python项目在不同环境没法运行的问题，通过pipreqs库导出所需要的包</p>
-<span id="more"></span>
-
-<figure class="highlight jboss-cli"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 安装</span></span><br><span class="line">pip install pipreqs</span><br><span class="line"><span class="comment"># 在项目下运行</span></span><br><span class="line">pipreqs <span class="string">./</span> <span class="params">--encoding=utf8</span></span><br></pre></td></tr></table></figure>
-<p>执行完后，在项目下会生成<font color="#E9764A">requirements.txt</font>文件，项目中的组件和包都会在其中<br><img src="/2021/08/18/Python%E2%80%94%E2%80%94pipreqs/1.png" alt="1"></p>
-<blockquote>
-<p>当用pycharm打开项目时，只要项目下有requirements.txt文件，就会提示是否要安装没有的组件和包<br><img src="/2021/08/18/Python%E2%80%94%E2%80%94pipreqs/2.png" alt="2"></p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>Python</category>
-      </categories>
-      <tags>
-        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -760,74 +828,6 @@ BPDU处理变化:
         <tag>数据通信</tag>
         <tag>交换</tag>
         <tag>STP</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>TCP解析</title>
-    <url>/2021/08/26/TCP/</url>
-    <content><![CDATA[<p>传输控制协议</p>
-<span id="more"></span>
-
-<h1 id="TCP"><a href="#TCP" class="headerlink" title="TCP"></a>TCP</h1><h2 id="TCP三次握手"><a href="#TCP三次握手" class="headerlink" title="TCP三次握手"></a>TCP三次握手</h2><p><img src="/2021/08/26/TCP/%E4%B8%89%E6%AC%A1%E6%8F%A1%E6%89%8B.png" alt="三次握手"></p>
-<p>刚开始, 客户端和服务器都处于 CLOSE 状态.<br>此时, 客户端向服务器主动发出连接请求, 服务器被动接受连接请求.</p>
-<p>1, TCP服务器进程先创建传输控制块TCB, 时刻准备接受客户端进程的连接请求, 此时服务器就进入了 LISTEN（监听）状态<br>2, TCP客户端进程也是先创建传输控制块TCB, 然后向服务器发出连接请求报文，此时报文首部中的同步标志位SYN=1, 同时选择一个初始序列号 seq = x, 此时，TCP客户端进程进入了 SYN-SENT（同步已发送状态）状态。TCP规定, SYN报文段（SYN=1的报文段）不能携带数据，但需要消耗掉一个序号。<br>3, TCP服务器收到请求报文后, 如果同意连接, 则发出确认报文。确认报文中的 ACK=1, SYN=1, 确认序号是 x+1, 同时也要为自己初始化一个序列号 seq = y, 此时, TCP服务器进程进入了SYN-RCVD（同步收到）状态。这个报文也不能携带数据, 但是同样要消耗一个序号。<br>4, TCP客户端进程收到确认后还, 要向服务器给出确认。确认报文的ACK=1，确认序号是 y+1，自己的序列号是 x+1.<br>5, 此时，TCP连接建立，客户端进入ESTABLISHED（已建立连接）状态。当服务器收到客户端的确认后也进入ESTABLISHED状态，此后双方就可以开始通信了。</p>
-<p>为什么不用两次?</p>
-<ul>
-<li>主要是为了防止已经失效的连接请求报文突然又传送到了服务器，从而产生错误。如果使用的是两次握手建立连接，假设有这样一种场景，客户端发送的第一个请求连接并且没有丢失，只是因为在网络中滞留的时间太长了，由于TCP的客户端迟迟没有收到确认报文，以为服务器没有收到，此时重新向服务器发送这条报文，此后客户端和服务器经过两次握手完成连接，传输数据，然后关闭连接。此时之前滞留的那一次请求连接，因为网络通畅了, 到达了服务器，这个报文本该是失效的，但是，两次握手的机制将会让客户端和服务器再次建立连接，这将导致不必要的错误和资源的费。</li>
-<li>如果采用的是三次握手，就算是那一次失效的报文传送过来了，服务端接受到了那条失效报文并且回复了确认报文，但是客户端不会再次发出确认。由于服务器收不到确认，就知道客户端并没有请求连接。</li>
-</ul>
-<p>为什么不用四次?</p>
-<ul>
-<li>因为三次已经可以满足需要了, 四次就多余了.</li>
-</ul>
-<h2 id="TCP四次挥手"><a href="#TCP四次挥手" class="headerlink" title="TCP四次挥手"></a>TCP四次挥手</h2><p>再来看看何为四次挥手.<br><img src="/2021/08/26/TCP/%E5%9B%9B%E6%AC%A1%E6%8C%A5%E6%89%8B.png" alt="四次挥手"></p>
-<p>数据传输完毕后，双方都可以释放连接.<br>此时客户端和服务器都是处于ESTABLISHED状态，然后客户端主动断开连接，服务器被动断开连接.</p>
-<p>1, 客户端进程发出连接释放报文，并且停止发送数据。<br>释放数据报文首部，FIN=1，其序列号为seq=u（等于前面已经传送过来的数据的最后一个字节的序号加1），此时客户端进入FIN-WAIT-1（终止等待1）状态。 TCP规定，FIN报文段即使不携带数据，也要消耗一个序号。<br>2, 服务器收到连接释放报文，发出确认报文，ACK=1，确认序号为 u+1，并且带上自己的序列号seq=v，此时服务端就进入了CLOSE-WAIT（关闭等待）状态。<br>TCP服务器通知高层的应用进程，客户端向服务器的方向就释放了，这时候处于半关闭状态，即客户端已经没有数据要发送了，但是服务器若发送数据，客户端依然要接受。这个状态还要持续一段时间，也就是整个CLOSE-WAIT状态持续的时间。<br>3, 客户端收到服务器的确认请求后，此时客户端就进入FIN-WAIT-2（终止等待2）状态，等待服务器发送连接释放报文（在这之前还需要接受服务器发送的最终数据）<br>4, 服务器将最后的数据发送完毕后，就向客户端发送连接释放报文，FIN=1，确认序号为u+1，由于在半关闭状态，服务器很可能又发送了一些数据，假定此时的序列号为seq=w，此时，服务器就进入了LAST-ACK（最后确认）状态，等待客户端的确认。<br>5, 客户端收到服务器的连接释放报文后，必须发出确认，ACK=1，确认序号为w+1，而自己的序列号是u+1，此时，客户端就进入了TIME-WAIT（时间等待）状态。注意此时TCP连接还没有释放，必须经过2∗MSL（最长报文段寿命）的时间后，当客户端撤销相应的TCB后，才进入CLOSED状态。<br>6, 服务器只要收到了客户端发出的确认，立即进入CLOSED状态。同样，撤销TCB后，就结束了这次的TCP连接。可以看到，服务器结束TCP连接的时间要比客户端早一些。</p>
-<p>为什么最后客户端还要等待 2*MSL的时间呢?</p>
-<ul>
-<li><p>MSL（Maximum Segment Lifetime），TCP允许不同的实现可以设置不同的MSL值。</p>
-</li>
-<li><p>第一，保证客户端发送的最后一个ACK报文能够到达服务器，因为这个ACK报文可能丢失，站在服务器的角度看来，我已经发送了FIN+ACK报文请求断开了，客户端还没有给我回应，应该是我发送的请求断开报文它没有收到，于是服务器又会重新发送一次，而客户端就能在这个2MSL时间段内收到这个重传的报文，接着给出回应报文，并且会重启2MSL计时器。</p>
-</li>
-<li><p>第二，防止类似与“三次握手”中提到了的“已经失效的连接请求报文段”出现在本连接中。客户端发送完最后一个确认报文后，在这个2MSL时间中，就可以使本连接持续的时间内所产生的所有报文段都从网络中消失。这样新的连接中不会出现旧连接的请求报文。</p>
-</li>
-</ul>
-<p>为什么建立连接是三次握手，关闭连接确是四次挥手呢？</p>
-<ul>
-<li>建立连接的时候， 服务器在LISTEN状态下，收到建立连接请求的SYN报文后，把ACK和SYN放在一个报文里发送给客户端。而关闭连接时，服务器收到对方的FIN报文时，仅仅表示对方不再发送数据了但是还能接收数据，而自己也未必全部数据都发送给对方了，所以己方可以立即关闭，也可以发送一些数据给对方后，再发送FIN报文给对方来表示同意现在关闭连接，因此，己方ACK和FIN一般都会分开发送，从而导致多了一次。</li>
-</ul>
-<p>如果已经建立了连接, 但是客户端突发故障了怎么办?</p>
-<ul>
-<li>TCP设有一个保活计时器，显然，客户端如果出现故障，服务器不能一直等下去，白白浪费资源。服务器每收到一次客户端的请求后都会重新复位这个计时器，时间通常是设置为2小时，若两小时还没有收到客户端的任何数据，服务器就会发送一个探测报文段，以后每隔75分钟发送一次。若一连发送10个探测报文仍然没反应，服务器就认为客户端出了故障，接着就关闭连接。</li>
-</ul>
-<h2 id="TCP-小结"><a href="#TCP-小结" class="headerlink" title="TCP 小结"></a>TCP 小结</h2><p>为什么TCP这么复杂?</p>
-<blockquote>
-<p>因为既要保证可靠性, 同时又要尽可能提高性能.</p>
-</blockquote>
-<p>保证可靠性的机制</p>
-<blockquote>
-<p>校验和<br>序列号(按序到达)<br>确认应答<br>超时重传<br>连接管理<br>流量控制<br>拥塞控制</p>
-</blockquote>
-<p>提高性能的机制</p>
-<blockquote>
-<p>滑动窗口<br>快速重传<br>延迟应答<br>捎带应答</p>
-</blockquote>
-<p>定时器</p>
-<blockquote>
-<p>超时重传定时器<br>保活定时器<br>TIME_WAIT定时器</p>
-</blockquote>
-<p>基于 TCP 的应用层协议</p>
-<blockquote>
-<p>HTTP<br>HTTPS<br>SSH<br>Telnet<br>FTP<br>SMTP<br>…</p>
-</blockquote>
-<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p><a href="https://blog.csdn.net/sinat_36629696/article/details/80740678?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522162997757616780274110436%2522%252C%2522scm%2522%253A%252220140713.130102334..%2522%257D&request_id=162997757616780274110436&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~all~top_positive~default-1-80740678.ecpm_v1_rank_v29&utm_term=TCP&spm=1018.2226.3001.4187">TCP 详解</a></p>
-<h1 id="TCP学习网站"><a href="#TCP学习网站" class="headerlink" title="TCP学习网站"></a>TCP学习网站</h1><p><a href="http://www.52im.net/thread-513-1-1.html">TCP协议上部分：理论基础</a><br><a href="http://www.52im.net/thread-515-1-1.html">TCP协议下部分：RTT、滑动窗口、拥塞处理</a></p>
-]]></content>
-      <categories>
-        <category>数据通信</category>
-      </categories>
-      <tags>
-        <tag>数据通信</tag>
       </tags>
   </entry>
   <entry>
@@ -1157,6 +1157,40 @@ ConnectionPlugins：连接插件，Ansible和Host通信使用
 ]]></content>
   </entry>
   <entry>
+    <title>NAT网络地址转换</title>
+    <url>/2021/09/01/nat/</url>
+    <content><![CDATA[<p>NAT解析</p>
+<span id="more"></span>
+
+<h1 id="NAT"><a href="#NAT" class="headerlink" title="NAT"></a>NAT</h1><h2 id="基本概述"><a href="#基本概述" class="headerlink" title="基本概述"></a>基本概述</h2><p>NAT网络地址转换<br>RFC1918规定了三个保留地址段落：：10.0.0.0-10.255.255.255；172.16.0.0-172.31.255.255；192.168.0.0-192.168.255.255。这三个范围分别处于A,B,C类的地址段，不向特定的用户分配，被IANA作为私有地址保留。这些地址可以在任何组织或企业内部使用，和其他Internet地址的区别就是，仅能在内部使用，不能作为全球路由地址。这就是说，出了组织的管理范围这些地址就不再有意义，无论是作为源地址，还是目的地址。对于一个封闭的组织，如果其网络不连接到Internet，就可以使用这些地址而不用向IANA提出申请，而在内部的路由管理和报文传递方式与其他网络没有差异。</p>
+<p>对于有Internet访问需求而内部又使用私有地址的网络，就要在组织的出口位置部署NAT网关，在报文离开私网进入Internet时，将源IP替换为公网地址，通常是出口设备的接口地址。一个对外的访问请求在到达目标以后，表现为由本组织出口设备发起，因此被请求的服务端可将响应由Internet发回出口网关。出口网关再将目的地址替换为私网的源主机地址，发回内部。这样一次由私网主机向公网服务端的请求和响应就在通信两端均无感知的情况下完成了。依据这种模型，数量庞大的内网主机就不再需要公有IP地址了。</p>
+<blockquote>
+<p>1）网络被分为私网和公网两个部分，NAT网关设置在私网到公网的路由出口位置，双向流量必须都要经过NAT网关；<br>2）网络访问只能先由私网侧发起，公网无法主动访问私网主机；<br>3）NAT网关在两个访问方向上完成两次地址的转换或翻译，出方向做源信息替换，入方向做目的信息替换；<br>4）NAT网关的存在对通信双方是保持透明的；<br>5）NAT网关为了实现双向翻译的功能，需要维护一张关联表，把会话的信息保存下来。</p>
+</blockquote>
+<h2 id="NAT模型"><a href="#NAT模型" class="headerlink" title="NAT模型"></a>NAT模型</h2><p><strong>静态NAT</strong><br>私网和公网地址一对一</p>
+<p><strong>动态NAT</strong><br>私网和公网地址多对多</p>
+<p><strong>重载NAT</strong><br>利用端口号将多个私网地址映射到一个公网地址。使用端口号来标识私网主机</p>
+<h1 id="NAT的限制"><a href="#NAT的限制" class="headerlink" title="NAT的限制"></a>NAT的限制</h1><h2 id="IP的P2P服务模型"><a href="#IP的P2P服务模型" class="headerlink" title="IP的P2P服务模型"></a>IP的P2P服务模型</h2><p>IP协议的一个重要贡献是把世界变得平等。</p>
+<p>在理论上，具有IP地址的每个站点在协议层面有相当的获取服务和提供服务的能力，不同的IP地址之间没有差异。人们熟知的服务器和客户机实际是在应用协议层上的角色区分，而在网络层和传输层没有差异。一个具有IP地址的主机既可以是客户机，也可以是服务器，大部分情况下，既是客户机，也是服务器。端到端对等看起来是很平常的事情，而意义并不寻常。但在以往的技术中，很多协议体系下的网络限定了终端的能力。</p>
+<p>正是IP的这个开放性，使得TCP/IP协议族可以提供丰富的功能，为应用实现提供了广阔平台。因为所有的IP主机都可以服务器的形式出现，所以通讯设计可以更加灵活。使用UNIX/LINUX的系统充分利用了这个特性，使得任何一个主机都可以建立自己的HTTP、SMTP、POP3、DNS、DHCP等服务。</p>
+<p>与此同时，很多应用也是把客户端和服务器的角色组合起来完成功能。例如在VoIP应用中，用户端向注册服务器登录自己的IP地址和端口信息过程中，主机是客户端；而在呼叫到达时，呼叫处理服务器向用户端发送呼叫请求时，用户端实际工作在服务器模式下。在语音媒体流信道建立过程后，通讯双向发送语音数据，发送端是客户模式，接收端是服务器模式。</p>
+<p>而在P2P的应用中，一个用户的主机既为下载的客户，同时也向其他客户提供数据，是一种C/S混合的模型。上层应用之所以能这样设计，是因为IP协议栈定义了这样的能力。试想一下，如果IP提供的能力不对等，那么每个通信会话都只能是单方向发起的，这会极大限制通信的能力。</p>
+<p>细心的读者会发现，前面介绍NAT的一个特性正是这样一种限制。没错，<font color="#E9764A">NAT最大的弊端正在于此——破坏了IP端到端通信的能力</font>。</p>
+<h2 id="NAT的弊端"><a href="#NAT的弊端" class="headerlink" title="NAT的弊端"></a>NAT的弊端</h2><p>NAT在解决IPv4地址短缺问题上，并非没有副作用，其实存在很多问题。</p>
+<p><strong>首先：</strong><font color="#E9764A">NAT使IP会话的保持时效变短</font>。因为一个会话建立后会在NAT设备上建立一个关联表，在会话静默的这段时间，NAT网关会进行老化操作。这是任何一个NAT网关必须做的事情，因为IP和端口资源有限，通信的需求无限，所以必须在会话结束后回收资源。通常TCP会话通过协商的方式主动关闭连接，NAT网关可以跟踪这些报文，但总是存在例外的情况，要依赖自己的定时器去回收资源。而基于UDP的通信协议很难确定何时通信结束，所以NAT网关主要依赖超时机制回收外部端口。通过定时器老化回收会带来一个问题，如果应用需要维持连接的时间大于NAT网关的设置，通信就会意外中断。因为网关回收相关转换表资源以后，新的数据到达时就找不到相关的转换信息，必须建立新的连接。当这个新数据是由公网侧向私网侧发送时，就会发生无法触发新连接建立，也不能通知到私网侧的主机去重建连接的情况。这时候通信就会中断，不能自动恢复。即使新数据是从私网侧发向公网侧，因为重建的会话表往往使用不同于之前的公网IP和端口地址，公网侧主机也无法对应到之前的通信上，导致用户可感知的连接中断。NAT网关要把回收空闲连接的时间设置到不发生持续的资源流失，又维持大部分连接不被意外中断，是一件比较有难度的事情。在NAT已经普及化的时代，很多应用协议的设计者已经考虑到了这种情况，所以一般会设置一个连接保活的机制，即在一段时间没有数据需要发送时，主动发送一个NAT能感知到而又没有实际数据的保活消息，这么做的主要目的就是重置NAT的会话定时器。</p>
+<p><strong>其次：</strong><font color="#E9764A">NAT在实现上将多个内部主机发出的连接复用到一个IP上，这就使依赖IP进行主机跟踪的机制都失效了</font>。如网络管理中需要的基于网络流量分析的应用无法跟踪到终端用户与流量的具体行为的关系。基于用户行为的日志分析也变得困难，因为一个IP被很多用户共享，如果存在恶意的用户行为，很难定位到发起连接的那个主机。即便有一些机制提供了在NAT网关上进行连接跟踪的方法，但是把这种变换关系接续起来也困难重重。基于IP的用户授权不再可靠，因为拥有一个IP的不等于一个用户或主机。一个服务器也不能简单把同一IP的访问视作同一主机发起的，不能进行关联。有些服务器设置有连接限制，同一时刻只接纳来自一个IP的有限访问(有时是仅一个访问)，这会造成不同用户之间的服务抢占和排队。有时服务器端这样做是出于DOS攻击防护的考虑，因为一个用户正常情况下不应该建立大量的连接请求，过度使用服务资源被理解为攻击行为。但是这在NAT存在时不能简单按照连接数判断。总之，因为NAT隐蔽了通信的一端，把简单的事情复杂化了。</p>
+<p><strong>我们来深入理解NAT一下对IP端到端模型的破坏力：</strong><font color="#E9764A">NAT通过修改IP首部的信息变换通信的地址</font>。但是在这个转换过程中只能基于一个会话单位。当一个应用需要保持多个双向连接时，麻烦就很大。NAT不能理解多个会话之间的关联性，无法保证转换符合应用需要的规则。当NAT网关拥有多个公有IP地址时，一组关联会话可能被分配到不同的公网地址，这通常是服务器端无法接受的。更为严重的是，当公网侧的主机要主动向私网侧发送数据时，NAT网关没有转换这个连接需要的关联表，这个数据包无法到达私网侧的主机。这些反方向发送数据的连接总有应用协议的约定或在初始建立的会话中进行过协商。但是因为NAT工作在网络层和传输层，无法理解应用层协议的行为，对这些信息是无知的。NAT希望自己对通信双方是透明的，但是在这些情况下这是一种奢望。</p>
+<p><strong>此外：</strong><font color="#E9764A">NAT工作机制依赖于修改IP包头的信息，这会妨碍一些安全协议的工作</font>。因为NAT篡改了IP地址、传输层端口号和校验和，这会导致认证协议彻底不能工作，因为认证目的就是要保证这些信息在传输过程中没有变化。对于一些隧道协议，NAT的存在也导致了额外的问题，因为隧道协议通常用外层地址标识隧道实体，穿过NAT的隧道会有IP复用关系，在另一端需要小心处理。ICMP是一种网络控制协议，它的工作原理也是在两个主机之间传递差错和控制消息，因为IP的对应关系被重新映射，ICMP也要进行复用和解复用处理，很多情况下因为ICMP报文载荷无法提供足够的信息，解复用会失败。IP分片机制是在信息源端或网络路径上，需要发送的IP报文尺寸大于路径实际能承载最大尺寸时，IP协议层会将一个报文分成多个片断发送，然后在接收端重组这些片断恢复原始报文。IP这样的分片机制会导致传输层的信息只包括在第一个分片中，NAT难以识别后续分片与关联表的对应关系，因此需要特殊处理。</p>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p><a href="http://www.52im.net/thread-50-1-1.html">转发：《P2P技术详解》：NAT详解</a></p>
+]]></content>
+      <categories>
+        <category>数据通信</category>
+      </categories>
+      <tags>
+        <tag>数据通信</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Linux</title>
     <url>/2021/08/19/linux/</url>
     <content><![CDATA[<p>Linux学习笔记</p>
@@ -1351,6 +1385,16 @@ grep -i 关键字 file 忽略大小写
 <p>tcpdump是端口抓包命令，结合wireshark工具分析报文情况</p>
 <figure class="highlight awk"><table><tr><td class="code"><pre><span class="line">tcpdump抓包命令：</span><br><span class="line">    抓网卡的包：tcpdump -i ens160 -w <span class="regexp">/tmp/</span>xxx.cap</span><br><span class="line">    抓IP的包：tcpdump -i ens160 host <span class="number">192.168</span>.<span class="number">1.123</span> -w <span class="regexp">/tmp/</span>xxx.cap</span><br><span class="line">    抓指定端口的包：tcpdump -i ens160 host <span class="number">192.168</span>.<span class="number">1.123</span> and port <span class="number">80</span> -w <span class="regexp">/tmp/</span>xxx.cap</span><br><span class="line">    抓指定协议的包：tcpdump -i ens160 host <span class="number">192.168</span>.<span class="number">1.123</span> and icmp -w <span class="regexp">/tmp/</span>xxx.cap</span><br><span class="line">    抓<span class="number">10000</span>个包后退出：-c <span class="number">10000</span></span><br><span class="line">    后台抓包，控制台退出也不影响：nohup tcpdump -i eth1 port <span class="number">110</span> -w <span class="regexp">/tmp/</span>xxx.cap &amp;</span><br></pre></td></tr></table></figure>
 
+<h2 id="YUM"><a href="#YUM" class="headerlink" title="YUM"></a>YUM</h2><p>YUM是前端软件包管理器。基于RPM包管理，能从指定服务器自动下载RPM包并且安装，自动处理依赖关系，并且一次性安装所有依赖的软件包</p>
+<blockquote>
+<p>YUM是C/S架构（客户端/服务端），服务端首先要是一个文件服务器，里面放着RPM包、元数据文件、conf文件、binary信息，并通过文件共享服务让外部客户端可以访问到存储RPM包的目录</p>
+</blockquote>
+<p><strong>仓库文件</strong></p>
+<blockquote>
+<p>/etc/yum.repos.d/xx.repo。<font color="#E9764A">repo文件</font>是客户端要访问yum源的配置文件，指定我们要从哪里下载需要的安装或者升级软件包。一般从网站上下载现成的repo配置文件，比如阿里云镜像站</p>
+</blockquote>
+<p><strong>YUM常用命令</strong></p>
+<figure class="highlight jboss-cli"><table><tr><td class="code"><pre><span class="line">yum info 软件包名称 <span class="string">//</span>查看软件包信息</span><br><span class="line">yum search <span class="string">//</span>搜索软件包</span><br><span class="line">yum list <span class="string">//</span>通过软件名查看有几个下载路径</span><br><span class="line"></span><br><span class="line">yum install 软件包 <span class="string">//</span>安装</span><br><span class="line">yum install <span class="params">--downloadonly</span> <span class="params">--downloaddir=/path</span> <span class="string">//</span>仅下载不安装</span><br><span class="line">yum update 软件包 <span class="string">//</span>升级</span><br><span class="line">yum remove 软件包 <span class="string">//</span>移除</span><br><span class="line"></span><br><span class="line">yum whatprovides 命令 <span class="string">//</span>查询命令需要安装什么软件包</span><br></pre></td></tr></table></figure>
 
 <h2 id="常用命令"><a href="#常用命令" class="headerlink" title="常用命令"></a>常用命令</h2><figure class="highlight vim"><table><tr><td class="code"><pre><span class="line"># 最常用</span><br><span class="line"><span class="keyword">pwd</span> 显示当前工作目录（<span class="keyword">print</span> working directory）</span><br><span class="line">touch 创建空文件				                    </span><br><span class="line"><span class="built_in">mkdir</span> 创建目录（<span class="keyword">make</span> directoriy）</span><br><span class="line">-<span class="keyword">p</span> 父目录不存在情况下先生成父目录 （parents）            </span><br><span class="line"><span class="keyword">cp</span> 复制文件或目录（<span class="keyword">copy</span>）</span><br><span class="line">-r 递归处理，将指定目录下的文件与子目录一并拷贝（recursive）     </span><br><span class="line">mv 移动文件或目录、文件或目录改名（<span class="keyword">move</span>）</span><br><span class="line">rm 删除文件（<span class="built_in">remove</span>）</span><br><span class="line">-r 同时删除该目录下的所有文件（recursive）</span><br><span class="line">-<span class="keyword">f</span> 强制删除文件或目录（force）</span><br><span class="line">rmdir 删除空目录（<span class="built_in">remove</span> directoriy）</span><br><span class="line"><span class="keyword">cat</span>显示文本文件内容 （catenate）</span><br><span class="line"><span class="keyword">echo</span></span><br><span class="line"></span><br><span class="line">systemctl <span class="keyword">list</span>-unit-<span class="keyword">files</span> | <span class="keyword">grep</span>... //查看系统服务列表</span><br><span class="line">systemctl start/<span class="keyword">stop</span>/restart 服务名 //服务启动，停止，重启</span><br><span class="line">systemctl enable/disable 服务名 //开启自动启动，禁止服务</span><br><span class="line">systemctl status 服务名 //查看服务状态</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"># 补充</span><br><span class="line">wc 统计文本的行数、字数、字符数（word <span class="built_in">count</span>）</span><br><span class="line">-<span class="keyword">m</span> 统计文本字符数</span><br><span class="line">-<span class="keyword">w</span> 统计文本字数</span><br><span class="line">-<span class="keyword">l</span> 统计文本行数</span><br><span class="line">more、less 分页显示文本文件内容</span><br><span class="line"><span class="keyword">find</span> 在文件系统中查找指定的文件</span><br><span class="line"><span class="keyword">find</span> /etc/ -name <span class="string">&quot;aaa&quot;</span></span><br><span class="line"><span class="keyword">grep</span> 在指定的文本文件中查找指定的字符串</span><br><span class="line"><span class="keyword">ln</span> 建立链接文件（link）</span><br><span class="line">-s 对源文件建立符号连接，而非硬连接（symbolic）</span><br><span class="line">top 显示当前系统中耗费资源最多的进程 </span><br><span class="line"><span class="keyword">ps</span> 显示瞬间的进程状态</span><br><span class="line">-<span class="keyword">e</span> /-A 显示所有进程，环境变量</span><br><span class="line">-<span class="keyword">f</span> 全格式</span><br><span class="line">-<span class="keyword">a</span> 显示所有用户的所有进程（包括其它用户）</span><br><span class="line">-<span class="keyword">u</span> 按用户名和启动时间的顺序来显示进程</span><br><span class="line">-<span class="keyword">x</span> 显示无控制终端的进程</span><br><span class="line">kill 杀死一个进程</span><br><span class="line">kill -<span class="number">9</span> pid</span><br><span class="line">df 显示文件系统磁盘空间的使用情况</span><br><span class="line">du 显示指定的文件（目录）已使用的磁盘空间的总</span><br><span class="line">-h文件大小以K，M，G为单位显示（human-readable）</span><br><span class="line">-s只显示各档案大小的总合（summarize）</span><br><span class="line">free 显示当前内存和交换空间的使用情况 </span><br><span class="line">netstat 显示网络状态信息</span><br><span class="line">-<span class="keyword">a</span> 显示所有连接和监听端口</span><br><span class="line">-t (tcp)仅显示tcp相关选项</span><br><span class="line">-<span class="keyword">u</span> (udp)仅显示udp相关选项</span><br><span class="line">-n 拒绝显示别名，能显示数字的全部转化成数字。</span><br><span class="line">-<span class="keyword">p</span> 显示建立相关链接的程序名</span><br><span class="line">ifconfig 网卡网络配置详解 </span><br><span class="line">ping 测试网络的连通性 </span><br><span class="line"></span><br></pre></td></tr></table></figure>
 <h2 id="快捷键"><a href="#快捷键" class="headerlink" title="快捷键"></a>快捷键</h2><figure class="highlight gauss"><table><tr><td class="code"><pre><span class="line">单击<span class="built_in">TAB</span>补全 双击<span class="built_in">TAB</span>显示可选的可补充命令行</span><br><span class="line">ctrl + c（停止当前进程）</span><br><span class="line">ctrl + r（查看命令历史）</span><br><span class="line">ctrl + l（清屏，与<span class="keyword">clear</span>命令作用相同）</span><br></pre></td></tr></table></figure>
@@ -1367,47 +1411,12 @@ grep -i 关键字 file 忽略大小写
 替换r R，保存ZZ，G最后一行gg第一行
 </code></pre>
 <h2 id="查看用户相关信息"><a href="#查看用户相关信息" class="headerlink" title="查看用户相关信息"></a>查看用户相关信息</h2><figure class="highlight powershell"><table><tr><td class="code"><pre><span class="line"><span class="built_in">cat</span> etc/passwd 查看用户信息</span><br><span class="line"><span class="built_in">cat</span> etc/<span class="built_in">group</span> 查看用户组</span><br></pre></td></tr></table></figure>
-
-<h2 id="YUM常用命令"><a href="#YUM常用命令" class="headerlink" title="YUM常用命令"></a>YUM常用命令</h2><figure class="highlight jboss-cli"><table><tr><td class="code"><pre><span class="line">yum info 软件包名称 <span class="string">//</span>查看软件包信息</span><br><span class="line">yum search <span class="string">//</span>搜索软件包</span><br><span class="line">yum list <span class="string">//</span>通过软件名查看有几个下载路径</span><br><span class="line"></span><br><span class="line">yum install 软件包 <span class="string">//</span>安装</span><br><span class="line">yum install <span class="params">--downloadonly</span> <span class="params">--downloaddir=/path</span> <span class="string">//</span>仅下载不安装</span><br><span class="line">yum update 软件包 <span class="string">//</span>升级</span><br><span class="line">yum remove 软件包 <span class="string">//</span>移除</span><br><span class="line"></span><br><span class="line">yum whatprovides 命令 <span class="string">//</span>查询命令需要安装什么软件包</span><br></pre></td></tr></table></figure>]]></content>
+]]></content>
       <categories>
         <category>Linux</category>
       </categories>
       <tags>
         <tag>Linux</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>NAT网络地址转换</title>
-    <url>/2021/09/01/nat/</url>
-    <content><![CDATA[<p>NAT解析</p>
-<span id="more"></span>
-
-<h1 id="NAT"><a href="#NAT" class="headerlink" title="NAT"></a>NAT</h1><h2 id="基本概述"><a href="#基本概述" class="headerlink" title="基本概述"></a>基本概述</h2><p>NAT网络地址转换<br>RFC1918规定了三个保留地址段落：：10.0.0.0-10.255.255.255；172.16.0.0-172.31.255.255；192.168.0.0-192.168.255.255。这三个范围分别处于A,B,C类的地址段，不向特定的用户分配，被IANA作为私有地址保留。这些地址可以在任何组织或企业内部使用，和其他Internet地址的区别就是，仅能在内部使用，不能作为全球路由地址。这就是说，出了组织的管理范围这些地址就不再有意义，无论是作为源地址，还是目的地址。对于一个封闭的组织，如果其网络不连接到Internet，就可以使用这些地址而不用向IANA提出申请，而在内部的路由管理和报文传递方式与其他网络没有差异。</p>
-<p>对于有Internet访问需求而内部又使用私有地址的网络，就要在组织的出口位置部署NAT网关，在报文离开私网进入Internet时，将源IP替换为公网地址，通常是出口设备的接口地址。一个对外的访问请求在到达目标以后，表现为由本组织出口设备发起，因此被请求的服务端可将响应由Internet发回出口网关。出口网关再将目的地址替换为私网的源主机地址，发回内部。这样一次由私网主机向公网服务端的请求和响应就在通信两端均无感知的情况下完成了。依据这种模型，数量庞大的内网主机就不再需要公有IP地址了。</p>
-<blockquote>
-<p>1）网络被分为私网和公网两个部分，NAT网关设置在私网到公网的路由出口位置，双向流量必须都要经过NAT网关；<br>2）网络访问只能先由私网侧发起，公网无法主动访问私网主机；<br>3）NAT网关在两个访问方向上完成两次地址的转换或翻译，出方向做源信息替换，入方向做目的信息替换；<br>4）NAT网关的存在对通信双方是保持透明的；<br>5）NAT网关为了实现双向翻译的功能，需要维护一张关联表，把会话的信息保存下来。</p>
-</blockquote>
-<h2 id="NAT模型"><a href="#NAT模型" class="headerlink" title="NAT模型"></a>NAT模型</h2><p><strong>静态NAT</strong><br>私网和公网地址一对一</p>
-<p><strong>动态NAT</strong><br>私网和公网地址多对多</p>
-<p><strong>重载NAT</strong><br>利用端口号将多个私网地址映射到一个公网地址。使用端口号来标识私网主机</p>
-<h1 id="NAT的限制"><a href="#NAT的限制" class="headerlink" title="NAT的限制"></a>NAT的限制</h1><h2 id="IP的P2P服务模型"><a href="#IP的P2P服务模型" class="headerlink" title="IP的P2P服务模型"></a>IP的P2P服务模型</h2><p>IP协议的一个重要贡献是把世界变得平等。</p>
-<p>在理论上，具有IP地址的每个站点在协议层面有相当的获取服务和提供服务的能力，不同的IP地址之间没有差异。人们熟知的服务器和客户机实际是在应用协议层上的角色区分，而在网络层和传输层没有差异。一个具有IP地址的主机既可以是客户机，也可以是服务器，大部分情况下，既是客户机，也是服务器。端到端对等看起来是很平常的事情，而意义并不寻常。但在以往的技术中，很多协议体系下的网络限定了终端的能力。</p>
-<p>正是IP的这个开放性，使得TCP/IP协议族可以提供丰富的功能，为应用实现提供了广阔平台。因为所有的IP主机都可以服务器的形式出现，所以通讯设计可以更加灵活。使用UNIX/LINUX的系统充分利用了这个特性，使得任何一个主机都可以建立自己的HTTP、SMTP、POP3、DNS、DHCP等服务。</p>
-<p>与此同时，很多应用也是把客户端和服务器的角色组合起来完成功能。例如在VoIP应用中，用户端向注册服务器登录自己的IP地址和端口信息过程中，主机是客户端；而在呼叫到达时，呼叫处理服务器向用户端发送呼叫请求时，用户端实际工作在服务器模式下。在语音媒体流信道建立过程后，通讯双向发送语音数据，发送端是客户模式，接收端是服务器模式。</p>
-<p>而在P2P的应用中，一个用户的主机既为下载的客户，同时也向其他客户提供数据，是一种C/S混合的模型。上层应用之所以能这样设计，是因为IP协议栈定义了这样的能力。试想一下，如果IP提供的能力不对等，那么每个通信会话都只能是单方向发起的，这会极大限制通信的能力。</p>
-<p>细心的读者会发现，前面介绍NAT的一个特性正是这样一种限制。没错，<font color="#E9764A">NAT最大的弊端正在于此——破坏了IP端到端通信的能力</font>。</p>
-<h2 id="NAT的弊端"><a href="#NAT的弊端" class="headerlink" title="NAT的弊端"></a>NAT的弊端</h2><p>NAT在解决IPv4地址短缺问题上，并非没有副作用，其实存在很多问题。</p>
-<p><strong>首先：</strong><font color="#E9764A">NAT使IP会话的保持时效变短</font>。因为一个会话建立后会在NAT设备上建立一个关联表，在会话静默的这段时间，NAT网关会进行老化操作。这是任何一个NAT网关必须做的事情，因为IP和端口资源有限，通信的需求无限，所以必须在会话结束后回收资源。通常TCP会话通过协商的方式主动关闭连接，NAT网关可以跟踪这些报文，但总是存在例外的情况，要依赖自己的定时器去回收资源。而基于UDP的通信协议很难确定何时通信结束，所以NAT网关主要依赖超时机制回收外部端口。通过定时器老化回收会带来一个问题，如果应用需要维持连接的时间大于NAT网关的设置，通信就会意外中断。因为网关回收相关转换表资源以后，新的数据到达时就找不到相关的转换信息，必须建立新的连接。当这个新数据是由公网侧向私网侧发送时，就会发生无法触发新连接建立，也不能通知到私网侧的主机去重建连接的情况。这时候通信就会中断，不能自动恢复。即使新数据是从私网侧发向公网侧，因为重建的会话表往往使用不同于之前的公网IP和端口地址，公网侧主机也无法对应到之前的通信上，导致用户可感知的连接中断。NAT网关要把回收空闲连接的时间设置到不发生持续的资源流失，又维持大部分连接不被意外中断，是一件比较有难度的事情。在NAT已经普及化的时代，很多应用协议的设计者已经考虑到了这种情况，所以一般会设置一个连接保活的机制，即在一段时间没有数据需要发送时，主动发送一个NAT能感知到而又没有实际数据的保活消息，这么做的主要目的就是重置NAT的会话定时器。</p>
-<p><strong>其次：</strong><font color="#E9764A">NAT在实现上将多个内部主机发出的连接复用到一个IP上，这就使依赖IP进行主机跟踪的机制都失效了</font>。如网络管理中需要的基于网络流量分析的应用无法跟踪到终端用户与流量的具体行为的关系。基于用户行为的日志分析也变得困难，因为一个IP被很多用户共享，如果存在恶意的用户行为，很难定位到发起连接的那个主机。即便有一些机制提供了在NAT网关上进行连接跟踪的方法，但是把这种变换关系接续起来也困难重重。基于IP的用户授权不再可靠，因为拥有一个IP的不等于一个用户或主机。一个服务器也不能简单把同一IP的访问视作同一主机发起的，不能进行关联。有些服务器设置有连接限制，同一时刻只接纳来自一个IP的有限访问(有时是仅一个访问)，这会造成不同用户之间的服务抢占和排队。有时服务器端这样做是出于DOS攻击防护的考虑，因为一个用户正常情况下不应该建立大量的连接请求，过度使用服务资源被理解为攻击行为。但是这在NAT存在时不能简单按照连接数判断。总之，因为NAT隐蔽了通信的一端，把简单的事情复杂化了。</p>
-<p><strong>我们来深入理解NAT一下对IP端到端模型的破坏力：</strong><font color="#E9764A">NAT通过修改IP首部的信息变换通信的地址</font>。但是在这个转换过程中只能基于一个会话单位。当一个应用需要保持多个双向连接时，麻烦就很大。NAT不能理解多个会话之间的关联性，无法保证转换符合应用需要的规则。当NAT网关拥有多个公有IP地址时，一组关联会话可能被分配到不同的公网地址，这通常是服务器端无法接受的。更为严重的是，当公网侧的主机要主动向私网侧发送数据时，NAT网关没有转换这个连接需要的关联表，这个数据包无法到达私网侧的主机。这些反方向发送数据的连接总有应用协议的约定或在初始建立的会话中进行过协商。但是因为NAT工作在网络层和传输层，无法理解应用层协议的行为，对这些信息是无知的。NAT希望自己对通信双方是透明的，但是在这些情况下这是一种奢望。</p>
-<p><strong>此外：</strong><font color="#E9764A">NAT工作机制依赖于修改IP包头的信息，这会妨碍一些安全协议的工作</font>。因为NAT篡改了IP地址、传输层端口号和校验和，这会导致认证协议彻底不能工作，因为认证目的就是要保证这些信息在传输过程中没有变化。对于一些隧道协议，NAT的存在也导致了额外的问题，因为隧道协议通常用外层地址标识隧道实体，穿过NAT的隧道会有IP复用关系，在另一端需要小心处理。ICMP是一种网络控制协议，它的工作原理也是在两个主机之间传递差错和控制消息，因为IP的对应关系被重新映射，ICMP也要进行复用和解复用处理，很多情况下因为ICMP报文载荷无法提供足够的信息，解复用会失败。IP分片机制是在信息源端或网络路径上，需要发送的IP报文尺寸大于路径实际能承载最大尺寸时，IP协议层会将一个报文分成多个片断发送，然后在接收端重组这些片断恢复原始报文。IP这样的分片机制会导致传输层的信息只包括在第一个分片中，NAT难以识别后续分片与关联表的对应关系，因此需要特殊处理。</p>
-<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p><a href="http://www.52im.net/thread-50-1-1.html">转发：《P2P技术详解》：NAT详解</a></p>
-]]></content>
-      <categories>
-        <category>数据通信</category>
-      </categories>
-      <tags>
-        <tag>数据通信</tag>
       </tags>
   </entry>
   <entry>
@@ -1602,6 +1611,26 @@ grep -i 关键字 file 忽略大小写
       </tags>
   </entry>
   <entry>
+    <title>Python装饰器</title>
+    <url>/2021/08/26/python%E8%A3%85%E9%A5%B0%E5%99%A8/</url>
+    <content><![CDATA[<p>python装饰器笔记</p>
+<span id="more"></span>
+
+<h1 id="例1-简简单单装饰器"><a href="#例1-简简单单装饰器" class="headerlink" title="例1.简简单单装饰器"></a>例1.简简单单装饰器</h1><figure class="highlight livecodeserver"><table><tr><td class="code"><pre><span class="line">import <span class="built_in">time</span></span><br><span class="line"></span><br><span class="line">def spend_time(<span class="function"><span class="keyword">function</span>):  # 装饰器函数</span></span><br><span class="line">    def inner():  </span><br><span class="line">        <span class="built_in">start</span> = <span class="built_in">time</span>.<span class="built_in">time</span>()</span><br><span class="line">        <span class="function"><span class="keyword">function</span>()</span></span><br><span class="line">        <span class="built_in">stop</span> = <span class="built_in">time</span>.<span class="built_in">time</span>()</span><br><span class="line">        print(f<span class="string">&quot;Spend &#123;stop - start&#125;s&quot;</span>)</span><br><span class="line"></span><br><span class="line">    <span class="literal">return</span> inner</span><br><span class="line">    <span class="comment"># 返回存放着 inner结果的 地址</span></span><br><span class="line">    <span class="comment"># 因为是地址  所以，需要实例化之后才能得到结果 ————实现了不修改原函数 就能添加功能 ————装饰器函数</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">@spend_time  <span class="comment"># 相当于 bar = spend_time(bar())    用 @[函数名] 来省略左边那一行代码 简洁</span></span><br><span class="line">def bar():</span><br><span class="line">    print(<span class="string">&quot;bar.....&quot;</span>)</span><br><span class="line">    <span class="built_in">time</span>.sleep(<span class="number">1.2</span>)</span><br><span class="line"></span><br><span class="line">运行结果</span><br><span class="line">bar.....</span><br><span class="line">Spend <span class="number">1.215440273284912</span>s</span><br></pre></td></tr></table></figure>
+
+<h1 id="例2-稍微复杂装饰器"><a href="#例2-稍微复杂装饰器" class="headerlink" title="例2.稍微复杂装饰器"></a>例2.稍微复杂装饰器</h1><figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> time</span><br><span class="line"></span><br><span class="line">def spend_time(<span class="function"><span class="keyword">function</span>):  # 装饰器函数</span></span><br><span class="line"><span class="function">    <span class="title">def</span> <span class="title">inner</span>(<span class="params">*x, **y</span>):  # 因为是直接执行 内嵌函数 所以内嵌函数也需要 *<span class="title">x</span>，**<span class="title">y</span> 来接受元素</span></span><br><span class="line"><span class="function">        <span class="title">start</span> = <span class="title">time</span>.<span class="title">time</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function">👉      <span class="function"><span class="keyword">function</span>(<span class="params">*x, **y</span>) # 真正执行<span class="title">addFunction</span>的地方</span></span></span><br><span class="line"><span class="function"><span class="function">        <span class="title">stop</span> = <span class="title">time</span>.<span class="title">time</span>(<span class="params"></span>)</span></span></span><br><span class="line"><span class="function"><span class="function">        <span class="title">print</span>(<span class="params">f<span class="string">&quot;Spend &#123;stop - start&#125;s&quot;</span></span>)</span></span></span><br><span class="line"><span class="function"><span class="function"></span></span></span><br><span class="line"><span class="function"><span class="function">    <span class="title">return</span> <span class="title">inner</span></span></span></span><br><span class="line"><span class="function"><span class="function"></span></span></span><br><span class="line"><span class="function"><span class="function">@<span class="title">spend_time</span> # 相当于 <span class="title">addFunction</span> = <span class="title">spend_time</span>(<span class="params">addFunction(*a, **b)</span>)</span></span></span><br><span class="line"><span class="function"><span class="function"><span class="title">def</span> <span class="title">addFunction</span>(<span class="params">*a, **b</span>): </span></span></span><br><span class="line"><span class="function"><span class="function">    <span class="title">sums</span> = 0</span></span></span><br><span class="line"><span class="function"><span class="function">    <span class="title">for</span> <span class="title">number</span> <span class="title">in</span> <span class="title">a</span>:</span></span></span><br><span class="line"><span class="function"><span class="function">        <span class="title">sums</span> += <span class="title">number</span></span></span></span><br><span class="line"><span class="function"><span class="function">    <span class="title">print</span>(<span class="params">sums</span>)</span></span></span><br><span class="line"><span class="function"><span class="function">    <span class="title">time</span>.<span class="title">sleep</span>(<span class="params"><span class="number">0.2</span></span>)</span></span></span><br><span class="line"><span class="function"><span class="function"></span></span></span><br><span class="line"><span class="function"><span class="function"><span class="title">addFunction</span>(<span class="params"><span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span></span>) # 相当于 <span class="title">addFunction</span> = <span class="title">spend_time</span>(<span class="params">addFunction(<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>)</span>)</span></span></span><br><span class="line"><span class="function"><span class="function">                       # <span class="title">addFunction</span>被当作实参传到<span class="title">spend_time</span>的<span class="function"><span class="keyword">function</span>中</span></span></span></span><br><span class="line"><span class="function"><span class="function"><span class="function">                       # (<span class="params"><span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span></span>)被当作是<span class="title">spend_time</span>的内嵌函数<span class="title">inner</span>的实参</span></span></span></span><br><span class="line"><span class="function"><span class="function"><span class="function">                       # 所以实际上函数是在<span class="title">inner</span>内执行 </span></span></span></span><br><span class="line"><span class="function"><span class="function"><span class="function">                       # 表面上<span class="function"><span class="keyword">function</span>(<span class="params">*x, **y</span>) 实际上是 <span class="title">addFunction</span>(<span class="params">*a, **b</span>) </span></span></span></span></span><br><span class="line"><span class="function"><span class="function"><span class="function"><span class="function">                       # 也就是说一旦<span class="function"><span class="keyword">function</span>不接受这些实参的话，比如👉 <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span></span></span></span></span></span></span><br><span class="line"><span class="function"><span class="function"><span class="function"><span class="function"><span class="function"><span class="function">                       # 那么虽然执行了<span class="title">addFunction</span>(<span class="params"><span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span></span>)但真正执行的是<span class="title">addFunction</span>(<span class="params"></span>)</span></span></span></span></span></span></span><br><span class="line"><span class="function"><span class="function"><span class="function"><span class="function"><span class="function"><span class="function">运行结果</span></span></span></span></span></span></span><br><span class="line"><span class="function"><span class="function"><span class="function"><span class="function"><span class="function"><span class="function">15</span></span></span></span></span></span></span><br><span class="line"><span class="function"><span class="function"><span class="function"><span class="function"><span class="function"><span class="function"><span class="title">Spend</span> 0.20099997520446777<span class="title">s</span></span></span></span></span></span></span></span><br></pre></td></tr></table></figure>
+
+<h2 id="function-的情况"><a href="#function-的情况" class="headerlink" title="function( )的情况"></a>function( )的情况</h2><figure class="highlight stylus"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="title">addFunction</span><span class="params">(<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>)</span></span></span><br><span class="line"></span><br><span class="line">运行结果</span><br><span class="line"><span class="number">0</span></span><br><span class="line">Spend <span class="number">0.20083141326904297s</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="function-5-的情况"><a href="#function-5-的情况" class="headerlink" title="function(5)的情况"></a>function(5)的情况</h2><figure class="highlight stylus"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="title">addFunction</span><span class="params">(<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>)</span></span></span><br><span class="line"></span><br><span class="line">运行结果</span><br><span class="line"><span class="number">5</span></span><br><span class="line">Spend <span class="number">0.20568037033081055s</span></span><br></pre></td></tr></table></figure>]]></content>
+      <categories>
+        <category>Python</category>
+      </categories>
+      <tags>
+        <tag>Python</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>shell</title>
     <url>/2021/08/19/shell/</url>
     <content><![CDATA[<p>shell实质上是用户、内核和系统硬件之间的接口，是学习正确的系统管理和安全保护最关键的方面之一。<br>简单层面上来看，shell脚本就是对多行命令的集合，深层次上，它是Linux的基础编程工具，可为系统管理员提供简单的工具开发。类似Windows的bat批处理脚本</p>
@@ -1713,26 +1742,6 @@ $0,1,2 // 0-脚本名 1-第一个参数 2-第二个参数
       </categories>
       <tags>
         <tag>脚本</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Python装饰器</title>
-    <url>/2021/08/26/python%E8%A3%85%E9%A5%B0%E5%99%A8/</url>
-    <content><![CDATA[<p>python装饰器笔记</p>
-<span id="more"></span>
-
-<h1 id="例1-简简单单装饰器"><a href="#例1-简简单单装饰器" class="headerlink" title="例1.简简单单装饰器"></a>例1.简简单单装饰器</h1><figure class="highlight livecodeserver"><table><tr><td class="code"><pre><span class="line">import <span class="built_in">time</span></span><br><span class="line"></span><br><span class="line">def spend_time(<span class="function"><span class="keyword">function</span>):  # 装饰器函数</span></span><br><span class="line">    def inner():  </span><br><span class="line">        <span class="built_in">start</span> = <span class="built_in">time</span>.<span class="built_in">time</span>()</span><br><span class="line">        <span class="function"><span class="keyword">function</span>()</span></span><br><span class="line">        <span class="built_in">stop</span> = <span class="built_in">time</span>.<span class="built_in">time</span>()</span><br><span class="line">        print(f<span class="string">&quot;Spend &#123;stop - start&#125;s&quot;</span>)</span><br><span class="line"></span><br><span class="line">    <span class="literal">return</span> inner</span><br><span class="line">    <span class="comment"># 返回存放着 inner结果的 地址</span></span><br><span class="line">    <span class="comment"># 因为是地址  所以，需要实例化之后才能得到结果 ————实现了不修改原函数 就能添加功能 ————装饰器函数</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">@spend_time  <span class="comment"># 相当于 bar = spend_time(bar())    用 @[函数名] 来省略左边那一行代码 简洁</span></span><br><span class="line">def bar():</span><br><span class="line">    print(<span class="string">&quot;bar.....&quot;</span>)</span><br><span class="line">    <span class="built_in">time</span>.sleep(<span class="number">1.2</span>)</span><br><span class="line"></span><br><span class="line">运行结果</span><br><span class="line">bar.....</span><br><span class="line">Spend <span class="number">1.215440273284912</span>s</span><br></pre></td></tr></table></figure>
-
-<h1 id="例2-稍微复杂装饰器"><a href="#例2-稍微复杂装饰器" class="headerlink" title="例2.稍微复杂装饰器"></a>例2.稍微复杂装饰器</h1><figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> time</span><br><span class="line"></span><br><span class="line">def spend_time(<span class="function"><span class="keyword">function</span>):  # 装饰器函数</span></span><br><span class="line"><span class="function">    <span class="title">def</span> <span class="title">inner</span>(<span class="params">*x, **y</span>):  # 因为是直接执行 内嵌函数 所以内嵌函数也需要 *<span class="title">x</span>，**<span class="title">y</span> 来接受元素</span></span><br><span class="line"><span class="function">        <span class="title">start</span> = <span class="title">time</span>.<span class="title">time</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function">👉      <span class="function"><span class="keyword">function</span>(<span class="params">*x, **y</span>) # 真正执行<span class="title">addFunction</span>的地方</span></span></span><br><span class="line"><span class="function"><span class="function">        <span class="title">stop</span> = <span class="title">time</span>.<span class="title">time</span>(<span class="params"></span>)</span></span></span><br><span class="line"><span class="function"><span class="function">        <span class="title">print</span>(<span class="params">f<span class="string">&quot;Spend &#123;stop - start&#125;s&quot;</span></span>)</span></span></span><br><span class="line"><span class="function"><span class="function"></span></span></span><br><span class="line"><span class="function"><span class="function">    <span class="title">return</span> <span class="title">inner</span></span></span></span><br><span class="line"><span class="function"><span class="function"></span></span></span><br><span class="line"><span class="function"><span class="function">@<span class="title">spend_time</span> # 相当于 <span class="title">addFunction</span> = <span class="title">spend_time</span>(<span class="params">addFunction(*a, **b)</span>)</span></span></span><br><span class="line"><span class="function"><span class="function"><span class="title">def</span> <span class="title">addFunction</span>(<span class="params">*a, **b</span>): </span></span></span><br><span class="line"><span class="function"><span class="function">    <span class="title">sums</span> = 0</span></span></span><br><span class="line"><span class="function"><span class="function">    <span class="title">for</span> <span class="title">number</span> <span class="title">in</span> <span class="title">a</span>:</span></span></span><br><span class="line"><span class="function"><span class="function">        <span class="title">sums</span> += <span class="title">number</span></span></span></span><br><span class="line"><span class="function"><span class="function">    <span class="title">print</span>(<span class="params">sums</span>)</span></span></span><br><span class="line"><span class="function"><span class="function">    <span class="title">time</span>.<span class="title">sleep</span>(<span class="params"><span class="number">0.2</span></span>)</span></span></span><br><span class="line"><span class="function"><span class="function"></span></span></span><br><span class="line"><span class="function"><span class="function"><span class="title">addFunction</span>(<span class="params"><span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span></span>) # 相当于 <span class="title">addFunction</span> = <span class="title">spend_time</span>(<span class="params">addFunction(<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>)</span>)</span></span></span><br><span class="line"><span class="function"><span class="function">                       # <span class="title">addFunction</span>被当作实参传到<span class="title">spend_time</span>的<span class="function"><span class="keyword">function</span>中</span></span></span></span><br><span class="line"><span class="function"><span class="function"><span class="function">                       # (<span class="params"><span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span></span>)被当作是<span class="title">spend_time</span>的内嵌函数<span class="title">inner</span>的实参</span></span></span></span><br><span class="line"><span class="function"><span class="function"><span class="function">                       # 所以实际上函数是在<span class="title">inner</span>内执行 </span></span></span></span><br><span class="line"><span class="function"><span class="function"><span class="function">                       # 表面上<span class="function"><span class="keyword">function</span>(<span class="params">*x, **y</span>) 实际上是 <span class="title">addFunction</span>(<span class="params">*a, **b</span>) </span></span></span></span></span><br><span class="line"><span class="function"><span class="function"><span class="function"><span class="function">                       # 也就是说一旦<span class="function"><span class="keyword">function</span>不接受这些实参的话，比如👉 <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span></span></span></span></span></span></span><br><span class="line"><span class="function"><span class="function"><span class="function"><span class="function"><span class="function"><span class="function">                       # 那么虽然执行了<span class="title">addFunction</span>(<span class="params"><span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span></span>)但真正执行的是<span class="title">addFunction</span>(<span class="params"></span>)</span></span></span></span></span></span></span><br><span class="line"><span class="function"><span class="function"><span class="function"><span class="function"><span class="function"><span class="function">运行结果</span></span></span></span></span></span></span><br><span class="line"><span class="function"><span class="function"><span class="function"><span class="function"><span class="function"><span class="function">15</span></span></span></span></span></span></span><br><span class="line"><span class="function"><span class="function"><span class="function"><span class="function"><span class="function"><span class="function"><span class="title">Spend</span> 0.20099997520446777<span class="title">s</span></span></span></span></span></span></span></span><br></pre></td></tr></table></figure>
-
-<h2 id="function-的情况"><a href="#function-的情况" class="headerlink" title="function( )的情况"></a>function( )的情况</h2><figure class="highlight stylus"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="title">addFunction</span><span class="params">(<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>)</span></span></span><br><span class="line"></span><br><span class="line">运行结果</span><br><span class="line"><span class="number">0</span></span><br><span class="line">Spend <span class="number">0.20083141326904297s</span></span><br></pre></td></tr></table></figure>
-
-<h2 id="function-5-的情况"><a href="#function-5-的情况" class="headerlink" title="function(5)的情况"></a>function(5)的情况</h2><figure class="highlight stylus"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="title">addFunction</span><span class="params">(<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>)</span></span></span><br><span class="line"></span><br><span class="line">运行结果</span><br><span class="line"><span class="number">5</span></span><br><span class="line">Spend <span class="number">0.20568037033081055s</span></span><br></pre></td></tr></table></figure>]]></content>
-      <categories>
-        <category>Python</category>
-      </categories>
-      <tags>
-        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -1979,6 +1988,26 @@ $0,1,2 // 0-脚本名 1-第一个参数 2-第二个参数
       </tags>
   </entry>
   <entry>
+    <title>报文</title>
+    <url>/2021/08/26/%E6%8A%A5%E6%96%87/</url>
+    <content><![CDATA[<p>报文结构</p>
+<span id="more"></span>
+
+<h1 id="IPv4报文结构"><a href="#IPv4报文结构" class="headerlink" title="IPv4报文结构"></a>IPv4报文结构</h1><p><img src="/2021/08/26/%E6%8A%A5%E6%96%87/ipv4.png" alt="ipv4"><br><strong>第一行</strong><br>版本号、IHL、服务类型ToS、总长度<br>记录包的数据、特殊服务的处理方式等<br><strong>第二行</strong><br>标识符、标记符、片段漂移Flagments Offset<br>保证接收者按照正确顺序重组数据包<br><strong>第三行</strong><br>TTL、协议号、头部校验<br>防止环路、协议、检查数据包头部是否改变<br><strong>后面</strong><br>源目IP地址<br>IP OPTION</p>
+<h1 id="TCP报文结构"><a href="#TCP报文结构" class="headerlink" title="TCP报文结构"></a>TCP报文结构</h1><p><img src="/2021/08/26/%E6%8A%A5%E6%96%87/tcp.png" alt="tcp"><br><strong>第一行</strong><br>源目端口——保证唯一TCP连接<br><strong>第二行</strong><br>序号<br><strong>第三行</strong><br>确认号<br><strong>第四行</strong><br>头部长度——报头最长60字节，固定20字节<br>保留位<br>控制位——6位，包含ACK,FIN,SYN,PSH,URG,RST</p>
+<blockquote>
+<p>URG: 标识紧急指针是否有效<br>ACK: 标识确认序号是否有效<br>PSH: 用来提示接收端应用程序立刻将数据从tcp缓冲区读走<br>RST: 要求重新建立连接. 我们把含有RST标识的报文称为复位报文段<br>SYN: 请求建立连接. 我们把含有SYN标识的报文称为同步报文段<br>FIN: 通知对端, 本端即将关闭. 我们把含有FIN标识的报文称为结束报文段</p>
+</blockquote>
+<p>窗口——滑动窗口大小，用来告诉发送端接收端缓存大小，以此控制发送端发送速率，达到流量控制<br><strong>第五行</strong><br>检验和<br>紧急指针<br><strong>第六行</strong><br>选项<br>填充<br><strong>后面</strong><br>数据</p>
+]]></content>
+      <categories>
+        <category>数据通信</category>
+      </categories>
+      <tags>
+        <tag>数据通信</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>将本地项目上传Github</title>
     <url>/2021/08/17/%E5%B0%86%E6%9C%AC%E5%9C%B0%E9%A1%B9%E7%9B%AE%E4%B8%8A%E4%BC%A0Github/</url>
     <content><![CDATA[<p>上传/更新本地项目到Github</p>
@@ -2028,26 +2057,6 @@ $0,1,2 // 0-脚本名 1-第一个参数 2-第二个参数
       </categories>
       <tags>
         <tag>Github</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>报文</title>
-    <url>/2021/08/26/%E6%8A%A5%E6%96%87/</url>
-    <content><![CDATA[<p>报文结构</p>
-<span id="more"></span>
-
-<h1 id="IPv4报文结构"><a href="#IPv4报文结构" class="headerlink" title="IPv4报文结构"></a>IPv4报文结构</h1><p><img src="/2021/08/26/%E6%8A%A5%E6%96%87/ipv4.png" alt="ipv4"><br><strong>第一行</strong><br>版本号、IHL、服务类型ToS、总长度<br>记录包的数据、特殊服务的处理方式等<br><strong>第二行</strong><br>标识符、标记符、片段漂移Flagments Offset<br>保证接收者按照正确顺序重组数据包<br><strong>第三行</strong><br>TTL、协议号、头部校验<br>防止环路、协议、检查数据包头部是否改变<br><strong>后面</strong><br>源目IP地址<br>IP OPTION</p>
-<h1 id="TCP报文结构"><a href="#TCP报文结构" class="headerlink" title="TCP报文结构"></a>TCP报文结构</h1><p><img src="/2021/08/26/%E6%8A%A5%E6%96%87/tcp.png" alt="tcp"><br><strong>第一行</strong><br>源目端口——保证唯一TCP连接<br><strong>第二行</strong><br>序号<br><strong>第三行</strong><br>确认号<br><strong>第四行</strong><br>头部长度——报头最长60字节，固定20字节<br>保留位<br>控制位——6位，包含ACK,FIN,SYN,PSH,URG,RST</p>
-<blockquote>
-<p>URG: 标识紧急指针是否有效<br>ACK: 标识确认序号是否有效<br>PSH: 用来提示接收端应用程序立刻将数据从tcp缓冲区读走<br>RST: 要求重新建立连接. 我们把含有RST标识的报文称为复位报文段<br>SYN: 请求建立连接. 我们把含有SYN标识的报文称为同步报文段<br>FIN: 通知对端, 本端即将关闭. 我们把含有FIN标识的报文称为结束报文段</p>
-</blockquote>
-<p>窗口——滑动窗口大小，用来告诉发送端接收端缓存大小，以此控制发送端发送速率，达到流量控制<br><strong>第五行</strong><br>检验和<br>紧急指针<br><strong>第六行</strong><br>选项<br>填充<br><strong>后面</strong><br>数据</p>
-]]></content>
-      <categories>
-        <category>数据通信</category>
-      </categories>
-      <tags>
-        <tag>数据通信</tag>
       </tags>
   </entry>
   <entry>
@@ -2205,6 +2214,23 @@ $0,1,2 // 0-脚本名 1-第一个参数 2-第二个参数
 <blockquote>
 <p>在实现了相同功能的情况下，这个程序只需要0.1秒</p>
 </blockquote>
+]]></content>
+      <categories>
+        <category>数据结构</category>
+      </categories>
+      <tags>
+        <tag>数据结构</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>栈</title>
+    <url>/2021/09/03/%E6%A0%88/</url>
+    <content><![CDATA[<p>栈（stack），有些地方称为堆栈，是一种容器，可存入数据元素、访问元素、删除元素，它的特点在于只能允许在容器的一端（称为栈顶端指标，英语：top）进行加入数据（英语：push）和输出数据（英语：pop）的运算。没有了位置概念，保证任何时候可以访问、删除的元素都是此前最后存入的那个元素，确定了一种默认的访问顺序。</p>
+<span id="more"></span>
+
+<p>由于栈数据结构只允许在一端进行操作，因而按照后进先出（LIFO, Last In First Out）的原理运作。</p>
+<p><img src="/2021/09/03/%E6%A0%88/%E6%A0%88.png" alt="栈"></p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment">## 栈的操作</span></span><br><span class="line">Stack() 创建一个新的空栈</span><br><span class="line">push(item) 添加一个新的元素item到栈顶</span><br><span class="line">pop() 弹出栈顶元素</span><br><span class="line">peek() 返回栈顶元素</span><br><span class="line">is_empty() 判断栈是否为空</span><br><span class="line">size() 返回栈的元素个数</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Stack</span>(<span class="params"><span class="built_in">object</span></span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;栈&quot;&quot;&quot;</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self</span>):</span></span><br><span class="line">         self.items = []</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">is_empty</span>(<span class="params">self</span>):</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;判断是否为空&quot;&quot;&quot;</span></span><br><span class="line">        <span class="keyword">return</span> self.items == []</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">push</span>(<span class="params">self, item</span>):</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;加入元素&quot;&quot;&quot;</span></span><br><span class="line">        self.items.append(item)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">pop</span>(<span class="params">self</span>):</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;弹出元素&quot;&quot;&quot;</span></span><br><span class="line">        <span class="keyword">return</span> self.items.pop()</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">peek</span>(<span class="params">self</span>):</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;返回栈顶元素&quot;&quot;&quot;</span></span><br><span class="line">        <span class="keyword">return</span> self.items[<span class="built_in">len</span>(self.items)-<span class="number">1</span>]</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">size</span>(<span class="params">self</span>):</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;返回栈的大小&quot;&quot;&quot;</span></span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">len</span>(self.items)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&quot;__main__&quot;</span>:</span><br><span class="line">    stack = Stack()</span><br><span class="line">    stack.push(<span class="string">&quot;hello&quot;</span>)</span><br><span class="line">    stack.push(<span class="string">&quot;world&quot;</span>)</span><br><span class="line">    stack.push(<span class="string">&quot;itcast&quot;</span>)</span><br><span class="line">    <span class="built_in">print</span> stack.size()</span><br><span class="line">    <span class="built_in">print</span> stack.peek()</span><br><span class="line">    <span class="built_in">print</span> stack.pop()</span><br><span class="line">    <span class="built_in">print</span> stack.pop()</span><br><span class="line">    <span class="built_in">print</span> stack.pop()</span><br></pre></td></tr></table></figure>
 ]]></content>
       <categories>
         <category>数据结构</category>
@@ -2504,21 +2530,32 @@ $0,1,2 // 0-脚本名 1-第一个参数 2-第二个参数
       </tags>
   </entry>
   <entry>
-    <title>栈</title>
-    <url>/2021/09/03/%E6%A0%88/</url>
-    <content><![CDATA[<p>栈（stack），有些地方称为堆栈，是一种容器，可存入数据元素、访问元素、删除元素，它的特点在于只能允许在容器的一端（称为栈顶端指标，英语：top）进行加入数据（英语：push）和输出数据（英语：pop）的运算。没有了位置概念，保证任何时候可以访问、删除的元素都是此前最后存入的那个元素，确定了一种默认的访问顺序。</p>
+    <title>交换机版本升级</title>
+    <url>/2021/08/16/%E9%94%90%E6%8D%B7%E4%BA%A4%E6%8D%A2%E6%9C%BA%E7%89%88%E6%9C%AC%E5%8D%87%E7%BA%A7/</url>
+    <content><![CDATA[<p>不同方式升级交换机版本</p>
 <span id="more"></span>
 
-<p>由于栈数据结构只允许在一端进行操作，因而按照后进先出（LIFO, Last In First Out）的原理运作。</p>
-<p><img src="/2021/09/03/%E6%A0%88/%E6%A0%88.png" alt="栈"></p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment">## 栈的操作</span></span><br><span class="line">Stack() 创建一个新的空栈</span><br><span class="line">push(item) 添加一个新的元素item到栈顶</span><br><span class="line">pop() 弹出栈顶元素</span><br><span class="line">peek() 返回栈顶元素</span><br><span class="line">is_empty() 判断栈是否为空</span><br><span class="line">size() 返回栈的元素个数</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Stack</span>(<span class="params"><span class="built_in">object</span></span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;栈&quot;&quot;&quot;</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self</span>):</span></span><br><span class="line">         self.items = []</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">is_empty</span>(<span class="params">self</span>):</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;判断是否为空&quot;&quot;&quot;</span></span><br><span class="line">        <span class="keyword">return</span> self.items == []</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">push</span>(<span class="params">self, item</span>):</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;加入元素&quot;&quot;&quot;</span></span><br><span class="line">        self.items.append(item)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">pop</span>(<span class="params">self</span>):</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;弹出元素&quot;&quot;&quot;</span></span><br><span class="line">        <span class="keyword">return</span> self.items.pop()</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">peek</span>(<span class="params">self</span>):</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;返回栈顶元素&quot;&quot;&quot;</span></span><br><span class="line">        <span class="keyword">return</span> self.items[<span class="built_in">len</span>(self.items)-<span class="number">1</span>]</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">size</span>(<span class="params">self</span>):</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;返回栈的大小&quot;&quot;&quot;</span></span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">len</span>(self.items)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&quot;__main__&quot;</span>:</span><br><span class="line">    stack = Stack()</span><br><span class="line">    stack.push(<span class="string">&quot;hello&quot;</span>)</span><br><span class="line">    stack.push(<span class="string">&quot;world&quot;</span>)</span><br><span class="line">    stack.push(<span class="string">&quot;itcast&quot;</span>)</span><br><span class="line">    <span class="built_in">print</span> stack.size()</span><br><span class="line">    <span class="built_in">print</span> stack.peek()</span><br><span class="line">    <span class="built_in">print</span> stack.pop()</span><br><span class="line">    <span class="built_in">print</span> stack.pop()</span><br><span class="line">    <span class="built_in">print</span> stack.pop()</span><br></pre></td></tr></table></figure>
+<h1 id="U盘升级"><a href="#U盘升级" class="headerlink" title="U盘升级"></a>U盘升级</h1><p>1、查看U盘文件:dir usb<br>2、用U盘上传更新文件：</p>
+<figure class="highlight apache"><table><tr><td class="code"><pre><span class="line"><span class="attribute">Switch</span>#upgrade usb<span class="number">0</span>:N<span class="number">18000</span>_RG<span class="number">0</span>S<span class="number">11</span>.<span class="number">0</span>(<span class="number">1</span>)B<span class="number">2</span>_CM_<span class="number">08050053</span>_install.bin</span><br></pre></td></tr></table></figure>
+<p>——&gt;usb0与机架包的名字中间不要有空格,即usb0:与N18000中间不要有空格<br>3、通过show upgrade status查看交换机升级情况(确定所有引擎/板卡/FE板卡是success状态),升级完成后通过命令reload重启交换机<br>4、重启完成后,通过show version detail查看交换机版本</p>
+<h1 id="TFTP升级"><a href="#TFTP升级" class="headerlink" title="TFTP升级"></a>TFTP升级</h1><p>电脑和交换机先要能ping通<br>1、配置IP地址:</p>
+<figure class="highlight stylus"><table><tr><td class="code"><pre><span class="line">Switch&gt;enable</span><br><span class="line">Switch<span class="selector-id">#configure</span> terminal</span><br><span class="line"><span class="function"><span class="title">Switch</span><span class="params">(config)</span></span><span class="selector-id">#interface</span> vlan <span class="number">1</span></span><br><span class="line"><span class="function"><span class="title">Switch</span><span class="params">(config-if)</span></span><span class="selector-id">#ip</span> <span class="selector-tag">address</span> <span class="number">192.168</span>.<span class="number">1.1</span> <span class="number">255.255</span>.<span class="number">255.0</span></span><br><span class="line"><span class="function"><span class="title">Switch</span><span class="params">(config-if)</span></span>#exit</span><br></pre></td></tr></table></figure>
+<p>2、将文件拷贝至交换机:</p>
+<figure class="highlight apache"><table><tr><td class="code"><pre><span class="line"><span class="attribute">Switch</span>#copy tftp://<span class="number">192.168.1.2</span>/N<span class="number">1800</span>e_RGOS<span class="number">11</span>.<span class="number">0</span>(<span class="number">1</span>)B<span class="number">2</span>_CM_<span class="number">08050053</span>_insta<span class="number">1</span>l.bin flash:/N<span class="number">18000</span>_RGOS<span class="number">11</span>.<span class="number">0</span>(<span class="number">1</span>)B<span class="number">2</span>_CM_<span class="number">08050053</span>_instal<span class="number">1</span>.bin</span><br></pre></td></tr></table></figure>
+<p>—-&gt;192.168.1.2是电脑的IP地址;N18000_RGOS11.0(1)B2_CM_08e50053_instal1.bin是电脑上的主程序文件名;<br>3、升级:</p>
+<figure class="highlight apache"><table><tr><td class="code"><pre><span class="line"><span class="attribute">Switch</span>#upgrade flash:N<span class="number">18000</span>_RGOS<span class="number">11</span>.<span class="number">0</span>(<span class="number">1</span>)B<span class="number">2</span>_CM_<span class="number">08050053</span>_install.bin</span><br></pre></td></tr></table></figure>
+<p>4、通过show upgrade status确定交换机升级情况,升级完成后通过命令reload重启交换机<br>5、重启完成后,通过show version detail查看交换机版本</p>
+<h1 id="带外管理MGMT口"><a href="#带外管理MGMT口" class="headerlink" title="带外管理MGMT口"></a>带外管理MGMT口</h1><blockquote>
+<p>该接口独立于业务接口，专门作为交换机管理<br>MGMT口测试需要携带OOB参数：<font color="#E9764A">ping oob 192.168.1.1<font></font></font></p>
+</blockquote>
+<p><strong>MGMT口升级</strong><br>1、配置IP地址:</p>
+<figure class="highlight stylus"><table><tr><td class="code"><pre><span class="line">Switch&gt;enable</span><br><span class="line">Switch<span class="selector-id">#configure</span> terminal</span><br><span class="line"><span class="function"><span class="title">Switch</span><span class="params">(config)</span></span><span class="selector-id">#interface</span> mgmt <span class="number">0</span></span><br><span class="line"><span class="function"><span class="title">Switch</span><span class="params">(config-if)</span></span> <span class="selector-id">#ip</span> <span class="selector-tag">address</span> <span class="number">192.168</span>.<span class="number">1.1</span> <span class="number">255.255</span>.<span class="number">255.0</span></span><br><span class="line"><span class="function"><span class="title">Switch</span><span class="params">(config-if)</span></span>#exit</span><br></pre></td></tr></table></figure>
+<p>2、将文件拷贝至交换机:</p>
+<figure class="highlight apache"><table><tr><td class="code"><pre><span class="line"><span class="attribute">Switch</span>#copy oob_tftp ://<span class="number">192.168.1.2</span>/N<span class="number">1800</span>e_RGOS<span class="number">11</span>.<span class="number">0</span>(<span class="number">1</span>)B<span class="number">2</span>_CM_<span class="number">08050053</span>_install.binflash:/N<span class="number">18000</span>_RGOS<span class="number">11</span>.<span class="number">0</span>(<span class="number">1</span>)B<span class="number">2</span>_CM_<span class="number">08050053</span>_install.bin</span><br></pre></td></tr></table></figure>
+<p>—-&gt;192.168.1.2是电脑的IP地址;N18000_RGOS11.0(1)B2_CM_08050853_install.bin是电脑上的主程序文件名;rgos.bin是放入交换机上的主程序名称<br>3、升级:</p>
+<figure class="highlight apache"><table><tr><td class="code"><pre><span class="line"><span class="attribute">Switch</span>#upgrade flash:N<span class="number">18000</span>_RGOS<span class="number">11</span>.<span class="number">0</span>(<span class="number">1</span>)B<span class="number">2</span>_CM_<span class="number">08050053</span>_install.bin</span><br></pre></td></tr></table></figure>
+<p>4、通过show upgrade status确定交换机升级情况,升级完成后通过命令reload重启交换机<br>5、重启完成后,通过show version detail查看交换机版本</p>
 ]]></content>
-      <categories>
-        <category>数据结构</category>
-      </categories>
-      <tags>
-        <tag>数据结构</tag>
-      </tags>
   </entry>
   <entry>
     <title>链表</title>
@@ -2551,34 +2588,6 @@ $0,1,2 // 0-脚本名 1-第一个参数 2-第二个参数
       <tags>
         <tag>数据结构</tag>
       </tags>
-  </entry>
-  <entry>
-    <title>交换机版本升级</title>
-    <url>/2021/08/16/%E9%94%90%E6%8D%B7%E4%BA%A4%E6%8D%A2%E6%9C%BA%E7%89%88%E6%9C%AC%E5%8D%87%E7%BA%A7/</url>
-    <content><![CDATA[<p>不同方式升级交换机版本</p>
-<span id="more"></span>
-
-<h1 id="U盘升级"><a href="#U盘升级" class="headerlink" title="U盘升级"></a>U盘升级</h1><p>1、查看U盘文件:dir usb<br>2、用U盘上传更新文件：</p>
-<figure class="highlight apache"><table><tr><td class="code"><pre><span class="line"><span class="attribute">Switch</span>#upgrade usb<span class="number">0</span>:N<span class="number">18000</span>_RG<span class="number">0</span>S<span class="number">11</span>.<span class="number">0</span>(<span class="number">1</span>)B<span class="number">2</span>_CM_<span class="number">08050053</span>_install.bin</span><br></pre></td></tr></table></figure>
-<p>——&gt;usb0与机架包的名字中间不要有空格,即usb0:与N18000中间不要有空格<br>3、通过show upgrade status查看交换机升级情况(确定所有引擎/板卡/FE板卡是success状态),升级完成后通过命令reload重启交换机<br>4、重启完成后,通过show version detail查看交换机版本</p>
-<h1 id="TFTP升级"><a href="#TFTP升级" class="headerlink" title="TFTP升级"></a>TFTP升级</h1><p>电脑和交换机先要能ping通<br>1、配置IP地址:</p>
-<figure class="highlight stylus"><table><tr><td class="code"><pre><span class="line">Switch&gt;enable</span><br><span class="line">Switch<span class="selector-id">#configure</span> terminal</span><br><span class="line"><span class="function"><span class="title">Switch</span><span class="params">(config)</span></span><span class="selector-id">#interface</span> vlan <span class="number">1</span></span><br><span class="line"><span class="function"><span class="title">Switch</span><span class="params">(config-if)</span></span><span class="selector-id">#ip</span> <span class="selector-tag">address</span> <span class="number">192.168</span>.<span class="number">1.1</span> <span class="number">255.255</span>.<span class="number">255.0</span></span><br><span class="line"><span class="function"><span class="title">Switch</span><span class="params">(config-if)</span></span>#exit</span><br></pre></td></tr></table></figure>
-<p>2、将文件拷贝至交换机:</p>
-<figure class="highlight apache"><table><tr><td class="code"><pre><span class="line"><span class="attribute">Switch</span>#copy tftp://<span class="number">192.168.1.2</span>/N<span class="number">1800</span>e_RGOS<span class="number">11</span>.<span class="number">0</span>(<span class="number">1</span>)B<span class="number">2</span>_CM_<span class="number">08050053</span>_insta<span class="number">1</span>l.bin flash:/N<span class="number">18000</span>_RGOS<span class="number">11</span>.<span class="number">0</span>(<span class="number">1</span>)B<span class="number">2</span>_CM_<span class="number">08050053</span>_instal<span class="number">1</span>.bin</span><br></pre></td></tr></table></figure>
-<p>—-&gt;192.168.1.2是电脑的IP地址;N18000_RGOS11.0(1)B2_CM_08e50053_instal1.bin是电脑上的主程序文件名;<br>3、升级:</p>
-<figure class="highlight apache"><table><tr><td class="code"><pre><span class="line"><span class="attribute">Switch</span>#upgrade flash:N<span class="number">18000</span>_RGOS<span class="number">11</span>.<span class="number">0</span>(<span class="number">1</span>)B<span class="number">2</span>_CM_<span class="number">08050053</span>_install.bin</span><br></pre></td></tr></table></figure>
-<p>4、通过show upgrade status确定交换机升级情况,升级完成后通过命令reload重启交换机<br>5、重启完成后,通过show version detail查看交换机版本</p>
-<h1 id="带外管理MGMT口"><a href="#带外管理MGMT口" class="headerlink" title="带外管理MGMT口"></a>带外管理MGMT口</h1><blockquote>
-<p>该接口独立于业务接口，专门作为交换机管理<br>MGMT口测试需要携带OOB参数：<font color="#E9764A">ping oob 192.168.1.1<font></font></font></p>
-</blockquote>
-<p><strong>MGMT口升级</strong><br>1、配置IP地址:</p>
-<figure class="highlight stylus"><table><tr><td class="code"><pre><span class="line">Switch&gt;enable</span><br><span class="line">Switch<span class="selector-id">#configure</span> terminal</span><br><span class="line"><span class="function"><span class="title">Switch</span><span class="params">(config)</span></span><span class="selector-id">#interface</span> mgmt <span class="number">0</span></span><br><span class="line"><span class="function"><span class="title">Switch</span><span class="params">(config-if)</span></span> <span class="selector-id">#ip</span> <span class="selector-tag">address</span> <span class="number">192.168</span>.<span class="number">1.1</span> <span class="number">255.255</span>.<span class="number">255.0</span></span><br><span class="line"><span class="function"><span class="title">Switch</span><span class="params">(config-if)</span></span>#exit</span><br></pre></td></tr></table></figure>
-<p>2、将文件拷贝至交换机:</p>
-<figure class="highlight apache"><table><tr><td class="code"><pre><span class="line"><span class="attribute">Switch</span>#copy oob_tftp ://<span class="number">192.168.1.2</span>/N<span class="number">1800</span>e_RGOS<span class="number">11</span>.<span class="number">0</span>(<span class="number">1</span>)B<span class="number">2</span>_CM_<span class="number">08050053</span>_install.binflash:/N<span class="number">18000</span>_RGOS<span class="number">11</span>.<span class="number">0</span>(<span class="number">1</span>)B<span class="number">2</span>_CM_<span class="number">08050053</span>_install.bin</span><br></pre></td></tr></table></figure>
-<p>—-&gt;192.168.1.2是电脑的IP地址;N18000_RGOS11.0(1)B2_CM_08050853_install.bin是电脑上的主程序文件名;rgos.bin是放入交换机上的主程序名称<br>3、升级:</p>
-<figure class="highlight apache"><table><tr><td class="code"><pre><span class="line"><span class="attribute">Switch</span>#upgrade flash:N<span class="number">18000</span>_RGOS<span class="number">11</span>.<span class="number">0</span>(<span class="number">1</span>)B<span class="number">2</span>_CM_<span class="number">08050053</span>_install.bin</span><br></pre></td></tr></table></figure>
-<p>4、通过show upgrade status确定交换机升级情况,升级完成后通过命令reload重启交换机<br>5、重启完成后,通过show version detail查看交换机版本</p>
-]]></content>
   </entry>
   <entry>
     <title>队列</title>
