@@ -171,6 +171,32 @@ BFD通知本地OSPF进程BFD邻居不可达。
 ]]></content>
   </entry>
   <entry>
+    <title>Django框架下，用sqlite3实现登录系统</title>
+    <url>/2021/08/17/Django%E6%A1%86%E6%9E%B6%E4%B8%8B%EF%BC%8C%E7%94%A8sqlite3%E5%AE%9E%E7%8E%B0%E7%99%BB%E5%BD%95%E7%B3%BB%E7%BB%9F/</url>
+    <content><![CDATA[<p>在Django框架下，自带sqlite3数据库。在21年的比赛中用sqlite3库实现了用户登录注册</p>
+<span id="more"></span>
+
+<p>一开始我想直接使用 models.[model名].objects.的方法从数据库中获取对应数据在后端进行账号密码匹对<br><img src="/2021/08/17/Django%E6%A1%86%E6%9E%B6%E4%B8%8B%EF%BC%8C%E7%94%A8sqlite3%E5%AE%9E%E7%8E%B0%E7%99%BB%E5%BD%95%E7%B3%BB%E7%BB%9F/modelsobject.png" alt="modelsobject"></p>
+<p>曾经用这个方法返回表单给前端，显示用户数据</p>
+<p>但这个方法在后端得到的数据是NULL<br>所以使用了sqlite3在Python的库</p>
+<blockquote>
+<p>获取用户信息</p>
+</blockquote>
+<figure class="highlight vim"><table><tr><td class="code"><pre><span class="line">import sqlite3</span><br><span class="line"></span><br><span class="line"><span class="keyword">con</span> = sqlite3.connect(<span class="string">&#x27;db.sqlite3&#x27;</span>)</span><br><span class="line">cur = <span class="keyword">con</span>.<span class="built_in">cursor</span>()</span><br><span class="line">sql = <span class="string">&#x27;select * from [数据库名：在DB Changes中看]&#x27;</span></span><br><span class="line"><span class="keyword">try</span>:</span><br><span class="line">    cur.<span class="keyword">execute</span>(sql)</span><br><span class="line">    # 获取所有数据</span><br><span class="line">    person_all = cur.fetchall()</span><br><span class="line">    # <span class="keyword">print</span>(person_all)</span><br><span class="line">    # 遍历</span><br><span class="line">    <span class="keyword">for</span> <span class="keyword">p</span> in person_al<span class="variable">l:</span></span><br><span class="line">        # 创建一组组新的用户信息字典 放入peopleInfo 用户名:密码</span><br><span class="line">        peopleInfo = &#123;<span class="keyword">p</span>[<span class="number">1</span>]: <span class="keyword">p</span>[<span class="number">3</span>]&#125;</span><br><span class="line">        # 创建用户名:邮箱</span><br><span class="line">        peopleEmail = &#123;<span class="keyword">p</span>[<span class="number">1</span>]: <span class="keyword">p</span>[<span class="number">2</span>]&#125;</span><br><span class="line">        # 将每个字典更新到nameAndPasswd 做成所有用户信息合集</span><br><span class="line">        nameAndPasswd.<span class="keyword">update</span>(peopleInfo)</span><br><span class="line">        nameAndEmail.<span class="keyword">update</span>(peopleEmail)</span><br><span class="line">        # <span class="keyword">print</span>(<span class="keyword">p</span>)</span><br><span class="line">except Exception <span class="keyword">as</span> <span class="keyword">e</span>:</span><br><span class="line">    <span class="keyword">print</span>(<span class="keyword">e</span>)</span><br><span class="line">    <span class="keyword">print</span>(<span class="string">&#x27;查询失败&#x27;</span>)</span><br><span class="line"><span class="keyword">finally</span>:</span><br><span class="line">    # 关闭游标</span><br><span class="line">    cur.<span class="keyword">close</span>()</span><br><span class="line">    # 关闭连接</span><br><span class="line">    <span class="keyword">con</span>.<span class="keyword">close</span>()</span><br></pre></td></tr></table></figure>
+<p>因为我建立的数据库是（pk，用户名，邮箱，密码），用for循环遍历每一组<br>将每一组的<strong>p[1]——用户名</strong>，<strong>p[3]——密码</strong><font color="#E974">组成一个新的字典</font>再<font color="#E974A">更新到信息合集nameAndPasswd中</font>，当for遍历完的时候，nameAndPasswd中就会有所有用户的账号密码键值对了</p>
+<blockquote>
+<p>登录<br>使用了字典的内置方法 <font color="#E9764A">dict.get(key,default=None)返回指定键的值</font>，用此方法获得的数据库指定账号的<strong>密码</strong>，拿来和输入的密码做比较</p>
+</blockquote>
+<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="meta"># 获得页面填写的账号信息</span></span><br><span class="line">nameSignIN = request.POST.<span class="keyword">get</span>(<span class="string">&#x27;accountSignIn&#x27;</span>)</span><br><span class="line">passwordSignIN = request.POST.<span class="keyword">get</span>(<span class="string">&#x27;passwordSignIn&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> nameAndPasswd.<span class="keyword">get</span>(nameSignIN) == passwordSignIN:</span><br><span class="line">    <span class="keyword">return</span> render(request, <span class="string">&#x27;???.html&#x27;</span>)</span><br><span class="line">    <span class="meta"># 密码正确</span></span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">    <span class="meta"># 密码错误</span></span><br></pre></td></tr></table></figure>]]></content>
+      <categories>
+        <category>Python</category>
+      </categories>
+      <tags>
+        <tag>Django</tag>
+        <tag>Python</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>DNS</title>
     <url>/2021/09/14/DNS/</url>
     <content><![CDATA[<p>DNS（Domain Name System，域名系统）是一个将域名转化为IP地址的网络协议，通过域名得到对应的IP地址的过程也叫做域名解析。<br>使用DNS服务，用户访问互联网只需通过域名就行了，而不需要去记住ip地址，这样用户可以更方便的访问互联网。</p>
@@ -232,15 +258,15 @@ BFD通知本地OSPF进程BFD邻居不可达。
 </li>
 <li><p><font color="#E9764A"><strong>NS记录 NS（Name Server）记录是域名服务器记录，用来指定该域名由哪个DNS服务器来进行解析</strong></font>。 您注册域名时，总有默认的DNS服务器，每个注册的域名都是由一个DNS域名服务器来进行解析的，DNS服务器NS记录地址一般以以下的形式出现： ns1.domain.com、ns2.domain.com等。 简单的说，<font color="#FF0000"><strong>NS记录是指定由哪个DNS服务器解析你的域名</strong></font>。 </p>
 </li>
-<li><p>MX记录 MX（Mail Exchanger）记录是邮件交换记录，它指向一个邮件服务器，用于电子邮件系统发邮件时根据收信人的地址后缀来定位邮件服务器。例如，当Internet上的某用户要发一封信给 <a href="mailto:&#x75;&#x73;&#101;&#114;&#64;&#x6d;&#x79;&#100;&#x6f;&#109;&#x61;&#x69;&#110;&#46;&#99;&#111;&#109;">&#x75;&#x73;&#101;&#114;&#64;&#x6d;&#x79;&#100;&#x6f;&#109;&#x61;&#x69;&#110;&#46;&#99;&#111;&#109;</a> 时，该用户的邮件系统通过DNS查找mydomain.com这个域名的MX记录，如果MX记录存在， 用户计算机就将邮件发送到MX记录所指定的邮件服务器上。 </p>
+<li><p>MX记录 MX（Mail Exchanger）记录是邮件交换记录，它指向一个邮件服务器，用于电子邮件系统发邮件时根据收信人的地址后缀来定位邮件服务器。例如，当Internet上的某用户要发一封信给 <a href="mailto:&#117;&#115;&#x65;&#114;&#64;&#x6d;&#x79;&#x64;&#x6f;&#x6d;&#97;&#x69;&#x6e;&#x2e;&#99;&#x6f;&#109;">&#117;&#115;&#x65;&#114;&#64;&#x6d;&#x79;&#x64;&#x6f;&#x6d;&#97;&#x69;&#x6e;&#x2e;&#99;&#x6f;&#109;</a> 时，该用户的邮件系统通过DNS查找mydomain.com这个域名的MX记录，如果MX记录存在， 用户计算机就将邮件发送到MX记录所指定的邮件服务器上。 </p>
 </li>
 <li><p>CNAME记录 CNAME（Canonical Name ）别名记录，允许您将多个名字映射到同一台计算机。通常用于同时提供WWW和MAIL服务的计算机。例如，有一台计算机名为 “host.mydomain.com”（A记录），它同时提供WWW和MAIL服务，为了便于用户访问服务。可以为该计算机设置两个别名（CNAME）：WWW和MAIL， 这两个别名的全称就“<a href="http://www.mydomain.com”和“mail.mydomain.com”,实际上他们都指向/">www.mydomain.com”和“mail.mydomain.com”，实际上他们都指向</a> “host.mydomain.com”。 </p>
 </li>
-<li><p>TXT记录<br>TXT记录，一般指某个主机名或域名的说明，如：admin IN TXT “管理员, 电话：XXXXXXXXXXX”，mail IN TXT “邮件主机，存放在xxx , 管理人：AAA”，Jim IN TXT “contact: <a href="mailto:&#97;&#x62;&#99;&#64;&#109;&#97;&#105;&#108;&#115;&#x65;&#x72;&#118;&#x65;&#x72;&#x2e;&#99;&#111;&#x6d;">&#97;&#x62;&#99;&#64;&#109;&#97;&#105;&#108;&#115;&#x65;&#x72;&#118;&#x65;&#x72;&#x2e;&#99;&#111;&#x6d;</a>“，也就是您可以设置 TXT 内容以便使别人联系到您。 TXT的应用之一，SPF（Sender Policy Framework）反垃圾邮件。SPF是跟DNS相关的一项技术，它的内容写在DNS的TXT类型的记录里面。MX记录的作用是给寄信者指明某个域名的邮件服务器有哪些。SPF的作用跟MX相反，它向收信者表明，哪些邮件服务器是经过某个域名认可会发送邮件的。SPF的作用主要是反垃圾邮件，主要针对那些发信人伪造域名的垃圾邮件。例如：当邮件服务器收到自称发件人是<a href="mailto:&#x73;&#112;&#x61;&#109;&#x40;&#103;&#x6d;&#97;&#x69;&#x6c;&#x2e;&#x63;&#111;&#x6d;">&#x73;&#112;&#x61;&#109;&#x40;&#103;&#x6d;&#97;&#x69;&#x6c;&#x2e;&#x63;&#111;&#x6d;</a>的邮件，那么到底它是不是真的gmail.com的邮件服务器发过来的呢，我们可以查询gmail.com的SPF记录，以此防止别人伪造你来发邮件。</p>
+<li><p>TXT记录<br>TXT记录，一般指某个主机名或域名的说明，如：admin IN TXT “管理员, 电话：XXXXXXXXXXX”，mail IN TXT “邮件主机，存放在xxx , 管理人：AAA”，Jim IN TXT “contact: <a href="mailto:&#x61;&#x62;&#99;&#x40;&#x6d;&#97;&#x69;&#108;&#115;&#x65;&#x72;&#118;&#101;&#x72;&#46;&#x63;&#111;&#x6d;">&#x61;&#x62;&#99;&#x40;&#x6d;&#97;&#x69;&#108;&#115;&#x65;&#x72;&#118;&#101;&#x72;&#46;&#x63;&#111;&#x6d;</a>“，也就是您可以设置 TXT 内容以便使别人联系到您。 TXT的应用之一，SPF（Sender Policy Framework）反垃圾邮件。SPF是跟DNS相关的一项技术，它的内容写在DNS的TXT类型的记录里面。MX记录的作用是给寄信者指明某个域名的邮件服务器有哪些。SPF的作用跟MX相反，它向收信者表明，哪些邮件服务器是经过某个域名认可会发送邮件的。SPF的作用主要是反垃圾邮件，主要针对那些发信人伪造域名的垃圾邮件。例如：当邮件服务器收到自称发件人是<a href="mailto:&#115;&#112;&#x61;&#x6d;&#64;&#103;&#x6d;&#x61;&#x69;&#108;&#x2e;&#x63;&#x6f;&#x6d;">&#115;&#112;&#x61;&#x6d;&#64;&#103;&#x6d;&#x61;&#x69;&#108;&#x2e;&#x63;&#x6f;&#x6d;</a>的邮件，那么到底它是不是真的gmail.com的邮件服务器发过来的呢，我们可以查询gmail.com的SPF记录，以此防止别人伪造你来发邮件。</p>
 </li>
 <li><p>TTL值 TTL（Time-To-Live）原理：TTL是IP协议包中的一个值，它告诉网络路由器包在网络中的时间是否太长而应被丢弃。有很多原因使包在一定时间内不能被传递到目的地。例如，不正确的路由表可能导致包的无限循环。一个解决方法就是在一段时间后丢弃这个包，然后给发送者一个报文，由发送者决定是否要重发。TTL的初值通常是系统缺省值，是包头中的8位的域。TTL的最初设想是确定一个时间范围，超过此时间就把包丢弃。由于每个路由器都至少要把TTL域减一，TTL通常表示包在被丢弃前最多能经过的路由器个数。当记数到0时，路由器决定丢弃该包，并发送一个ICMP报文给最初的发送者。 简单的说，TTL就是一条域名解析记录在DNS服务器中的存留时间。当各地的DNS服务器接受到解析请求时，就会向域名指定的NS服务器发出解析请求从而获得解析记录；在获得这个记录之后，记录会在DNS服务器中保存一段时间，这段时间内如果再接到这个域名的解析请求，DNS服务器将不再向NS服务器发出请求，而是直接返回刚才获得的记录，而这个记录在DNS服务器上保留的时间，就是TTL值。<br>TTL值设置的应用：<br>一是增大TTL值，以节约域名解析时间，给网站访问加速。 一般情况下，域名的各种记录是极少更改的，很可能几个月、几年内都不会有什么变化。我们完全可以增大域名记录的TTL值让记录在各地DNS服务器中缓存的时间加长，这样在更长的一段时间内，我们访问这个网站时，本地ISP的DNS服务器就不需要向域名的NS服务器发出解析请求，而直接从缓存中返回域名解析记录。 二是减小TTL值，减少更换空间时的不可访问时间。 更换空间99.9%会有DNS记录更改的问题，因为缓存的问题，新的域名记录在有的地方可能生效了，但在有的地方可能等上一两天甚至更久才生效。结果就是有的人可能访问到了新服务器，有的人访问到了旧服务器。仅仅是访问的话，这也不是什么大问题，但如果涉及到了邮件发送，这个就有点麻烦了，说不定哪封重要信件就被发送到了那已经停掉的旧服务器上。<br>为了尽可能的减小这个各地的解析时间差，合理的做法是： 第一步，先查看域名当前的TTL值，我们假定是1天。 第二步，修改TTL值为可设定的最小值，可能的话，建议为1分钟，就是60。 第三步，等待一天，保证各地的DNS服务器缓存都过期并更新了记录。 第四步，设置修改新记录，这个时候各地的DNS就能以最快的速度更新到新的记录。 第五步，确认各地的DNS已经更新完成后，把TTL值设置成您想要的值。 一般操作系统的默认TTL值如下： TTL=32 Windows 9x/Me TTL=64 LINUX TTL=128 Windows 200x/XP TTL=255 Unix </p>
 </li>
-<li><p>PTR值 PTR是pointer的简写，用于将一个IP地址映射到对应的域名，也可以看成是A记录的反向，IP地址的反向解析。 PTR主要用于邮件服务器，比如邮箱<a href="mailto:&#x41;&#x41;&#65;&#64;&#x58;&#x58;&#88;&#x2e;&#x63;&#111;&#109;">&#x41;&#x41;&#65;&#64;&#x58;&#x58;&#88;&#x2e;&#x63;&#111;&#109;</a>给邮箱<a href="mailto:&#66;&#x42;&#66;&#x40;&#121;&#97;&#104;&#111;&#111;&#x2e;&#x63;&#x6f;&#109;">&#66;&#x42;&#66;&#x40;&#121;&#97;&#104;&#111;&#111;&#x2e;&#x63;&#x6f;&#109;</a>发了一封邮件，yahoo邮件服务器接到邮件时会查看这封邮件的头文件，并分析是由哪个IP地址发出来的，然后根据这个IP地址进行反向解析，如果解析结果对应XXX.com的IP地址就接受这封邮件，反之则拒绝接收这封邮件。 </p>
+<li><p>PTR值 PTR是pointer的简写，用于将一个IP地址映射到对应的域名，也可以看成是A记录的反向，IP地址的反向解析。 PTR主要用于邮件服务器，比如邮箱<a href="mailto:&#65;&#65;&#65;&#x40;&#x58;&#88;&#88;&#46;&#99;&#x6f;&#109;">&#65;&#65;&#65;&#x40;&#x58;&#88;&#88;&#46;&#99;&#x6f;&#109;</a>给邮箱<a href="mailto:&#66;&#x42;&#x42;&#64;&#121;&#97;&#104;&#x6f;&#x6f;&#46;&#99;&#111;&#109;">&#66;&#x42;&#x42;&#64;&#121;&#97;&#104;&#x6f;&#x6f;&#46;&#99;&#111;&#109;</a>发了一封邮件，yahoo邮件服务器接到邮件时会查看这封邮件的头文件，并分析是由哪个IP地址发出来的，然后根据这个IP地址进行反向解析，如果解析结果对应XXX.com的IP地址就接受这封邮件，反之则拒绝接收这封邮件。 </p>
 </li>
 <li><p>泛域名与泛解析 泛域名是指在一个域名根下，以 *.Domain.com的形式表示这个域名根所有未建立的子域名。 泛解析是把*.Domain.com的A记录解析到某个IP 地址上，通过访问任意的前缀.domain.com都能访问到你解析的站点上。 </p>
 </li>
@@ -256,32 +282,6 @@ BFD通知本地OSPF进程BFD邻居不可达。
       </categories>
       <tags>
         <tag>数据通信</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Django框架下，用sqlite3实现登录系统</title>
-    <url>/2021/08/17/Django%E6%A1%86%E6%9E%B6%E4%B8%8B%EF%BC%8C%E7%94%A8sqlite3%E5%AE%9E%E7%8E%B0%E7%99%BB%E5%BD%95%E7%B3%BB%E7%BB%9F/</url>
-    <content><![CDATA[<p>在Django框架下，自带sqlite3数据库。在21年的比赛中用sqlite3库实现了用户登录注册</p>
-<span id="more"></span>
-
-<p>一开始我想直接使用 models.[model名].objects.的方法从数据库中获取对应数据在后端进行账号密码匹对<br><img src="/2021/08/17/Django%E6%A1%86%E6%9E%B6%E4%B8%8B%EF%BC%8C%E7%94%A8sqlite3%E5%AE%9E%E7%8E%B0%E7%99%BB%E5%BD%95%E7%B3%BB%E7%BB%9F/modelsobject.png" alt="modelsobject"></p>
-<p>曾经用这个方法返回表单给前端，显示用户数据</p>
-<p>但这个方法在后端得到的数据是NULL<br>所以使用了sqlite3在Python的库</p>
-<blockquote>
-<p>获取用户信息</p>
-</blockquote>
-<figure class="highlight vim"><table><tr><td class="code"><pre><span class="line">import sqlite3</span><br><span class="line"></span><br><span class="line"><span class="keyword">con</span> = sqlite3.connect(<span class="string">&#x27;db.sqlite3&#x27;</span>)</span><br><span class="line">cur = <span class="keyword">con</span>.<span class="built_in">cursor</span>()</span><br><span class="line">sql = <span class="string">&#x27;select * from [数据库名：在DB Changes中看]&#x27;</span></span><br><span class="line"><span class="keyword">try</span>:</span><br><span class="line">    cur.<span class="keyword">execute</span>(sql)</span><br><span class="line">    # 获取所有数据</span><br><span class="line">    person_all = cur.fetchall()</span><br><span class="line">    # <span class="keyword">print</span>(person_all)</span><br><span class="line">    # 遍历</span><br><span class="line">    <span class="keyword">for</span> <span class="keyword">p</span> in person_al<span class="variable">l:</span></span><br><span class="line">        # 创建一组组新的用户信息字典 放入peopleInfo 用户名:密码</span><br><span class="line">        peopleInfo = &#123;<span class="keyword">p</span>[<span class="number">1</span>]: <span class="keyword">p</span>[<span class="number">3</span>]&#125;</span><br><span class="line">        # 创建用户名:邮箱</span><br><span class="line">        peopleEmail = &#123;<span class="keyword">p</span>[<span class="number">1</span>]: <span class="keyword">p</span>[<span class="number">2</span>]&#125;</span><br><span class="line">        # 将每个字典更新到nameAndPasswd 做成所有用户信息合集</span><br><span class="line">        nameAndPasswd.<span class="keyword">update</span>(peopleInfo)</span><br><span class="line">        nameAndEmail.<span class="keyword">update</span>(peopleEmail)</span><br><span class="line">        # <span class="keyword">print</span>(<span class="keyword">p</span>)</span><br><span class="line">except Exception <span class="keyword">as</span> <span class="keyword">e</span>:</span><br><span class="line">    <span class="keyword">print</span>(<span class="keyword">e</span>)</span><br><span class="line">    <span class="keyword">print</span>(<span class="string">&#x27;查询失败&#x27;</span>)</span><br><span class="line"><span class="keyword">finally</span>:</span><br><span class="line">    # 关闭游标</span><br><span class="line">    cur.<span class="keyword">close</span>()</span><br><span class="line">    # 关闭连接</span><br><span class="line">    <span class="keyword">con</span>.<span class="keyword">close</span>()</span><br></pre></td></tr></table></figure>
-<p>因为我建立的数据库是（pk，用户名，邮箱，密码），用for循环遍历每一组<br>将每一组的<strong>p[1]——用户名</strong>，<strong>p[3]——密码</strong><font color="#E974">组成一个新的字典</font>再<font color="#E974A">更新到信息合集nameAndPasswd中</font>，当for遍历完的时候，nameAndPasswd中就会有所有用户的账号密码键值对了</p>
-<blockquote>
-<p>登录<br>使用了字典的内置方法 <font color="#E9764A">dict.get(key,default=None)返回指定键的值</font>，用此方法获得的数据库指定账号的<strong>密码</strong>，拿来和输入的密码做比较</p>
-</blockquote>
-<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="meta"># 获得页面填写的账号信息</span></span><br><span class="line">nameSignIN = request.POST.<span class="keyword">get</span>(<span class="string">&#x27;accountSignIn&#x27;</span>)</span><br><span class="line">passwordSignIN = request.POST.<span class="keyword">get</span>(<span class="string">&#x27;passwordSignIn&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> nameAndPasswd.<span class="keyword">get</span>(nameSignIN) == passwordSignIN:</span><br><span class="line">    <span class="keyword">return</span> render(request, <span class="string">&#x27;???.html&#x27;</span>)</span><br><span class="line">    <span class="meta"># 密码正确</span></span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">    <span class="meta"># 密码错误</span></span><br></pre></td></tr></table></figure>]]></content>
-      <categories>
-        <category>Python</category>
-      </categories>
-      <tags>
-        <tag>Django</tag>
-        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -746,6 +746,25 @@ ILM
       </tags>
   </entry>
   <entry>
+    <title>Python——pipreqs</title>
+    <url>/2021/08/18/Python%E2%80%94%E2%80%94pipreqs/</url>
+    <content><![CDATA[<p>解决Python项目在不同环境没法运行的问题，通过pipreqs库导出所需要的包</p>
+<span id="more"></span>
+
+<figure class="highlight jboss-cli"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 安装</span></span><br><span class="line">pip install pipreqs</span><br><span class="line"><span class="comment"># 在项目下运行</span></span><br><span class="line">pipreqs <span class="string">./</span> <span class="params">--encoding=utf8</span></span><br></pre></td></tr></table></figure>
+<p>执行完后，在项目下会生成<font color="#E9764A">requirements.txt</font>文件，项目中的组件和包都会在其中<br><img src="/2021/08/18/Python%E2%80%94%E2%80%94pipreqs/1.png" alt="1"></p>
+<blockquote>
+<p>当用pycharm打开项目时，只要项目下有requirements.txt文件，就会提示是否要安装没有的组件和包<br><img src="/2021/08/18/Python%E2%80%94%E2%80%94pipreqs/2.png" alt="2"></p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>Python</category>
+      </categories>
+      <tags>
+        <tag>Python</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>OSPF笔记</title>
     <url>/2021/07/29/OSPF%E7%AC%94%E8%AE%B0/</url>
     <content><![CDATA[<p>OSPF基本理解</p>
@@ -832,94 +851,6 @@ ILM
         <tag>网络</tag>
         <tag>路由</tag>
         <tag>OSPF</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Python——pipreqs</title>
-    <url>/2021/08/18/Python%E2%80%94%E2%80%94pipreqs/</url>
-    <content><![CDATA[<p>解决Python项目在不同环境没法运行的问题，通过pipreqs库导出所需要的包</p>
-<span id="more"></span>
-
-<figure class="highlight jboss-cli"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 安装</span></span><br><span class="line">pip install pipreqs</span><br><span class="line"><span class="comment"># 在项目下运行</span></span><br><span class="line">pipreqs <span class="string">./</span> <span class="params">--encoding=utf8</span></span><br></pre></td></tr></table></figure>
-<p>执行完后，在项目下会生成<font color="#E9764A">requirements.txt</font>文件，项目中的组件和包都会在其中<br><img src="/2021/08/18/Python%E2%80%94%E2%80%94pipreqs/1.png" alt="1"></p>
-<blockquote>
-<p>当用pycharm打开项目时，只要项目下有requirements.txt文件，就会提示是否要安装没有的组件和包<br><img src="/2021/08/18/Python%E2%80%94%E2%80%94pipreqs/2.png" alt="2"></p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>Python</category>
-      </categories>
-      <tags>
-        <tag>Python</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>SPAN</title>
-    <url>/2021/08/17/SPAN/</url>
-    <content><![CDATA[<p>SPAN，全称为Switched Port Analyzer，直译为交换端口分析器。是一种交换机的端口镜像技术。作用主要是为了给某种网络分析器提供网络数据流，SPAN并不会影响源端口的数据交换，它只是将源端口发送或接收的数据包副本发送到监控端口</p>
-<span id="more"></span>
-
-<h1 id="SPAN"><a href="#SPAN" class="headerlink" title="SPAN"></a>SPAN</h1><h2 id="镜像分类"><a href="#镜像分类" class="headerlink" title="镜像分类"></a>镜像分类</h2><p><strong>SPAN，RSPAN，ERSPAN</strong></p>
-<pre><code>    二层
-        SPAN：传统的端口镜像，在单台设备中将某些端口的流量复制到其他端口上
-        RSPAN：通过REMOTE VLAN的封装，让镜像流量跨越多台设备进行传递
-    三层
-        ERSPAN：将镜像报文通过GRE隧道或者GRPC通道的封装，让镜像的流量在三层网络中传递
-</code></pre>
-<table>
-<thead>
-<tr>
-<th>镜像方式</th>
-<th>实现效果</th>
-<th>封装介质</th>
-<th>常见限制</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>SPAN</td>
-<td>单台设备上端口镜像</td>
-<td>无</td>
-<td>一对多需要借助RSPAN</td>
-</tr>
-<tr>
-<td>RSPAN</td>
-<td>跨二层设备镜像流量</td>
-<td>REMOTE VLAN</td>
-<td>REMOTE VLAN需要独立配置一个VLAN</td>
-</tr>
-<tr>
-<td>ERSPAN</td>
-<td>跨三层设备镜像流量</td>
-<td>GRE隧道或GRPC通道</td>
-<td>硬件限制</td>
-</tr>
-</tbody></table>
-<h2 id="镜像配置"><a href="#镜像配置" class="headerlink" title="镜像配置"></a>镜像配置</h2><h3 id="SPAN-多对一镜像"><a href="#SPAN-多对一镜像" class="headerlink" title="SPAN 多对一镜像"></a>SPAN 多对一镜像</h3><p>配置步骤：<br><strong>第一步，配置互联设备的连接口。</strong><br>配置 Switch A 的端口 Gi 0/1 为 Trunk Port。</p>
-<figure class="highlight reasonml"><table><tr><td class="code"><pre><span class="line">SwitchA#configure terminal</span><br><span class="line">Enter configuration commands, one per line. End <span class="keyword">with</span> CNTL/Z.</span><br><span class="line"><span class="constructor">SwitchA(<span class="params">config</span>)</span>#interface gigabitEthernet <span class="number">0</span>/<span class="number">1</span></span><br><span class="line"><span class="constructor">SwitchA(<span class="params">config</span>-<span class="params">if</span>-GigabitEthernet 0<span class="operator">/</span>1)</span>#switchport mode trunk</span><br><span class="line"><span class="constructor">SwitchA(<span class="params">config</span>-<span class="params">if</span>-GigabitEthernet 0<span class="operator">/</span>1)</span>#exit</span><br></pre></td></tr></table></figure>
-<p><strong>第二步，创建 SPAN 会话，并指定源端口和目的端口。</strong><br>在 Switch A 上，创建 Session 1，并指定 Gi 0/1 为源端口，镜像双向数据流。交换机可以指定多个源端口。both 表示双方向的数据流，如果只需要镜像进入交换机方向的数据流，则将 both 关键字改为关键字 rx，如果只需要镜像从交换机出来方向的流量，则可将 both 关键字改为 tx。如果要设置多个源，则添加多条命令即可</p>
-<figure class="highlight angelscript"><table><tr><td class="code"><pre><span class="line">SwitchA(config)#monitor session <span class="number">1</span> source <span class="keyword">interface</span> <span class="symbol">gigabitEthernet</span> <span class="symbol">0</span>/<span class="symbol">1</span> <span class="symbol">both</span></span><br></pre></td></tr></table></figure>
-<p>如果要设置多个源，则添加多条命令即可。如下，添加源端口为 G0/10 和 G0/11：</p>
-<figure class="highlight angelscript"><table><tr><td class="code"><pre><span class="line">SwitchA(config)#monitor session <span class="number">1</span> source <span class="keyword">interface</span> <span class="symbol">gigabitEthernet</span> <span class="symbol">0</span>/<span class="symbol">10</span> <span class="symbol">both</span></span><br><span class="line"><span class="symbol">SwitchA</span>(<span class="symbol">config</span>)#<span class="symbol">monitor</span> <span class="symbol">session</span> <span class="symbol">1</span> <span class="symbol">source</span> <span class="symbol">interface</span> <span class="symbol">gigabitEthernet</span> <span class="symbol">0</span>/<span class="symbol">11</span> <span class="symbol">both</span></span><br></pre></td></tr></table></figure>
-<p>在 Switch A 指定端口 Gi 0/2 为 Session 1 的镜像目的端口.后面加了一个关键字 swit<br>h，表示目的端口所连接的设备也能够上网，如果不加关键字，则接口无法学习到目的设备<br>的 MAC 地址，那么该端口将不能访问外网。（11.x 部分版本强制要加此关键字，10.x 无强制）</p>
-<figure class="highlight angelscript"><table><tr><td class="code"><pre><span class="line">SwitchA(config)# monitor session <span class="number">1</span> destination <span class="keyword">interface</span> <span class="symbol">gigabitEthernet</span> <span class="symbol">0</span>/<span class="symbol">2</span> <span class="symbol">swith</span></span><br></pre></td></tr></table></figure>
-<p>查看设备的 SPAN 状态</p>
-<figure class="highlight awk"><table><tr><td class="code"><pre><span class="line">SwitchA<span class="comment">#show monitor session 1</span></span><br><span class="line">sess-num: <span class="number">1</span>					 <span class="regexp">//</span>SPAN Session</span><br><span class="line">span-type: LOCAL_SPAN			 <span class="regexp">//</span>本地镜像</span><br><span class="line">src-intf:						 <span class="regexp">//</span>SPAN 源端口信息</span><br><span class="line">GigabitEthernet <span class="number">0</span>/<span class="number">1</span> frame-type Both</span><br><span class="line">dest-intf: 						<span class="regexp">//</span>SPAN 目的端口信息</span><br><span class="line">GigabitEthernet <span class="number">0</span>/<span class="number">2</span></span><br><span class="line">mtp swith on					 <span class="regexp">//</span>镜像目的端口能转发数据</span><br></pre></td></tr></table></figure>
-
-<h3 id="SPAN-一对多镜像"><a href="#SPAN-一对多镜像" class="headerlink" title="SPAN 一对多镜像"></a>SPAN 一对多镜像</h3><p>将源端口的流量复制到自环口，进入自环口的流量，会将流量复制到同一个广播域内的所有接口，达到一对多端口镜像的效果。注意该RSPAN会话中的所有关联端口都需要加入到Remote VLAN中</p>
-<p>1、配置remote-vlan</p>
-<figure class="highlight stylus"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="title">Switch</span><span class="params">(config)</span></span><span class="selector-id">#vlan</span> <span class="number">100</span></span><br><span class="line"><span class="function"><span class="title">Switch</span><span class="params">(config-vlan)</span></span>#remote-span</span><br></pre></td></tr></table></figure>
-<p><font color="#FF000"><strong>2、在交换机上的业务TRUNK口上配置修剪掉此VLAN【重要】</strong><font></font></font></p>
-<figure class="highlight stylus"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="title">Switch</span><span class="params">(config)</span></span><span class="selector-id">#int</span> gigabitEthernet <span class="number">2</span>/<span class="number">1</span></span><br><span class="line"><span class="function"><span class="title">Switch</span><span class="params">(config-if-GigabitEthernet <span class="number">2</span>/<span class="number">1</span>)</span></span><span class="selector-id">#switchport</span> mode trunk</span><br><span class="line"><span class="function"><span class="title">Switch</span><span class="params">(config-if-GigabitEthernet <span class="number">2</span>/<span class="number">1</span>)</span></span><span class="selector-id">#switchport</span> trunk allowedvlan remove <span class="number">100</span></span><br></pre></td></tr></table></figure>
-<p>3、设置源和目的端口</p>
-<figure class="highlight apache"><table><tr><td class="code"><pre><span class="line"><span class="attribute">Switch</span>(config)#monitor session <span class="number">1</span> remote-source</span><br><span class="line"><span class="attribute">Switch</span>(config)#monitor session <span class="number">1</span> source interfacegigabitEthernet <span class="number">4</span>/<span class="number">1</span> both</span><br><span class="line"><span class="attribute">Switch</span>(config)#monitor session <span class="number">1</span> source interfacegigabitEthernet <span class="number">4</span>/<span class="number">2</span> both</span><br><span class="line"><span class="attribute">Switch</span>(config)#monitor session <span class="number">1</span> destination remote vlan <span class="number">100</span> interface gigabitEthernet <span class="number">4</span>/<span class="number">23</span> swith</span><br><span class="line"><span class="attribute">Switch</span>(config)#interface gigabitEthernet <span class="number">4</span>/<span class="number">23</span></span><br><span class="line"><span class="attribute">Switch</span>(config-if-GigabitEthernet <span class="number">4</span>/<span class="number">23</span>)#switchport access vlan<span class="number">100</span></span><br><span class="line"><span class="attribute">Switch</span>(config-if-GigabitEthernet <span class="number">4</span>/<span class="number">23</span>)#mac-loopback</span><br><span class="line"><span class="attribute">Switch</span>(config-if-GigabitEthernet <span class="number">4</span>/<span class="number">23</span>)# no mac-address-learning</span><br></pre></td></tr></table></figure>
-<p>4、将监控服务器的端口g4/21及g4/22加入Remote VLAN</p>
-<figure class="highlight stylus"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="title">Switch</span><span class="params">(config)</span></span><span class="selector-id">#interface</span> range gigabitEthernet <span class="number">4</span>/<span class="number">21</span>-<span class="number">22</span></span><br><span class="line"><span class="function"><span class="title">Switch</span><span class="params">(config-if-range)</span></span><span class="selector-id">#switchport</span> access vlan <span class="number">100</span></span><br></pre></td></tr></table></figure>]]></content>
-      <categories>
-        <category>运维</category>
-      </categories>
-      <tags>
-        <tag>端口镜像</tag>
-        <tag>运维</tag>
       </tags>
   </entry>
   <entry>
@@ -1050,6 +981,75 @@ BPDU处理变化:
         <tag>数据通信</tag>
         <tag>交换</tag>
         <tag>STP</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>SPAN</title>
+    <url>/2021/08/17/SPAN/</url>
+    <content><![CDATA[<p>SPAN，全称为Switched Port Analyzer，直译为交换端口分析器。是一种交换机的端口镜像技术。作用主要是为了给某种网络分析器提供网络数据流，SPAN并不会影响源端口的数据交换，它只是将源端口发送或接收的数据包副本发送到监控端口</p>
+<span id="more"></span>
+
+<h1 id="SPAN"><a href="#SPAN" class="headerlink" title="SPAN"></a>SPAN</h1><h2 id="镜像分类"><a href="#镜像分类" class="headerlink" title="镜像分类"></a>镜像分类</h2><p><strong>SPAN，RSPAN，ERSPAN</strong></p>
+<pre><code>    二层
+        SPAN：传统的端口镜像，在单台设备中将某些端口的流量复制到其他端口上
+        RSPAN：通过REMOTE VLAN的封装，让镜像流量跨越多台设备进行传递
+    三层
+        ERSPAN：将镜像报文通过GRE隧道或者GRPC通道的封装，让镜像的流量在三层网络中传递
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>镜像方式</th>
+<th>实现效果</th>
+<th>封装介质</th>
+<th>常见限制</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>SPAN</td>
+<td>单台设备上端口镜像</td>
+<td>无</td>
+<td>一对多需要借助RSPAN</td>
+</tr>
+<tr>
+<td>RSPAN</td>
+<td>跨二层设备镜像流量</td>
+<td>REMOTE VLAN</td>
+<td>REMOTE VLAN需要独立配置一个VLAN</td>
+</tr>
+<tr>
+<td>ERSPAN</td>
+<td>跨三层设备镜像流量</td>
+<td>GRE隧道或GRPC通道</td>
+<td>硬件限制</td>
+</tr>
+</tbody></table>
+<h2 id="镜像配置"><a href="#镜像配置" class="headerlink" title="镜像配置"></a>镜像配置</h2><h3 id="SPAN-多对一镜像"><a href="#SPAN-多对一镜像" class="headerlink" title="SPAN 多对一镜像"></a>SPAN 多对一镜像</h3><p>配置步骤：<br><strong>第一步，配置互联设备的连接口。</strong><br>配置 Switch A 的端口 Gi 0/1 为 Trunk Port。</p>
+<figure class="highlight reasonml"><table><tr><td class="code"><pre><span class="line">SwitchA#configure terminal</span><br><span class="line">Enter configuration commands, one per line. End <span class="keyword">with</span> CNTL/Z.</span><br><span class="line"><span class="constructor">SwitchA(<span class="params">config</span>)</span>#interface gigabitEthernet <span class="number">0</span>/<span class="number">1</span></span><br><span class="line"><span class="constructor">SwitchA(<span class="params">config</span>-<span class="params">if</span>-GigabitEthernet 0<span class="operator">/</span>1)</span>#switchport mode trunk</span><br><span class="line"><span class="constructor">SwitchA(<span class="params">config</span>-<span class="params">if</span>-GigabitEthernet 0<span class="operator">/</span>1)</span>#exit</span><br></pre></td></tr></table></figure>
+<p><strong>第二步，创建 SPAN 会话，并指定源端口和目的端口。</strong><br>在 Switch A 上，创建 Session 1，并指定 Gi 0/1 为源端口，镜像双向数据流。交换机可以指定多个源端口。both 表示双方向的数据流，如果只需要镜像进入交换机方向的数据流，则将 both 关键字改为关键字 rx，如果只需要镜像从交换机出来方向的流量，则可将 both 关键字改为 tx。如果要设置多个源，则添加多条命令即可</p>
+<figure class="highlight angelscript"><table><tr><td class="code"><pre><span class="line">SwitchA(config)#monitor session <span class="number">1</span> source <span class="keyword">interface</span> <span class="symbol">gigabitEthernet</span> <span class="symbol">0</span>/<span class="symbol">1</span> <span class="symbol">both</span></span><br></pre></td></tr></table></figure>
+<p>如果要设置多个源，则添加多条命令即可。如下，添加源端口为 G0/10 和 G0/11：</p>
+<figure class="highlight angelscript"><table><tr><td class="code"><pre><span class="line">SwitchA(config)#monitor session <span class="number">1</span> source <span class="keyword">interface</span> <span class="symbol">gigabitEthernet</span> <span class="symbol">0</span>/<span class="symbol">10</span> <span class="symbol">both</span></span><br><span class="line"><span class="symbol">SwitchA</span>(<span class="symbol">config</span>)#<span class="symbol">monitor</span> <span class="symbol">session</span> <span class="symbol">1</span> <span class="symbol">source</span> <span class="symbol">interface</span> <span class="symbol">gigabitEthernet</span> <span class="symbol">0</span>/<span class="symbol">11</span> <span class="symbol">both</span></span><br></pre></td></tr></table></figure>
+<p>在 Switch A 指定端口 Gi 0/2 为 Session 1 的镜像目的端口.后面加了一个关键字 swit<br>h，表示目的端口所连接的设备也能够上网，如果不加关键字，则接口无法学习到目的设备<br>的 MAC 地址，那么该端口将不能访问外网。（11.x 部分版本强制要加此关键字，10.x 无强制）</p>
+<figure class="highlight angelscript"><table><tr><td class="code"><pre><span class="line">SwitchA(config)# monitor session <span class="number">1</span> destination <span class="keyword">interface</span> <span class="symbol">gigabitEthernet</span> <span class="symbol">0</span>/<span class="symbol">2</span> <span class="symbol">swith</span></span><br></pre></td></tr></table></figure>
+<p>查看设备的 SPAN 状态</p>
+<figure class="highlight awk"><table><tr><td class="code"><pre><span class="line">SwitchA<span class="comment">#show monitor session 1</span></span><br><span class="line">sess-num: <span class="number">1</span>					 <span class="regexp">//</span>SPAN Session</span><br><span class="line">span-type: LOCAL_SPAN			 <span class="regexp">//</span>本地镜像</span><br><span class="line">src-intf:						 <span class="regexp">//</span>SPAN 源端口信息</span><br><span class="line">GigabitEthernet <span class="number">0</span>/<span class="number">1</span> frame-type Both</span><br><span class="line">dest-intf: 						<span class="regexp">//</span>SPAN 目的端口信息</span><br><span class="line">GigabitEthernet <span class="number">0</span>/<span class="number">2</span></span><br><span class="line">mtp swith on					 <span class="regexp">//</span>镜像目的端口能转发数据</span><br></pre></td></tr></table></figure>
+
+<h3 id="SPAN-一对多镜像"><a href="#SPAN-一对多镜像" class="headerlink" title="SPAN 一对多镜像"></a>SPAN 一对多镜像</h3><p>将源端口的流量复制到自环口，进入自环口的流量，会将流量复制到同一个广播域内的所有接口，达到一对多端口镜像的效果。注意该RSPAN会话中的所有关联端口都需要加入到Remote VLAN中</p>
+<p>1、配置remote-vlan</p>
+<figure class="highlight stylus"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="title">Switch</span><span class="params">(config)</span></span><span class="selector-id">#vlan</span> <span class="number">100</span></span><br><span class="line"><span class="function"><span class="title">Switch</span><span class="params">(config-vlan)</span></span>#remote-span</span><br></pre></td></tr></table></figure>
+<p><font color="#FF000"><strong>2、在交换机上的业务TRUNK口上配置修剪掉此VLAN【重要】</strong><font></font></font></p>
+<figure class="highlight stylus"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="title">Switch</span><span class="params">(config)</span></span><span class="selector-id">#int</span> gigabitEthernet <span class="number">2</span>/<span class="number">1</span></span><br><span class="line"><span class="function"><span class="title">Switch</span><span class="params">(config-if-GigabitEthernet <span class="number">2</span>/<span class="number">1</span>)</span></span><span class="selector-id">#switchport</span> mode trunk</span><br><span class="line"><span class="function"><span class="title">Switch</span><span class="params">(config-if-GigabitEthernet <span class="number">2</span>/<span class="number">1</span>)</span></span><span class="selector-id">#switchport</span> trunk allowedvlan remove <span class="number">100</span></span><br></pre></td></tr></table></figure>
+<p>3、设置源和目的端口</p>
+<figure class="highlight apache"><table><tr><td class="code"><pre><span class="line"><span class="attribute">Switch</span>(config)#monitor session <span class="number">1</span> remote-source</span><br><span class="line"><span class="attribute">Switch</span>(config)#monitor session <span class="number">1</span> source interfacegigabitEthernet <span class="number">4</span>/<span class="number">1</span> both</span><br><span class="line"><span class="attribute">Switch</span>(config)#monitor session <span class="number">1</span> source interfacegigabitEthernet <span class="number">4</span>/<span class="number">2</span> both</span><br><span class="line"><span class="attribute">Switch</span>(config)#monitor session <span class="number">1</span> destination remote vlan <span class="number">100</span> interface gigabitEthernet <span class="number">4</span>/<span class="number">23</span> swith</span><br><span class="line"><span class="attribute">Switch</span>(config)#interface gigabitEthernet <span class="number">4</span>/<span class="number">23</span></span><br><span class="line"><span class="attribute">Switch</span>(config-if-GigabitEthernet <span class="number">4</span>/<span class="number">23</span>)#switchport access vlan<span class="number">100</span></span><br><span class="line"><span class="attribute">Switch</span>(config-if-GigabitEthernet <span class="number">4</span>/<span class="number">23</span>)#mac-loopback</span><br><span class="line"><span class="attribute">Switch</span>(config-if-GigabitEthernet <span class="number">4</span>/<span class="number">23</span>)# no mac-address-learning</span><br></pre></td></tr></table></figure>
+<p>4、将监控服务器的端口g4/21及g4/22加入Remote VLAN</p>
+<figure class="highlight stylus"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="title">Switch</span><span class="params">(config)</span></span><span class="selector-id">#interface</span> range gigabitEthernet <span class="number">4</span>/<span class="number">21</span>-<span class="number">22</span></span><br><span class="line"><span class="function"><span class="title">Switch</span><span class="params">(config-if-range)</span></span><span class="selector-id">#switchport</span> access vlan <span class="number">100</span></span><br></pre></td></tr></table></figure>]]></content>
+      <categories>
+        <category>运维</category>
+      </categories>
+      <tags>
+        <tag>端口镜像</tag>
+        <tag>运维</tag>
       </tags>
   </entry>
   <entry>
@@ -1267,28 +1267,6 @@ BPDU处理变化:
       </tags>
   </entry>
   <entry>
-    <title>VXLAN Mapping技术</title>
-    <url>/2021/08/09/VXLAN-Mapping%E6%8A%80%E6%9C%AF/</url>
-    <content><![CDATA[<div class="hbe hbe-container" id="hexo-blog-encrypt" data-wpm="Oh, this is an invalid password. Check and try again, please." data-whm="OOPS, these decrypted content may changed, but you can still have a look.">
-  <script id="hbeData" type="hbeData" data-hmacdigest="63c76943bcc8574b5d17d1ae19a01924d91cac1574c409ff5b037cc7e1bbbcbb">f6139c82e97dc16a5fc8c8565b4be2a670b200d65d46e157006322273b428b2062b4976a3c45bcb3779f0bdc7f557d6e53c877662e1fdb877b7114ded02f7d5a1d98bc90677765233a7babde1d3a205e7b2909d60938db6a99c26ec265cb9427c32392f84669c6e8dd4c12fc8b5043f8fc47115e82166bd34434329e7951261662e2254678cb6d931d187f27691e092d2ef6f9fed23d13e515d5df03ee42fd347919c94bbb6b17402ca9ace0eeefe84aaa22ed4d88a43cbe1d63fc73f061a462d380ff1c03abf3fb4be029e5d48dbd0aed931c8deae8566930c01bbfc588544edcf005b381f6e70963ea5fc8e26de4c15fa1705561fd6a2f4976a809eb7af3972bdcdb711a63cbc6545a4a3cce219d2043b9e9136de5d36a5e4fdf7e6e76d87fea34d0a126aa87f43e9a27a9bf74cc4590b5b9df05136ba5c7a2a133be0b1f7529c8b028b083bc06e043d1e0e7f76eb906a24bce941bc4eeae1f86bef3a86c42958d565da1fef400c093c1bc62ec48f93e45a643a18eb1e3e34c000e568e6c172dba81f846e0374e139d0cd46657feced3d7d5c01a12273fe6218c8fa48176ab35e2987572efb4c8a0a45645aa9a41edfc7a88c0e728297caa0a723471243cd81b106efdd2f8c9ab7767766f62b85508b9fd7e53d5c4ecdf7b8b899047b32700deeff9816a7f58d0b16a75f56c74e997f019568aa1febb23a87d3ba84d2a2a063fe0f36f1c39596cdaa692423678097c9a3b2a0641dfe7e7f6771997607aa4bce47d7a788b740854e16842a56c3c2119740beeb018d6c98ee90f84cf747b50067ad72c84bcb1c146155197a92aa6af6e2f769e708a19b41f3d4da95710d4a975ae5b1b25f05ebe49ae39f13e379ed759572f813d848547f28cac4b5ff4be05fb1e0c574a2d5639a3f0ffa08bdf37492248574708bfcabcabdde8e7e61f75b165130ab60c35964b3d3874861b593388603248297ad944218530ad2b0496056494b75cfc6c6a87aa0e13e326e6459f14edd0b200a8eac9957168d6bffc8ccf663dd80ec5e2d808ac8b78bcbc83942ef25b5098c10d0c78a32eaebc1f065222c1be68b63f7de964ca4dccfdebe7e598b752de5349880a9808bb584e4ecd47355fc71c8026cc0c123c9237c55225348ec169e732c3a07d1033d7e856bfebe9a0a8b35d3ab047b0d17353a8c984a1a89f67953683ce6a49102ca625da87a1c01973a81896f2b567042c6e506027bfa865a03bf622904c6811802dae5e67af713c4a2366c9781a67cd0527da4d04ae56a1fdc1b43c0e34a6f30dbc815f051b718524bd43f3525370010a1b9ec29626d1e7fc4eed187e14da7404803a7ead8602c89cfceaa564f1696462b5ea2e8ae16ee23775602f285a1934537b09be97f5f4d9bd5a594464ee1ec67fc7a87f71760156ad95d8e98d24768181892843b2211d8bc92d227717de6dd3b3d3d0b8599f59d23956e158b3de8c7ce15c9736f9bb1cf6990513c4a0300dba16ae577d4ec79ce2eabdce8adda2acb2b6f878d9929b1f2c8b4ec690e3e9bc4be129e7a7c36d6a81e72b3df6f96d475d837b75e57b9e1b9bb7f9aeb146535944aef97cb5eeb7877045ccda3940685ee5028fb3f5d0f98e5c5ce9add3a993122784fed5c257e230072807c61a87223670d8118aaa00ea2e70bf4490012961d0362bb3e31712050983cf9fa0fa7e62a139c8cb431444cd0422d7de83fc84bfc2078c448dd28fe8a69dd9d4884439a921c632c2aa34ff5f1fe130394e88c840b3cf832b4358369ef19cda3edd9eb168ebc691872cbb80d13de1cc3027f96992e3d83fc79fd15486e973726a66763ba6c34a5f47678807fe71530a63ba2182bd0edd462006620a9968471dc947b51e6641a5f21219d6d2a6618b6686a81b4baaad14382555ecfede10e78f0bfc58d6ee7efe334a3a4d3a3b67663ee7be3172a7ebb36b920c943028d458fb30277e0e80a85b1e042d2905f75a2143329c5075759ef568bfa34a6c7f8b2004a03b90f56ad7f3cb09b0c3fe333d6ae45281c0f2407d901a04f3dd9f5b8a8f9b60b25810c91f528c7c479365efe6a570b56e0f24d0dab9ab7d9f85dcae43a2827567a353013093282da5dd19f808abacb14a1123b6d53d797507695d69847f04a66805d5aeb3c7c3487dd5e2ecf807abd346443c847cd954380e0d07da6fa45078c79efcf85483d60a5091576f28d03d21d8362d238a4cf97cd7357aa14409146e1b36eab4d628bf15da0067a41e06b25f17080229c9b57445af3db745c921796225e8459545e35e330483298e01e7ff4876c5beb8274ae46c95674c23267e75bc4158242be2e0de28e5cec27fc14afe71cf4d60951aaca9f81c29b41dfc9139e233395808e3c7566756f446c73926a20e8c77717963cbfa65ad1d08e610919d5eb169c3feeb2732b004f49c240ffd2c9d04856a88286b9c53bb19cece3d2af6de9aa173a7fa57b01e6af8a28a623d37b38b9348ad2d7519d173dba66bb5dc174ff101e809b1484dfca32c7c1c9c04d6d9b0be716e3e2c8971105ba423b2ed614f5bf65eea85dfbfcb53b3dbf39be3496961934ac277ca9546c56312bcbe5c6674150f29f142d8f30f910fb88fc811e87792abdebd1f9ffcc07a4102a0a2efcc150929a3956a4aa7497f7a8a67e619eeac5abde4023ff0d8f50dab69e9d81a528e235b6afe2fca44c0ce5df91f5791daa43a8a42ecea24bb8c3d0cb17dbdf3c6fb671c126b2710f3a60b24feb8da9b07bdf2e1eb70f470a0140c1aebbe8a63c66c11955566bf1133b555433be70352d6e47f3c08b91988b52c181da98b64982ab00d4ebd79630153d3bc142895c6d7334a3a45fe7d522c82a5b231cb2f1598362e26904373798c68454fe5331596a8f7b8adbb5cf5084c8843678413bcda9efbda43350467e3c5c281b23dcbe32f573a39a35b0e3693a5fd0156a8b44e58767525e4789f6fc370eeeba1f9ed761dd70fa697bcde13a26ba820f129c709c53b7e75a22670a0f8cb857fe22a7e4e23e0ae5e301992886c5eaa37f11f4bd1aa674b7671fa8ba7bfa7183178f6e58d958ae1acd465b44603985ed52fac5cde7408fc03043bd8a82d9a83b61460748df963c7e4106f67a1768284f3b703c60e54f1db328bda31b6a28429b91717a9d2ba5e924620bb5a81af9791c938ed0d5054195401b1fd171b104e82345769b42b254d73b560a2ab610d7f83587eefc29ee9c00a639f9af7cc319267427925b146c8356032bd82499402b853a0126a145a3b88bed09e96fe75d94252492a2af79820ddba98603551b151776a79a37929cd69dd01ee56698c601cf14b3600eb0a26d6a2873aa7c87d034f06bb46613a75711b806e39874a930c67c77e71b9160cb2bb1cc628474db1b53f27659ce50ff9891a85cc747ae5991fcf0f78b26accbdac822ecf4cee94b73c17d7e13140e94a979819d2d966670517cc4abd3f1b1bae3febdbf8ae555b8907e2a00ec651e88a25162072125255e56b30f79e82b22dab8ae24eef23762302cb121789c4c90397383baf2c3f38b3f95d49688e9e783301dea2a423fc1ea79d9a88a9fbf83fff1d848d81d9401d56f3940509d104431542d88f5935575de5693d8841b6f6b3ed5fa4f1c4fbcde62738c87e20f3573b6d5e26e88c0006fd3f5d270ec54d4408df040c2d3dbfe29c4291d5b8a1f3e84a8945f320da0af60a261d2a4c149de0768a8d55e1e5f9a68f95f7a255dddd26d699e9c383f5ca309ed2b48f8c244c75fc9eb0594ce56c9d7df2a173dc6389293324eeab2a9cdd09b3af5fb5b77248627fb29653595325af0978e6e3ab7bd6f7adef93503f3b88ef03224e8e873454ae8fad21abda1280dae22e7fe3644e816d4fae66d6089743200efec24baffbb689cd0907bcb9d3d2cde505fc5b420d4de98ee607bfbb9175e6c707297446917d69fad472afae4b16d245a33ac9a06c1a266df3e76078d6b32fa7794c7f499f61ff17cf45114fdbb5ca4a716c8fdafacce0cf718aee136bb2b3a9c90561fec7a9edab38fab40865d215e8b6acb0f53cdcce5b2eddce77fc864021b47e901d43faa94c240a7b5a1c38d413ba8faf869bd169ef46425ad94f8b64013566e26a8885011551f14a795a4c153413fadf0c1787cd33b406df86ec07aa7c82cfbd59011895948eff91485aa961da75b5dd4964d33e22f43c7379068ba8c56d31f369b33c667a8d672270d8f5dd07ddc6e3d9b33719b3718df72e28d787f62b9e2a5da4fd41b5e76a77089c0b7e3d867f5dc7da4a13b44121b5bb5a3c45921cfa73f559b99e9db2bba38deec735515c0532001026040aebfe97b8d957f6fc94ed9395b17e6c41d1e7e3a33cede5d5bea7aa5108d0f823234ef52b8d148bf994aeb1f45999f50ae63d9dde63f4958c3221f8287405c28ef6e65b679d30753c3e2a65b5ffa9251fdceb2b5f8b2b0c83c8dba7a9c72a319fd6e71fb8feb6ffd862f3bac62570f312b84d98f014dcdb69819c9af6a91f0918c903cf03ef97680144e37b845d3fb4aa989e811787ebef30401143a106fa17f55c5d374b073d77fa929b63dfe144993f234503aa7518ac3cb55c64a56894d2958640570d7099b4f52ff3891c37e2a51cb4fb07504c323bff3ffaaf5a12fbd71ccda3389df2148623470d2a44f3527cff9a857279145df3977348751848eb2286f5d65709d28a3942942959741ac6e19b62488ab3277288a5e75772b30c81063ea2c1a219bb623e8f391d672ffdc0e674f4288bae091e4b2492a92a4c1f4c85f01a959015c1b1879649b819971536f2b6d34b66cce89bf24d2d401904f306db54d85e794f6d7a49d6135afcfae1bad8896f64d85e55b4c24147668c56e303db30c3c194db92143f4ca9afaf5a1473970385d8f260e01e7311a723e2f9877d15271ae6d656191727cee37e3533cbe47194fb52cca687584eb069354d9e45e7aed3ba8a04e91a0a4420feb1ce0f0620e74d8a922ed808fdd3dcaf4539aad74b8f592cce28492a5b058ebdbb96b14020ab51e2da8b1546ce93bbc218763f2a2a7fcc5a42644b1cdc910ca8e78bc60a243ab9295beb42228756e1a7bebef056607e15848461b227106acd1236f349276326855130e237282fe99dd41847253884e508e7000b2414dd2a7cfd3cb5009f40bff04c6b3d30813de9bb9ffdd27d0dfdcc19c7580b3663d060c94b3632670bb9b972f42c0bd5866f7fb9302531c5ddfbfd75df4d53e81e702e1e074255e146f582d8fe046dee238291ff4486806a1ee20f9660327359c5f2509781b47a7b07ab6cfca9d2c7ed388e18331c8418f8aca209c8216c2995740bb6b87a76d076444e2c74cd10d792dc77c6546529522ddb905c066e1359f22fd5de3ae2701f7829f7ab52f3014dd7824ebbc315a7a1ca639a7ee68aad1f079a4da700ec72d077efb4b4583c9a3d3a8a8e7cde45662c89bc8f6c161f72e7981ec378958db786c7bac30ad4a43ad136f09ad6658d2d788110d78981a9c1492f29c4cceccab14260713c710c76e05f4702ed8047060d5141455c1526e72a5a1bbccb5a91a79da255b8756a9797ef1a88984642e1cf7a49ce724f808f22d746a3a8a8b528b076e54b368de1234b5f871ceb2ab69b0c0127697dfd10b77a49614c8632cfedbfe28237f4e0cc8a412781be226953fda96133739c9e72ed2bcb1d1d8efba5c0f5b5309f95f42f039d3e351ca8f16786a7ef5786b5a11bf8f2ddd3e1cf5a1f41df2aa90a5a39a86fb7e4166592ce3aa96c44da41c2dcf9010ad22826659b13946530d8dcd1e9ebcdc9d4bea671ca9a24a5979c4cc140eb5eac6dce32b5f4e5b2c56b4a9533500475f53009cd6c98547de7f830480c30dbb415323b7f6ed4c88198ad0268c24bdd63377151a56a6ce0c24bdb51b7b9313f5e6404f73ec25a336859ae70c355527f4e0605c435ff9965a9f9f0f0c2d950524e425f08f871d50de17f7f55896fe09fa0080d38ddf1efe882d627825a9c9f0ee37effccbf979d7767ded05bafccea82ef0230a936ec72cdd1f65a2551b4253c4894cd2657fb867520231aad3f191205862ff4d9afa6941a64f7548dad82b0e6e56c9b9d50d2209d172539da39c2adc2883301a15fea12aac2e80c9f972da88692d0806a92cb17bc951d1ba182fbf266971d2888928789c628d158e01f97f384b2c092bdf2be1a8e43e107b031a53e659c9be2d0093111d61f56507783dbc132f8c3118d81f15b4981884e4886b51948bea04af02fba9f931431b8768562b646140aa80a3887ea3cca30e8c7e55b861821e9ca256cb2bb410c4ab5ea0b189d36dfe50bc7dedaffb2e75145b8f6e07de712eb842696ae06ac6ce7ac93be3d32217b77f91d5a6df20bdb382fdd9e3937b9acd53214038f7be3dcaa7375d33838e7cf4bf5ebd8387f34809aef36751b18dff86d4c9844e621afc084399db2ab985700b3432c4553adf03bebcae52c32c9ef89468f7b777d428be4b95febf26141edf8c9dcc73a2c4c002ba9e03e72b185d81b098ba45d9a0ffeec14795e3fe520f7ed94333daf8f474c705dcb5fef09abb809cac97ae201ee0fecac6d6f4aef817cb9b7ece2db74fc6ac46470540e501d5922b847711c2634d6962a5cda3c13b2822188ea8fc7278de039946f6b86ff97974fd33677c47b31c950c93053a6204f2896ca37d7a2473965d5110eb8bb73cbc6a6ff75af3f0456cc96d6869a1bda90be6059d6a4224f233ea08977f8e71785cd75a3a9d5f7b79714299155fcf532147af698dcda3cb2e5389de84082da843d451b10566d03609cabeb601d075e85a75541e2afd203bc3017424664526339776022d2bb7d2f87420f48453b3b22cc31331dc195000d6e5b3dda37dd20fc27686033727e409f3cdf638aedb094a89bbf01e44cfb4ab1e95d613497f17c4bb4f53857011a45094ddf21f8c05f655ef0505d4c06b3714e2fec184099eba00cced5c8a997bb66bc4210a825da77461db81d17b78aae1b093ce697d984026165a02d5e60195b375fdf43ce93996b58932687dd5553bb85921e1a884c02f139321f89f9bf637672502032c9372ca04571e9cb1d7c5876da539f8b30faa05f17587a27d11c7c39cea4c73f4bed9138aa32e7f72c62fce330ff772d068f7e0933340f9ec0afead03661b0d8bfdc1dcaba20b425f8088bad3059b3c7438890dcffc47b1323654177e7192c91c406230e1290d2faf18776a7598557a7ac362e5d5512888eb88c07b3037f7b923e5c2d045eefa64fb2addaf18516e5ce3e4abc66f0aff5e1bf758bff4b424c8eae4c6b869185cc529543309391d2d499cc8367af4b846e60f22f9018647901c62f710f96b08a3a55c5972cc977a24c9dfcab289065dbd63be244a06c56ae036f32df6c3d6200fc54c351e6ef90db762927a4bd89526bbddde253004fbc98e61f1205b815ec304fb3ad9b8a55b809c6985b9eaa46426c828af39edcba335db51ad18eb6c36db74b9e31becacc32d26337be7c5750db0147ff93a7e8451f477aee6ee9222e37398dc5322529840bbc2ae93104b14a6dc6fc8492a488470cc1ce47a0ad7905bbb2d76412088069e0ce44d954bc53039746558f5f422fae1cbc25d3aad1c00128707ee9b2f07ba9bff6b256d6224ad6b51062b7d1ebb36a77e45510f7f463a5321a7936d1b4c10b110c61b516297de29fd952de0d3f0399dcb363857fdae55e6c8d9efd59125ba3a8dc4b80536ed3c397e46025b57877196e0b561cf4f0ed63531d995dd31d3ed6e7903c9f76c5176f623cbf79cf53cc5ac59b26d40077a464c6b34790b88fa84b209191767e40b27e13e72008ea819accc09d4506bcdf915d9db5d480c9998d1dc654a76002565e4289e7ab66c9e3599d64ff8d824dca1a1f09cac6f33cd61b4e67b1dcccb2eeb0aa60834327c03f1b325acf3807edbe48c172df1d37c91f76f0690d1a9d8544d6ebb3b9cbb4521e06b370cdb7ecc1c326282b4be8e7fd6c14dde47ee8c13bbd556b040df64ce8df4705b1ded8ca45cc3bd606c4d6967858a7ee03d747659547ef03cc4bb2cae25abccbedfd921082fe3f5c77843f96d1f1d352b007f409824b3bbcf28fdc9827394f75d35375c065fa7f42a70fee343c66b4da5514329d210c7578457b286204ba7f64f31d3231607b11d6e800b95fc9b0e55c89254b53e88c5657c2c0d975a1e7c1c289a34f18791c0c479d593e507b123541789694cbd1822ab47226c6f65c83a3828c67b971e25025a8e27af4416a3a727a08249b1953765fb558fa3942047b0504b734fdee4a397e3a669538b9d954c2fe573ef7aac5b3ea130f981aaa6b23278bbe37c71864e333230cd4fc4baa98d0a56c2420c7505e16e961b7351505637ae7f9a486a79f48de3b2975cb1ec4fbc64147a7382dc79d1f6e829ff5d2140848578bb457e87dbec7398102ccdcf93da74ec65428383a1813b4ed2319de8bff988d73833b1c1cb71938b28b84a28c0f84e9c3630a0224114432dccd8291818699cd6226b2f8028ed532686f77d02b1372082fb245c05f70f71f8f3ac92f2a8ce967c6fa4860ed4224a659b9756e7779f8f86367587ba41f6c251d93e5847c39978b5fc81a1f5dd71ea3b31d8b1bc44a17a6b2e086bf0a2b59e6ab9a1a848a070637f40a3534e9d6bc8e4c98077c9c81433b7e1908122bf6569b457843253619f9ce1d3f81aee49f2d58d2ee0c78f8005b805ae126831fdaadf28ddc4ba220b2bc38db9f153c3084a962586efd9a944f68bb80914b99176b13e65675c6efcce4477b2ead7e1dcec86189850c04774c6fa6c7511851d2f2440e1d1fe7fef6088ed3627456e111666ddbcba6cacc305a8ed2fccb2d80c67e948d5f418090495780657b57092a5e28aa7ca819f8e1b5eb737e24e83c34f2f7e56a93749db92687a6b9bcb5a50eee9abc1cf18a0da6b9786b4e41e0ef1f9f5942f1f09b23ebf220f5c33eaaee70119baa462e4eddc55d63f187bad709541debb766fab0be46d7c5b270b9098de44f2c35ad92bc936f46bdb84153548822353ff7a4b1f41ace6bb571ebdf78ea07b6df123981a995cbc1b288aa21a26ee73f0d3a36b7ef4c4ea66b2b1ff82acb5786e05b23f7538c1144b21aa6eb4940896d73e1f8c9354cd17bd15f10e2b36cd1ae4bf7cab64f72345b149ccc529f4d6ef0c812f00a9987e7fc5fbcb6ad30dce7a26e45750a7667bb3d5915e43330c25f7d8e433f42f6456c705a6aaf6e74a70c54bbc1cd2bd936d0a0b7b53bd660cbb0a626cfc778b3ded7227ca361fa47738fab8572774a10608b1986aa8b81b9f6c622b037b6ff0d4cc8c2a675f6186e22bb455d59e4ec517b36d1543d0331571554fce0bef1561fecab970b908f8a2474e2777db6bf72c1212bde766a5b9779316c7b9eeee8d6c1018dc350264acc9dba7d3641baa8f3f15d1e499a7f941c41f35d2322</script>
-  <div class="hbe hbe-content">
-    <div class="hbe hbe-input hbe-input-default">
-      <input class="hbe hbe-input-field hbe-input-field-default" type="password" id="hbePass">
-      <label class="hbe hbe-input-label hbe-input-label-default" for="hbePass">
-        <span class="hbe hbe-input-label-content hbe-input-label-content-default">Hey, password is required here.</span>
-      </label>
-    </div>
-  </div>
-</div>
-<script data-pjax src="/lib/hbe.js"></script><link href="/css/hbe.style.css" rel="stylesheet" type="text/css">]]></content>
-      <categories>
-        <category>虚拟化</category>
-      </categories>
-      <tags>
-        <tag>虚拟化技术</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>YANG</title>
     <url>/2021/09/03/YANG/</url>
     <content><![CDATA[<p>NETCONF协议分为传输层、RPC层、操作层和内容层。其中，内容层是唯一没有标准化的层，于是一种新的建模语言YANG产生了，它的目标是对NETCONF数据模型、操作进行建模，覆盖NETCONF协议的操作层和内容层</p>
@@ -1349,6 +1327,28 @@ BPDU处理变化:
 <p>跨平台进行数据交互，它可以跨操作系统，也可以跨编程语言的平台。</p>
 <h1 id="相关博客link"><a href="#相关博客link" class="headerlink" title="相关博客link"></a>相关博客link</h1><p><a href="https://www.cnblogs.com/FrankZhou2017/p/7258264.html">关于YANG基础的博客：LINK</a><br><a href="https://www.sdnlab.com/18066.html">关于YANG模型的博客：LINK</a><br><a href="https://blog.csdn.net/qq_34272143/article/details/87164488?ops_request_misc=&request_id=&biz_id=102&utm_term=xml&utm_medium=distribute.pc_search_result.none-task-blog-2~all~sobaiduweb~default-2-87164488.nonecase&spm=1018.2226.3001.4187">关于XML详解的博客：LINK</a></p>
 ]]></content>
+  </entry>
+  <entry>
+    <title>VXLAN Mapping技术</title>
+    <url>/2021/08/09/VXLAN-Mapping%E6%8A%80%E6%9C%AF/</url>
+    <content><![CDATA[<div class="hbe hbe-container" id="hexo-blog-encrypt" data-wpm="Oh, this is an invalid password. Check and try again, please." data-whm="OOPS, these decrypted content may changed, but you can still have a look.">
+  <script id="hbeData" type="hbeData" data-hmacdigest="63c76943bcc8574b5d17d1ae19a01924d91cac1574c409ff5b037cc7e1bbbcbb">f6139c82e97dc16a5fc8c8565b4be2a670b200d65d46e157006322273b428b2062b4976a3c45bcb3779f0bdc7f557d6e53c877662e1fdb877b7114ded02f7d5a1d98bc90677765233a7babde1d3a205e7b2909d60938db6a99c26ec265cb9427c32392f84669c6e8dd4c12fc8b5043f8fc47115e82166bd34434329e7951261662e2254678cb6d931d187f27691e092d2ef6f9fed23d13e515d5df03ee42fd347919c94bbb6b17402ca9ace0eeefe84aaa22ed4d88a43cbe1d63fc73f061a462d380ff1c03abf3fb4be029e5d48dbd0aed931c8deae8566930c01bbfc588544edcf005b381f6e70963ea5fc8e26de4c15fa1705561fd6a2f4976a809eb7af3972bdcdb711a63cbc6545a4a3cce219d2043b9e9136de5d36a5e4fdf7e6e76d87fea34d0a126aa87f43e9a27a9bf74cc4590b5b9df05136ba5c7a2a133be0b1f7529c8b028b083bc06e043d1e0e7f76eb906a24bce941bc4eeae1f86bef3a86c42958d565da1fef400c093c1bc62ec48f93e45a643a18eb1e3e34c000e568e6c172dba81f846e0374e139d0cd46657feced3d7d5c01a12273fe6218c8fa48176ab35e2987572efb4c8a0a45645aa9a41edfc7a88c0e728297caa0a723471243cd81b106efdd2f8c9ab7767766f62b85508b9fd7e53d5c4ecdf7b8b899047b32700deeff9816a7f58d0b16a75f56c74e997f019568aa1febb23a87d3ba84d2a2a063fe0f36f1c39596cdaa692423678097c9a3b2a0641dfe7e7f6771997607aa4bce47d7a788b740854e16842a56c3c2119740beeb018d6c98ee90f84cf747b50067ad72c84bcb1c146155197a92aa6af6e2f769e708a19b41f3d4da95710d4a975ae5b1b25f05ebe49ae39f13e379ed759572f813d848547f28cac4b5ff4be05fb1e0c574a2d5639a3f0ffa08bdf37492248574708bfcabcabdde8e7e61f75b165130ab60c35964b3d3874861b593388603248297ad944218530ad2b0496056494b75cfc6c6a87aa0e13e326e6459f14edd0b200a8eac9957168d6bffc8ccf663dd80ec5e2d808ac8b78bcbc83942ef25b5098c10d0c78a32eaebc1f065222c1be68b63f7de964ca4dccfdebe7e598b752de5349880a9808bb584e4ecd47355fc71c8026cc0c123c9237c55225348ec169e732c3a07d1033d7e856bfebe9a0a8b35d3ab047b0d17353a8c984a1a89f67953683ce6a49102ca625da87a1c01973a81896f2b567042c6e506027bfa865a03bf622904c6811802dae5e67af713c4a2366c9781a67cd0527da4d04ae56a1fdc1b43c0e34a6f30dbc815f051b718524bd43f3525370010a1b9ec29626d1e7fc4eed187e14da7404803a7ead8602c89cfceaa564f1696462b5ea2e8ae16ee23775602f285a1934537b09be97f5f4d9bd5a594464ee1ec67fc7a87f71760156ad95d8e98d24768181892843b2211d8bc92d227717de6dd3b3d3d0b8599f59d23956e158b3de8c7ce15c9736f9bb1cf6990513c4a0300dba16ae577d4ec79ce2eabdce8adda2acb2b6f878d9929b1f2c8b4ec690e3e9bc4be129e7a7c36d6a81e72b3df6f96d475d837b75e57b9e1b9bb7f9aeb146535944aef97cb5eeb7877045ccda3940685ee5028fb3f5d0f98e5c5ce9add3a993122784fed5c257e230072807c61a87223670d8118aaa00ea2e70bf4490012961d0362bb3e31712050983cf9fa0fa7e62a139c8cb431444cd0422d7de83fc84bfc2078c448dd28fe8a69dd9d4884439a921c632c2aa34ff5f1fe130394e88c840b3cf832b4358369ef19cda3edd9eb168ebc691872cbb80d13de1cc3027f96992e3d83fc79fd15486e973726a66763ba6c34a5f47678807fe71530a63ba2182bd0edd462006620a9968471dc947b51e6641a5f21219d6d2a6618b6686a81b4baaad14382555ecfede10e78f0bfc58d6ee7efe334a3a4d3a3b67663ee7be3172a7ebb36b920c943028d458fb30277e0e80a85b1e042d2905f75a2143329c5075759ef568bfa34a6c7f8b2004a03b90f56ad7f3cb09b0c3fe333d6ae45281c0f2407d901a04f3dd9f5b8a8f9b60b25810c91f528c7c479365efe6a570b56e0f24d0dab9ab7d9f85dcae43a2827567a353013093282da5dd19f808abacb14a1123b6d53d797507695d69847f04a66805d5aeb3c7c3487dd5e2ecf807abd346443c847cd954380e0d07da6fa45078c79efcf85483d60a5091576f28d03d21d8362d238a4cf97cd7357aa14409146e1b36eab4d628bf15da0067a41e06b25f17080229c9b57445af3db745c921796225e8459545e35e330483298e01e7ff4876c5beb8274ae46c95674c23267e75bc4158242be2e0de28e5cec27fc14afe71cf4d60951aaca9f81c29b41dfc9139e233395808e3c7566756f446c73926a20e8c77717963cbfa65ad1d08e610919d5eb169c3feeb2732b004f49c240ffd2c9d04856a88286b9c53bb19cece3d2af6de9aa173a7fa57b01e6af8a28a623d37b38b9348ad2d7519d173dba66bb5dc174ff101e809b1484dfca32c7c1c9c04d6d9b0be716e3e2c8971105ba423b2ed614f5bf65eea85dfbfcb53b3dbf39be3496961934ac277ca9546c56312bcbe5c6674150f29f142d8f30f910fb88fc811e87792abdebd1f9ffcc07a4102a0a2efcc150929a3956a4aa7497f7a8a67e619eeac5abde4023ff0d8f50dab69e9d81a528e235b6afe2fca44c0ce5df91f5791daa43a8a42ecea24bb8c3d0cb17dbdf3c6fb671c126b2710f3a60b24feb8da9b07bdf2e1eb70f470a0140c1aebbe8a63c66c11955566bf1133b555433be70352d6e47f3c08b91988b52c181da98b64982ab00d4ebd79630153d3bc142895c6d7334a3a45fe7d522c82a5b231cb2f1598362e26904373798c68454fe5331596a8f7b8adbb5cf5084c8843678413bcda9efbda43350467e3c5c281b23dcbe32f573a39a35b0e3693a5fd0156a8b44e58767525e4789f6fc370eeeba1f9ed761dd70fa697bcde13a26ba820f129c709c53b7e75a22670a0f8cb857fe22a7e4e23e0ae5e301992886c5eaa37f11f4bd1aa674b7671fa8ba7bfa7183178f6e58d958ae1acd465b44603985ed52fac5cde7408fc03043bd8a82d9a83b61460748df963c7e4106f67a1768284f3b703c60e54f1db328bda31b6a28429b91717a9d2ba5e924620bb5a81af9791c938ed0d5054195401b1fd171b104e82345769b42b254d73b560a2ab610d7f83587eefc29ee9c00a639f9af7cc319267427925b146c8356032bd82499402b853a0126a145a3b88bed09e96fe75d94252492a2af79820ddba98603551b151776a79a37929cd69dd01ee56698c601cf14b3600eb0a26d6a2873aa7c87d034f06bb46613a75711b806e39874a930c67c77e71b9160cb2bb1cc628474db1b53f27659ce50ff9891a85cc747ae5991fcf0f78b26accbdac822ecf4cee94b73c17d7e13140e94a979819d2d966670517cc4abd3f1b1bae3febdbf8ae555b8907e2a00ec651e88a25162072125255e56b30f79e82b22dab8ae24eef23762302cb121789c4c90397383baf2c3f38b3f95d49688e9e783301dea2a423fc1ea79d9a88a9fbf83fff1d848d81d9401d56f3940509d104431542d88f5935575de5693d8841b6f6b3ed5fa4f1c4fbcde62738c87e20f3573b6d5e26e88c0006fd3f5d270ec54d4408df040c2d3dbfe29c4291d5b8a1f3e84a8945f320da0af60a261d2a4c149de0768a8d55e1e5f9a68f95f7a255dddd26d699e9c383f5ca309ed2b48f8c244c75fc9eb0594ce56c9d7df2a173dc6389293324eeab2a9cdd09b3af5fb5b77248627fb29653595325af0978e6e3ab7bd6f7adef93503f3b88ef03224e8e873454ae8fad21abda1280dae22e7fe3644e816d4fae66d6089743200efec24baffbb689cd0907bcb9d3d2cde505fc5b420d4de98ee607bfbb9175e6c707297446917d69fad472afae4b16d245a33ac9a06c1a266df3e76078d6b32fa7794c7f499f61ff17cf45114fdbb5ca4a716c8fdafacce0cf718aee136bb2b3a9c90561fec7a9edab38fab40865d215e8b6acb0f53cdcce5b2eddce77fc864021b47e901d43faa94c240a7b5a1c38d413ba8faf869bd169ef46425ad94f8b64013566e26a8885011551f14a795a4c153413fadf0c1787cd33b406df86ec07aa7c82cfbd59011895948eff91485aa961da75b5dd4964d33e22f43c7379068ba8c56d31f369b33c667a8d672270d8f5dd07ddc6e3d9b33719b3718df72e28d787f62b9e2a5da4fd41b5e76a77089c0b7e3d867f5dc7da4a13b44121b5bb5a3c45921cfa73f559b99e9db2bba38deec735515c0532001026040aebfe97b8d957f6fc94ed9395b17e6c41d1e7e3a33cede5d5bea7aa5108d0f823234ef52b8d148bf994aeb1f45999f50ae63d9dde63f4958c3221f8287405c28ef6e65b679d30753c3e2a65b5ffa9251fdceb2b5f8b2b0c83c8dba7a9c72a319fd6e71fb8feb6ffd862f3bac62570f312b84d98f014dcdb69819c9af6a91f0918c903cf03ef97680144e37b845d3fb4aa989e811787ebef30401143a106fa17f55c5d374b073d77fa929b63dfe144993f234503aa7518ac3cb55c64a56894d2958640570d7099b4f52ff3891c37e2a51cb4fb07504c323bff3ffaaf5a12fbd71ccda3389df2148623470d2a44f3527cff9a857279145df3977348751848eb2286f5d65709d28a3942942959741ac6e19b62488ab3277288a5e75772b30c81063ea2c1a219bb623e8f391d672ffdc0e674f4288bae091e4b2492a92a4c1f4c85f01a959015c1b1879649b819971536f2b6d34b66cce89bf24d2d401904f306db54d85e794f6d7a49d6135afcfae1bad8896f64d85e55b4c24147668c56e303db30c3c194db92143f4ca9afaf5a1473970385d8f260e01e7311a723e2f9877d15271ae6d656191727cee37e3533cbe47194fb52cca687584eb069354d9e45e7aed3ba8a04e91a0a4420feb1ce0f0620e74d8a922ed808fdd3dcaf4539aad74b8f592cce28492a5b058ebdbb96b14020ab51e2da8b1546ce93bbc218763f2a2a7fcc5a42644b1cdc910ca8e78bc60a243ab9295beb42228756e1a7bebef056607e15848461b227106acd1236f349276326855130e237282fe99dd41847253884e508e7000b2414dd2a7cfd3cb5009f40bff04c6b3d30813de9bb9ffdd27d0dfdcc19c7580b3663d060c94b3632670bb9b972f42c0bd5866f7fb9302531c5ddfbfd75df4d53e81e702e1e074255e146f582d8fe046dee238291ff4486806a1ee20f9660327359c5f2509781b47a7b07ab6cfca9d2c7ed388e18331c8418f8aca209c8216c2995740bb6b87a76d076444e2c74cd10d792dc77c6546529522ddb905c066e1359f22fd5de3ae2701f7829f7ab52f3014dd7824ebbc315a7a1ca639a7ee68aad1f079a4da700ec72d077efb4b4583c9a3d3a8a8e7cde45662c89bc8f6c161f72e7981ec378958db786c7bac30ad4a43ad136f09ad6658d2d788110d78981a9c1492f29c4cceccab14260713c710c76e05f4702ed8047060d5141455c1526e72a5a1bbccb5a91a79da255b8756a9797ef1a88984642e1cf7a49ce724f808f22d746a3a8a8b528b076e54b368de1234b5f871ceb2ab69b0c0127697dfd10b77a49614c8632cfedbfe28237f4e0cc8a412781be226953fda96133739c9e72ed2bcb1d1d8efba5c0f5b5309f95f42f039d3e351ca8f16786a7ef5786b5a11bf8f2ddd3e1cf5a1f41df2aa90a5a39a86fb7e4166592ce3aa96c44da41c2dcf9010ad22826659b13946530d8dcd1e9ebcdc9d4bea671ca9a24a5979c4cc140eb5eac6dce32b5f4e5b2c56b4a9533500475f53009cd6c98547de7f830480c30dbb415323b7f6ed4c88198ad0268c24bdd63377151a56a6ce0c24bdb51b7b9313f5e6404f73ec25a336859ae70c355527f4e0605c435ff9965a9f9f0f0c2d950524e425f08f871d50de17f7f55896fe09fa0080d38ddf1efe882d627825a9c9f0ee37effccbf979d7767ded05bafccea82ef0230a936ec72cdd1f65a2551b4253c4894cd2657fb867520231aad3f191205862ff4d9afa6941a64f7548dad82b0e6e56c9b9d50d2209d172539da39c2adc2883301a15fea12aac2e80c9f972da88692d0806a92cb17bc951d1ba182fbf266971d2888928789c628d158e01f97f384b2c092bdf2be1a8e43e107b031a53e659c9be2d0093111d61f56507783dbc132f8c3118d81f15b4981884e4886b51948bea04af02fba9f931431b8768562b646140aa80a3887ea3cca30e8c7e55b861821e9ca256cb2bb410c4ab5ea0b189d36dfe50bc7dedaffb2e75145b8f6e07de712eb842696ae06ac6ce7ac93be3d32217b77f91d5a6df20bdb382fdd9e3937b9acd53214038f7be3dcaa7375d33838e7cf4bf5ebd8387f34809aef36751b18dff86d4c9844e621afc084399db2ab985700b3432c4553adf03bebcae52c32c9ef89468f7b777d428be4b95febf26141edf8c9dcc73a2c4c002ba9e03e72b185d81b098ba45d9a0ffeec14795e3fe520f7ed94333daf8f474c705dcb5fef09abb809cac97ae201ee0fecac6d6f4aef817cb9b7ece2db74fc6ac46470540e501d5922b847711c2634d6962a5cda3c13b2822188ea8fc7278de039946f6b86ff97974fd33677c47b31c950c93053a6204f2896ca37d7a2473965d5110eb8bb73cbc6a6ff75af3f0456cc96d6869a1bda90be6059d6a4224f233ea08977f8e71785cd75a3a9d5f7b79714299155fcf532147af698dcda3cb2e5389de84082da843d451b10566d03609cabeb601d075e85a75541e2afd203bc3017424664526339776022d2bb7d2f87420f48453b3b22cc31331dc195000d6e5b3dda37dd20fc27686033727e409f3cdf638aedb094a89bbf01e44cfb4ab1e95d613497f17c4bb4f53857011a45094ddf21f8c05f655ef0505d4c06b3714e2fec184099eba00cced5c8a997bb66bc4210a825da77461db81d17b78aae1b093ce697d984026165a02d5e60195b375fdf43ce93996b58932687dd5553bb85921e1a884c02f139321f89f9bf637672502032c9372ca04571e9cb1d7c5876da539f8b30faa05f17587a27d11c7c39cea4c73f4bed9138aa32e7f72c62fce330ff772d068f7e0933340f9ec0afead03661b0d8bfdc1dcaba20b425f8088bad3059b3c7438890dcffc47b1323654177e7192c91c406230e1290d2faf18776a7598557a7ac362e5d5512888eb88c07b3037f7b923e5c2d045eefa64fb2addaf18516e5ce3e4abc66f0aff5e1bf758bff4b424c8eae4c6b869185cc529543309391d2d499cc8367af4b846e60f22f9018647901c62f710f96b08a3a55c5972cc977a24c9dfcab289065dbd63be244a06c56ae036f32df6c3d6200fc54c351e6ef90db762927a4bd89526bbddde253004fbc98e61f1205b815ec304fb3ad9b8a55b809c6985b9eaa46426c828af39edcba335db51ad18eb6c36db74b9e31becacc32d26337be7c5750db0147ff93a7e8451f477aee6ee9222e37398dc5322529840bbc2ae93104b14a6dc6fc8492a488470cc1ce47a0ad7905bbb2d76412088069e0ce44d954bc53039746558f5f422fae1cbc25d3aad1c00128707ee9b2f07ba9bff6b256d6224ad6b51062b7d1ebb36a77e45510f7f463a5321a7936d1b4c10b110c61b516297de29fd952de0d3f0399dcb363857fdae55e6c8d9efd59125ba3a8dc4b80536ed3c397e46025b57877196e0b561cf4f0ed63531d995dd31d3ed6e7903c9f76c5176f623cbf79cf53cc5ac59b26d40077a464c6b34790b88fa84b209191767e40b27e13e72008ea819accc09d4506bcdf915d9db5d480c9998d1dc654a76002565e4289e7ab66c9e3599d64ff8d824dca1a1f09cac6f33cd61b4e67b1dcccb2eeb0aa60834327c03f1b325acf3807edbe48c172df1d37c91f76f0690d1a9d8544d6ebb3b9cbb4521e06b370cdb7ecc1c326282b4be8e7fd6c14dde47ee8c13bbd556b040df64ce8df4705b1ded8ca45cc3bd606c4d6967858a7ee03d747659547ef03cc4bb2cae25abccbedfd921082fe3f5c77843f96d1f1d352b007f409824b3bbcf28fdc9827394f75d35375c065fa7f42a70fee343c66b4da5514329d210c7578457b286204ba7f64f31d3231607b11d6e800b95fc9b0e55c89254b53e88c5657c2c0d975a1e7c1c289a34f18791c0c479d593e507b123541789694cbd1822ab47226c6f65c83a3828c67b971e25025a8e27af4416a3a727a08249b1953765fb558fa3942047b0504b734fdee4a397e3a669538b9d954c2fe573ef7aac5b3ea130f981aaa6b23278bbe37c71864e333230cd4fc4baa98d0a56c2420c7505e16e961b7351505637ae7f9a486a79f48de3b2975cb1ec4fbc64147a7382dc79d1f6e829ff5d2140848578bb457e87dbec7398102ccdcf93da74ec65428383a1813b4ed2319de8bff988d73833b1c1cb71938b28b84a28c0f84e9c3630a0224114432dccd8291818699cd6226b2f8028ed532686f77d02b1372082fb245c05f70f71f8f3ac92f2a8ce967c6fa4860ed4224a659b9756e7779f8f86367587ba41f6c251d93e5847c39978b5fc81a1f5dd71ea3b31d8b1bc44a17a6b2e086bf0a2b59e6ab9a1a848a070637f40a3534e9d6bc8e4c98077c9c81433b7e1908122bf6569b457843253619f9ce1d3f81aee49f2d58d2ee0c78f8005b805ae126831fdaadf28ddc4ba220b2bc38db9f153c3084a962586efd9a944f68bb80914b99176b13e65675c6efcce4477b2ead7e1dcec86189850c04774c6fa6c7511851d2f2440e1d1fe7fef6088ed3627456e111666ddbcba6cacc305a8ed2fccb2d80c67e948d5f418090495780657b57092a5e28aa7ca819f8e1b5eb737e24e83c34f2f7e56a93749db92687a6b9bcb5a50eee9abc1cf18a0da6b9786b4e41e0ef1f9f5942f1f09b23ebf220f5c33eaaee70119baa462e4eddc55d63f187bad709541debb766fab0be46d7c5b270b9098de44f2c35ad92bc936f46bdb84153548822353ff7a4b1f41ace6bb571ebdf78ea07b6df123981a995cbc1b288aa21a26ee73f0d3a36b7ef4c4ea66b2b1ff82acb5786e05b23f7538c1144b21aa6eb4940896d73e1f8c9354cd17bd15f10e2b36cd1ae4bf7cab64f72345b149ccc529f4d6ef0c812f00a9987e7fc5fbcb6ad30dce7a26e45750a7667bb3d5915e43330c25f7d8e433f42f6456c705a6aaf6e74a70c54bbc1cd2bd936d0a0b7b53bd660cbb0a626cfc778b3ded7227ca361fa47738fab8572774a10608b1986aa8b81b9f6c622b037b6ff0d4cc8c2a675f6186e22bb455d59e4ec517b36d1543d0331571554fce0bef1561fecab970b908f8a2474e2777db6bf72c1212bde766a5b9779316c7b9eeee8d6c1018dc350264acc9dba7d3641baa8f3f15d1e499a7f941c41f35d2322</script>
+  <div class="hbe hbe-content">
+    <div class="hbe hbe-input hbe-input-default">
+      <input class="hbe hbe-input-field hbe-input-field-default" type="password" id="hbePass">
+      <label class="hbe hbe-input-label hbe-input-label-default" for="hbePass">
+        <span class="hbe hbe-input-label-content hbe-input-label-content-default">Hey, password is required here.</span>
+      </label>
+    </div>
+  </div>
+</div>
+<script data-pjax src="/lib/hbe.js"></script><link href="/css/hbe.style.css" rel="stylesheet" type="text/css">]]></content>
+      <categories>
+        <category>虚拟化</category>
+      </categories>
+      <tags>
+        <tag>虚拟化技术</tag>
+      </tags>
   </entry>
   <entry>
     <title>ansible</title>
@@ -1954,20 +1954,6 @@ grep -i 关键字 file 忽略大小写
       </tags>
   </entry>
   <entry>
-    <title>Python缺省参数</title>
-    <url>/2021/08/26/python%E7%BC%BA%E7%9C%81%E5%8F%82%E6%95%B0/</url>
-    <content><![CDATA[<p>缺省函数就是指 在没有指定的情况下 使用默认保存的参数</p>
-<span id="more"></span>
-
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="string">&quot;&quot;&quot;定义缺省函数 就是在形参后面加个等号&quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">print_info</span>(<span class="params">name, gender=<span class="literal">True</span></span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;缺省参数必须在 参数列表末尾&quot;&quot;&quot;</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;调用多个缺省参数时 必须指定参数名&quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">    gender_text = <span class="string">&quot;男生&quot;</span></span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> gender:</span><br><span class="line">        gender_text = <span class="string">&quot;女生&quot;</span></span><br><span class="line"></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;%s 是 %s &quot;</span> % (name, gender_text))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">print_info(<span class="string">&quot;小郑&quot;</span>)</span><br><span class="line">print_info(<span class="string">&quot;海子姐&quot;</span>, <span class="literal">False</span>)</span><br></pre></td></tr></table></figure>]]></content>
-      <categories>
-        <category>Python</category>
-      </categories>
-      <tags>
-        <tag>Python</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Python装饰器</title>
     <url>/2021/08/26/python%E8%A3%85%E9%A5%B0%E5%99%A8/</url>
     <content><![CDATA[<p>python装饰器笔记</p>
@@ -1980,6 +1966,20 @@ grep -i 关键字 file 忽略大小写
 <h2 id="function-的情况"><a href="#function-的情况" class="headerlink" title="function( )的情况"></a>function( )的情况</h2><figure class="highlight stylus"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="title">addFunction</span><span class="params">(<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>)</span></span></span><br><span class="line"></span><br><span class="line">运行结果</span><br><span class="line"><span class="number">0</span></span><br><span class="line">Spend <span class="number">0.20083141326904297s</span></span><br></pre></td></tr></table></figure>
 
 <h2 id="function-5-的情况"><a href="#function-5-的情况" class="headerlink" title="function(5)的情况"></a>function(5)的情况</h2><figure class="highlight stylus"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="title">addFunction</span><span class="params">(<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>)</span></span></span><br><span class="line"></span><br><span class="line">运行结果</span><br><span class="line"><span class="number">5</span></span><br><span class="line">Spend <span class="number">0.20568037033081055s</span></span><br></pre></td></tr></table></figure>]]></content>
+      <categories>
+        <category>Python</category>
+      </categories>
+      <tags>
+        <tag>Python</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Python缺省参数</title>
+    <url>/2021/08/26/python%E7%BC%BA%E7%9C%81%E5%8F%82%E6%95%B0/</url>
+    <content><![CDATA[<p>缺省函数就是指 在没有指定的情况下 使用默认保存的参数</p>
+<span id="more"></span>
+
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="string">&quot;&quot;&quot;定义缺省函数 就是在形参后面加个等号&quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">print_info</span>(<span class="params">name, gender=<span class="literal">True</span></span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;缺省参数必须在 参数列表末尾&quot;&quot;&quot;</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;调用多个缺省参数时 必须指定参数名&quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">    gender_text = <span class="string">&quot;男生&quot;</span></span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> gender:</span><br><span class="line">        gender_text = <span class="string">&quot;女生&quot;</span></span><br><span class="line"></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;%s 是 %s &quot;</span> % (name, gender_text))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">print_info(<span class="string">&quot;小郑&quot;</span>)</span><br><span class="line">print_info(<span class="string">&quot;海子姐&quot;</span>, <span class="literal">False</span>)</span><br></pre></td></tr></table></figure>]]></content>
       <categories>
         <category>Python</category>
       </categories>
@@ -2107,8 +2107,110 @@ $0,1,2 // 0-脚本名 1-第一个参数 2-第二个参数
     <content><![CDATA[<p>经过最近的面试发现基础知识细节忘了很多所以<br>np switch复读</p>
 <span id="more"></span>
 
-<h1 id="NP-SWITCH-基础知识"><a href="#NP-SWITCH-基础知识" class="headerlink" title="NP SWITCH 基础知识"></a>NP SWITCH 基础知识</h1><p>集线器和交换机<br>集线器退出历史的舞台主要原因：端口共享带宽机制<br>交换机：端口带宽是独享的</p>
-<p><font color="#FF0000">集线器被定义为1层设备</font></p>
+<h1 id="NP-SWITCH"><a href="#NP-SWITCH" class="headerlink" title="NP SWITCH"></a>NP SWITCH</h1><h2 id="集线器和交换机"><a href="#集线器和交换机" class="headerlink" title="集线器和交换机"></a>集线器和交换机</h2><p>集线器退出历史的舞台主要原因：端口共享带宽机制<br>交换机：端口带宽是独享的，每个端口都是一个冲突域</p>
+<p><font color="#FF0000">集线器被定义为1层设备，传递电平信号</font></p>
+<h2 id="广播域"><a href="#广播域" class="headerlink" title="广播域"></a>广播域</h2><p>广播域是一组网络设备组成的区域，区域中所有设备都能接收到域内任何一台设备发出的广播帧。广播域的边界通常是路由器设备，这是因为路由器不转发广播数据帧。一个广播域通常是一个只包含单个IP子网的二层网络，VLAN就是其中一个实例。</p>
+<h2 id="基本交换功能"><a href="#基本交换功能" class="headerlink" title="基本交换功能"></a>基本交换功能</h2><p>当一台交换机收到一个数据帧后，必须要决定如何处理此帧。为了确定如何操作数据帧，交换机必须要了解网段中所有设备的位置信息。<br>设备的位置信息存放在内容可寻址存储（<font color="#FF0000">CAM内容可寻址存储，专用于存储表项的一段内存</font>）表中。CAM表存储着每台设备的MAC地址、学习MAC地址的端口，以及端口所属的VLAN。<br>CAM表中的信息决定了应该如何处理接受的数据帧。为了确定如何发送一个数据帧，交换机首先会查看帧的目的MAC地址，并在CAM表中检索这一MAC地址。CAM表会显示去往某个特定目的MAC地址的数据帧应该从哪个接口发出。简单来说，基本的2层交换功能遵守着以下的选路原则：</p>
+<blockquote>
+<p>如果目的MAC地址存在CAM表中，交换机将根据CAM表中目的MAC对应的出站端口将数据帧从此端口发出。这一过程称为转发<br>如果CAM表中检索到的出站端口与接收到数据帧的入站端口一致，则不需要将数据帧从此端口原路发送回去，并将忽略该数据帧。这一过程称为过滤<br>如果目的MAC不在CAM表中（未知的单播地址），交换机会将数据帧发送给与接收帧的入站端口所属相同VLAN的所有端口。这一过程称为泛洪，泛洪不会发送回入站端口<br>如果收到的数据帧的目的MAC地址是一个广播地址（全F），交换机也会执行泛洪行为，将数据帧发送给与接收帧的入站端口所属相同VLAN的所有端口，当然不包括接收帧的入站端口</p>
+</blockquote>
+<p><img src="/2021/09/18/switch%E7%9F%A5%E8%AF%86/MAC%E8%A1%A8.png" alt="MAC表"><br>这就是为什么交换机的本质是 源MAC学习，目的MAC转发和BUM泛洪了（基于透明网桥算法和MAC表）<br><img src="/2021/09/18/switch%E7%9F%A5%E8%AF%86/%E4%BA%8C%E5%B1%82%E8%BD%AC%E5%8F%91%E8%A1%A8.png" alt="二层转发表"></p>
+<h2 id="VLAN"><a href="#VLAN" class="headerlink" title="VLAN"></a>VLAN</h2><p>由于交换机是基于数据帧在物理端口之间交换数据的，因此可以在逻辑上对端口进行分组。每个逻辑端口组叫做虚拟局域网VLAN。交换机可以确保来自组内某个端口的流量不会发送到其他端口组中（这属于路由功能）。这些端口组（VLAN）可以看作成独立的LAN网段。<br>每个VLAN是一个独立的广播域。<font color="#FF0000">根据透明网桥的算法，广播包（去往所有设备的包）将发送给相同组（同VLAN）内的其他所有端口</font>。处于相同VLAN的所有端口同处在一个广播域下。</p>
+<h2 id="生成树协议"><a href="#生成树协议" class="headerlink" title="生成树协议"></a>生成树协议</h2><p>交换机的转发算法会在接收帧所在端口的VLAN中将所有的未知数据帧和广播数据帧泛洪至同VLAN内所有端口。这就产生了一个问题，如果网络设备连接成了一个物理环路，那么泛洪的数据帧将会沿着环路永远的在交换机之间传递。一旦物理上连接成了环路，环路中的数据帧将会以指数形式成倍增加，造成网络障碍<br>当然，网络环路也有好处，即提供冗余性。如果某条链路故障，流量仍可以继续使用其余路径到达目的地。为了充分发挥冗余性的优势而不受物理环路的限制，这就引出了生成树协议STP。</p>
+<h1 id="STP"><a href="#STP" class="headerlink" title="STP"></a>STP</h1><p>在未启用STP的情况下，<font color="#FF0000"><strong>冗余的网络拓扑</strong></font>会导致下述问题</p>
+<blockquote>
+<p>广播风暴：冗余网络的交换机会不断地泛洪广播帧。交换机会将广播帧泛洪给入站端口之外所有的端口，随后这些数据帧将沿着环路的各个方向一直传播下去<br>重复帧传输：目的站点可能会收到同一个单播数据帧的多份拷贝，这可能会导致接受协议的一些问题。多数协议只应该收到一份数据拷贝，如果收到了多份相同重复的数据帧，可能会导致不可修复的错误<br>不稳定的MAC数据库：<font color="#FF0000"><strong>当一台交换机的不同端口收到了相同的帧拷贝时，这种现象称为MAC地址漂移。MAC地址表会将帧的源MAC地址和接收到此帧的入站端口对应到一条表项中</strong></font>。如果存在环路，同一个MAC地址可能会从多个端口上接收到，这时就会造成MAC地址表的不稳定。针对漂移MAC地址的数据帧转发也会受到影响</p>
+</blockquote>
+<h2 id="BPDU"><a href="#BPDU" class="headerlink" title="BPDU"></a>BPDU</h2><p>桥协议数据单元</p>
+<pre><code>配置BPDU：计算STP
+TCN BPDU：通告网络拓扑变化
+</code></pre>
+<p>BPDU帧格式<br><img src="/2021/09/18/switch%E7%9F%A5%E8%AF%86/BPDU.png" alt="BPDU"></p>
+<h2 id="三步骤收敛网络"><a href="#三步骤收敛网络" class="headerlink" title="三步骤收敛网络"></a>三步骤收敛网络</h2><ol>
+<li>选举一个根桥：<strong>BID最小的</strong>。BID = 桥优先级+MAC地址</li>
+<li>在非根桥交换机上选举根端口：<strong>根端口是到达根桥路径开销最小的端口</strong></li>
+<li>在每条链路上选举指定端口：每条互联链路上选择一个端口作为指定端口。<strong>指定端口是链路两端交换机到达根桥路径开销最小的端口</strong></li>
+</ol>
+<p><strong>根桥</strong><br>每台交换机假设自己是根桥，向邻居发送BPDU（包含自己的BID，来进行比较），最终选举出最小BID的交换机为根桥</p>
+<p><strong>根端口</strong></p>
+<ol>
+<li>非根桥交换机上，去往根桥最低路径开销的端口</li>
+<li>如果多条路径开销相同，那么选择（邻居发来的）端口ID最小的为根端口<br><img src="/2021/09/18/switch%E7%9F%A5%E8%AF%86/%E6%A0%B9%E7%AB%AF%E5%8F%A3%E9%80%89%E4%B8%BE.png" alt="根端口选举"></li>
+</ol>
+<p><strong>指定端口</strong></p>
+<ol>
+<li>基于去往根桥的最低开销</li>
+<li>如果多条路径开销相同，最低的BID</li>
+<li>如果BID相同，最低的发送者BID</li>
+<li>如果发送者BID相同，最低的发送者端口ID</li>
+</ol>
+<h2 id="MSTP"><a href="#MSTP" class="headerlink" title="MSTP"></a>MSTP</h2><p>多生成树协议MST，<strong>主要目的是为了减少网络拓扑中生成树实例的总数量</strong>，从而减少交换机的CPU开销</p>
+<pre><code>比如网络的负载均衡涉及到两条链路以及1000个VLAN，
+这需要将1000个VLAN映射到两个MST实例中就可以了，
+将本来需要维护的1000棵生成树变成了只需要维护2个MST实例
+</code></pre>
+<h1 id="VLAN之间路由"><a href="#VLAN之间路由" class="headerlink" title="VLAN之间路由"></a>VLAN之间路由</h1><h2 id="外部路由实现VLAN之间路由"><a href="#外部路由实现VLAN之间路由" class="headerlink" title="外部路由实现VLAN之间路由"></a>外部路由实现VLAN之间路由</h2><p>终端 —— 交换机 —— 路由器</p>
+<pre><code>优点：
+    部署简单，只需要配置一个交换机端口和路由器接口
+    路由器负责VLAN间通信
+劣势：
+    路由器存在单点故障隐患
+    单一的流量路径可能造成阻塞
+    路由器使用CPU计算路由，会比硬件交换产生更多的延迟
+</code></pre>
+<h2 id="SVI实现VLAN之间路由"><a href="#SVI实现VLAN之间路由" class="headerlink" title="SVI实现VLAN之间路由"></a>SVI实现VLAN之间路由</h2><p>SVI交换机虚拟接口，每个VLAN只能关联一个SVI接口<br>SVI会为所有出入其VLAN端口的数据包提供三层转发功能</p>
+<pre><code>作用：
+    为VLAN提供网关，使流量可以进出这个VLAN
+    为交换机提供三层IP连通性
+    支持路由选择协议和桥接配置
+利弊：
+    速度远快于单臂路由器，因为是通过硬件完成的数据处理
+    无需使用额外的链路进行路由
+    没有单条链路限制，可以在交换机之间使用汇聚技术增加带宽
+    数据处理无需离开交换机，所以延迟更低
+弊端：
+    三层交换机造价更高
+</code></pre>
+<p><img src="/2021/09/18/switch%E7%9F%A5%E8%AF%86/VLAN%E4%B9%8B%E9%97%B4%E8%B7%AF%E7%94%B1.png" alt="VLAN之间路由"></p>
+<h2 id="VLAN间路由排障"><a href="#VLAN间路由排障" class="headerlink" title="VLAN间路由排障"></a>VLAN间路由排障</h2><table>
+<thead>
+<tr>
+<th>问题</th>
+<th>可能原因</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>VLAN缺失</td>
+<td>没有定义这个VLAN；没有在Trunk上启用这个VLAN；端口没有配置正常VLAN</td>
+</tr>
+<tr>
+<td>3层接口配置错误</td>
+<td>SVI上配置错误IP或掩码；SVI没有手动开启；SVI接口号与VLAN号码不匹配；VLAN间路由功能未启用</td>
+</tr>
+<tr>
+<td>路由协议配置错误</td>
+<td>新的接口没有加入到路由协议中</td>
+</tr>
+<tr>
+<td>主机配置错误</td>
+<td>IP或掩码配置错误；主机没有配置默认网关（SVI或三层接口地址）</td>
+</tr>
+</tbody></table>
+<h1 id="DHCP"><a href="#DHCP" class="headerlink" title="DHCP"></a>DHCP</h1><p><img src="/2021/09/18/switch%E7%9F%A5%E8%AF%86/DHCP%E6%93%8D%E4%BD%9C%E8%BF%87%E7%A8%8B.png" alt="DHCP操作过程"></p>
+<pre><code>客户端首先发送一个广播 DHCPDISCOVER信息去寻找DHCP服务器
+服务器会向客户端返回一个单播 DHCPOFFER消息为其提供配置参数。包括IP地址、域名、IP地址的租期等
+客户端可能会收到多个服务器的 DHCPOFFER消息，通常会选择接受第一个收到的
+客户端在接收到 DHCPOFFER之后，如果想要使用这些IP信息，需要发起正式的广播 DHCPREQUEST信息
+服务器使用单播 DHCPACK消息确认IP地址分配给此客户端
+</code></pre>
+<h2 id="配置DCHP-RELAY"><a href="#配置DCHP-RELAY" class="headerlink" title="配置DCHP RELAY"></a>配置DCHP RELAY</h2><p>DHCP是一个C/S模型的应用，由于广播只能在同VLAN传播，不能转发出VLAN边界，所以三层交换机需要使用一种DHCP中继代理的特性<br>如图5-17<br><img src="/2021/09/18/switch%E7%9F%A5%E8%AF%86/DHCPdelay.png" alt="DHCPdelay"><br>三层交换机使用命令ip helper-address配置了DHCP中继代理特性，将广播流量以单播的形式转发给DHCP服务器<br><img src="/2021/09/18/switch%E7%9F%A5%E8%AF%86/DHCP%E6%AD%A5%E9%AA%A4.png" alt="DHCP步骤"><br>在配置了DHCP中继地址的前提下，如果交换机从客户端接收到了一个广播DHCP请i去，则会以单播的形式将请求转发至ip helper-address命令中定义的IP地址</p>
+<h1 id="HSRP和VRRP"><a href="#HSRP和VRRP" class="headerlink" title="HSRP和VRRP"></a>HSRP和VRRP</h1><p>HSRP与VRRP的区别</p>
+<pre><code>·HSRP为CISCO私有，VRRP为公有协议
+·VRRP允许物理IP与虚拟IP重叠(成为MASTER)，但是HSRP不允许
+·VRRP默认开启抢占，HSRP不开启
+·HSRP以组播224.0.0.2发送报文；虚拟mac格式：0000.0c07.ac组ID
+·VRRP以组播224.0.0.18发送；000.5e00.01组ID
+</code></pre>
 ]]></content>
       <categories>
         <category>数据通信</category>
@@ -2205,38 +2307,6 @@ $0,1,2 // 0-脚本名 1-第一个参数 2-第二个参数
       </tags>
   </entry>
   <entry>
-    <title>关于hexo修改css问题</title>
-    <url>/2021/08/23/%E5%85%B3%E4%BA%8Ehexo%E9%83%A8%E7%BD%B2%E9%97%AE%E9%A2%98/</url>
-    <content><![CDATA[<p>解决hexo+next在本地部署成功，上传后失效问题</p>
-<span id="more"></span>
-
-<h1 id="问题1：重新部署css失效"><a href="#问题1：重新部署css失效" class="headerlink" title="问题1：重新部署css失效"></a>问题1：重新部署css失效</h1><p>hexo在每次推送更新的时候，都需要<u>清除缓存</u>，重新<u>部署静态文件</u>，再<u>推送更新</u>。<br>每次清除缓存时都会删除main.css文件，再根据配置文件生成新的main.css文件。<br>因为美观，我就自定义了博客的main.css文件，来修改页面的字体和样式。</p>
-<p>然而在下一次更新博客的时候，上自己的网站一看，修改的样式没了</p>
-<blockquote>
-<p>原因：当再次推送时，重新部署的静态文件.css不包含个人修改的<br>解决方案：先清除缓存，再部署静态文件，此时将修改好的main.css文件覆盖 <font color="#F08080">/根目录/public/css/main.css</font>。覆盖成功后，再推送更新</p>
-</blockquote>
-<p><img src="/2021/08/23/%E5%85%B3%E4%BA%8Ehexo%E9%83%A8%E7%BD%B2%E9%97%AE%E9%A2%98/main%E6%96%87%E4%BB%B6%E4%BD%8D%E7%BD%AE.png" alt="main文件位置"></p>
-<figure class="highlight css"><table><tr><td class="code"><pre><span class="line">hexo cl</span><br><span class="line">hexo g</span><br><span class="line">手动去覆盖<span class="selector-tag">main</span><span class="selector-class">.css</span>，覆盖成功后</span><br><span class="line">hexo d</span><br></pre></td></tr></table></figure>
-
-<h1 id="问题2：增加功能失败"><a href="#问题2：增加功能失败" class="headerlink" title="问题2：增加功能失败"></a>问题2：增加功能失败</h1><p>问题描述：本地测试成功，但推送后网页上失效</p>
-<blockquote>
-<p>前提：本地测试成功——代表配置文件配置成功</p>
-</blockquote>
-<p>我在写了一些博客之后发现，想要查询以前写的内容很不方便，于是新增了搜索的功能<br>在本地测试成功的情况下，我推送了更新，但网站上的搜索功能却失效了<br>在确认配置文件正确后，使用F12查看了网页</p>
-<p><img src="/2021/08/23/%E5%85%B3%E4%BA%8Ehexo%E9%83%A8%E7%BD%B2%E9%97%AE%E9%A2%98/F12.png" alt="F12"></p>
-<p>发现本地测试页面渲染出的Html、css文件都和网站上部署后的不一样</p>
-<blockquote>
-<p>原因：因为我在<font color="#FF000">增加搜索功能前</font>修改了main.css并用这个main.css覆盖了系统重新部署的main.css，导致.css文件里并没有生成搜索功能该有的代码<br>解决方案：可以使用文本对比工具，将系统重新部署的main.css文件和之前修改的main.css对比，将新增功能的代码段落加入到修改的main.css中。当修改的main.css文件中有新增功能的段落后，部署的网站上就能正常使用功能了</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>博客</category>
-      </categories>
-      <tags>
-        <tag>hexo</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>交换机数据平面，控制平面和管理平面的分离</title>
     <url>/2021/07/22/%E5%85%B3%E4%BA%8E%E6%95%B0%E6%8D%AE%E5%B9%B3%E9%9D%A2%EF%BC%8C%E6%8E%A7%E5%88%B6%E5%B9%B3%E9%9D%A2%E5%92%8C%E8%BD%AC%E5%8F%91%E5%B9%B3%E9%9D%A2%E7%9A%84%E5%88%86%E7%A6%BB%E9%97%AE%E9%A2%98/</url>
     <content><![CDATA[<p><a href="#jump">三平面分离的详细解析</a></p>
@@ -2292,6 +2362,55 @@ $0,1,2 // 0-脚本名 1-第一个参数 2-第二个参数
       <tags>
         <tag>交换机</tag>
         <tag>交换机原理</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>关于hexo修改css问题</title>
+    <url>/2021/08/23/%E5%85%B3%E4%BA%8Ehexo%E9%83%A8%E7%BD%B2%E9%97%AE%E9%A2%98/</url>
+    <content><![CDATA[<p>解决hexo+next在本地部署成功，上传后失效问题</p>
+<span id="more"></span>
+
+<h1 id="问题1：重新部署css失效"><a href="#问题1：重新部署css失效" class="headerlink" title="问题1：重新部署css失效"></a>问题1：重新部署css失效</h1><p>hexo在每次推送更新的时候，都需要<u>清除缓存</u>，重新<u>部署静态文件</u>，再<u>推送更新</u>。<br>每次清除缓存时都会删除main.css文件，再根据配置文件生成新的main.css文件。<br>因为美观，我就自定义了博客的main.css文件，来修改页面的字体和样式。</p>
+<p>然而在下一次更新博客的时候，上自己的网站一看，修改的样式没了</p>
+<blockquote>
+<p>原因：当再次推送时，重新部署的静态文件.css不包含个人修改的<br>解决方案：先清除缓存，再部署静态文件，此时将修改好的main.css文件覆盖 <font color="#F08080">/根目录/public/css/main.css</font>。覆盖成功后，再推送更新</p>
+</blockquote>
+<p><img src="/2021/08/23/%E5%85%B3%E4%BA%8Ehexo%E9%83%A8%E7%BD%B2%E9%97%AE%E9%A2%98/main%E6%96%87%E4%BB%B6%E4%BD%8D%E7%BD%AE.png" alt="main文件位置"></p>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line">hexo cl</span><br><span class="line">hexo g</span><br><span class="line">手动去覆盖<span class="selector-tag">main</span><span class="selector-class">.css</span>，覆盖成功后</span><br><span class="line">hexo d</span><br></pre></td></tr></table></figure>
+
+<h1 id="问题2：增加功能失败"><a href="#问题2：增加功能失败" class="headerlink" title="问题2：增加功能失败"></a>问题2：增加功能失败</h1><p>问题描述：本地测试成功，但推送后网页上失效</p>
+<blockquote>
+<p>前提：本地测试成功——代表配置文件配置成功</p>
+</blockquote>
+<p>我在写了一些博客之后发现，想要查询以前写的内容很不方便，于是新增了搜索的功能<br>在本地测试成功的情况下，我推送了更新，但网站上的搜索功能却失效了<br>在确认配置文件正确后，使用F12查看了网页</p>
+<p><img src="/2021/08/23/%E5%85%B3%E4%BA%8Ehexo%E9%83%A8%E7%BD%B2%E9%97%AE%E9%A2%98/F12.png" alt="F12"></p>
+<p>发现本地测试页面渲染出的Html、css文件都和网站上部署后的不一样</p>
+<blockquote>
+<p>原因：因为我在<font color="#FF000">增加搜索功能前</font>修改了main.css并用这个main.css覆盖了系统重新部署的main.css，导致.css文件里并没有生成搜索功能该有的代码<br>解决方案：可以使用文本对比工具，将系统重新部署的main.css文件和之前修改的main.css对比，将新增功能的代码段落加入到修改的main.css中。当修改的main.css文件中有新增功能的段落后，部署的网站上就能正常使用功能了</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>博客</category>
+      </categories>
+      <tags>
+        <tag>hexo</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>IPMI，MGMT口</title>
+    <url>/2021/08/13/%E5%90%84%E7%A7%8D%E6%8E%A5%E5%8F%A3/</url>
+    <content><![CDATA[<p>交换机上的各种接口</p>
+<span id="more"></span>
+
+<h1 id="MGMT口"><a href="#MGMT口" class="headerlink" title="MGMT口"></a>MGMT口</h1><p>MGMT是网络管理端口，可以直接用网线连接，登陆进防火墙以网页模式管理<br>1） 用户可以通过Ping、Tracert等命令探测MGMT 口上配置的IP地址是否可达，并在MGMT 口上通过Ping、Tracert命令探测远程IP是否可达，因此MGMT 口支持ICMP应用。<br>2）用户可以通过Telnet/SSH/SNMP/WEB等方式登录到MGMT 口对设备进行管理，并且登录时支持AAA验证（包括Radius 和Tacacs+这两种服务器认证方式），甚至在执行命令行时还需要支持Tacacs+授权。<br>3）设备的日志、告警等信息也可以通过MGMT 口发送到网管的日志服务器上。<br>4）MGMT 口支持Telnet Client，TFTP Client。<br>5）MGMT 口支持NTP/SNTP报文的收发以实现网络时间同步。<br>6）MGMT 口支持静态ARP绑定。 </p>
+<h1 id="IPMI口"><a href="#IPMI口" class="headerlink" title="IPMI口"></a>IPMI口</h1><p>IPMI，即智能平台管理接口（Intelligent Platform Management Interface），IPMI的核心是一个专用芯片/控制器(BMC)，独立于操作系统、BIOS和处理器，因此属于带外管理设备。正是因为如此，我们可以通过BMC来控制或者获取系统的各种信息，而不需要关注系统是否正常。比如，系统卡住了，可以通过ipmi reset系统，而不需要跑到机房断电；系统无法登录也可以远程屏幕查看是什么问题。</p>
+]]></content>
+      <categories>
+        <category>交换机</category>
+      </categories>
+      <tags>
+        <tag>交换机</tag>
+        <tag>接口</tag>
       </tags>
   </entry>
   <entry>
@@ -2393,23 +2512,6 @@ $0,1,2 // 0-脚本名 1-第一个参数 2-第二个参数
       </categories>
       <tags>
         <tag>Github</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>IPMI，MGMT口</title>
-    <url>/2021/08/13/%E5%90%84%E7%A7%8D%E6%8E%A5%E5%8F%A3/</url>
-    <content><![CDATA[<p>交换机上的各种接口</p>
-<span id="more"></span>
-
-<h1 id="MGMT口"><a href="#MGMT口" class="headerlink" title="MGMT口"></a>MGMT口</h1><p>MGMT是网络管理端口，可以直接用网线连接，登陆进防火墙以网页模式管理<br>1） 用户可以通过Ping、Tracert等命令探测MGMT 口上配置的IP地址是否可达，并在MGMT 口上通过Ping、Tracert命令探测远程IP是否可达，因此MGMT 口支持ICMP应用。<br>2）用户可以通过Telnet/SSH/SNMP/WEB等方式登录到MGMT 口对设备进行管理，并且登录时支持AAA验证（包括Radius 和Tacacs+这两种服务器认证方式），甚至在执行命令行时还需要支持Tacacs+授权。<br>3）设备的日志、告警等信息也可以通过MGMT 口发送到网管的日志服务器上。<br>4）MGMT 口支持Telnet Client，TFTP Client。<br>5）MGMT 口支持NTP/SNTP报文的收发以实现网络时间同步。<br>6）MGMT 口支持静态ARP绑定。 </p>
-<h1 id="IPMI口"><a href="#IPMI口" class="headerlink" title="IPMI口"></a>IPMI口</h1><p>IPMI，即智能平台管理接口（Intelligent Platform Management Interface），IPMI的核心是一个专用芯片/控制器(BMC)，独立于操作系统、BIOS和处理器，因此属于带外管理设备。正是因为如此，我们可以通过BMC来控制或者获取系统的各种信息，而不需要关注系统是否正常。比如，系统卡住了，可以通过ipmi reset系统，而不需要跑到机房断电；系统无法登录也可以远程屏幕查看是什么问题。</p>
-]]></content>
-      <categories>
-        <category>交换机</category>
-      </categories>
-      <tags>
-        <tag>交换机</tag>
-        <tag>接口</tag>
       </tags>
   </entry>
   <entry>

@@ -29,11 +29,20 @@
 <meta property="og:site_name" content="郑林昕的博客">
 <meta property="og:description" content="经过最近的面试发现基础知识细节忘了很多所以np switch复读">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/2021/09/18/switch%E7%9F%A5%E8%AF%86/MAC%E8%A1%A8.png">
+<meta property="og:image" content="http://example.com/2021/09/18/switch%E7%9F%A5%E8%AF%86/%E4%BA%8C%E5%B1%82%E8%BD%AC%E5%8F%91%E8%A1%A8.png">
+<meta property="og:image" content="http://example.com/2021/09/18/switch%E7%9F%A5%E8%AF%86/BPDU.png">
+<meta property="og:image" content="http://example.com/2021/09/18/switch%E7%9F%A5%E8%AF%86/%E6%A0%B9%E7%AB%AF%E5%8F%A3%E9%80%89%E4%B8%BE.png">
+<meta property="og:image" content="http://example.com/2021/09/18/switch%E7%9F%A5%E8%AF%86/VLAN%E4%B9%8B%E9%97%B4%E8%B7%AF%E7%94%B1.png">
+<meta property="og:image" content="http://example.com/2021/09/18/switch%E7%9F%A5%E8%AF%86/DHCP%E6%93%8D%E4%BD%9C%E8%BF%87%E7%A8%8B.png">
+<meta property="og:image" content="http://example.com/2021/09/18/switch%E7%9F%A5%E8%AF%86/DHCPdelay.png">
+<meta property="og:image" content="http://example.com/2021/09/18/switch%E7%9F%A5%E8%AF%86/DHCP%E6%AD%A5%E9%AA%A4.png">
 <meta property="article:published_time" content="2021-09-18T11:47:49.000Z">
-<meta property="article:modified_time" content="2021-09-18T12:16:16.884Z">
+<meta property="article:modified_time" content="2021-09-20T08:09:19.776Z">
 <meta property="article:author" content="郑林昕">
 <meta property="article:tag" content="数据通信">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2021/09/18/switch%E7%9F%A5%E8%AF%86/MAC%E8%A1%A8.png">
 
 <link rel="canonical" href="http://example.com/2021/09/18/switch%E7%9F%A5%E8%AF%86/">
 
@@ -216,10 +225,16 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              
 
-              <time title="创建时间：2021-09-18 19:47:49 / 修改时间：20:16:16" itemprop="dateCreated datePublished" datetime="2021-09-18T19:47:49+08:00">2021-09-18</time>
+              <time title="创建时间：2021-09-18 19:47:49" itemprop="dateCreated datePublished" datetime="2021-09-18T19:47:49+08:00">2021-09-18</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-09-20 16:09:19" itemprop="dateModified" datetime="2021-09-20T16:09:19+08:00">2021-09-20</time>
+              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="far fa-folder"></i>
@@ -244,8 +259,110 @@
         <p>经过最近的面试发现基础知识细节忘了很多所以<br>np switch复读</p>
 <span id="more"></span>
 
-<h1 id="NP-SWITCH-基础知识"><a href="#NP-SWITCH-基础知识" class="headerlink" title="NP SWITCH 基础知识"></a>NP SWITCH 基础知识</h1><p>集线器和交换机<br>集线器退出历史的舞台主要原因：端口共享带宽机制<br>交换机：端口带宽是独享的</p>
-<p><font color="#FF0000">集线器被定义为1层设备</font></p>
+<h1 id="NP-SWITCH"><a href="#NP-SWITCH" class="headerlink" title="NP SWITCH"></a>NP SWITCH</h1><h2 id="集线器和交换机"><a href="#集线器和交换机" class="headerlink" title="集线器和交换机"></a>集线器和交换机</h2><p>集线器退出历史的舞台主要原因：端口共享带宽机制<br>交换机：端口带宽是独享的，每个端口都是一个冲突域</p>
+<p><font color="#FF0000">集线器被定义为1层设备，传递电平信号</font></p>
+<h2 id="广播域"><a href="#广播域" class="headerlink" title="广播域"></a>广播域</h2><p>广播域是一组网络设备组成的区域，区域中所有设备都能接收到域内任何一台设备发出的广播帧。广播域的边界通常是路由器设备，这是因为路由器不转发广播数据帧。一个广播域通常是一个只包含单个IP子网的二层网络，VLAN就是其中一个实例。</p>
+<h2 id="基本交换功能"><a href="#基本交换功能" class="headerlink" title="基本交换功能"></a>基本交换功能</h2><p>当一台交换机收到一个数据帧后，必须要决定如何处理此帧。为了确定如何操作数据帧，交换机必须要了解网段中所有设备的位置信息。<br>设备的位置信息存放在内容可寻址存储（<font color="#FF0000">CAM内容可寻址存储，专用于存储表项的一段内存</font>）表中。CAM表存储着每台设备的MAC地址、学习MAC地址的端口，以及端口所属的VLAN。<br>CAM表中的信息决定了应该如何处理接受的数据帧。为了确定如何发送一个数据帧，交换机首先会查看帧的目的MAC地址，并在CAM表中检索这一MAC地址。CAM表会显示去往某个特定目的MAC地址的数据帧应该从哪个接口发出。简单来说，基本的2层交换功能遵守着以下的选路原则：</p>
+<blockquote>
+<p>如果目的MAC地址存在CAM表中，交换机将根据CAM表中目的MAC对应的出站端口将数据帧从此端口发出。这一过程称为转发<br>如果CAM表中检索到的出站端口与接收到数据帧的入站端口一致，则不需要将数据帧从此端口原路发送回去，并将忽略该数据帧。这一过程称为过滤<br>如果目的MAC不在CAM表中（未知的单播地址），交换机会将数据帧发送给与接收帧的入站端口所属相同VLAN的所有端口。这一过程称为泛洪，泛洪不会发送回入站端口<br>如果收到的数据帧的目的MAC地址是一个广播地址（全F），交换机也会执行泛洪行为，将数据帧发送给与接收帧的入站端口所属相同VLAN的所有端口，当然不包括接收帧的入站端口</p>
+</blockquote>
+<p><img src="/2021/09/18/switch%E7%9F%A5%E8%AF%86/MAC%E8%A1%A8.png" alt="MAC表"><br>这就是为什么交换机的本质是 源MAC学习，目的MAC转发和BUM泛洪了（基于透明网桥算法和MAC表）<br><img src="/2021/09/18/switch%E7%9F%A5%E8%AF%86/%E4%BA%8C%E5%B1%82%E8%BD%AC%E5%8F%91%E8%A1%A8.png" alt="二层转发表"></p>
+<h2 id="VLAN"><a href="#VLAN" class="headerlink" title="VLAN"></a>VLAN</h2><p>由于交换机是基于数据帧在物理端口之间交换数据的，因此可以在逻辑上对端口进行分组。每个逻辑端口组叫做虚拟局域网VLAN。交换机可以确保来自组内某个端口的流量不会发送到其他端口组中（这属于路由功能）。这些端口组（VLAN）可以看作成独立的LAN网段。<br>每个VLAN是一个独立的广播域。<font color="#FF0000">根据透明网桥的算法，广播包（去往所有设备的包）将发送给相同组（同VLAN）内的其他所有端口</font>。处于相同VLAN的所有端口同处在一个广播域下。</p>
+<h2 id="生成树协议"><a href="#生成树协议" class="headerlink" title="生成树协议"></a>生成树协议</h2><p>交换机的转发算法会在接收帧所在端口的VLAN中将所有的未知数据帧和广播数据帧泛洪至同VLAN内所有端口。这就产生了一个问题，如果网络设备连接成了一个物理环路，那么泛洪的数据帧将会沿着环路永远的在交换机之间传递。一旦物理上连接成了环路，环路中的数据帧将会以指数形式成倍增加，造成网络障碍<br>当然，网络环路也有好处，即提供冗余性。如果某条链路故障，流量仍可以继续使用其余路径到达目的地。为了充分发挥冗余性的优势而不受物理环路的限制，这就引出了生成树协议STP。</p>
+<h1 id="STP"><a href="#STP" class="headerlink" title="STP"></a>STP</h1><p>在未启用STP的情况下，<font color="#FF0000"><strong>冗余的网络拓扑</strong></font>会导致下述问题</p>
+<blockquote>
+<p>广播风暴：冗余网络的交换机会不断地泛洪广播帧。交换机会将广播帧泛洪给入站端口之外所有的端口，随后这些数据帧将沿着环路的各个方向一直传播下去<br>重复帧传输：目的站点可能会收到同一个单播数据帧的多份拷贝，这可能会导致接受协议的一些问题。多数协议只应该收到一份数据拷贝，如果收到了多份相同重复的数据帧，可能会导致不可修复的错误<br>不稳定的MAC数据库：<font color="#FF0000"><strong>当一台交换机的不同端口收到了相同的帧拷贝时，这种现象称为MAC地址漂移。MAC地址表会将帧的源MAC地址和接收到此帧的入站端口对应到一条表项中</strong></font>。如果存在环路，同一个MAC地址可能会从多个端口上接收到，这时就会造成MAC地址表的不稳定。针对漂移MAC地址的数据帧转发也会受到影响</p>
+</blockquote>
+<h2 id="BPDU"><a href="#BPDU" class="headerlink" title="BPDU"></a>BPDU</h2><p>桥协议数据单元</p>
+<pre><code>配置BPDU：计算STP
+TCN BPDU：通告网络拓扑变化
+</code></pre>
+<p>BPDU帧格式<br><img src="/2021/09/18/switch%E7%9F%A5%E8%AF%86/BPDU.png" alt="BPDU"></p>
+<h2 id="三步骤收敛网络"><a href="#三步骤收敛网络" class="headerlink" title="三步骤收敛网络"></a>三步骤收敛网络</h2><ol>
+<li>选举一个根桥：<strong>BID最小的</strong>。BID = 桥优先级+MAC地址</li>
+<li>在非根桥交换机上选举根端口：<strong>根端口是到达根桥路径开销最小的端口</strong></li>
+<li>在每条链路上选举指定端口：每条互联链路上选择一个端口作为指定端口。<strong>指定端口是链路两端交换机到达根桥路径开销最小的端口</strong></li>
+</ol>
+<p><strong>根桥</strong><br>每台交换机假设自己是根桥，向邻居发送BPDU（包含自己的BID，来进行比较），最终选举出最小BID的交换机为根桥</p>
+<p><strong>根端口</strong></p>
+<ol>
+<li>非根桥交换机上，去往根桥最低路径开销的端口</li>
+<li>如果多条路径开销相同，那么选择（邻居发来的）端口ID最小的为根端口<br><img src="/2021/09/18/switch%E7%9F%A5%E8%AF%86/%E6%A0%B9%E7%AB%AF%E5%8F%A3%E9%80%89%E4%B8%BE.png" alt="根端口选举"></li>
+</ol>
+<p><strong>指定端口</strong></p>
+<ol>
+<li>基于去往根桥的最低开销</li>
+<li>如果多条路径开销相同，最低的BID</li>
+<li>如果BID相同，最低的发送者BID</li>
+<li>如果发送者BID相同，最低的发送者端口ID</li>
+</ol>
+<h2 id="MSTP"><a href="#MSTP" class="headerlink" title="MSTP"></a>MSTP</h2><p>多生成树协议MST，<strong>主要目的是为了减少网络拓扑中生成树实例的总数量</strong>，从而减少交换机的CPU开销</p>
+<pre><code>比如网络的负载均衡涉及到两条链路以及1000个VLAN，
+这需要将1000个VLAN映射到两个MST实例中就可以了，
+将本来需要维护的1000棵生成树变成了只需要维护2个MST实例
+</code></pre>
+<h1 id="VLAN之间路由"><a href="#VLAN之间路由" class="headerlink" title="VLAN之间路由"></a>VLAN之间路由</h1><h2 id="外部路由实现VLAN之间路由"><a href="#外部路由实现VLAN之间路由" class="headerlink" title="外部路由实现VLAN之间路由"></a>外部路由实现VLAN之间路由</h2><p>终端 —— 交换机 —— 路由器</p>
+<pre><code>优点：
+    部署简单，只需要配置一个交换机端口和路由器接口
+    路由器负责VLAN间通信
+劣势：
+    路由器存在单点故障隐患
+    单一的流量路径可能造成阻塞
+    路由器使用CPU计算路由，会比硬件交换产生更多的延迟
+</code></pre>
+<h2 id="SVI实现VLAN之间路由"><a href="#SVI实现VLAN之间路由" class="headerlink" title="SVI实现VLAN之间路由"></a>SVI实现VLAN之间路由</h2><p>SVI交换机虚拟接口，每个VLAN只能关联一个SVI接口<br>SVI会为所有出入其VLAN端口的数据包提供三层转发功能</p>
+<pre><code>作用：
+    为VLAN提供网关，使流量可以进出这个VLAN
+    为交换机提供三层IP连通性
+    支持路由选择协议和桥接配置
+利弊：
+    速度远快于单臂路由器，因为是通过硬件完成的数据处理
+    无需使用额外的链路进行路由
+    没有单条链路限制，可以在交换机之间使用汇聚技术增加带宽
+    数据处理无需离开交换机，所以延迟更低
+弊端：
+    三层交换机造价更高
+</code></pre>
+<p><img src="/2021/09/18/switch%E7%9F%A5%E8%AF%86/VLAN%E4%B9%8B%E9%97%B4%E8%B7%AF%E7%94%B1.png" alt="VLAN之间路由"></p>
+<h2 id="VLAN间路由排障"><a href="#VLAN间路由排障" class="headerlink" title="VLAN间路由排障"></a>VLAN间路由排障</h2><table>
+<thead>
+<tr>
+<th>问题</th>
+<th>可能原因</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>VLAN缺失</td>
+<td>没有定义这个VLAN；没有在Trunk上启用这个VLAN；端口没有配置正常VLAN</td>
+</tr>
+<tr>
+<td>3层接口配置错误</td>
+<td>SVI上配置错误IP或掩码；SVI没有手动开启；SVI接口号与VLAN号码不匹配；VLAN间路由功能未启用</td>
+</tr>
+<tr>
+<td>路由协议配置错误</td>
+<td>新的接口没有加入到路由协议中</td>
+</tr>
+<tr>
+<td>主机配置错误</td>
+<td>IP或掩码配置错误；主机没有配置默认网关（SVI或三层接口地址）</td>
+</tr>
+</tbody></table>
+<h1 id="DHCP"><a href="#DHCP" class="headerlink" title="DHCP"></a>DHCP</h1><p><img src="/2021/09/18/switch%E7%9F%A5%E8%AF%86/DHCP%E6%93%8D%E4%BD%9C%E8%BF%87%E7%A8%8B.png" alt="DHCP操作过程"></p>
+<pre><code>客户端首先发送一个广播 DHCPDISCOVER信息去寻找DHCP服务器
+服务器会向客户端返回一个单播 DHCPOFFER消息为其提供配置参数。包括IP地址、域名、IP地址的租期等
+客户端可能会收到多个服务器的 DHCPOFFER消息，通常会选择接受第一个收到的
+客户端在接收到 DHCPOFFER之后，如果想要使用这些IP信息，需要发起正式的广播 DHCPREQUEST信息
+服务器使用单播 DHCPACK消息确认IP地址分配给此客户端
+</code></pre>
+<h2 id="配置DCHP-RELAY"><a href="#配置DCHP-RELAY" class="headerlink" title="配置DCHP RELAY"></a>配置DCHP RELAY</h2><p>DHCP是一个C/S模型的应用，由于广播只能在同VLAN传播，不能转发出VLAN边界，所以三层交换机需要使用一种DHCP中继代理的特性<br>如图5-17<br><img src="/2021/09/18/switch%E7%9F%A5%E8%AF%86/DHCPdelay.png" alt="DHCPdelay"><br>三层交换机使用命令ip helper-address配置了DHCP中继代理特性，将广播流量以单播的形式转发给DHCP服务器<br><img src="/2021/09/18/switch%E7%9F%A5%E8%AF%86/DHCP%E6%AD%A5%E9%AA%A4.png" alt="DHCP步骤"><br>在配置了DHCP中继地址的前提下，如果交换机从客户端接收到了一个广播DHCP请i去，则会以单播的形式将请求转发至ip helper-address命令中定义的IP地址</p>
+<h1 id="HSRP和VRRP"><a href="#HSRP和VRRP" class="headerlink" title="HSRP和VRRP"></a>HSRP和VRRP</h1><p>HSRP与VRRP的区别</p>
+<pre><code>·HSRP为CISCO私有，VRRP为公有协议
+·VRRP允许物理IP与虚拟IP重叠(成为MASTER)，但是HSRP不允许
+·VRRP默认开启抢占，HSRP不开启
+·HSRP以组播224.0.0.2发送报文；虚拟mac格式：0000.0c07.ac组ID
+·VRRP以组播224.0.0.18发送；000.5e00.01组ID
+</code></pre>
 
     </div>
 
@@ -326,7 +443,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#NP-SWITCH-%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86"><span class="nav-number">1.</span> <span class="nav-text">NP SWITCH 基础知识</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#NP-SWITCH"><span class="nav-number">1.</span> <span class="nav-text">NP SWITCH</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%9B%86%E7%BA%BF%E5%99%A8%E5%92%8C%E4%BA%A4%E6%8D%A2%E6%9C%BA"><span class="nav-number">1.1.</span> <span class="nav-text">集线器和交换机</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B9%BF%E6%92%AD%E5%9F%9F"><span class="nav-number">1.2.</span> <span class="nav-text">广播域</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E4%BA%A4%E6%8D%A2%E5%8A%9F%E8%83%BD"><span class="nav-number">1.3.</span> <span class="nav-text">基本交换功能</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#VLAN"><span class="nav-number">1.4.</span> <span class="nav-text">VLAN</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%94%9F%E6%88%90%E6%A0%91%E5%8D%8F%E8%AE%AE"><span class="nav-number">1.5.</span> <span class="nav-text">生成树协议</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#STP"><span class="nav-number">2.</span> <span class="nav-text">STP</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#BPDU"><span class="nav-number">2.1.</span> <span class="nav-text">BPDU</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%89%E6%AD%A5%E9%AA%A4%E6%94%B6%E6%95%9B%E7%BD%91%E7%BB%9C"><span class="nav-number">2.2.</span> <span class="nav-text">三步骤收敛网络</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MSTP"><span class="nav-number">2.3.</span> <span class="nav-text">MSTP</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#VLAN%E4%B9%8B%E9%97%B4%E8%B7%AF%E7%94%B1"><span class="nav-number">3.</span> <span class="nav-text">VLAN之间路由</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%96%E9%83%A8%E8%B7%AF%E7%94%B1%E5%AE%9E%E7%8E%B0VLAN%E4%B9%8B%E9%97%B4%E8%B7%AF%E7%94%B1"><span class="nav-number">3.1.</span> <span class="nav-text">外部路由实现VLAN之间路由</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#SVI%E5%AE%9E%E7%8E%B0VLAN%E4%B9%8B%E9%97%B4%E8%B7%AF%E7%94%B1"><span class="nav-number">3.2.</span> <span class="nav-text">SVI实现VLAN之间路由</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#VLAN%E9%97%B4%E8%B7%AF%E7%94%B1%E6%8E%92%E9%9A%9C"><span class="nav-number">3.3.</span> <span class="nav-text">VLAN间路由排障</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#DHCP"><span class="nav-number">4.</span> <span class="nav-text">DHCP</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AEDCHP-RELAY"><span class="nav-number">4.1.</span> <span class="nav-text">配置DCHP RELAY</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#HSRP%E5%92%8CVRRP"><span class="nav-number">5.</span> <span class="nav-text">HSRP和VRRP</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -435,7 +552,7 @@
       <i class="fa fa-chart-area"></i>
     </span>
       <span class="post-meta-item-text">站点总字数：</span>
-    <span title="站点总字数">144k</span>
+    <span title="站点总字数">147k</span>
 </div>
 
         
