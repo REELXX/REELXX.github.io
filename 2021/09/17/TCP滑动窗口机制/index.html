@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>TCP滑动窗口机制 | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="TCP滑动窗口实现了TCP流控制。首先明确滑动窗口的范畴：TCP是双工的协议，会话的双方都可以同时接收和发送数据。TCP会话的双方都各自维护一个发送窗口和一个接收窗口。各自的接收窗口大小取决于应用、系统、硬件的限制（TCP传输速率不能大于应用的数据处理速率）。各自的发送窗口则要求取决于对端通告的接收窗口，要求相同。 滑动窗口解决的是流量控制的的问题，就是如果接收端和发送端对数据包的处理速度不同，如">
+<meta property="og:type" content="article">
+<meta property="og:title" content="TCP滑动窗口机制">
+<meta property="og:url" content="http://example.com/2021/09/17/TCP%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3%E6%9C%BA%E5%88%B6/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="TCP滑动窗口实现了TCP流控制。首先明确滑动窗口的范畴：TCP是双工的协议，会话的双方都可以同时接收和发送数据。TCP会话的双方都各自维护一个发送窗口和一个接收窗口。各自的接收窗口大小取决于应用、系统、硬件的限制（TCP传输速率不能大于应用的数据处理速率）。各自的发送窗口则要求取决于对端通告的接收窗口，要求相同。 滑动窗口解决的是流量控制的的问题，就是如果接收端和发送端对数据包的处理速度不同，如">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/TCP%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3%E6%9C%BA%E5%88%B6/%E4%BF%A1%E6%81%AF%E4%BC%A0%E8%BE%93.png">
+<meta property="og:image" content="http://example.com/TCP%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3%E6%9C%BA%E5%88%B6/%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3.png">
+<meta property="og:image" content="http://example.com/TCP%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3%E6%9C%BA%E5%88%B6/%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A32.png">
+<meta property="og:image" content="http://example.com/TCP%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3%E6%9C%BA%E5%88%B6/%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A33.png">
+<meta property="og:image" content="http://example.com/TCP%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3%E6%9C%BA%E5%88%B6/%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3%E6%8A%93%E5%8C%85.png">
+<meta property="article:published_time" content="2021-09-17T11:47:55.000Z">
+<meta property="article:modified_time" content="2021-09-17T12:15:38.000Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="数据通信">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/TCP%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3%E6%9C%BA%E5%88%B6/%E4%BF%A1%E6%81%AF%E4%BC%A0%E8%BE%93.png">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-TCP滑动窗口机制" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2021/09/17/TCP%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3%E6%9C%BA%E5%88%B6/" class="article-date">
+  <time class="dt-published" datetime="2021-09-17T11:47:55.000Z" itemprop="datePublished">2021-09-17</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E6%95%B0%E6%8D%AE%E9%80%9A%E4%BF%A1/">数据通信</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      TCP滑动窗口机制
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>TCP滑动窗口实现了TCP流控制。首先明确滑动窗口的范畴：TCP是双工的协议，会话的双方都可以同时接收和发送数据。TCP会话的双方都各自维护一个发送窗口和一个接收窗口。各自的接收窗口大小取决于应用、系统、硬件的限制（TCP传输速率不能大于应用的数据处理速率）。各自的发送窗口则要求取决于对端通告的接收窗口，要求相同。</p>
+<p>滑动窗口解决的是流量控制的的问题，就是如果接收端和发送端对数据包的处理速度不同，如何让双方达成一致。接收端的缓存传输数据给应用层，但这个过程不一定是即时的，如果发送速度太快，会出现接收端数据overflow，流量控制解决的是这个问题。</p>
+<span id="more"></span>
+
+<h1 id="TCP的优势"><a href="#TCP的优势" class="headerlink" title="TCP的优势"></a>TCP的优势</h1><p>从传输数据来讲，TCP&#x2F;UDP以及其他协议都可以完成数据的传输，从一端传输到另外一端，TCP比较出众的一点就是提供一个可靠的，流控的数据传输，所以实现起来要比其他协议复杂的多，先来看下这两个修饰词的意义：</p>
+<ol>
+<li>Reliability ，提供TCP的可靠性，TCP的传输要保证数据能够准确到达目的地，如果不能，需要能检测出来并且重新发送数据。</li>
+<li>Data Flow Control，提供TCP的流控特性，管理发送数据的速率，不要超过设备的承载能力</li>
+</ol>
+<p>为了能够实现以上2点，TCP实现了很多细节的功能来保证数据传输，比如说 滑动窗口适应系统，超时重传机制，累计ACK等</p>
+<h1 id="滑动窗口引入"><a href="#滑动窗口引入" class="headerlink" title="滑动窗口引入"></a>滑动窗口引入</h1><p>IP层协议属于不可靠的协议，IP层并不关系数据是否发送到了对端，TCP通过确认机制来保证数据传输的可靠性，在比较早的时候使用的是send–wait–send的模式，其实这种模式叫做stop-wait模式，发送数据方在发送数据之后会启动定时器，但是如果数据或者ACK丢失，那么定时器到期之后，收不到ACK就认为发送出现状况，要进行重传。这样就会降低了通信的效率，如下图所示，这种方式被称为 positive acknowledgment with retransmission (PAR)</p>
+<p><img src="/TCP%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3%E6%9C%BA%E5%88%B6/%E4%BF%A1%E6%81%AF%E4%BC%A0%E8%BE%93.png" alt="信息传输"></p>
+<h1 id="滑动窗口"><a href="#滑动窗口" class="headerlink" title="滑动窗口"></a>滑动窗口</h1><p>可以假设一下，来优化一下PAR效率低的缺点，比如我让发送的每一个包都有一个id，接收端必须对每一个包进行确认，这样设备A一次多发送几个片段，而不必等候ACK，同时接收端也要告知它能够收多少，这样发送端发起来也有个限制，当然还需要保证顺序性，不要乱序，对于乱序的状况，我们可以允许等待一定情况下的乱序，比如说先缓存提前到的数据，然后去等待需要的数据，如果一定时间没来就DROP掉，来保证顺序性！</p>
+<p>在TCP&#x2F;IP协议栈中，滑动窗口的引入可以解决此问题，先来看从概念上数据分为哪些类</p>
+<ol>
+<li>Sent and Acknowledged：这些数据表示已经发送成功并已经被确认的数据，比如图中的前31个bytes，这些数据其实的位置是在窗口之外了，因为窗口内顺序最低的被确认之后，要移除窗口，实际上是窗口进行合拢，同时打开接收新的带发送的数据</li>
+<li>Send But Not Yet Acknowledged：这部分数据称为发送但没有被确认，数据被发送出去，没有收到接收端的ACK，认为并没有完成发送，这个属于窗口内的数据。</li>
+<li>Not Sent，Recipient Ready to Receive：这部分是尽快发送的数据，这部分数据已经被加载到缓存中，也就是窗口中了，等待发送，其实这个窗口是完全有接收方告知的，接收方告知还是能够接受这些包，所以发送方需要尽快的发送这些包</li>
+<li>Not Sent，Recipient Not Ready to Receive： 这些数据属于未发送，同时接收端也不允许发送的，因为这些数据已经超出了发送端所接收的范围</li>
+</ol>
+<p><img src="/TCP%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3%E6%9C%BA%E5%88%B6/%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3.png" alt="滑动窗口"></p>
+<p>对于接收端也是有一个接收窗口的，类似发送端，接收端的数据有3个分类，因为接收端并不需要等待ACK所以它没有类似的接收并确认了的分类，情况如下</p>
+<ol>
+<li>Received and ACK Not Send to Process：这部分数据属于接收了数据但是还没有被上层的应用程序接收，也是被缓存在窗口内</li>
+<li>Received  Not ACK: 已经接收并，但是还没有回复ACK，这些包可能输属于Delay ACK的范畴了</li>
+<li>Not Received：有空位，还没有被接收的数据。</li>
+</ol>
+<p><strong>发送窗口和可用窗口</strong></p>
+<p>对于发送方来讲，窗口内的包括两部分，就是发送窗口（已经发送了，但是没有收到ACK），可用窗口，接收端允许发送但是没有发送的那部分称为可用窗口。</p>
+<ol>
+<li>Send Window ： 20个bytes 这部分值是有接收方在三次握手的时候进行通告的，同时在接收过程中也不断的通告可以发送的窗口大小，来进行适应</li>
+<li>Window Already Sent: 已经发送的数据，但是并没有收到ACK。</li>
+</ol>
+<p><img src="/TCP%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3%E6%9C%BA%E5%88%B6/%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A32.png" alt="滑动窗口2"></p>
+<h1 id="滑动窗口原理"><a href="#滑动窗口原理" class="headerlink" title="滑动窗口原理"></a>滑动窗口原理</h1><p>TCP并不是每一个报文段都会回复ACK的，可能会对两个报文段发送一个ACK，也可能会对多个报文段发送1个ACK【累计ACK】，比如说发送方有1&#x2F;2&#x2F;3 3个报文段，先发送了2,3 两个报文段，但是接收方期望收到1报文段，这个时候2,3报文段就只能放在缓存中等待报文1的空洞被填上，如果报文1，一直不来，报文2&#x2F;3也将被丢弃，如果报文1来了，那么会发送一个ACK对这3个报文进行一次确认。</p>
+<p>举一个例子来说明一下滑动窗口的原理：</p>
+<ol>
+<li>假设32~45 这些数据，是上层Application发送给TCP的，TCP将其分成四个Segment来发往internet</li>
+<li>seg1 32<del>34 seg3 35</del>36 seg3 37<del>41 seg4 42</del>45  这四个片段，依次发送出去，此时假设接收端之接收到了seg1 seg2 seg4</li>
+<li>此时接收端的行为是回复一个ACK包说明已经接收到了32~36的数据，并将seg4进行缓存（保证顺序，产生一个保存seg3 的hole）</li>
+<li>发送端收到ACK之后，就会将32~36的数据包从发送并没有确认切到发送已经确认，提出窗口，这个时候窗口向右移动</li>
+<li>假设接收端通告的Window Size仍然不变，此时窗口右移，产生一些新的空位，这些是接收端允许发送的范畴</li>
+<li>对于丢失的seg3，如果超过一定时间，TCP就会重新传送（重传机制），重传成功会seg3 seg4一块被确认，不成功，seg4也将被丢弃</li>
+</ol>
+<p>就是不断重复着上述的过程，随着窗口不断滑动，将真个数据流发送到接收端，实际上接收端的Window Size通告也是会变化的，接收端根据这个值来确定何时及发送多少数据，从对数据流进行流控。原理图如下图所示：</p>
+<p><img src="/TCP%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3%E6%9C%BA%E5%88%B6/%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A33.png" alt="滑动窗口3"></p>
+<h1 id="滑动窗口动态调整"><a href="#滑动窗口动态调整" class="headerlink" title="滑动窗口动态调整"></a>滑动窗口动态调整</h1><p>主要是根据接收端的接收情况，动态去调整Window Size，然后来控制发送端的数据流量</p>
+<ol>
+<li>客户端不断快速发送数据，服务器接收相对较慢，看下实验的结果</li>
+</ol>
+<p>a. 包175，发送ACK携带WIN &#x3D; 384，告知客户端，现在只能接收384个字节<br>b. 包176，客户端果真只发送了384个字节，Wireshark也比较智能，也宣告TCP Window Full<br>c. 包177，服务器回复一个ACK，并通告窗口为0，说明接收方已经收到所有数据，并保存到缓冲区，但是这个时候应用程序并没有接收这些数据，导致缓冲区没有更多的空间，故通告窗口为0, 这也就是所谓的零窗口，零窗口期间，发送方停止发送数据<br>d. 客户端察觉到窗口为0，则不再发送数据给接收方<br>e. 包178，接收方发送一个窗口通告，告知发送方已经有接收数据的能力了，可以发送数据包了<br>f.  包179，收到窗口通告之后，就发送缓冲区内的数据了.</p>
+<p><img src="/TCP%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3%E6%9C%BA%E5%88%B6/%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3%E6%8A%93%E5%8C%85.png" alt="滑动窗口抓包"><br>总结一点，就是接收端可以根据自己的状况通告窗口大小，从而控制发送端的接收，进行流量控制</p>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p><a target="_blank" rel="noopener" href="https://blog.csdn.net/wdscq1234/article/details/52444277?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522163187497816780262527007%2522%252C%2522scm%2522%253A%252220140713.130102334..%2522%257D&request_id=163187497816780262527007&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~all~top_positive~default-1-52444277.first_rank_v2_pc_rank_v29&utm_term=tcp%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3&spm=1018.2226.3001.4187">转载CSDN:TCP-IP详解——滑动窗口(Sliding Window)</a><br><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_17555933/article/details/102858993?utm_medium=distribute.pc_relevant.none-task-blog-2~default~CTRLIST~default-1.no_search_link&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2~default~CTRLIST~default-1.no_search_link">可阅读CSDN：TCP面试题之滑动窗口原理</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2021/09/17/TCP%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3%E6%9C%BA%E5%88%B6/" data-id="clg3uqot2001yp8mu5a8scqc7" data-title="TCP滑动窗口机制" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E9%80%9A%E4%BF%A1/" rel="tag">数据通信</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2021/09/18/switch%D6%AA%CA%B6/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          switch知识
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2021/09/17/OSPF%E4%B9%8BLSA%E8%AF%A6%E8%A7%A3/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">OSPF之LSA详解</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Github/">Github</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/VPN/">VPN</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/openstack/">openstack</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E4%BA%A4%E6%8D%A2%E6%9C%BA/">交换机</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%8D%9A%E5%AE%A2/">博客</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%AE%89%E5%85%A8/">安全</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%B0%E6%8D%AE%E4%B8%AD%E5%BF%83/">数据中心</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">数据结构</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%B0%E6%8D%AE%E9%80%9A%E4%BF%A1/">数据通信</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%99%9A%E6%8B%9F%E5%8C%96/">虚拟化</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%B7%AF%E7%94%B1/">路由</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%BF%90%E7%BB%B4/">运维</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Apache/" rel="tag">Apache</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/BGP/" rel="tag">BGP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DHCP/" rel="tag">DHCP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Django/" rel="tag">Django</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Github/" rel="tag">Github</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/" rel="tag">Linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/OSI/" rel="tag">OSI</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/OSPF/" rel="tag">OSPF</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Python/" rel="tag">Python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SDN/" rel="tag">SDN</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/STP/" rel="tag">STP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/VLAN/" rel="tag">VLAN</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/VPN/" rel="tag">VPN</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/VXLAN/" rel="tag">VXLAN</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/" rel="tag">hexo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/openstack/" rel="tag">openstack</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/yilia/" rel="tag">yilia</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%91%E8%AE%A1%E7%AE%97/" rel="tag">云计算</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%A4%E6%8D%A2/" rel="tag">交换</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%A4%E6%8D%A2%E6%9C%BA/" rel="tag">交换机</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%8E%9F%E7%90%86/" rel="tag">交换机原理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BB%A5%E5%A4%AA%E7%BD%91%E5%B8%A7/" rel="tag">以太网帧</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8D%9A%E5%AE%A2/" rel="tag">博客</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8D%9A%E5%AE%A2%E8%87%AA%E5%AE%9A%E4%B9%89/" rel="tag">博客自定义</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%AE%89%E5%85%A8/" rel="tag">安全</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%8E%A5%E5%8F%A3/" rel="tag">接口</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%8E%A7%E5%88%B6%E5%99%A8/" rel="tag">控制器</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E4%B8%AD%E5%BF%83/" rel="tag">数据中心</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="tag">数据结构</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E9%80%9A%E4%BF%A1/" rel="tag">数据通信</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF%E5%B1%82/" rel="tag">数据链路层</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%AB%AF%E5%8F%A3%E9%95%9C%E5%83%8F/" rel="tag">端口镜像</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BB%8F%E9%AA%8C/" rel="tag">经验</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BC%96%E5%86%99%E6%8C%87%E5%8D%97/" rel="tag">编写指南</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BD%91%E7%BB%9C/" rel="tag">网络</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BD%91%E7%BB%9C%E5%9F%BA%E7%A1%80/" rel="tag">网络基础</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%84%9A%E6%9C%AC/" rel="tag">脚本</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%87%AA%E5%8A%A8%E5%8C%96%E8%BF%90%E7%BB%B4/" rel="tag">自动化运维</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%99%9A%E6%8B%9F%E5%8C%96/" rel="tag">虚拟化</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%99%9A%E6%8B%9F%E5%8C%96%E6%8A%80%E6%9C%AF/" rel="tag">虚拟化技术</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%B7%AF%E7%94%B1/" rel="tag">路由</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%BF%90%E7%BB%B4/" rel="tag">运维</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Apache/" style="font-size: 10px;">Apache</a> <a href="/tags/BGP/" style="font-size: 10px;">BGP</a> <a href="/tags/DHCP/" style="font-size: 10px;">DHCP</a> <a href="/tags/Django/" style="font-size: 10px;">Django</a> <a href="/tags/Github/" style="font-size: 10px;">Github</a> <a href="/tags/Linux/" style="font-size: 12.86px;">Linux</a> <a href="/tags/OSI/" style="font-size: 10px;">OSI</a> <a href="/tags/OSPF/" style="font-size: 14.29px;">OSPF</a> <a href="/tags/Python/" style="font-size: 17.14px;">Python</a> <a href="/tags/SDN/" style="font-size: 10px;">SDN</a> <a href="/tags/STP/" style="font-size: 10px;">STP</a> <a href="/tags/VLAN/" style="font-size: 10px;">VLAN</a> <a href="/tags/VPN/" style="font-size: 12.86px;">VPN</a> <a href="/tags/VXLAN/" style="font-size: 10px;">VXLAN</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/openstack/" style="font-size: 12.86px;">openstack</a> <a href="/tags/yilia/" style="font-size: 10px;">yilia</a> <a href="/tags/%E4%BA%91%E8%AE%A1%E7%AE%97/" style="font-size: 10px;">云计算</a> <a href="/tags/%E4%BA%A4%E6%8D%A2/" style="font-size: 10px;">交换</a> <a href="/tags/%E4%BA%A4%E6%8D%A2%E6%9C%BA/" style="font-size: 14.29px;">交换机</a> <a href="/tags/%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%8E%9F%E7%90%86/" style="font-size: 10px;">交换机原理</a> <a href="/tags/%E4%BB%A5%E5%A4%AA%E7%BD%91%E5%B8%A7/" style="font-size: 10px;">以太网帧</a> <a href="/tags/%E5%8D%9A%E5%AE%A2/" style="font-size: 10px;">博客</a> <a href="/tags/%E5%8D%9A%E5%AE%A2%E8%87%AA%E5%AE%9A%E4%B9%89/" style="font-size: 10px;">博客自定义</a> <a href="/tags/%E5%AE%89%E5%85%A8/" style="font-size: 10px;">安全</a> <a href="/tags/%E6%8E%A5%E5%8F%A3/" style="font-size: 10px;">接口</a> <a href="/tags/%E6%8E%A7%E5%88%B6%E5%99%A8/" style="font-size: 10px;">控制器</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E4%B8%AD%E5%BF%83/" style="font-size: 10px;">数据中心</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" style="font-size: 15.71px;">数据结构</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E9%80%9A%E4%BF%A1/" style="font-size: 20px;">数据通信</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF%E5%B1%82/" style="font-size: 12.86px;">数据链路层</a> <a href="/tags/%E7%AB%AF%E5%8F%A3%E9%95%9C%E5%83%8F/" style="font-size: 10px;">端口镜像</a> <a href="/tags/%E7%BB%8F%E9%AA%8C/" style="font-size: 10px;">经验</a> <a href="/tags/%E7%BC%96%E5%86%99%E6%8C%87%E5%8D%97/" style="font-size: 10px;">编写指南</a> <a href="/tags/%E7%BD%91%E7%BB%9C/" style="font-size: 18.57px;">网络</a> <a href="/tags/%E7%BD%91%E7%BB%9C%E5%9F%BA%E7%A1%80/" style="font-size: 11.43px;">网络基础</a> <a href="/tags/%E8%84%9A%E6%9C%AC/" style="font-size: 10px;">脚本</a> <a href="/tags/%E8%87%AA%E5%8A%A8%E5%8C%96%E8%BF%90%E7%BB%B4/" style="font-size: 10px;">自动化运维</a> <a href="/tags/%E8%99%9A%E6%8B%9F%E5%8C%96/" style="font-size: 11.43px;">虚拟化</a> <a href="/tags/%E8%99%9A%E6%8B%9F%E5%8C%96%E6%8A%80%E6%9C%AF/" style="font-size: 14.29px;">虚拟化技术</a> <a href="/tags/%E8%B7%AF%E7%94%B1/" style="font-size: 17.14px;">路由</a> <a href="/tags/%E8%BF%90%E7%BB%B4/" style="font-size: 10px;">运维</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/09/">September 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">August 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">July 2021</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2021/09/21/CDN/">CDN</a>
+          </li>
+        
+          <li>
+            <a href="/2021/09/20/%E7%AD%96%E7%95%A5%E8%B7%AF%E7%94%B1/">策略路由</a>
+          </li>
+        
+          <li>
+            <a href="/2021/09/18/switch%E7%9F%A5%E8%AF%86/">switch知识</a>
+          </li>
+        
+          <li>
+            <a href="/2021/09/18/switch%D6%AA%CA%B6/">switch知识</a>
+          </li>
+        
+          <li>
+            <a href="/2021/09/17/TCP%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3%E6%9C%BA%E5%88%B6/">TCP滑动窗口机制</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2023 John Doe<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>YANG | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="NETCONF协议分为传输层、RPC层、操作层和内容层。其中，内容层是唯一没有标准化的层，于是一种新的建模语言YANG产生了，它的目标是对NETCONF数据模型、操作进行建模，覆盖NETCONF协议的操作层和内容层">
+<meta property="og:type" content="article">
+<meta property="og:title" content="YANG">
+<meta property="og:url" content="http://example.com/2021/09/03/YANG/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="NETCONF协议分为传输层、RPC层、操作层和内容层。其中，内容层是唯一没有标准化的层，于是一种新的建模语言YANG产生了，它的目标是对NETCONF数据模型、操作进行建模，覆盖NETCONF协议的操作层和内容层">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/YANG/NETCONFIG.png">
+<meta property="article:published_time" content="2021-09-03T02:02:21.000Z">
+<meta property="article:modified_time" content="2021-09-03T02:39:34.000Z">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/YANG/NETCONFIG.png">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-YANG" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2021/09/03/YANG/" class="article-date">
+  <time class="dt-published" datetime="2021-09-03T02:02:21.000Z" itemprop="datePublished">2021-09-03</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      YANG
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>NETCONF协议分为传输层、RPC层、操作层和内容层。其中，内容层是唯一没有标准化的层，于是一种新的建模语言YANG产生了，它的目标是对NETCONF数据模型、操作进行建模，覆盖NETCONF协议的操作层和内容层</p>
+<span id="more"></span>
+
+<p><img src="/YANG/NETCONFIG.png" alt="NETCONFIG"></p>
+<h1 id="YANG"><a href="#YANG" class="headerlink" title="YANG"></a>YANG</h1><p>YANG 是随着 NETCONF 协议而产生的<font color = #E9764A><strong>数据建模语言</strong></font>，由RFC6020定义，类似于XML Schema和SNMP的SMI， 具有良好的可读性和可扩展性。其关键特性：      </p>
+<ul>
+<li>服务和网元数据模型vs信息模型（UML）<ul>
+<li>YANG是数据建模语言</li>
+</ul>
+</li>
+<li>领域专用语言<ul>
+<li>专为网络配置而生</li>
+</ul>
+</li>
+<li>网元配置建模<ul>
+<li>Yang足够为网元配置建模（通常遵循CLI）</li>
+</ul>
+</li>
+<li>服务配置建模<ul>
+<li>Yang is rich enough to model services in the same language as the NE</li>
+</ul>
+</li>
+<li>网络拓扑建模<ul>
+<li>通过发布YANG来可以支持任何新设备</li>
+</ul>
+</li>
+<li>设备厂商必须通过IETF创建和发布自己设备的杨模型</li>
+</ul>
+<p>需要解释一下数据模型和协议的关系：</p>
+<blockquote>
+<p>什么是数据模型？一个数据模型明确和精确地确定数据的结构、语法和语义；那协议呢？ 用于查看和操作数据的远程原语（例如：XML RPC或HTTP方法）；对数据模型定义的数据进行编码（例如：XML或JSON）</p>
+</blockquote>
+<h1 id="YANG模型的用处"><a href="#YANG模型的用处" class="headerlink" title="YANG模型的用处"></a>YANG模型的用处</h1><p>网络设备的配置结构往往是是不同的。实现同样的功能的不同设备需要的配置结构也往往不同。比如思科设备接口上配置一个address只要知道接口名、ip版本和地址掩码就足够了但是juniper的机器上不但要知道这些还要额外提供一个unit号来标识逻辑接口。特别是现在nfv大潮下，nfv是干毛的，网络功能虚拟化，既然虚拟化我就更关注的是功能本身而不是实现这个功能的设备，对于管理人员来说，他往往就只想告诉一套nfv系统，我要什么功能，比如，我要一号站点能联网我要DHCP服务我要VPN，而单纯利用netconf是无法配置的，因为还要求具体的配置结构。</p>
+<p>我们只要给对应的设备所需的配置结构来个模型不就行了？到时候不就是完形填空吗，yang model就是吃这口饭的，我只需知道对应设备的yang model就可以向管理者请求对应设备所需的信息了，具体结构上的问题有yang model来解释。</p>
+<p>什么叫做结构上的问题呢？还是举刚才那个例子</p>
+<p>思科为啥不需要unit号来指定逻辑端口呢？因为它的逻辑端口藏在接口名里</p>
+<p>所以它的配置类似这样</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">接口名&#123;</span><br><span class="line">    ip&#123;</span><br><span class="line">        address x.x.x.x</span><br><span class="line">        mask x.x.x.x</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>但是juniper的额外需要一个unit号来表示逻辑端口</p>
+<p>所以它的配置类似这样</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">接口名&#123;</span><br><span class="line">    unit x &#123;</span><br><span class="line">        ip&#123;</span><br><span class="line">            address x.x.x.x</span><br><span class="line">            mask x.x.x.x</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;   </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>当然实际上他们的yang model 要比这个复杂的多，比如juniper还有family 这个层级这里就是举一个例子</p>
+<p>但是<font color = #E9764A><strong>对于上层用户管理来说，他只用填逻辑口号，接口名，地址以及ip版本就可以了，他不需要知道具体到底实际的配置长啥样了</strong></font>，因为有可能及其复杂233.</p>
+<p>是不是感觉很完美了，这样NFV可以让服务提供商随意换设备了，底层是思科华为还是juniper没啥所谓，反正只要有yang model我们就知道到底怎么配一台机器了。</p>
+<p>XML呢，刚说过netconf是一种协议，它实际是个服务器，接受客户端发来的请求来配置自己，所以每台设备上都有一个netconf server，这里的信息交互就是用xml来实现的，所以yang model其实就是一种描述XML结构的模型。</p>
+<blockquote>
+<p>简单而言，支持netconf的设备其实就是有了一套有标准的设备API。<br>这套API不光能够做配置，还能提交一些本来由CLI实现的命令。<br>本质上，netconf协议交换的是XML，传输的是一个一个的RPC。<br>你只需把你需要的配置，按照你设备上的netconf模型写一个xml，通过一个netconf client 发送给设备，设备就可以去给你配置，并把配置的结果返回给你。</p>
+<p>传统我们做自动配置脚本，都是基于ssh连接到设备上，然后一条一条命令去输入，这种脚本局限性很大，搞成模板替换数据也是很费神的一件事儿。有了netconf这些都会成为历史，只需整体写一个xml模板，然后因为它是xml，所有很多python的模板包都可以轻轻松松拿来用，比如jinjia template。然后，因为你的配置是整体发送过去的，也就不用一条条命令来看执行结果，处理那些讨厌的问题，比如突然某一条失败了，配置要回滚。。。</p>
+<p>更棒的是，netconf 对不同的配置结构都是通过统一的模型语言来描述的，也就是yang model，大部分的配置结构都可以用yang model来描述，理论上你要是有目标主机的yang model，连配置模板也可以自动生成。。。如果你给你的脚本加个fancy的GUI，那么恭喜你，你完成了一个SDN的雏形。</p>
+</blockquote>
+<h1 id="XML是什么"><a href="#XML是什么" class="headerlink" title="XML是什么"></a>XML是什么</h1><p>XML:即可扩展标记语言，xml是互联网数据传输的重要工具，它可以跨越互联网任何的平台，<font color = #E9764A><strong>不受编程语言和操作系统的限制</strong></font>，可以说它是一个拥有互联网最高级别通行证的数据携带者。xml是当前处理结构化文档信息中相当给力的技术，xml有助于在服务器之间穿梭结构化数据，这使得开发人员更加得心应手的控制数据的存储和传输。</p>
+<p>Xml用于标记电子文件使其具有结构性的标记语言，可以用来标记数据、定义数据类型，是一种允许用户对自己的标记语言进行定义的源语言。Xml是标准通用标记语言（SGML）的子集，非常适合Web传输。XML提供统一的方法来描述和交换独立于应用程序或供应商的结构化数据。</p>
+<p><strong>特点</strong>：<br>xml与操作系统、编程语言的开发平台都无关；<br>实现不同系统之间的数据交互。</p>
+<p><strong>作用</strong>：<br>配置应用程序和网站；<br>数据交互；<br>Ajax基石。</p>
+<p>在配置文件里边所有的配置文件都是以XMl的格式来编写的。</p>
+<p>跨平台进行数据交互，它可以跨操作系统，也可以跨编程语言的平台。</p>
+<h1 id="相关博客link"><a href="#相关博客link" class="headerlink" title="相关博客link"></a>相关博客link</h1><p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/FrankZhou2017/p/7258264.html">关于YANG基础的博客：LINK</a><br><a target="_blank" rel="noopener" href="https://www.sdnlab.com/18066.html">关于YANG模型的博客：LINK</a><br><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_34272143/article/details/87164488?ops_request_misc=&request_id=&biz_id=102&utm_term=xml&utm_medium=distribute.pc_search_result.none-task-blog-2~all~sobaiduweb~default-2-87164488.nonecase&spm=1018.2226.3001.4187">关于XML详解的博客：LINK</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2021/09/03/YANG/" data-id="clg3uqot4002cp8mucrfs8ck5" data-title="YANG" class="article-share-link">Share</a>
+      
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2021/09/03/%E6%A0%88/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          栈
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2021/09/01/nat/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">NAT网络地址转换</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Github/">Github</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/VPN/">VPN</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/openstack/">openstack</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E4%BA%A4%E6%8D%A2%E6%9C%BA/">交换机</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%8D%9A%E5%AE%A2/">博客</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%AE%89%E5%85%A8/">安全</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%B0%E6%8D%AE%E4%B8%AD%E5%BF%83/">数据中心</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">数据结构</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%B0%E6%8D%AE%E9%80%9A%E4%BF%A1/">数据通信</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%99%9A%E6%8B%9F%E5%8C%96/">虚拟化</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%B7%AF%E7%94%B1/">路由</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%BF%90%E7%BB%B4/">运维</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Apache/" rel="tag">Apache</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/BGP/" rel="tag">BGP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DHCP/" rel="tag">DHCP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Django/" rel="tag">Django</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Github/" rel="tag">Github</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/" rel="tag">Linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/OSI/" rel="tag">OSI</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/OSPF/" rel="tag">OSPF</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Python/" rel="tag">Python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SDN/" rel="tag">SDN</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/STP/" rel="tag">STP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/VLAN/" rel="tag">VLAN</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/VPN/" rel="tag">VPN</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/VXLAN/" rel="tag">VXLAN</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/" rel="tag">hexo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/openstack/" rel="tag">openstack</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/yilia/" rel="tag">yilia</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%91%E8%AE%A1%E7%AE%97/" rel="tag">云计算</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%A4%E6%8D%A2/" rel="tag">交换</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%A4%E6%8D%A2%E6%9C%BA/" rel="tag">交换机</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%8E%9F%E7%90%86/" rel="tag">交换机原理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BB%A5%E5%A4%AA%E7%BD%91%E5%B8%A7/" rel="tag">以太网帧</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8D%9A%E5%AE%A2/" rel="tag">博客</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8D%9A%E5%AE%A2%E8%87%AA%E5%AE%9A%E4%B9%89/" rel="tag">博客自定义</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%AE%89%E5%85%A8/" rel="tag">安全</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%8E%A5%E5%8F%A3/" rel="tag">接口</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%8E%A7%E5%88%B6%E5%99%A8/" rel="tag">控制器</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E4%B8%AD%E5%BF%83/" rel="tag">数据中心</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="tag">数据结构</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E9%80%9A%E4%BF%A1/" rel="tag">数据通信</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF%E5%B1%82/" rel="tag">数据链路层</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%AB%AF%E5%8F%A3%E9%95%9C%E5%83%8F/" rel="tag">端口镜像</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BB%8F%E9%AA%8C/" rel="tag">经验</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BC%96%E5%86%99%E6%8C%87%E5%8D%97/" rel="tag">编写指南</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BD%91%E7%BB%9C/" rel="tag">网络</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BD%91%E7%BB%9C%E5%9F%BA%E7%A1%80/" rel="tag">网络基础</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%84%9A%E6%9C%AC/" rel="tag">脚本</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%87%AA%E5%8A%A8%E5%8C%96%E8%BF%90%E7%BB%B4/" rel="tag">自动化运维</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%99%9A%E6%8B%9F%E5%8C%96/" rel="tag">虚拟化</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%99%9A%E6%8B%9F%E5%8C%96%E6%8A%80%E6%9C%AF/" rel="tag">虚拟化技术</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%B7%AF%E7%94%B1/" rel="tag">路由</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%BF%90%E7%BB%B4/" rel="tag">运维</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Apache/" style="font-size: 10px;">Apache</a> <a href="/tags/BGP/" style="font-size: 10px;">BGP</a> <a href="/tags/DHCP/" style="font-size: 10px;">DHCP</a> <a href="/tags/Django/" style="font-size: 10px;">Django</a> <a href="/tags/Github/" style="font-size: 10px;">Github</a> <a href="/tags/Linux/" style="font-size: 12.86px;">Linux</a> <a href="/tags/OSI/" style="font-size: 10px;">OSI</a> <a href="/tags/OSPF/" style="font-size: 14.29px;">OSPF</a> <a href="/tags/Python/" style="font-size: 17.14px;">Python</a> <a href="/tags/SDN/" style="font-size: 10px;">SDN</a> <a href="/tags/STP/" style="font-size: 10px;">STP</a> <a href="/tags/VLAN/" style="font-size: 10px;">VLAN</a> <a href="/tags/VPN/" style="font-size: 12.86px;">VPN</a> <a href="/tags/VXLAN/" style="font-size: 10px;">VXLAN</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/openstack/" style="font-size: 12.86px;">openstack</a> <a href="/tags/yilia/" style="font-size: 10px;">yilia</a> <a href="/tags/%E4%BA%91%E8%AE%A1%E7%AE%97/" style="font-size: 10px;">云计算</a> <a href="/tags/%E4%BA%A4%E6%8D%A2/" style="font-size: 10px;">交换</a> <a href="/tags/%E4%BA%A4%E6%8D%A2%E6%9C%BA/" style="font-size: 14.29px;">交换机</a> <a href="/tags/%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%8E%9F%E7%90%86/" style="font-size: 10px;">交换机原理</a> <a href="/tags/%E4%BB%A5%E5%A4%AA%E7%BD%91%E5%B8%A7/" style="font-size: 10px;">以太网帧</a> <a href="/tags/%E5%8D%9A%E5%AE%A2/" style="font-size: 10px;">博客</a> <a href="/tags/%E5%8D%9A%E5%AE%A2%E8%87%AA%E5%AE%9A%E4%B9%89/" style="font-size: 10px;">博客自定义</a> <a href="/tags/%E5%AE%89%E5%85%A8/" style="font-size: 10px;">安全</a> <a href="/tags/%E6%8E%A5%E5%8F%A3/" style="font-size: 10px;">接口</a> <a href="/tags/%E6%8E%A7%E5%88%B6%E5%99%A8/" style="font-size: 10px;">控制器</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E4%B8%AD%E5%BF%83/" style="font-size: 10px;">数据中心</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" style="font-size: 15.71px;">数据结构</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E9%80%9A%E4%BF%A1/" style="font-size: 20px;">数据通信</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF%E5%B1%82/" style="font-size: 12.86px;">数据链路层</a> <a href="/tags/%E7%AB%AF%E5%8F%A3%E9%95%9C%E5%83%8F/" style="font-size: 10px;">端口镜像</a> <a href="/tags/%E7%BB%8F%E9%AA%8C/" style="font-size: 10px;">经验</a> <a href="/tags/%E7%BC%96%E5%86%99%E6%8C%87%E5%8D%97/" style="font-size: 10px;">编写指南</a> <a href="/tags/%E7%BD%91%E7%BB%9C/" style="font-size: 18.57px;">网络</a> <a href="/tags/%E7%BD%91%E7%BB%9C%E5%9F%BA%E7%A1%80/" style="font-size: 11.43px;">网络基础</a> <a href="/tags/%E8%84%9A%E6%9C%AC/" style="font-size: 10px;">脚本</a> <a href="/tags/%E8%87%AA%E5%8A%A8%E5%8C%96%E8%BF%90%E7%BB%B4/" style="font-size: 10px;">自动化运维</a> <a href="/tags/%E8%99%9A%E6%8B%9F%E5%8C%96/" style="font-size: 11.43px;">虚拟化</a> <a href="/tags/%E8%99%9A%E6%8B%9F%E5%8C%96%E6%8A%80%E6%9C%AF/" style="font-size: 14.29px;">虚拟化技术</a> <a href="/tags/%E8%B7%AF%E7%94%B1/" style="font-size: 17.14px;">路由</a> <a href="/tags/%E8%BF%90%E7%BB%B4/" style="font-size: 10px;">运维</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/09/">September 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">August 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">July 2021</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2021/09/21/CDN/">CDN</a>
+          </li>
+        
+          <li>
+            <a href="/2021/09/20/%E7%AD%96%E7%95%A5%E8%B7%AF%E7%94%B1/">策略路由</a>
+          </li>
+        
+          <li>
+            <a href="/2021/09/18/switch%E7%9F%A5%E8%AF%86/">switch知识</a>
+          </li>
+        
+          <li>
+            <a href="/2021/09/18/switch%D6%AA%CA%B6/">switch知识</a>
+          </li>
+        
+          <li>
+            <a href="/2021/09/17/TCP%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3%E6%9C%BA%E5%88%B6/">TCP滑动窗口机制</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2023 John Doe<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

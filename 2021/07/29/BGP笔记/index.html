@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>BGP笔记 | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="边界网关协议BGP（Border Gateway Protocol）是一种实现自治系统AS（Autonomous System）之间的路由可达，并选择最佳路由的距离矢量路由协议。 MP-BGP是对BGP-4进行了扩展，来达到在不同网络中应用的目的，BGP-4原有的消息机制和路由机制并没有改变。MP-BGP在IPv6单播网络上的应用称为BGP4+，在IPv4组播网络上的应用称为MBGP（Multic">
+<meta property="og:type" content="article">
+<meta property="og:title" content="BGP笔记">
+<meta property="og:url" content="http://example.com/2021/07/29/BGP%E7%AC%94%E8%AE%B0/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="边界网关协议BGP（Border Gateway Protocol）是一种实现自治系统AS（Autonomous System）之间的路由可达，并选择最佳路由的距离矢量路由协议。 MP-BGP是对BGP-4进行了扩展，来达到在不同网络中应用的目的，BGP-4原有的消息机制和路由机制并没有改变。MP-BGP在IPv6单播网络上的应用称为BGP4+，在IPv4组播网络上的应用称为MBGP（Multic">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2021-07-29T08:37:17.000Z">
+<meta property="article:modified_time" content="2021-08-24T05:55:18.000Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="数据通信">
+<meta property="article:tag" content="路由">
+<meta property="article:tag" content="BGP">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-BGP笔记" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2021/07/29/BGP%E7%AC%94%E8%AE%B0/" class="article-date">
+  <time class="dt-published" datetime="2021-07-29T08:37:17.000Z" itemprop="datePublished">2021-07-29</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E8%B7%AF%E7%94%B1/">路由</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      BGP笔记
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>边界网关协议BGP（Border Gateway Protocol）是一种实现自治系统AS（Autonomous System）之间的路由可达，并选择最佳路由的距离矢量路由协议。</p>
+<p>MP-BGP是对BGP-4进行了扩展，来达到在不同网络中应用的目的，BGP-4原有的消息机制和路由机制并没有改变。MP-BGP在IPv6单播网络上的应用称为BGP4+，在IPv4组播网络上的应用称为MBGP（Multicast BGP）</p>
+<span id="more"></span>
+
+
+<h1 id="BGP笔记"><a href="#BGP笔记" class="headerlink" title="BGP笔记"></a>BGP笔记</h1><h2 id="BGP分类"><a href="#BGP分类" class="headerlink" title="BGP分类"></a>BGP分类</h2><p>BGP按照运行方式分为EBGP（External&#x2F;Exterior BGP）和IBGP（Internal&#x2F;Interior BGP）。</p>
+<p>EBGP：<br>运行于不同AS之间的BGP称为EBGP。为了防止AS间产生环路，当BGP设备接收EBGP对等体发送的路由时，会将带有本地AS号的路由丢弃。从EBGP对等体获得的路由会向它的所有BGP对等体通告</p>
+<p>IBGP：<br>运行于同一AS内部的BGP称为IBGP。为了防止AS内产生环路，BGP设备不将从IBGP对等体学到的路由通告给其他IBGP对等体，并与所有IBGP对等体建立全连接。从IBGP获得的路由是否通告给它的EBGP对等体要依IGP和BGP同步的情况来决定。为了解决IBGP对等体的连接数量太多的问题，BGP设计了路由反射器和BGP联盟。</p>
+<h2 id="BGP报文作用"><a href="#BGP报文作用" class="headerlink" title="BGP报文作用"></a>BGP报文作用</h2><table>
+<thead>
+<tr>
+<th>报文名称</th>
+<th>作用</th>
+<th>什么时候发</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>OPEN</td>
+<td>协商BGP邻居参数，建立邻居关系</td>
+<td>通过TCP建立BGP连接，发送open报文</td>
+</tr>
+<tr>
+<td>UPDATE</td>
+<td>进行路由信息交换</td>
+<td>连接建立后，有路由需要发送或路由变化时，发送UPDATE通告对端路由信息</td>
+</tr>
+<tr>
+<td>NOTIFICATION</td>
+<td>报告错误，中断邻居关系</td>
+<td>当BGP在运行中发现错误时，要发送NOTIFICATION报文通告BGP对端</td>
+</tr>
+<tr>
+<td>KEEPALIVE</td>
+<td>保活，维持邻居关系</td>
+<td>定时发送KEEPALIVE报文以保持BGP邻居关系的有效性</td>
+</tr>
+<tr>
+<td>ROUTE-REFRESH</td>
+<td>保证网络稳定，触发更新路由的机制</td>
+<td>当路由策略发生变化时，触发请求邻居重新通告路由</td>
+</tr>
+</tbody></table>
+<h2 id="BGP邻居状态机"><a href="#BGP邻居状态机" class="headerlink" title="BGP邻居状态机"></a>BGP邻居状态机</h2><table>
+<thead>
+<tr>
+<th>状态名称</th>
+<th>发什么包</th>
+<th>在做什么</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Idle</td>
+<td>尝试建立TCP连接</td>
+<td>开始准备TCP的连接并监视远程peer启动TCP连接，启用BGP时，要准备足够的资源</td>
+</tr>
+<tr>
+<td>Connect</td>
+<td>TCP包</td>
+<td>正在进行TCP连接，等待完成中，认证都是在TCP建立期间完成的。如果TCP连接不上则进入Active状态，反复尝试连接</td>
+</tr>
+<tr>
+<td>Active</td>
+<td>TCP包</td>
+<td>反复尝试和对方建立TCP连接</td>
+</tr>
+<tr>
+<td>OpenSent</td>
+<td>Open包</td>
+<td>TCP连接建立已经成功，开始发送Open包，Open包携带参数协商对等体的建立</td>
+</tr>
+<tr>
+<td>OpenConfirm</td>
+<td>KeepAlive包</td>
+<td>参数、能力特性协商成功，自己开始发送Keepalive包，等待对方的Keepalive包</td>
+</tr>
+<tr>
+<td>Established</td>
+<td>Update包</td>
+<td>已经收到对方的Keepalive包，双方能力特性一致，开始使用Update通告路由信息</td>
+</tr>
+</tbody></table>
+<h2 id="BGP路径选择"><a href="#BGP路径选择" class="headerlink" title="BGP路径选择"></a>BGP路径选择</h2><h3 id="BGP路径选择-1"><a href="#BGP路径选择-1" class="headerlink" title="BGP路径选择"></a>BGP路径选择</h3><p>步骤一	<font color=#E9764A><strong>优选权重最高的路由 weight</strong></font>（Cisco私有）<br>步骤二  如果多条路由拥有相同权重。<font color=#E9764A><strong>优选本地优先级最高的路由</strong></font>（Local Preference 用在一个AS内部）<br>步骤三  如果多条路由拥有相同本地优先级。<font color=#E9764A><strong>优选本地路由器初始的路由</strong></font>（本地初始路由在BGP表中下一跳为0.0.0.0）<br>步骤四  如果没有本地路由器初始路由。<font color=#E9764A><strong>优选AS-PATH最短的路由</strong></font><br>步骤五  如果多条路由拥有相同长短的AS-PATH。<font color=#E9764A><strong>优选源代码最小的路由</strong></font>（Origin Code：IGP&lt;EGP&lt;Incomplete）<br>步骤六	如果多条路由拥有相同源代码。<font color=#E9764A><strong>优选MED最低的路由</strong></font>（路由器在AS之间交换MED）<br>步骤七	如果多条路由拥有相同MED。<font color=#E9764A><strong>优选外部路由</strong></font>（eBGP）<font color=#E9764A><strong>而不是内部路由</strong></font>（iBGP）<br>步骤八	如果只剩内部路由，<font color=#E9764A><strong>优选穿越最近IGP邻居的路径</strong></font>（去往BGP下一跳的最短路径）<br>步骤九	对于eBGP路径，<font color=#E9764A><strong>优选最老的路由</strong></font>（减少路由反复启动和禁用的风险）<br>步骤十	<font color=#E9764A><strong>优选邻居BGP路由器ID值最低的路由</strong></font><br>步骤十一	如果BGP路由器ID都相同。<font color=#E9764A><strong>优选邻居IP地址最小的路由</strong></font></p>
+<h3 id="实例"><a href="#实例" class="headerlink" title="实例"></a>实例</h3><p>通过十一个步骤，最终只有一条路径会被放入路由表并传播给路由器的其他BGP邻居。如果没有修改路由的话，最常见的路由选择因素是路由选择中的步骤四：优选最短的AS-PATH。<br><strong>步骤一</strong> 对比权重，非源于本地路由器的路由，默认权重为0<br><strong>步骤二</strong> 对比本地优先级，所有网络的本地优先级默认为100。只有当网络管理员手动配置过，步骤一和步骤二才会生效<br><strong>步骤三</strong> 查看这个AS拥有的网络。如果其中一条是由本地路由器注入到BGP表中的，那么优选本地路由器提供的路由，而不是通过其他BGP路由器收到的路由<br><strong>步骤四</strong> 优选跨越最少AS的路径。这是BGP中路径选择最常见的结果<br><strong>步骤五</strong> 查看的是网络进入BGP的方式。通常网络是由命令network（源代码为i）或者通过重分布（源代码为？）进入BGP的<br><strong>步骤六</strong> 通过查看MED，判断邻居AS希望本地AS向哪里发送指定网络的数据包<br><strong>步骤七</strong> 这是BGP路径选择第二常见的最终结果。从eBGP邻居学到的外部路径优于从iBGP邻居学到的内部路径。一个AS内的路由器会优选使用ISP（网络服务商）的带宽资源，来去往某个网络，而不是优选本地AS中另一台iBGP邻居并占用内部带宽资源<br>如果AS路径长度相等，并且这个AS中只有iBGP提供了路径，BGP就会选择去往最近出口的路径。<strong>步骤八</strong>就会查找最近的iBGP邻居（“最近”决定于IGP中的度量，比如RIP条数，OSPF最小开销等）<br>如果AS路径长度相等，穿越所有iBGP邻居的开销也相等，或者所有去往这个网络的邻居都是eBGP邻居，那么下一步就是选择最老路径（<strong>步骤九</strong>），因为它建立时间最长，可以<br>认为它最稳定<br>如果上述都相等，优选BGP路由ID最低的路由（<strong>步骤十</strong>）<br>如果BGP路由器ID也相同（比如所有路径都去往同一台BGP路由器），那么选择邻居IP地址最小的路由（<strong>步骤十一</strong>）</p>
+<h2 id="BGP属性"><a href="#BGP属性" class="headerlink" title="BGP属性"></a>BGP属性</h2><table>
+<thead>
+<tr>
+<th>类型名</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>公认必须遵循（Well-known mandatory）</td>
+<td>所有BGP设备都可以识别此类属性，且必须存在于Update报文中。如果缺少这类属性，路由信息就会出错。</td>
+</tr>
+<tr>
+<td>公认自决（Well-known discretionary）</td>
+<td>所有BGP设备都可以识别此类属性，但不要求必须存在于Update报文中，即就算缺少这类属性，路由信息也不会出错。</td>
+</tr>
+<tr>
+<td>可选传递（Optional transitive）</td>
+<td>BGP设备可以不识别此类属性，如果BGP设备不识别此类属性，但它仍然会接收这类属性，并通告给其他对等体。</td>
+</tr>
+<tr>
+<td>可选非传递（Optional non-transitive）</td>
+<td>BGP设备可以不识别此类属性，如果BGP设备不识别此类属性，则会被忽略该属性，且不会通告给其他对等体。</td>
+</tr>
+</tbody></table>
+<table>
+<thead>
+<tr>
+<th>属性名</th>
+<th>类型</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Origin属性</td>
+<td>公认必遵</td>
+</tr>
+<tr>
+<td>AS_Path属性</td>
+<td>公认必遵</td>
+</tr>
+<tr>
+<td>Next_Hop属性</td>
+<td>公认必遵</td>
+</tr>
+<tr>
+<td>Local_Pref属性</td>
+<td>公认自决</td>
+</tr>
+<tr>
+<td>Atomic Aggregate路由聚合</td>
+<td>公认自决</td>
+</tr>
+<tr>
+<td>Community 团体</td>
+<td>可选传递</td>
+</tr>
+<tr>
+<td>Aggregator 聚合器</td>
+<td>可选传递</td>
+</tr>
+<tr>
+<td>MED属性</td>
+<td>可选非传递</td>
+</tr>
+<tr>
+<td>Originator_ID属性</td>
+<td>可选非传递</td>
+</tr>
+<tr>
+<td>Cluster_List属性</td>
+<td>可选非传递</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>一条BGP路由缺省携带的属性是 origin next-hop as-path以及 local-pref＝100 MED＝0属性</p>
+</blockquote>
+<h3 id="Origin属性："><a href="#Origin属性：" class="headerlink" title="Origin属性："></a>Origin属性：</h3><p>Origin属性用来定义路径信息的来源，标记一条路由是怎么成为BGP路由的。它有以下3种类型：</p>
+<pre><code>IGP：具有最高的优先级。通过network命令注入到BGP路由表的路由，其Origin属性为IGP。
+EGP：优先级次之。通过EGP得到的路由信息，其Origin属性为EGP。
+Incomplete：优先级最低。通过其他方式学习到的路由信息。比如BGP通过import-route命令引入的路由，其Origin属性为Incomplete。
+</code></pre>
+<h3 id="AS-Path属性："><a href="#AS-Path属性：" class="headerlink" title="AS_Path属性："></a>AS_Path属性：</h3><p>AS_Path属性按矢量顺序记录了某条路由从本地到目的地址所要经过的所有AS编号。在接收路由时，设备如果发现AS_Path列表中有本AS号，则不接收该路由，从而避免了AS间的路由环路。</p>
+<p>当BGP Speaker传播自身引入的路由时：</p>
+<pre><code> 当BGP Speaker将这条路由通告到EBGP对等体时，便会在Update报文中创建一个携带本地AS号的AS_Path列表。
+ 当BGP Speaker将这条路由通告给IBGP对等体时，便会在Update报文中创建一个空的AS_Path列表。
+</code></pre>
+<p>当BGP Speaker传播从其他BGP Speaker的Update报文中学习到的路由时：</p>
+<pre><code> 当BGP Speaker将这条路由通告给EBGP对等体时，便会把本地AS编号添加在AS_Path列表的最前面（最左面）。收到此路由的BGP设备根据AS_Path属性就可以知道去目的地址所要经过的AS。离本地AS最近的相邻AS号排在前面，其他AS号按顺序依次排列。
+ 当BGP Speaker将这条路由通告给IBGP对等体时，不会改变这条路由相关的AS_Path属性。
+</code></pre>
+<h3 id="Next-hop属性："><a href="#Next-hop属性：" class="headerlink" title="Next_hop属性："></a>Next_hop属性：</h3><p>Next_Hop属性记录了路由的下一跳信息。BGP的下一跳属性和IGP的有所不同，不一定就是邻居设备的IP地址。通常情况下，Next_Hop属性遵循下面的规则：</p>
+<pre><code>BGP Speaker在向EBGP对等体发布某条路由时，会把该路由信息的下一跳属性设置为本地与对端建立BGP邻居关系的接口地址。
+BGP Speaker将本地始发路由发布给IBGP对等体时，会把该路由信息的下一跳属性设置为本地与对端建立BGP邻居关系的接口地址。
+BGP Speaker在向IBGP对等体发布从EBGP对等体学来的路由时，并不改变该路由信息的下一跳属性。
+</code></pre>
+<p><font color=#FF0000><strong>Next-Hop-Self</strong></font><br>eBGP使用对等体作为自己的下一跳<br>iBGP缺省情况下不改变下一跳，导致iBGP学到的是eBGP对接的其他AS的接口地址，而这个地址只有eBGP自己知道（eBGP并不会通告iBGP怎么去它的邻居eBGP），导致没有这个路由，导致学来的路由是下一跳不可达，导致不加入路由表<br>在iBGP之间启用next-hop-self特性，这样内部AS的BGP路由学来的其他AS的路由下一跳就会指向自己AS内部BGP的边界BGP路由器，这个地址在IGP内是可达的。</p>
+<h3 id="Local-pref属性："><a href="#Local-pref属性：" class="headerlink" title="Local_pref属性："></a>Local_pref属性：</h3><p>Local_Pref属性表明路由器的BGP优先级，用于判断流量离开AS时的最佳路由。当BGP的设备通过不同的IBGP对等体得到目的地址相同但下一跳不同的多条路由时，将优先选择Local_Pref属性值较高的路由。Local_Pref属性仅在IBGP对等体之间有效，不通告给其他AS。Local_Pref属性可以手动配置，如果路由没有配置Local_Pref属性，BGP选路时将该路由的Local_Pref值按缺省值100来处理。</p>
+<h3 id="MED属性："><a href="#MED属性：" class="headerlink" title="MED属性："></a>MED属性：</h3><p>MED（Multi-Exit Discriminator）属性用于判断流量进入AS时的最佳路由，当一个运行BGP的设备通过不同的EBGP对等体得到目的地址相同但下一跳不同的多条路由时，在其它条件相同的情况下，将优先选择MED值较小者作为最佳路由。</p>
+<p>MED属性仅在相邻两个AS之间传递，收到此属性的AS一方不会再将其通告给任何其他第三方AS。MED属性可以手动配置，如果路由没有配置MED属性，BGP选路时将该路由的MED值按缺省值0来处理。</p>
+<h3 id="团体属性："><a href="#团体属性：" class="headerlink" title="团体属性："></a>团体属性：</h3><p>团体属性（Community）用于标识具有相同特征的BGP路由，使路由策略的应用更加灵活，同时降低了维护管理的难度。</p>
+<p>团体属性分为自定义团体属性和公认团体属性。公认团体属性如下所示：</p>
+<table>
+<thead>
+<tr>
+<th>属性名</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>No_advertise</td>
+<td>不通告给任何BGP对等体</td>
+</tr>
+<tr>
+<td>No_export</td>
+<td>不通告给EBGP对等体</td>
+</tr>
+<tr>
+<td>Internet</td>
+<td>可以通告给所有其他BGP对等体</td>
+</tr>
+<tr>
+<td>Local-AS</td>
+<td>表示本路径不发布到本AS外部</td>
+</tr>
+</tbody></table>
+<h3 id="Originator-ID属性和Cluster-List属性："><a href="#Originator-ID属性和Cluster-List属性：" class="headerlink" title="Originator_ID属性和Cluster_List属性："></a>Originator_ID属性和Cluster_List属性：</h3><p>Originator_ID属性和Cluster_List属性用于解决路由反射器场景中的环路问题。</p>
+<h2 id="路由反射器"><a href="#路由反射器" class="headerlink" title="路由反射器"></a>路由反射器</h2><p>为保证IBGP对等体之间的连通性，需要在IBGP对等体之间建立全连接关系。假设在一个AS内部有n台设备，那么建立的IBGP连接数就为n(n-1)&#x2F;2。当设备数目很多时，设备配置将十分复杂，而且配置后网络资源和CPU资源的消耗都很大。在IBGP对等体间使用路由反射器可以解决以上问题。</p>
+<h3 id="路由反射器相关角色："><a href="#路由反射器相关角色：" class="headerlink" title="路由反射器相关角色："></a>路由反射器相关角色：</h3><p>在一个AS内部关于路由反射器有以下几种角色：</p>
+<p>路由反射器RR（Route Reflector）：<br>允许把从IBGP对等体学到的路由反射到其他IBGP对等体的BGP设备，类似OSPF网络中的DR。</p>
+<p>客户机（Client）：<br>与RR形成反射邻居关系的IBGP设备。在AS内部客户机只需要与RR直连。</p>
+<p>非客户机（Non-Client）：<br>既不是RR也不是客户机的IBGP设备。在AS内部非客户机与RR之间，以及所有的非客户机之间仍然必须建立全连接关系。</p>
+<p>始发者（Originator）：<br>在AS内部始发路由的设备。Originator_ID属性用于防止集群内产生路由环路。</p>
+<p>集群（Cluster）：<br>路由反射器及其客户机的集合。Cluster_List属性用于防止集群间产生路由环路。</p>
+<h3 id="路由反射器原理："><a href="#路由反射器原理：" class="headerlink" title="路由反射器原理："></a>路由反射器原理：</h3><p>同一集群内的客户机只需要与该集群的RR直接交换路由信息，因此客户机只需要与RR之间建立IBGP连接，不需要与其他客户机建立IBGP连接，从而减少了IBGP连接数量。</p>
+<p>RR突破了“从IBGP对等体获得的BGP路由，BGP设备只发布给它的EBGP对等体。”的限制，并采用独有的Cluster_List属性和Originator_ID属性防止路由环路。RR向IBGP邻居发布路由规则如下：</p>
+<pre><code>从非客户机学到的路由，发布给所有客户机。
+从客户机学到的路由，发布给所有非客户机和客户机（发起此路由的客户机除外）。
+从EBGP对等体学到的路由，发布给所有的非客户机和客户机。
+</code></pre>
+<h3 id="Cluster-List属性："><a href="#Cluster-List属性：" class="headerlink" title="Cluster_List属性："></a>Cluster_List属性：</h3><p>路由反射器和它的客户机组成一个集群（Cluster），使用AS内唯一的Cluster ID作为标识。为了防止集群间产生路由环路，路由反射器使用Cluster_List属性，记录路由经过的所有集群的Cluster ID。</p>
+<p>当一条路由第一次被RR反射的时候，RR会把本地Cluster ID添加到Cluster List的前面。如果没有Cluster_List属性，RR就创建一个。<br>当RR接收到一条更新路由时，RR会检查Cluster List。如果Cluster List中已经有本地Cluster ID，丢弃该路由；如果没有本地Cluster ID，将其加入Cluster List，然后反射该更新路由。</p>
+<h3 id="Originator-ID属性："><a href="#Originator-ID属性：" class="headerlink" title="Originator_ID属性："></a>Originator_ID属性：</h3><p>Originator ID由RR产生，使用的Router ID的值标识路由的始发者，用于防止集群内产生路由环路。</p>
+<p>当一条路由第一次被RR反射的时候，RR将Originator_ID属性加入这条路由，标识这条路由的发起设备。如果一条路由中已经存在了Originator_ID属性，则RR将不会创建新的Originator_ID属性。<br>当设备接收到这条路由的时候，将比较收到的Originator ID和本地的Router ID，如果两个ID相同，则不接收此路由。</p>
+<h2 id="BGP联盟"><a href="#BGP联盟" class="headerlink" title="BGP联盟"></a>BGP联盟</h2><p>解决AS内部的IBGP网络连接激增问题，除了使用路由反射器之外，还可以使用联盟（Confederation）。联盟将一个AS划分为若干个子AS。每个子AS内部建立IBGP全连接关系，子AS之间建立联盟EBGP连接关系，但联盟外部AS仍认为联盟是一个AS。配置联盟后，原AS号将作为每个路由器的联盟ID。</p>
+<p>这样有两个好处：</p>
+<pre><code>一是可以保留原有的IBGP属性，包括Local Preference属性、MED属性和NEXT_HOP属性等；
+二是联盟相关的属性在传出联盟时会自动被删除，即管理员无需在联盟的出口处配置过滤子AS号等信息的操作。
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>路由反射器</th>
+<th>联盟</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>不需要更改现有的网络拓扑，兼容性好。</td>
+<td>需要改变逻辑拓扑。</td>
+</tr>
+<tr>
+<td>配置方便，只需要对作为反射器的设备进行配置，客户机并不需要知道自己是客户机。</td>
+<td>所有设备需要重新进行配置。</td>
+</tr>
+<tr>
+<td>集群与集群之间仍然需要全连接。</td>
+<td>联盟的子AS之间是特殊的EBGP连接，不需要全连接。</td>
+</tr>
+<tr>
+<td>适用于中、大规模网络。</td>
+<td>适用于大规模网络。</td>
+</tr>
+</tbody></table>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_38265137/article/details/80439561?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522162805887716780357234295%2522%252C%2522scm%2522%253A%252220140713.130102334..%2522%257D&request_id=162805887716780357234295&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~all~top_positive~default-1-80439561.first_rank_v2_pc_rank_v29&utm_term=BGP&spm=1018.2226.3001.4187">曹世宏的博客——BGP基础知识</a></p>
+<p><font color=#E9976A size=3.5><strong>CCNP ROUTE</strong></font><br><font color=#E9976A size=3.5><strong>BGP原理与配置（锐捷）</strong></font></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2021/07/29/BGP%E7%AC%94%E8%AE%B0/" data-id="clg3uqoso0009p8mu7zdk6qch" data-title="BGP笔记" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/BGP/" rel="tag">BGP</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E9%80%9A%E4%BF%A1/" rel="tag">数据通信</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%B7%AF%E7%94%B1/" rel="tag">路由</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2021/07/30/OSPF%E6%B7%B1%E5%BA%A6%E8%A7%A3%E6%9E%90/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          OSPF深度解析之邻居邻接
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2021/07/29/OSPF%E7%AC%94%E8%AE%B0/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">OSPF笔记</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Github/">Github</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/VPN/">VPN</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/openstack/">openstack</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E4%BA%A4%E6%8D%A2%E6%9C%BA/">交换机</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%8D%9A%E5%AE%A2/">博客</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%AE%89%E5%85%A8/">安全</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%B0%E6%8D%AE%E4%B8%AD%E5%BF%83/">数据中心</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">数据结构</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%B0%E6%8D%AE%E9%80%9A%E4%BF%A1/">数据通信</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%99%9A%E6%8B%9F%E5%8C%96/">虚拟化</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%B7%AF%E7%94%B1/">路由</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%BF%90%E7%BB%B4/">运维</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Apache/" rel="tag">Apache</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/BGP/" rel="tag">BGP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DHCP/" rel="tag">DHCP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Django/" rel="tag">Django</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Github/" rel="tag">Github</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/" rel="tag">Linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/OSI/" rel="tag">OSI</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/OSPF/" rel="tag">OSPF</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Python/" rel="tag">Python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SDN/" rel="tag">SDN</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/STP/" rel="tag">STP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/VLAN/" rel="tag">VLAN</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/VPN/" rel="tag">VPN</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/VXLAN/" rel="tag">VXLAN</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/" rel="tag">hexo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/openstack/" rel="tag">openstack</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/yilia/" rel="tag">yilia</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%91%E8%AE%A1%E7%AE%97/" rel="tag">云计算</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%A4%E6%8D%A2/" rel="tag">交换</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%A4%E6%8D%A2%E6%9C%BA/" rel="tag">交换机</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%8E%9F%E7%90%86/" rel="tag">交换机原理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BB%A5%E5%A4%AA%E7%BD%91%E5%B8%A7/" rel="tag">以太网帧</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8D%9A%E5%AE%A2/" rel="tag">博客</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8D%9A%E5%AE%A2%E8%87%AA%E5%AE%9A%E4%B9%89/" rel="tag">博客自定义</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%AE%89%E5%85%A8/" rel="tag">安全</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%8E%A5%E5%8F%A3/" rel="tag">接口</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%8E%A7%E5%88%B6%E5%99%A8/" rel="tag">控制器</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E4%B8%AD%E5%BF%83/" rel="tag">数据中心</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="tag">数据结构</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E9%80%9A%E4%BF%A1/" rel="tag">数据通信</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF%E5%B1%82/" rel="tag">数据链路层</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%AB%AF%E5%8F%A3%E9%95%9C%E5%83%8F/" rel="tag">端口镜像</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BB%8F%E9%AA%8C/" rel="tag">经验</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BC%96%E5%86%99%E6%8C%87%E5%8D%97/" rel="tag">编写指南</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BD%91%E7%BB%9C/" rel="tag">网络</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BD%91%E7%BB%9C%E5%9F%BA%E7%A1%80/" rel="tag">网络基础</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%84%9A%E6%9C%AC/" rel="tag">脚本</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%87%AA%E5%8A%A8%E5%8C%96%E8%BF%90%E7%BB%B4/" rel="tag">自动化运维</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%99%9A%E6%8B%9F%E5%8C%96/" rel="tag">虚拟化</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%99%9A%E6%8B%9F%E5%8C%96%E6%8A%80%E6%9C%AF/" rel="tag">虚拟化技术</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%B7%AF%E7%94%B1/" rel="tag">路由</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%BF%90%E7%BB%B4/" rel="tag">运维</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Apache/" style="font-size: 10px;">Apache</a> <a href="/tags/BGP/" style="font-size: 10px;">BGP</a> <a href="/tags/DHCP/" style="font-size: 10px;">DHCP</a> <a href="/tags/Django/" style="font-size: 10px;">Django</a> <a href="/tags/Github/" style="font-size: 10px;">Github</a> <a href="/tags/Linux/" style="font-size: 12.86px;">Linux</a> <a href="/tags/OSI/" style="font-size: 10px;">OSI</a> <a href="/tags/OSPF/" style="font-size: 14.29px;">OSPF</a> <a href="/tags/Python/" style="font-size: 17.14px;">Python</a> <a href="/tags/SDN/" style="font-size: 10px;">SDN</a> <a href="/tags/STP/" style="font-size: 10px;">STP</a> <a href="/tags/VLAN/" style="font-size: 10px;">VLAN</a> <a href="/tags/VPN/" style="font-size: 12.86px;">VPN</a> <a href="/tags/VXLAN/" style="font-size: 10px;">VXLAN</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/openstack/" style="font-size: 12.86px;">openstack</a> <a href="/tags/yilia/" style="font-size: 10px;">yilia</a> <a href="/tags/%E4%BA%91%E8%AE%A1%E7%AE%97/" style="font-size: 10px;">云计算</a> <a href="/tags/%E4%BA%A4%E6%8D%A2/" style="font-size: 10px;">交换</a> <a href="/tags/%E4%BA%A4%E6%8D%A2%E6%9C%BA/" style="font-size: 14.29px;">交换机</a> <a href="/tags/%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%8E%9F%E7%90%86/" style="font-size: 10px;">交换机原理</a> <a href="/tags/%E4%BB%A5%E5%A4%AA%E7%BD%91%E5%B8%A7/" style="font-size: 10px;">以太网帧</a> <a href="/tags/%E5%8D%9A%E5%AE%A2/" style="font-size: 10px;">博客</a> <a href="/tags/%E5%8D%9A%E5%AE%A2%E8%87%AA%E5%AE%9A%E4%B9%89/" style="font-size: 10px;">博客自定义</a> <a href="/tags/%E5%AE%89%E5%85%A8/" style="font-size: 10px;">安全</a> <a href="/tags/%E6%8E%A5%E5%8F%A3/" style="font-size: 10px;">接口</a> <a href="/tags/%E6%8E%A7%E5%88%B6%E5%99%A8/" style="font-size: 10px;">控制器</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E4%B8%AD%E5%BF%83/" style="font-size: 10px;">数据中心</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" style="font-size: 15.71px;">数据结构</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E9%80%9A%E4%BF%A1/" style="font-size: 20px;">数据通信</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF%E5%B1%82/" style="font-size: 12.86px;">数据链路层</a> <a href="/tags/%E7%AB%AF%E5%8F%A3%E9%95%9C%E5%83%8F/" style="font-size: 10px;">端口镜像</a> <a href="/tags/%E7%BB%8F%E9%AA%8C/" style="font-size: 10px;">经验</a> <a href="/tags/%E7%BC%96%E5%86%99%E6%8C%87%E5%8D%97/" style="font-size: 10px;">编写指南</a> <a href="/tags/%E7%BD%91%E7%BB%9C/" style="font-size: 18.57px;">网络</a> <a href="/tags/%E7%BD%91%E7%BB%9C%E5%9F%BA%E7%A1%80/" style="font-size: 11.43px;">网络基础</a> <a href="/tags/%E8%84%9A%E6%9C%AC/" style="font-size: 10px;">脚本</a> <a href="/tags/%E8%87%AA%E5%8A%A8%E5%8C%96%E8%BF%90%E7%BB%B4/" style="font-size: 10px;">自动化运维</a> <a href="/tags/%E8%99%9A%E6%8B%9F%E5%8C%96/" style="font-size: 11.43px;">虚拟化</a> <a href="/tags/%E8%99%9A%E6%8B%9F%E5%8C%96%E6%8A%80%E6%9C%AF/" style="font-size: 14.29px;">虚拟化技术</a> <a href="/tags/%E8%B7%AF%E7%94%B1/" style="font-size: 17.14px;">路由</a> <a href="/tags/%E8%BF%90%E7%BB%B4/" style="font-size: 10px;">运维</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/09/">September 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">August 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">July 2021</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2021/09/21/CDN/">CDN</a>
+          </li>
+        
+          <li>
+            <a href="/2021/09/20/%E7%AD%96%E7%95%A5%E8%B7%AF%E7%94%B1/">策略路由</a>
+          </li>
+        
+          <li>
+            <a href="/2021/09/18/switch%E7%9F%A5%E8%AF%86/">switch知识</a>
+          </li>
+        
+          <li>
+            <a href="/2021/09/18/switch%D6%AA%CA%B6/">switch知识</a>
+          </li>
+        
+          <li>
+            <a href="/2021/09/17/TCP%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3%E6%9C%BA%E5%88%B6/">TCP滑动窗口机制</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2023 John Doe<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

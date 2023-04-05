@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>MPLS学习笔记 | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="多协议标签交换MPLS（Multiprotocol Label Switching）是一种IP（Internet Protocol）骨干网技术。MPLS在无连接的IP网络上引入面向连接的标签交换概念，将第三层路由技术和第二层交换技术相结合，充分发挥了IP路由的灵活性和二层交换的简捷性。MPLS起源于IPv4（Internet Protocol version 4），其核心技术可扩展到多种网络协议，">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MPLS学习笔记">
+<meta property="og:url" content="http://example.com/2021/07/26/MPLS%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="多协议标签交换MPLS（Multiprotocol Label Switching）是一种IP（Internet Protocol）骨干网技术。MPLS在无连接的IP网络上引入面向连接的标签交换概念，将第三层路由技术和第二层交换技术相结合，充分发挥了IP路由的灵活性和二层交换的简捷性。MPLS起源于IPv4（Internet Protocol version 4），其核心技术可扩展到多种网络协议，">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/MPLS%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/MPLS%E4%BC%A0%E8%BE%93%E5%9B%BE.png">
+<meta property="og:image" content="http://example.com/MPLS%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/%E5%B9%B3%E9%9D%A2%E5%88%86%E5%B8%83.png">
+<meta property="og:image" content="http://example.com/MPLS%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/%E6%A0%87%E7%AD%BE.png">
+<meta property="og:image" content="http://example.com/MPLS%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/%E8%BD%AC%E5%8F%91%E8%BF%87%E7%A8%8B.%E6%B5%85.png">
+<meta property="og:image" content="http://example.com/MPLS%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/%E8%BD%AC%E5%8F%91%E8%BF%87%E7%A8%8B.%E6%B7%B1.png">
+<meta property="article:published_time" content="2021-07-26T07:37:02.000Z">
+<meta property="article:modified_time" content="2021-08-25T07:52:38.000Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="数据通信">
+<meta property="article:tag" content="网络">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/MPLS%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/MPLS%E4%BC%A0%E8%BE%93%E5%9B%BE.png">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-MPLS学习笔记" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2021/07/26/MPLS%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" class="article-date">
+  <time class="dt-published" datetime="2021-07-26T07:37:02.000Z" itemprop="datePublished">2021-07-26</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E8%B7%AF%E7%94%B1/">路由</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      MPLS学习笔记
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>多协议标签交换MPLS（Multiprotocol Label Switching）是一种IP（Internet Protocol）骨干网技术。MPLS在无连接的IP网络上引入面向连接的标签交换概念，将第三层路由技术和第二层交换技术相结合，充分发挥了IP路由的灵活性和二层交换的简捷性。<br>MPLS起源于IPv4（Internet Protocol version 4），其核心技术可扩展到多种网络协议，包括IPv6（Internet Protocol version 6）、IPX（Internet Packet Exchange）和CLNP（Connectionless Network Protocol）等。MPLS中的“Multiprotocol”指的就是支持多种网络协议。</p>
+<span id="more"></span>
+<p>由此可见，MPLS并不是一种业务或者应用，它实际上是一种隧道技术。这种技术不仅支持多种高层协议与业务，而且在一定程度上可以保证信息传输的安全性。</p>
+<h1 id="MPLS学习"><a href="#MPLS学习" class="headerlink" title="MPLS学习"></a>MPLS学习</h1><h2 id="网络结构"><a href="#网络结构" class="headerlink" title="网络结构"></a>网络结构</h2><pre><code>LSR 标签交换路由器 ———— 进行MPLS标签交换和报文转发
+MPLS 域 ———— 由LSR构成的网络区域
+LER 边缘路由器 ———— 位于MPLS域边缘，连接其他网络的LSR
+LSP 标签交换路径 ———— 单项路径，与数据流方向一致
+</code></pre>
+<p><img src="/MPLS%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/MPLS%E4%BC%A0%E8%BE%93%E5%9B%BE.png" alt="MPLS传输图">当IP报文进入MPLS网络时，MPLS入口LER分析报文内容并添加标签。当IP报文离开时，标签由出口LER弹出</p>
+<h2 id="体系结构"><a href="#体系结构" class="headerlink" title="体系结构"></a>体系结构</h2><p><img src="/MPLS%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/%E5%B9%B3%E9%9D%A2%E5%88%86%E5%B8%83.png" alt="平面分布"><br>控制平面：负责产生和维护路由信息以及标签信息</p>
+<p>&amp;emsp;&amp;emsp;路由信息表RIB：由IP路由协议生成，<font color=#F4A460>用于选择路由</font></p>
+<p>&amp;emsp;&amp;emsp;标签分发协议LDP：<font color=#F4A460>负责标签的分配，标签转发信息表的建立，标签交换路径的建立，拆除等工作。</font></p>
+<p>&amp;emsp;&amp;emsp;标签信息表LIB：由标签分发协议生成，<font color=#F4A460>用于管理标签信息</font></p>
+<p>转发平面：就是数据平面。负责IP报文和MPLS标签报文的转发</p>
+<p>&amp;emsp;&amp;emsp;转发信息表FIB：从RIB提取路由信息生成，负责IP报文的转发</p>
+<p>&amp;emsp;&amp;emsp;标签转发信息表LFIB：由标签分发协议在<font color=#F4A460>LSR上建立LFIB，负责带MPLS标签报文的转发</font></p>
+<h2 id="转发等价类FEC："><a href="#转发等价类FEC：" class="headerlink" title="转发等价类FEC："></a>转发等价类FEC：</h2><p>MPLS将具有相同特征的报文归一类，称为<strong>转发等价类FEC</strong>（Forwarding Equivalence Class），属于同FEC的报文在转发过程中被LSR以相同方式处理。</p>
+<h2 id="标签"><a href="#标签" class="headerlink" title="标签"></a>标签</h2><pre><code>标签是只具有本地意义的标识符，用于唯一标识一个分组所属的FEC。
+        ———————— 一个标签代表一个 FEC
+MPLS标签长度为4个字节。封装在链路层和网络层之间，可支持任意链路层协议
+</code></pre>
+<p><img src="/MPLS%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/%E6%A0%87%E7%AD%BE.png" alt="标签"><br>            Label ： 标签值域 20bit<br>            Exp ： 用于扩展 3bit 常用于做CoS ，当设备阻塞时，优先发送优先级高的报文<br>            S ： 栈底标识 1bit MPLS支持多层标签 S&#x3D;1 时为最底层标签</p>
+<p>标签栈（Label Stack）是指标签的排序集合。<font color=#F4A460>靠近二层首部的标签称为栈顶</font>MPLS标签或外层MPLS标签（Outer MPLS label）；<font color=#F4A460>靠近IP首部的标签称为栈底</font>MPLS标签或内层MPLS标签（Inner MPLS label）。理论上，MPLS标签可以无限嵌套。目前MPLS标签嵌套主要应用在MPLS VPN、TE FRR（Traffic Engineering Fast ReRoute）中。</p>
+<blockquote>
+<p>标签栈按<font color=#F4A460><strong>先出后进</strong></font>方式组织标签，从栈顶开始处理标签。</p>
+</blockquote>
+<h2 id="LSP建立"><a href="#LSP建立" class="headerlink" title="LSP建立"></a>LSP建立</h2><p>MPLS需要事先为报文分配好标签，建立一条LSP才能进行报文转发。<br>LSP 分为静态LSP和动态LSP两种。</p>
+<h3 id="静态LSP"><a href="#静态LSP" class="headerlink" title="静态LSP"></a>静态LSP</h3><p>静态LSP是用户通过手工为各个转发等价类分配标签而建立的。由于静态LSP各节点上不能相互感知到整个LSP的情况，因此静态LSP是一个本地的概念。</p>
+<p>静态LSP不使用标签发布协议，不需要交互控制报文，因此消耗资源比较小，适用于拓扑结构简单并且稳定的小型网络。但通过静态方式分配标签建立的LSP不能根据网络拓扑变化动态调整，需要管理员干预。</p>
+<p>配置静态LSP时，管理员需要为各LSR手工分配标签，需要遵循的原则是：前一节点出标签的值等于下一个节点入标签的值。</p>
+<h3 id="动态LSP"><a href="#动态LSP" class="headerlink" title="动态LSP"></a>动态LSP</h3><h4 id="动态LSP的标签发布协议"><a href="#动态LSP的标签发布协议" class="headerlink" title="动态LSP的标签发布协议"></a>动态LSP的标签发布协议</h4><p>动态LSP通过标签发布协议动态建立。标签发布协议是MPLS的控制协议（也可称为信令协议），负责FEC的分类、标签的分发以及LSP的建立和维护等一系列操作。</p>
+<h4 id="动态LSP的基本建立过程"><a href="#动态LSP的基本建立过程" class="headerlink" title="动态LSP的基本建立过程"></a>动态LSP的基本建立过程</h4><p>标签由下游LSR分配，按从下游到上游的方向分发。如下图，由下游LSR在IP路由表的基础上进行FEC的划分，并根据FEC分配标签，通告给上游的LSR，以便建立标签转发表和LSP。</p>
+<h2 id="转发（浅层）"><a href="#转发（浅层）" class="headerlink" title="转发（浅层）"></a>转发（浅层）</h2><h3 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h3><p>标签操作类型包括 标签压入 Push，标签交换 Swap和标签弹出 Pop</p>
+<blockquote>
+<p>Push：当报文进入MPLS域时，LER在报文二层和IP首部之间插入新标签<br>Swap：当报文在MPLS域中转发时，根据标签转发表，用下一跳分配的标签，替换MPLS报文的栈顶标签<br>Pop：当报文离开MPLS域时，将MPLS报文的标签剥掉<br>PHP：弹出特性PHP penultimate Hop Popping。<font color=#F4A460>在最后一跳节点，标签已经没有使用价值。可以利用倒数第二跳特性PHP，在倒数第二跳节点处将标签弹出，减少最后一跳负担。</font>默认情况下，支持PHP的Egress节点分配给倒数第二跳节点的<font color=#F4A460><strong>标签值为3</strong></font></p>
+</blockquote>
+<h3 id="转发过程"><a href="#转发过程" class="headerlink" title="转发过程"></a>转发过程</h3><p><img src="/MPLS%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/%E8%BD%AC%E5%8F%91%E8%BF%87%E7%A8%8B.%E6%B5%85.png" alt="转发过程.浅"><br>    如上图所示，MPLS标签已分发完成，建立了一条LSP，其目的地址为4.4.4.2&#x2F;32。则MPLS基本转发过程如下：</p>
+<pre><code>    1) Ingress节点收到目的地址为4.4.4.2的IP报文，压入标签Z并转发。
+    2) Transit节点收到该标签报文，进行标签交换，将标签Z换成标签Y。
+    3) 倒数第二跳Transit节点收到带标签Y的报文。因为Egress分给它的标签值为3，所以进行PHP操作，弹出标签Y并转发报文。从倒数第二跳转发给Egress的报文以IP报文形式传输。
+    4) Egress节点收到该IP报文，将其转发给目的地4.4.4.2/32。
+</code></pre>
+<h2 id="转发（深层）"><a href="#转发（深层）" class="headerlink" title="转发（深层）"></a>转发（深层）</h2><h3 id="基本概念-1"><a href="#基本概念-1" class="headerlink" title="基本概念"></a>基本概念</h3><p>在MPLS详细转发过程中涉及的相关概念如下：</p>
+<pre><code>Tunnel ID：
+
+    为了给使用隧道的上层应用（如VPN、路由管理）提供统一的接口，系统自动为隧道分配了一个ID，也称为Tunnel ID。该Tunnel ID的长度为32比特，只是本地有效。
+
+NHLFE：
+
+    下一跳标签转发表项NHLFE（Next Hop Label Forwarding Entry）用于指导MPLS报文的转发。
+
+    NHLFE包括：Tunnel ID、出接口、下一跳、出标签、标签操作类型等信息。
+
+    FEC到一组NHLFE的映射称为FTN（FEC-to-NHLFE）。通过查看FIB表中Tunnel ID值不为0x0的表项，能够获得FTN的详细信息。FTN只在Ingress存在。
+
+ILM
+
+    入标签到一组下一跳标签转发表项的映射称为入标签映射ILM（Incoming Label Map）。
+
+    ILM包括：Tunnel ID、入标签、入接口、标签操作类型等信息。
+
+    ILM在Transit节点的作用是将标签和NHLFE绑定。通过标签索引ILM表，就相当于使用目的IP地址查询FIB，能够得到所有的标签转发信息。
+</code></pre>
+<h3 id="详细转发过程"><a href="#详细转发过程" class="headerlink" title="详细转发过程"></a>详细转发过程</h3><p><img src="/MPLS%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/%E8%BD%AC%E5%8F%91%E8%BF%87%E7%A8%8B.%E6%B7%B1.png" alt="转发过程.深"></p>
+<pre><code>    当IP报文进入MPLS域时，首先查看FIB表，检查目的IP地址对应的Tunnel ID值是否为0x0。
+
+            1) 如果Tunnel ID值为0x0，则进入正常的IP转发流程。
+            2) 如果Tunnel ID值不为0x0，则进入MPLS转发流程。
+            
+    在MPLS转发过程中，FIB、ILM和NHLFE表项是通过Tunnel ID关联的。
+
+        § Ingress的处理：通过查询FIB表和NHLFE表指导报文的转发。
+
+            1) 查看FIB表，根据目的IP地址找到对应的Tunnel ID。
+            2) 根据FIB表的Tunnel ID找到对应的NHLFE表项，将FIB表项和NHLFE表项关联起来。
+            3) 查看NHLFE表项，可以得到出接口、下一跳、出标签和标签操作类型。
+            4) 在IP报文中压入出标签，同时处理TTL，然后将封装好的MPLS报文发送给下一跳。
+        § Transit的处理：通过查询ILM表和NHLFE表指导MPLS报文的转发。
+
+            1) 根据MPLS的标签值查看对应的ILM表，可以得到Tunnel ID。
+            2) 根据ILM表的Tunnel ID找到对应的NHLFE表项。
+            3) 查看NHLFE表项，可以得到出接口、下一跳、出标签和标签操作类型。
+            4) MPLS报文的处理方式根据不同的标签值而不同。
+                a) 如果标签值&gt;＝16，则用新标签替换MPLS报文中的旧标签，同时处理TTL，然后将替换完标签的MPLS报文发送给下一跳。
+                b) 如果标签值为3，则直接弹出标签，同时处理TTL，然后进行IP转发或下一层标签转发。
+        § Egress的处理：通过查询ILM表指导MPLS报文的转发或查询路由表指导IP报文转发。
+
+            1) 如果Egress收到IP报文，则查看路由表，进行IP转发。
+            2) 如果Egress收到MPLS报文，则查看ILM表获得标签操作类型，同时处理TTL。
+                a) 如果标签中的栈底标识S=1，表明该标签是栈底标签，直接进行IP转发。
+                b) 如果标签中的栈底标识S=0，表明还有下一层标签，继续进行下一层标签转发。
+</code></pre>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_38265137/article/details/80503389?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522162737542016780265433996%2522%252C%2522scm%2522%253A%252220140713.130102334..%2522%257D&request_id=162737542016780265433996&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~all~top_positive~default-1-80503389.first_rank_v2_pc_rank_v29&utm_term=MPLS&spm=1018.2226.3001.4187">MPLS基础</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2021/07/26/MPLS%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" data-id="clg3uqosw0015p8mu097t48cq" data-title="MPLS学习笔记" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E9%80%9A%E4%BF%A1/" rel="tag">数据通信</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E7%BD%91%E7%BB%9C/" rel="tag">网络</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2021/07/27/MPLS-VPN/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          MPLS VPN
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2021/07/25/LACP%E8%A7%A3%E6%9E%90/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">LACP解析</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Github/">Github</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/VPN/">VPN</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/openstack/">openstack</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E4%BA%A4%E6%8D%A2%E6%9C%BA/">交换机</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%8D%9A%E5%AE%A2/">博客</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%AE%89%E5%85%A8/">安全</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%B0%E6%8D%AE%E4%B8%AD%E5%BF%83/">数据中心</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">数据结构</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%B0%E6%8D%AE%E9%80%9A%E4%BF%A1/">数据通信</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%99%9A%E6%8B%9F%E5%8C%96/">虚拟化</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%B7%AF%E7%94%B1/">路由</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%BF%90%E7%BB%B4/">运维</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Apache/" rel="tag">Apache</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/BGP/" rel="tag">BGP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DHCP/" rel="tag">DHCP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Django/" rel="tag">Django</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Github/" rel="tag">Github</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/" rel="tag">Linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/OSI/" rel="tag">OSI</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/OSPF/" rel="tag">OSPF</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Python/" rel="tag">Python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SDN/" rel="tag">SDN</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/STP/" rel="tag">STP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/VLAN/" rel="tag">VLAN</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/VPN/" rel="tag">VPN</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/VXLAN/" rel="tag">VXLAN</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/" rel="tag">hexo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/openstack/" rel="tag">openstack</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/yilia/" rel="tag">yilia</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%91%E8%AE%A1%E7%AE%97/" rel="tag">云计算</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%A4%E6%8D%A2/" rel="tag">交换</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%A4%E6%8D%A2%E6%9C%BA/" rel="tag">交换机</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%8E%9F%E7%90%86/" rel="tag">交换机原理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BB%A5%E5%A4%AA%E7%BD%91%E5%B8%A7/" rel="tag">以太网帧</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8D%9A%E5%AE%A2/" rel="tag">博客</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8D%9A%E5%AE%A2%E8%87%AA%E5%AE%9A%E4%B9%89/" rel="tag">博客自定义</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%AE%89%E5%85%A8/" rel="tag">安全</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%8E%A5%E5%8F%A3/" rel="tag">接口</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%8E%A7%E5%88%B6%E5%99%A8/" rel="tag">控制器</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E4%B8%AD%E5%BF%83/" rel="tag">数据中心</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="tag">数据结构</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E9%80%9A%E4%BF%A1/" rel="tag">数据通信</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF%E5%B1%82/" rel="tag">数据链路层</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%AB%AF%E5%8F%A3%E9%95%9C%E5%83%8F/" rel="tag">端口镜像</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BB%8F%E9%AA%8C/" rel="tag">经验</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BC%96%E5%86%99%E6%8C%87%E5%8D%97/" rel="tag">编写指南</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BD%91%E7%BB%9C/" rel="tag">网络</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BD%91%E7%BB%9C%E5%9F%BA%E7%A1%80/" rel="tag">网络基础</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%84%9A%E6%9C%AC/" rel="tag">脚本</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%87%AA%E5%8A%A8%E5%8C%96%E8%BF%90%E7%BB%B4/" rel="tag">自动化运维</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%99%9A%E6%8B%9F%E5%8C%96/" rel="tag">虚拟化</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%99%9A%E6%8B%9F%E5%8C%96%E6%8A%80%E6%9C%AF/" rel="tag">虚拟化技术</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%B7%AF%E7%94%B1/" rel="tag">路由</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%BF%90%E7%BB%B4/" rel="tag">运维</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Apache/" style="font-size: 10px;">Apache</a> <a href="/tags/BGP/" style="font-size: 10px;">BGP</a> <a href="/tags/DHCP/" style="font-size: 10px;">DHCP</a> <a href="/tags/Django/" style="font-size: 10px;">Django</a> <a href="/tags/Github/" style="font-size: 10px;">Github</a> <a href="/tags/Linux/" style="font-size: 12.86px;">Linux</a> <a href="/tags/OSI/" style="font-size: 10px;">OSI</a> <a href="/tags/OSPF/" style="font-size: 14.29px;">OSPF</a> <a href="/tags/Python/" style="font-size: 17.14px;">Python</a> <a href="/tags/SDN/" style="font-size: 10px;">SDN</a> <a href="/tags/STP/" style="font-size: 10px;">STP</a> <a href="/tags/VLAN/" style="font-size: 10px;">VLAN</a> <a href="/tags/VPN/" style="font-size: 12.86px;">VPN</a> <a href="/tags/VXLAN/" style="font-size: 10px;">VXLAN</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/openstack/" style="font-size: 12.86px;">openstack</a> <a href="/tags/yilia/" style="font-size: 10px;">yilia</a> <a href="/tags/%E4%BA%91%E8%AE%A1%E7%AE%97/" style="font-size: 10px;">云计算</a> <a href="/tags/%E4%BA%A4%E6%8D%A2/" style="font-size: 10px;">交换</a> <a href="/tags/%E4%BA%A4%E6%8D%A2%E6%9C%BA/" style="font-size: 14.29px;">交换机</a> <a href="/tags/%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%8E%9F%E7%90%86/" style="font-size: 10px;">交换机原理</a> <a href="/tags/%E4%BB%A5%E5%A4%AA%E7%BD%91%E5%B8%A7/" style="font-size: 10px;">以太网帧</a> <a href="/tags/%E5%8D%9A%E5%AE%A2/" style="font-size: 10px;">博客</a> <a href="/tags/%E5%8D%9A%E5%AE%A2%E8%87%AA%E5%AE%9A%E4%B9%89/" style="font-size: 10px;">博客自定义</a> <a href="/tags/%E5%AE%89%E5%85%A8/" style="font-size: 10px;">安全</a> <a href="/tags/%E6%8E%A5%E5%8F%A3/" style="font-size: 10px;">接口</a> <a href="/tags/%E6%8E%A7%E5%88%B6%E5%99%A8/" style="font-size: 10px;">控制器</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E4%B8%AD%E5%BF%83/" style="font-size: 10px;">数据中心</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" style="font-size: 15.71px;">数据结构</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E9%80%9A%E4%BF%A1/" style="font-size: 20px;">数据通信</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF%E5%B1%82/" style="font-size: 12.86px;">数据链路层</a> <a href="/tags/%E7%AB%AF%E5%8F%A3%E9%95%9C%E5%83%8F/" style="font-size: 10px;">端口镜像</a> <a href="/tags/%E7%BB%8F%E9%AA%8C/" style="font-size: 10px;">经验</a> <a href="/tags/%E7%BC%96%E5%86%99%E6%8C%87%E5%8D%97/" style="font-size: 10px;">编写指南</a> <a href="/tags/%E7%BD%91%E7%BB%9C/" style="font-size: 18.57px;">网络</a> <a href="/tags/%E7%BD%91%E7%BB%9C%E5%9F%BA%E7%A1%80/" style="font-size: 11.43px;">网络基础</a> <a href="/tags/%E8%84%9A%E6%9C%AC/" style="font-size: 10px;">脚本</a> <a href="/tags/%E8%87%AA%E5%8A%A8%E5%8C%96%E8%BF%90%E7%BB%B4/" style="font-size: 10px;">自动化运维</a> <a href="/tags/%E8%99%9A%E6%8B%9F%E5%8C%96/" style="font-size: 11.43px;">虚拟化</a> <a href="/tags/%E8%99%9A%E6%8B%9F%E5%8C%96%E6%8A%80%E6%9C%AF/" style="font-size: 14.29px;">虚拟化技术</a> <a href="/tags/%E8%B7%AF%E7%94%B1/" style="font-size: 17.14px;">路由</a> <a href="/tags/%E8%BF%90%E7%BB%B4/" style="font-size: 10px;">运维</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/09/">September 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">August 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">July 2021</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2021/09/21/CDN/">CDN</a>
+          </li>
+        
+          <li>
+            <a href="/2021/09/20/%E7%AD%96%E7%95%A5%E8%B7%AF%E7%94%B1/">策略路由</a>
+          </li>
+        
+          <li>
+            <a href="/2021/09/18/switch%E7%9F%A5%E8%AF%86/">switch知识</a>
+          </li>
+        
+          <li>
+            <a href="/2021/09/18/switch%D6%AA%CA%B6/">switch知识</a>
+          </li>
+        
+          <li>
+            <a href="/2021/09/17/TCP%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3%E6%9C%BA%E5%88%B6/">TCP滑动窗口机制</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2023 John Doe<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

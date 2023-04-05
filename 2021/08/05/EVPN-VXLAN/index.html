@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>EVPN VXLAN | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="为什么会有EVPN（Ethernet VPN）呢？最初的VXLAN方案（RFC7348）中没有定义控制平面，是手工配置VXLAN隧道，然后通过流量泛洪的方式进行主机地址的学习。这种方式实现上较为简单，但是会导致网络中存在很多泛洪流量、网络扩展起来困难。 为了解决上述问题，人们在VXLAN中引入了EVPN作为VXLAN的控制平面">
+<meta property="og:type" content="article">
+<meta property="og:title" content="EVPN VXLAN">
+<meta property="og:url" content="http://example.com/2021/08/05/EVPN-VXLAN/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="为什么会有EVPN（Ethernet VPN）呢？最初的VXLAN方案（RFC7348）中没有定义控制平面，是手工配置VXLAN隧道，然后通过流量泛洪的方式进行主机地址的学习。这种方式实现上较为简单，但是会导致网络中存在很多泛洪流量、网络扩展起来困难。 为了解决上述问题，人们在VXLAN中引入了EVPN作为VXLAN的控制平面">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/EVPN-VXLAN/EVPN%E7%BD%91%E7%BB%9C%E7%BB%84%E5%90%88.png">
+<meta property="og:image" content="http://example.com/EVPN-VXLAN/EVPN%E7%BD%91%E7%BB%9C%E7%BB%84%E5%90%882.png">
+<meta property="og:image" content="http://example.com/EVPN-VXLAN/type2.png">
+<meta property="og:image" content="http://example.com/EVPN-VXLAN/type3.png">
+<meta property="og:image" content="http://example.com/EVPN-VXLAN/type5.png">
+<meta property="og:image" content="http://example.com/EVPN-VXLAN/%E8%BF%9C%E7%A8%8B%E4%B8%BB%E6%9C%BAMAC%E5%AD%A6%E4%B9%A0.png">
+<meta property="og:image" content="http://example.com/EVPN-VXLAN/%E5%90%8C%E5%AD%90%E7%BD%91VXLAN%E9%9A%A7%E9%81%93%E5%BB%BA%E7%AB%8B.png">
+<meta property="og:image" content="http://example.com/EVPN-VXLAN/%E7%BD%91%E6%AE%B5%E8%B7%AF%E7%94%B1%E5%8F%91%E5%B8%83.png">
+<meta property="og:image" content="http://example.com/EVPN-VXLAN/%E5%90%8C%E5%AD%90%E7%BD%91%E5%B7%B2%E7%9F%A5%E5%8D%95%E6%92%AD.png">
+<meta property="og:image" content="http://example.com/EVPN-VXLAN/%E5%90%8C%E5%AD%90%E7%BD%91BUM.png">
+<meta property="og:image" content="http://example.com/EVPN-VXLAN/%E5%88%86%E5%B8%83%E5%BC%8F%E7%BD%91%E5%85%B3%E5%9C%BA%E6%99%AF%E4%B8%8B%E8%B7%A8%E5%AD%90%E7%BD%91%E6%8A%A5%E6%96%87.png">
+<meta property="og:image" content="http://example.com/EVPN-VXLAN/ARP%E5%B9%BF%E6%92%AD%E5%8F%98%E5%8D%95%E6%92%AD.png">
+<meta property="og:image" content="http://example.com/EVPN-VXLAN/ARP%E4%BA%8C%E5%B1%82%E4%BB%A3%E7%AD%94.png">
+<meta property="og:image" content="http://example.com/EVPN-VXLAN/%E5%BB%BA%E7%AB%8BVXLAN%E9%9A%A7%E9%81%93.png">
+<meta property="og:image" content="http://example.com/EVPN-VXLAN/MAC1.png">
+<meta property="og:image" content="http://example.com/EVPN-VXLAN/MAC2.png">
+<meta property="og:image" content="http://example.com/EVPN-VXLAN/MAC3.png">
+<meta property="og:image" content="http://example.com/EVPN-VXLAN/F1.png">
+<meta property="og:image" content="http://example.com/EVPN-VXLAN/F2.png">
+<meta property="og:image" content="http://example.com/EVPN-VXLAN/F3.png">
+<meta property="og:image" content="http://example.com/EVPN-VXLAN/%E4%B8%8D%E5%90%8C%E7%BD%91%E6%AE%B5%E4%B8%89%E5%B1%82%E4%BA%92%E9%80%9A1.png">
+<meta property="og:image" content="http://example.com/EVPN-VXLAN/%E4%B8%8D%E5%90%8C%E7%BD%91%E6%AE%B5%E4%B8%89%E5%B1%82%E4%BA%92%E9%80%9A2.png">
+<meta property="og:image" content="http://example.com/EVPN-VXLAN/%E4%B8%8D%E5%90%8C%E7%BD%91%E6%AE%B5%E4%B8%89%E5%B1%82%E4%BA%92%E9%80%9A3.png">
+<meta property="og:image" content="http://example.com/EVPN-VXLAN/%E4%B8%8D%E5%90%8C%E7%BD%91%E6%AE%B5%E4%B8%89%E5%B1%82%E4%BA%92%E9%80%9A4.png">
+<meta property="og:image" content="http://example.com/EVPN-VXLAN/%E4%B8%8D%E5%90%8C%E7%BD%91%E6%AE%B5%E4%B8%89%E5%B1%82%E4%BA%92%E9%80%9A5.png">
+<meta property="og:image" content="http://example.com/EVPN-VXLAN/%E4%B8%8D%E5%90%8C%E7%BD%91%E6%AE%B5%E4%B8%89%E5%B1%82%E4%BA%92%E9%80%9A6.png">
+<meta property="article:published_time" content="2021-08-05T02:42:17.000Z">
+<meta property="article:modified_time" content="2021-08-26T02:24:38.000Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="虚拟化">
+<meta property="article:tag" content="VXLAN">
+<meta property="article:tag" content="VPN">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/EVPN-VXLAN/EVPN%E7%BD%91%E7%BB%9C%E7%BB%84%E5%90%88.png">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-EVPN-VXLAN" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2021/08/05/EVPN-VXLAN/" class="article-date">
+  <time class="dt-published" datetime="2021-08-05T02:42:17.000Z" itemprop="datePublished">2021-08-05</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E8%99%9A%E6%8B%9F%E5%8C%96/">虚拟化</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      EVPN VXLAN
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>为什么会有EVPN（Ethernet VPN）呢？最初的VXLAN方案（RFC7348）中没有定义控制平面，是手工配置VXLAN隧道，然后通过流量泛洪的方式进行主机地址的学习。这种方式实现上较为简单，但是会导致网络中存在很多泛洪流量、网络扩展起来困难。</p>
+<p>为了解决上述问题，人们在VXLAN中引入了EVPN作为VXLAN的控制平面</p>
+<span id="more"></span>
+
+<h1 id="EVPN-VXLAN"><a href="#EVPN-VXLAN" class="headerlink" title="EVPN VXLAN"></a>EVPN VXLAN</h1><p>EVPN参考了MP-BGP（MultiProtocol BGP）的机制。在深入理解EVPN的工作原理前，我们先对MP-BGP（MultiProtocol BGP）做下简单回顾。</p>
+<p>传统的BGP-4使用Update报文在对等体之间交换路由信息。一条Update报文可以通告一类具有相同路径属性的可达路由，这些路由放在<font color=#FF000><strong>NLRI（Network Layer Reachable Information，网络层可达信息）</strong></font>字段中。因为BGP-4只能管理IPv4单播路由信息，为了提供对多种网络层协议的支持（例如IPv6、组播），发展出了MP-BGP。MP-BGP在BGP-4基础上对NLRI作了新扩展。玄机就在于新扩展的NLRI上，扩展之后的NLRI增加了地址族的描述，可以用来区分不同的网络层协议，例如IPv6单播地址族、VPN实例地址族等。</p>
+<p>类似的，EVPN也是借用了MP-BGP的机制，在L2VPN地址族下定义了新的子地址族——EVPN地址族，在这个地址族下又新增了一种NLRI，即EVPN NLRI。EVPN NLRI定义了几种BGP EVPN路由类型，这些路由可以携带主机IP、MAC、VNI、VRF等信息。这样，当一个VTEP学习到下挂的主机的IP、MAC地址信息后，就可以通过MP-BGP路由将这些信息发送给其他的VTEP，从而在控制平面实现主机IP、MAC地址的学习，抑制了数据平面的泛洪。</p>
+<p>采用EVPN作为VXLAN的控制平面具有以下优势：</p>
+<pre><code>可实现VTEP自动发现、VXLAN隧道自动建立，从而降低网络部署、扩展的难度。
+EVPN可以同时发布二层MAC信息和三层路由信息。
+可以减少网络中的泛洪流量。
+</code></pre>
+<h2 id="BGP-EVPN-网络组合概念"><a href="#BGP-EVPN-网络组合概念" class="headerlink" title="BGP EVPN 网络组合概念"></a>BGP EVPN 网络组合概念</h2><p><img src="/EVPN-VXLAN/EVPN%E7%BD%91%E7%BB%9C%E7%BB%84%E5%90%88.png" alt="EVPN网络组合"></p>
+<p><img src="/EVPN-VXLAN/EVPN%E7%BD%91%E7%BB%9C%E7%BB%84%E5%90%882.png" alt="EVPN网络组合2"></p>
+<h2 id="BGP-EVPN的五种路由"><a href="#BGP-EVPN的五种路由" class="headerlink" title="BGP EVPN的五种路由"></a>BGP EVPN的五种路由</h2><h3 id="EVPN-Type-2路由"><a href="#EVPN-Type-2路由" class="headerlink" title="EVPN Type 2路由"></a>EVPN Type 2路由</h3><p>EVPN Type2路由，也就是MAC&#x2F;IP路由，主要<font color=#FF000><strong>用于VTEP之间相互通告主机IP、MAC信息</strong></font>。Type2路由的NLRI部分格式如图1-2所示。<br>图1-2 Type2路由的报文格式</p>
+<p><img src="/EVPN-VXLAN/type2.png" alt="type2"></p>
+<p>各字段的解释如下表所示：</p>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Route Distinguisher</td>
+<td>该字段为EVPN实例下设置的RD（Route Distinguisher）值。作用类似于L3VPN的RD值，这里的RD是区分不同的EVPN实例。一个二层广播域BD就对应一个EVPN实例。</td>
+</tr>
+<tr>
+<td>Ethernet Segment Identifier</td>
+<td>该字段为当前设备与对端连接定义的唯一标识。</td>
+</tr>
+<tr>
+<td>Ethernet Tag ID</td>
+<td>该字段为当前设备上实际配置的VLAN ID。</td>
+</tr>
+<tr>
+<td>MAC Address Length</td>
+<td>该字段为此路由携带的主机MAC地址的长度。</td>
+</tr>
+<tr>
+<td>MAC Address</td>
+<td>该字段为此路由携带的主机MAC地址。</td>
+</tr>
+<tr>
+<td>IP Address Length</td>
+<td>该字段为此路由携带的主机IP地址的掩码长度。</td>
+</tr>
+<tr>
+<td>IP Address</td>
+<td>该字段为此路由携带的主机IP地址。</td>
+</tr>
+<tr>
+<td>MPLS Label1</td>
+<td>该字段为此路由携带的二层VNI，用于标识不同的BD。</td>
+</tr>
+<tr>
+<td>MPLS Label2</td>
+<td>该字段为此路由携带的三层VNI，用于标识不同的VRF。VXLAN网络中为了实现不同租户之间的隔离，需要通过不同的VRF（L3VPN）来隔离不同租户的路由表，从而将不同租户的路由存放在不同的私网路由表中，而三层VNI就是用来标识这些VRF的。</td>
+</tr>
+</tbody></table>
+<h3 id="EVPN-Type-3路由"><a href="#EVPN-Type-3路由" class="headerlink" title="EVPN Type 3路由"></a>EVPN Type 3路由</h3><p>EVPN Type3路由主要用于在VTEP之间相互<font color=#FF000><strong>通告二层VNI、VTEP IP信息，以建立<u>头端复制列表</u>，即用于VTEP的自动发现和VXLAN隧道的动态建立</strong></font>：如果对端VTEP IP地址是三层路由可达的，则建立一条到对端的VXLAN隧道。同时，如果对端VNI与本端相同，则创建一个头端复制表，用于后续BUM报文转发。<br>Type3路由的NLRI是由“前缀”和“PMSI”属性组成，报文格式如图1-3所示。其中VTEP IP信息体现在NLRI的Originating Router’s IP Address字段中，二层VNI信息则体现在PMSI属性的MPLS Label中。</p>
+<p>图1-3 Type3路由的报文格式</p>
+<p><img src="/EVPN-VXLAN/type3.png" alt="type3"></p>
+<p>各字段的解释如下表所示：</p>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Route Distinguisher</td>
+<td>该字段为EVPN实例下设置的RD（Route Distinguisher）值。</td>
+</tr>
+<tr>
+<td>Ethernet Tag ID</td>
+<td>该字段为当前设备上的VLAN ID。在此路由中为全0。</td>
+</tr>
+<tr>
+<td>IP Address Length</td>
+<td>该字段为此路由携带的本端VTEP IP地址的掩码长度。</td>
+</tr>
+<tr>
+<td>Originating Router’s IP Address</td>
+<td>该字段为此路由携带的本端VTEP IP地址。</td>
+</tr>
+<tr>
+<td>Flags</td>
+<td>该字段为标志位，标识当前隧道是否需要叶子节点信息。在VXLAN场景中，该字段没有实际意义。</td>
+</tr>
+<tr>
+<td>Tunnel Type</td>
+<td>该字段为此路由携带的隧道类型。目前，在VXLAN场景中，支持的类型只有“6：Ingress Replication”，即头端复制，用于BUM报文转发。</td>
+</tr>
+<tr>
+<td>MPLS Label</td>
+<td>该字段为此路由携带的二层VNI。</td>
+</tr>
+<tr>
+<td>Tunnel Identifier</td>
+<td>该字段为此路由携带的隧道信息。目前，在VXLAN场景中，该字段也是本端VTEP IP地址。</td>
+</tr>
+</tbody></table>
+<h3 id="EVPN-Type-5路由"><a href="#EVPN-Type-5路由" class="headerlink" title="EVPN Type 5路由"></a>EVPN Type 5路由</h3><p>EVPN Type5路由又称IP前缀路由，主要用于传递网段路由。不同于Type2路由只传递32（IPv4）&#x2F;128（IPv6）位的主机路由，Type5路由可传递0～32&#x2F;0～128掩码长度的网段路由。<br>Type5路由的报文格式:</p>
+<p>图1-4 Type5路由的报文格式</p>
+<p><img src="/EVPN-VXLAN/type5.png" alt="type5"></p>
+<p>各字段的解释如下表所示：</p>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Route Distinguisher</td>
+<td>该字段为EVPN实例下设置的RD（Route Distinguisher）值。</td>
+</tr>
+<tr>
+<td>Ethernet Segment Identifier</td>
+<td>该字段为当前设备与对端连接定义的唯一标识。</td>
+</tr>
+<tr>
+<td>Ethernet Tag ID</td>
+<td>该字段为当前设备上实际配置的VLAN ID。</td>
+</tr>
+<tr>
+<td>IP Prefix Length</td>
+<td>该字段为此路由携带的IP前缀掩码长度。</td>
+</tr>
+<tr>
+<td>IP Prefix</td>
+<td>该字段为此路由携带的IP前缀。</td>
+</tr>
+<tr>
+<td>GW IP Address</td>
+<td>该字段为默认网关地址。该字段在VXLAN场景中没有实际意义。</td>
+</tr>
+<tr>
+<td>MPLS Label</td>
+<td>该字段为此路由携带的三层VNI。</td>
+</tr>
+</tbody></table>
+<h3 id="总结："><a href="#总结：" class="headerlink" title="总结："></a>总结：</h3><table>
+<thead>
+<tr>
+<th>BGP EVPN报文作用</th>
+<th>主要传送参数</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Type2报文建立MAC表</td>
+<td>MAC&#x2F;IP</td>
+</tr>
+<tr>
+<td>Type3报文建立隧道，创建头端复制列表[VNI,Source,Destination]</td>
+<td>二层VNI和VTEP IP</td>
+</tr>
+<tr>
+<td>Type5报文通告Internet外网</td>
+<td>网段</td>
+</tr>
+</tbody></table>
+<h2 id="理解BGP-EVPN作为VXLAN控制面的工作过程"><a href="#理解BGP-EVPN作为VXLAN控制面的工作过程" class="headerlink" title="理解BGP EVPN作为VXLAN控制面的工作过程"></a>理解BGP EVPN作为VXLAN控制面的工作过程</h2><p>在用BGP EVPN方式部署分布式VXLAN网络的场景中，<font color=#E9764>控制平面的流程包括VXLAN隧道建立、MAC地址动态学习；转发平面的流程包括同子网已知单播报文转发、同子网BUM报文转发、跨子网报文转发</font>。BGP EVPN方式实现的功能全面，支持主机IP路由通告、主机MAC地址通告、主机ARP通告等，还可以使能ARP广播抑制功能。如果在VXLAN网络中采用分布式网关，推荐使用BGP EVPN方式。</p>
+<p>本文下面的内容以Underlay网络和Overlay网络均为IPv4为例，介绍EVPN作为VXLAN控制面的工作过程。</p>
+<h3 id="使用EVPN学习MAC地址"><a href="#使用EVPN学习MAC地址" class="headerlink" title="使用EVPN学习MAC地址"></a>使用EVPN学习MAC地址</h3><p>使用EVPN作为VXLAN的控制平面，可以用EVPN来进行MAC学习，以替代数据平面泛洪方式的MAC学习，减少泛洪流量。使用EVPN来进行MAC学习的过程，是通过在VTEP之间传递Type2路由完成的。</p>
+<p>下面以图1-5为例，介绍VTEP之间是如何通过EVPN来实现远程主机的MAC学习的。</p>
+<p>图1-5 使用EVPN来学习远程主机MAC地址的过程示意图</p>
+<p><img src="/EVPN-VXLAN/%E8%BF%9C%E7%A8%8B%E4%B8%BB%E6%9C%BAMAC%E5%AD%A6%E4%B9%A0.png" alt="远程主机MAC学习"></p>
+<p>图中Leaf1和Leaf2作为VTEP，分别连接同网段的主机Host1和Host2，以Leaf1向Leaf2发送Type2路由为例。</p>
+<ol>
+<li>Host1在连接至Leaf1时，通常会触发ARP、DHCP等行为。通过这些流量，Leaf1上就会学习到Host1的MAC信息，记录在本地MAC表中。</li>
+<li>Leaf1学习到本地主机的MAC表项后，会向其对等体Leaf2发送EVPN Type2路由。该路由会携带本端EVPN实例的ERT、VTEP IP地址、二层VNI、Host1的MAC地址等信息。其中本端的EVPN实例的ERT、VTEP IP地址、二层VNI这些信息来源于本端VTEP上的配置，样例如下：</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">[Leaf1]</span><br><span class="line">bridge-domain 10</span><br><span class="line"> vxlan vni 10    //二层VNI</span><br><span class="line"> evpn</span><br><span class="line">  route-distinguisher 10:1</span><br><span class="line">  vpn-target 0:10 export-extcommunity    //EVPN实例的ERT</span><br><span class="line">  vpn-target 100:5000 export-extcommunity</span><br><span class="line">  vpn-target 0:10 import-extcommunity</span><br><span class="line">#</span><br><span class="line">interface Nve1</span><br><span class="line"> source 1.1.1.1   //Leaf1的VTEP IP地址</span><br><span class="line"> vni 10 head-end peer-list protocol bgp</span><br><span class="line">#</span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>Leaf2收到Leaf1发来的Type2路由后，能够学习到Host1的MAC地址信息，并将其保存在MAC表中，其下一跳为Leaf1的VTEP IP地址。</li>
+<li>需要说明的是，Leaf2收到Leaf1发送的EVPN路由时，能否接纳该路由信息，是需要通过EVPN实例的RT（Route Target）值是否匹配来判断的。RT是一种BGP扩展团体属性，用于控制EVPN路由的发布与接收。也就是说，RT决定了本端的EVPN路由可以被哪些对端所接收，以及本端是否接收对端发来的EVPN路由。</li>
+<li>在本例中，Leaf2上接收Leaf1发过来的EVPN路由，则需保证Leaf2上配置的IRT（Import RT）与Leaf1配置的ERT（Export RT）一致，例如Leaf2上EVPN中的IRT配置为0:10，与上文中Leaf1上的ERT一致：</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">[Leaf2]</span><br><span class="line">bridge-domain 10</span><br><span class="line"> vxlan vni 10    //二层VNI</span><br><span class="line"> evpn</span><br><span class="line">  route-distinguisher 10:2</span><br><span class="line">  vpn-target 0:10 export-extcommunity    </span><br><span class="line">  vpn-target 100:5000 export-extcommunity</span><br><span class="line">  vpn-target 0:10 import-extcommunity   //EVPN实例的IRT</span><br><span class="line">#</span><br></pre></td></tr></table></figure>
+
+<p>经过以上的流程，在未发送广播请求的情况下，Leaf2就可以学习到Host1的MAC地址。类似的，Leaf1也可以学习到Host2的MAC地址。<br>另外需要强调的是，EVPN只是减少了网络中的流量泛洪，并不会完全避免，例如在以下一些场景：</p>
+<pre><code>1.网络中存在“静默”主机的情况，这种情况下主机不会触发ARP、DHCP等行为，导致VTEP学习不到本地主机MAC地址，从而也就无法发送MAC地址信息让其他VTEP学习到。
+2.主机首次通信的过程中，主机会发送ARP广播请求报文，这种也会产生泛洪。这种情况还可以通过ARP广播抑制功能来避免泛洪，可参考本文中的VXLAN BGP EVPN网络中的ARP广播抑制。
+</code></pre>
+<h3 id="同子网VXLAN隧道的建立"><a href="#同子网VXLAN隧道的建立" class="headerlink" title="同子网VXLAN隧道的建立"></a>同子网VXLAN隧道的建立</h3><p>VXLAN隧道由一对VTEP确定，在同子网互通场景下，因为只需要在同一个二层广播域（BD）内互通，所以只要两端VTEP的IP地址路由可达，VXLAN隧道就可以建立。通过EVPN动态建立VXLAN隧道，就是在两端VTEP之间建立BGP EVPN对等体，然后对等体之间通过交互Type3路由来互相传递VNI和VTEP IP地址信息，从而实现动态建立VXLAN隧道。</p>
+<p>下面以图1-6为列，介绍VTEP之间是如何通过Type3路由建立VXLAN隧道。</p>
+<p>图1-6 同子网VXLAN隧道的建立示意图</p>
+<p><img src="/EVPN-VXLAN/%E5%90%8C%E5%AD%90%E7%BD%91VXLAN%E9%9A%A7%E9%81%93%E5%BB%BA%E7%AB%8B.png" alt="同子网VXLAN隧道建立"></p>
+<p>图中Leaf1、Leaf2、Leaf3作为VTEP，以Leaf1向Leaf2、Leaf3发送路由为例。</p>
+<ol>
+<li>在Leaf1上完成VTEP IP、二层VNI、EVPN实例等相关配置后（这些配置的样例如下所示），Leaf1会向对等体Leaf2、Leaf3分别发送EVPN Type3路由。路由中会携带二层VNI、本端VTEP IP、EVPN实例的RD、出方向VPN-Target（ERT）等信息。</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">[Leaf1]</span><br><span class="line">bridge-domain 10</span><br><span class="line"> vxlan vni 10    //二层VNI</span><br><span class="line"> evpn</span><br><span class="line">  route-distinguisher 1:10    //EVPN实例的RD</span><br><span class="line">  vpn-target 0:10 export-extcommunity    //EVPN实例的ERT</span><br><span class="line">  vpn-target 100:5000 export-extcommunity</span><br><span class="line">  vpn-target 0:10 import-extcommunity</span><br><span class="line">#</span><br><span class="line">interface Nve1</span><br><span class="line"> source 1.1.1.1   //Leaf1的VTEP IP地址</span><br><span class="line"> vni 10 head-end peer-list protocol bgp</span><br><span class="line">#</span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>Leaf2、Leaf3收到Leaf1发来的Type3路由后，如果Leaf1的VTEP IP三层路由可达，则建立一条到Leaf1的二层VXLAN隧道；同时，如果本地有相同的VNI，则建立一条头端复制列表，用于后续广播、组播、未知单播报文的转发。</li>
+<li>在Leaf2、Leaf3收到Leaf1发送的EVPN路由时，会基于路由携带的RT值（EVPN实例的ERT值）是否与本地EVPN实例的IRT值匹配，来判断是否接纳该路由。</li>
+</ol>
+<p>经过以上的流程，Leaf2、Leaf3上就能建立到Leaf1的头端复制列表，指导后续BUM报文的转发。类似的，Leaf1上也会建立到Leaf2、Leaf3的头端复制列表。</p>
+<h3 id="跨子网VXLAN隧道建立"><a href="#跨子网VXLAN隧道建立" class="headerlink" title="跨子网VXLAN隧道建立"></a>跨子网VXLAN隧道建立</h3><p><a href="#jump">具体都和同子网建立差不多，就是多了L3 VNI（对应不同的VRF）。详细点这</a></p>
+<h3 id="网段路由发布"><a href="#网段路由发布" class="headerlink" title="网段路由发布"></a>网段路由发布</h3><p><img src="/EVPN-VXLAN/%E7%BD%91%E6%AE%B5%E8%B7%AF%E7%94%B1%E5%8F%91%E5%B8%83.png" alt="网段路由发布"></p>
+<p>图中Leaf1和Leaf2作为VTEP，同时作为三层网关，其中Leaf1连接一个192.168.1.0&#x2F;24的网段。</p>
+<ol>
+<li>Leaf1收集到本地IP网段路由，把该IP网段路由通过EVPN Type5路由发送给Leaf2。路由中携带有IP前缀、掩码长度、对应VRF的三层VNI等信息。</li>
+<li>Leaf2收到Leaf1发来的Type5路由后，能够学习到IP网段路由信息，并将其保存在相应的路由表中，其下一跳为Leaf1的VTEP IP地址，同时记录对应的三层VNI信息。<br>Leaf2收到Leaf1发送的EVPN路由时，根据EVPN路由携带的RT值（Type 5路由使用L3VPN实例的ERT值填充）是否与本地L3VPN实例的IRT值匹配，来将网段路由添加到对应VRF的路由表中。如果某VRF的IRT值与EVPN路由携带的RT值相同，则接收该路由，同时提取其中的网段路由+三层VNI信息，在其路由表中生成网段路由。该路由的下一跳会被设置为Leaf1的VTEP IP地址。同时，如果Leaf1的VTEP IP地址三层路由可达，则建立一条到Leaf1的VXLAN隧道。</li>
+</ol>
+<p>经过以上的流程，Leaf2就可以学习到Leaf1的网段路由信息，后续转发至该网段的报文时，可以根据查找路由表进行转发。</p>
+<h2 id="VXLAN-BGP-EVPN网络中流量的转发过程"><a href="#VXLAN-BGP-EVPN网络中流量的转发过程" class="headerlink" title="VXLAN BGP EVPN网络中流量的转发过程"></a>VXLAN BGP EVPN网络中流量的转发过程</h2><p>本文下面的内容以Underlay网络和Overlay网络均为IPv4为例，介绍用BGP EVPN部署的分布式VXLAN网络中，报文的转发过程。</p>
+<h3 id="同子网报文转发"><a href="#同子网报文转发" class="headerlink" title="同子网报文转发"></a>同子网报文转发</h3><p>同子网报文转发为二层转发，只在VXLAN二层网关之间进行，三层网关无需感知。</p>
+<h4 id="同子网已知单播报文转发"><a href="#同子网已知单播报文转发" class="headerlink" title="同子网已知单播报文转发"></a>同子网已知单播报文转发</h4><p>如图1-9所示，Host1和Host2同属于一个子网，下面以Host1向Host2发送已知单播报文为例介绍报文在VXLAN网络中的转发流程。</p>
+<p>图1-9 同子网已知单播报文转发示意图</p>
+<p><img src="/EVPN-VXLAN/%E5%90%8C%E5%AD%90%E7%BD%91%E5%B7%B2%E7%9F%A5%E5%8D%95%E6%92%AD.png" alt="同子网已知单播"></p>
+<ol>
+<li>Host1发送目的地址为Host2的报文。如果Host1没有Host2的MAC地址，会先发送广播ARP请求来获取Host2的MAC地址，此处该过程不再详述，认为Host1已经获取了Host2的MAC地址。</li>
+<li>Leaf1收到Host1的报文后，根据报文入端口或VLAN信息判断其所属的BD，并在该BD内查找出接口（通过上一节使用EVPN学习MAC地址可以知道，Leaf1上会学习到Host2的MAC地址，出接口为VTEP 2.2.2.2）。然后Leaf1会对报文进行VXLAN封装后转发。</li>
+<li>Leaf2接收到VXLAN报文后，根据报文中VNI获取二层广播域，进行VXLAN解封装，获取内层的二层报文。</li>
+<li>Leaf2根据内层报文的目的MAC地址，从本地MAC表中找到对应的出接口，然后转发给对应的主机Host2。</li>
+</ol>
+<p>Host2向Host1发送报文的过程与上述过程相同。</p>
+<h4 id="同子网BUM报文转发"><a href="#同子网BUM报文转发" class="headerlink" title="同子网BUM报文转发"></a>同子网BUM报文转发</h4><p>如果是同子网的BUM报文（广播、组播、未知单播），则会向同子网的所有VTEP发送一份报文。</p>
+<p>如图1-10所示，Host1向外发送广播报文。Leaf1收到Host1的广播报文后，根据报文入端口或VLAN信息判断其所属的BD，并在该BD内查找所有的隧道列表，依据获取的隧道列表进行报文封装后，向所有隧道发送报文，从而将报文转发至同子网的Host2和Host3。</p>
+<p>图1-10 同子网BUM报文转发示意图</p>
+<p><img src="/EVPN-VXLAN/%E5%90%8C%E5%AD%90%E7%BD%91BUM.png" alt="同子网BUM"></p>
+<h3 id="跨子网报文转发"><a href="#跨子网报文转发" class="headerlink" title="跨子网报文转发"></a>跨子网报文转发</h3><p>如图1-11所示，在分布式网关场景下，Leaf1、Leaf2作为VXLAN的三层网关，进行VXLAN封装及三层转发，Spine仅作为VXLAN报文转发节点，不进行VXLAN报文的处理</p>
+<p>图1-11 分布式网关场景下跨子网报文转发示意图</p>
+<p><img src="/EVPN-VXLAN/%E5%88%86%E5%B8%83%E5%BC%8F%E7%BD%91%E5%85%B3%E5%9C%BA%E6%99%AF%E4%B8%8B%E8%B7%A8%E5%AD%90%E7%BD%91%E6%8A%A5%E6%96%87.png" alt="分布式网关场景下跨子网报文"></p>
+<p>以Host1向Host2发送报文为例介绍报文在VXLAN网络中的转发流程：</p>
+<ol>
+<li>因为Host1与Host2属于不同网段，所以Host1会先将报文发送给网关（Leaf1），交由网关进行转发。</li>
+<li>Leaf1接收到来自Host1的报文，根据报文的目的地址判断需要进行三层转发。Leaf1根据报文入端口或VLAN信息判断其所属的BD，找到绑定该BD的L3VPN实例，然后在该L3VPN实例下查找路由表。在前面跨子网VXLAN隧道的建立和路由发布章节已经介绍过，在分布式网关场景下，网关Leaf1会学习到Host2的主机路由。</li>
+<li>Leaf1根据路由获取三层VNI、下一跳等信息，然后进行VXLAN封装，将报文转发至Leaf2。Leaf2收到VXLAN报文后进行解封装，根据报文携带的三层VNI找到对应的L3VPN实例，通过查找该L3VPN实例下的路由表，获取报文的下一跳是网关接口地址，然后将目的MAC地址替换为Host2的MAC地址，源MAC地址替换为Leaf2网关的MAC地址，转发给Host2。</li>
+</ol>
+<p>Host2向Host1发送报文的过程与上述过程相同。</p>
+<h2 id="VXLAN-BGP-EVPN网络中的ARP广播抑制"><a href="#VXLAN-BGP-EVPN网络中的ARP广播抑制" class="headerlink" title="VXLAN BGP EVPN网络中的ARP广播抑制"></a>VXLAN BGP EVPN网络中的ARP广播抑制</h2><p>地址解析协议ARP（Address Resolution Protocol）用来将IP地址解析为MAC地址。网络中同网段主机首次通信时，由于没有目标主机的MAC地址信息，因此会发送ARP广播请求来获取目的MAC地址信息。ARP广播请求报文在VXLAN网络中会泛洪转发，大量的ARP报文存在会占用过多的网络资源，导致网络性能下降。</p>
+<p>为了抑制ARP广播请求给网络带来的负面影响，可以通过ARP广播抑制功能来尽可能的减少ARP报文在VXLAN网络中的泛洪。ARP广播抑制有两种方式，一种是ARP广播变单播的功能，另一种是ARP二层代答功能。</p>
+<h3 id="ARP广播变单播"><a href="#ARP广播变单播" class="headerlink" title="ARP广播变单播"></a>ARP广播变单播</h3><p>ARP广播变单播，顾名思义，就是将ARP广播报文转变成ARP单播，从而以单播形式进行转发。ARP广播变单播的实现思路是在VXLAN三层网关上根据ARP生成ARP广播抑制表（包括主机IP、MAC、VNI、VTEP IP信息），然后通过EVPN将主机信息发送给二层网关；二层网关在收到ARP广播请求后，直接使用学习到的主机MAC替换原来的全F的广播MAC，从而将广播变为单播进行转发。</p>
+<p>图1-12 ARP广播变单播示意图</p>
+<p><img src="/EVPN-VXLAN/ARP%E5%B9%BF%E6%92%AD%E5%8F%98%E5%8D%95%E6%92%AD.png" alt="ARP广播变单播"></p>
+<p>以图1-12所示的分布式网关为例，其中Host1和Host2属于同一子网，但是部署在不同的VTEP下。ARP广播变单播过程如下：</p>
+<ol>
+<li>Leaf2通过Host2发送的ARP报文，可以学习到Host2的ARP表项。然后Leaf2可以根据ARP生成相应的ARP广播抑制表，并通过EVPN向Leaf1发布，这样Leaf1也可以学习到Host2的主机信息。</li>
+<li>Host1初次访问Host2，发送ARP广播请求来获取Host2的MAC地址。</li>
+<li>Leaf1收到ARP广播请求后，查询ARP广播抑制表。因为已经有Host2的主机信息，所以Leaf1将ARP请求报文中的全F的广播目的MAC替换为Host2的MAC地址，将ARP广播变为ARP单播，然后再进行VXLAN封装后向Leaf2发送。<br>如果Leaf1上没有Host2的ARP广播抑制表，那么依然按照正常的流程进行广播。</li>
+<li>Leaf2收到VXLAN报文并解封装后，将ARP请求发送给Host2。</li>
+</ol>
+<p>可以看出ARP广播变单播功能强依赖于三层网关，需要三层网关学习到主机的ARP信息，如果三层网关学习不到主机ARP，就不能抑制ARP广播。</p>
+<h3 id="ARP二层代答"><a href="#ARP二层代答" class="headerlink" title="ARP二层代答"></a>ARP二层代答</h3><p>ARP广播变单播的抑制方式需要三层网关的存在，在纯二层网络中，由于不存在三层网关，没有相应的ARP表项，也就无法生成ARP广播抑制表进行ARP抑制。上述二层场景面临的ARP抑制问题，就可以通过ARP二层代答功能来解决。</p>
+<p>ARP二层代答的实现思路是在二层网关上收到主机ARP报文，获取ARP报文中的主机信息并生成ARP广播抑制表，然后通过EVPN将主机信息发送给其他二层网关；二层网关在收到ARP广播请求后，根据ARP广播抑制表中的主机信息，直接进行ARP代答。</p>
+<p>ARP二层代答是一种有效减少ARP广播报文的机制。使能ARP二层代答之后，二层网关设备在收到ARP请求之后，优先尝试本地代答，只有当本地无法代答时，才会进行广播。</p>
+<p>图1-13 ARP二层代答示意图</p>
+<p><img src="/EVPN-VXLAN/ARP%E4%BA%8C%E5%B1%82%E4%BB%A3%E7%AD%94.png" alt="ARP二层代答"></p>
+<p>以图1-13为例，其中Host1和Host2属于同一子网，在二层网关设备开启基于BD的ARP二层代答之后，ARP二层代答过程如下：</p>
+<ol>
+<li>Leaf2上开启ARP二层代答功能后，Leaf2会检测主机发送的ARP报文。当Leaf2接收到Host2的ARP报文后，可以根据ARP生成相应的ARP广播抑制表项，并通过EVPN向Leaf1发布，这样Leaf1也可以学习到Host2的主机信息。</li>
+<li>Host1初次访问Host2，发送ARP广播请求来获取Host2的MAC地址。</li>
+<li>Leaf1收到ARP广播请求后，查询ARP广播抑制表。因为已经有Host2的主机信息，所以Leaf1直接对ARP请求进行代答。</li>
+</ol>
+<p>如果Leaf1上没有Host2的ARP广播抑制表，那么依然按照正常的流程进行广播。</p>
+<h2 id="同网段二层互通"><a href="#同网段二层互通" class="headerlink" title="同网段二层互通"></a>同网段二层互通</h2><h3 id="建立VXLAN隧道"><a href="#建立VXLAN隧道" class="headerlink" title="建立VXLAN隧道"></a>建立VXLAN隧道</h3><p><img src="/EVPN-VXLAN/%E5%BB%BA%E7%AB%8BVXLAN%E9%9A%A7%E9%81%93.png" alt="建立VXLAN隧道"></p>
+<p>前提条件</p>
+<pre><code>1.Leaf1 和 leaf2属于统一BD
+2.两端leaf的VTEP IP地址路由可达
+3.完成 BGP EVPN配置
+</code></pre>
+<p>结果：<br>Leaf1 和 Leaf2建立BGP EVPN对等体<br>步骤：</p>
+<ol>
+<li>Peer建立后，Leaf1和Leaf2生成Type3类型的BGP EVPN路由给对方</li>
+<li>Leaf2收到Leaf1发来的BGP EVPN路由后，先检查 Ex RT是否与本地的EVPN实例的Im RT 值相同。不同，丢弃；相同，接受</li>
+<li>接受路由后，如果检查两端的VTEP IP地址路由可达，则建立一条到达对端的VXLAN隧道</li>
+<li>这样Leaf1和Leaf2之间就通过BGP EVPN自动建立了一条VXLAN隧道</li>
+</ol>
+<h4 id="总结：-1"><a href="#总结：-1" class="headerlink" title="总结："></a>总结：</h4><p>VXLAN隧道由一对VTEP组成。</p>
+<p><font color=#FF0000><strong>同网段下</strong></font>，只要两端VTEP IP可达,RT匹配，隧道就建成。<br>建立头端复制列表[VNI,Source,Destination]用于BUM报文的转发</p>
+<p><span id = "jump">  </span></p>
+<p><font color=#FF0000><strong>不同网段上</strong></font>，交换机根据主机1所属的BD域，获取相应的二层VNI、L3VPN实例及L3VPN实例关联的三层VNI信息（IP + MAC + Host1所属的二层VNI + L3VPN实例的三层VNI）</p>
+<h3 id="生成MAC表"><a href="#生成MAC表" class="headerlink" title="生成MAC表"></a>生成MAC表</h3><p>步骤：<br>1.主机1上线时，通过动态ARP报文<br>Leaf1就能学到主机1的MAC地址，BD值和入接口（Leaf1的本地MAC表生成主机一的表项）</p>
+<p><img src="/EVPN-VXLAN/MAC1.png" alt="MAC1"></p>
+<p>2.Leaf1发送给Leaf2  Type2类型的BGP EVPN路由</p>
+<p><img src="/EVPN-VXLAN/MAC2.png" alt="MAC2"></p>
+<p>Type2称为MAC&#x2F;IP路由，携带本机MAC地址、VTEP IP地址、VNI和Ex RT值</p>
+<p>3.Leaf2收到Leaf1发来的BGP EVPN路由后，先检查Ex RT值是否和本地EVPN实例的Im RT值相同。不同，丢弃；相同，接受<br>4.Leaf2根据路由中主机1的MAC地址、VNI、VTEP IP地址信息在本地的MAC表中生成主机1的MAC表项</p>
+<p><img src="/EVPN-VXLAN/MAC3.png" alt="MAC3"></p>
+<h4 id="总结：-2"><a href="#总结：-2" class="headerlink" title="总结："></a>总结：</h4><p>Leaf 交换机的<font color=#FF0000><strong>MAC表里有两个方向来的表项</strong></font>。<font color=#E9764A>向里是自己终端的MAC表，有相连终端的MAC地址，BD值（根据接口配置获得的），出接口（往哪个端口走能到终端）。向外是从别的VTEP那学来的MAC表，有其他终端的MAC地址，BD值，出接口（去哪个VTEP能到达那个MAC地址）</font></p>
+<h3 id="转发过程"><a href="#转发过程" class="headerlink" title="转发过程"></a>转发过程</h3><p>步骤：<br>1.当Leaf2 收到目的MAC地址为主机1的报文后，在主机2所属的BD内查找出接口的信息</p>
+<p><img src="/EVPN-VXLAN/F1.png" alt="F1"></p>
+<p>2.因为Leaf2已经学到了主机1的MAC表项（出接口就是Leaf1的VTEP IP地址）<br>3.然后Leaf2根据BD和出接口信息，对报文进行VXLAN封装后转发至Leaf1</p>
+<p><img src="/EVPN-VXLAN/F2.png" alt="F2"></p>
+<p>4.Leaf1收到VXLAN报文后进行解封装，获取内层报文，并根据内层报文的目的MAC地址，从本地MAC表找到对应的出接口，发送给主机1</p>
+<p><img src="/EVPN-VXLAN/F3.png" alt="F3"></p>
+<h2 id="不同网段三层互通"><a href="#不同网段三层互通" class="headerlink" title="不同网段三层互通"></a>不同网段三层互通</h2><p>分布式网关：Spine作为透传节点，Leaf作为三层网关</p>
+<h3 id="建立VXLAN隧道-1"><a href="#建立VXLAN隧道-1" class="headerlink" title="建立VXLAN隧道"></a>建立VXLAN隧道</h3><ol>
+<li>Host1上线时，Leaf1通过ARP学到了Host1的ARP表项，同时根据入接口，可以获得BD以及BD对应的二三层VNI信息和VPN信息<blockquote>
+<p><strong>三层VNI用来标识不同的VPN，VPN用来隔离不同租户</strong></p>
+</blockquote>
+</li>
+</ol>
+<p><img src="/EVPN-VXLAN/%E4%B8%8D%E5%90%8C%E7%BD%91%E6%AE%B5%E4%B8%89%E5%B1%82%E4%BA%92%E9%80%9A1.png" alt="不同网段三层互通1"><br>2. Leaf1根据获取的信息，在本地对应的VPN中保存Host1的主机路由<br>3. Leaf1向Leaf2发送Type2类型的BGP EVPN路由<br><img src="/EVPN-VXLAN/%E4%B8%8D%E5%90%8C%E7%BD%91%E6%AE%B5%E4%B8%89%E5%B1%82%E4%BA%92%E9%80%9A2.png" alt="不同网段三层互通2"><br>4. Type2主要包含了VTEP地址、主机IP、MAC地址、三层VNI和EVPN实例出方向的RT值<br>5. Leaf2首先检查RT是否匹配。如果匹配，Leaf2根据Type2路由中主机IP、MAC地址、三层VNI信息在VPN中保存Host1的路由。同时如果VTEP IP可达，Leaf1和Leaf2就成功通过BGP EVPN自动建立一条VXLAN隧道</p>
+<h3 id="转发流程"><a href="#转发流程" class="headerlink" title="转发流程"></a>转发流程</h3><ol>
+<li>隧道建立完后，当Host2向Host1发送报文时<br><img src="/EVPN-VXLAN/%E4%B8%8D%E5%90%8C%E7%BD%91%E6%AE%B5%E4%B8%89%E5%B1%82%E4%BA%92%E9%80%9A3.png" alt="不同网段三层互通3"></li>
+<li>Leaf2收到主机2的报文后，首先根据报文入接口找到对应的BD，以及BD对应的VRF，然后在该VRF中，查找到至主机1 的路由，以及该路由对应的三层VNI信息。Leaf2根据查找到的信息进行VXLAN封装<br><img src="/EVPN-VXLAN/%E4%B8%8D%E5%90%8C%E7%BD%91%E6%AE%B5%E4%B8%89%E5%B1%82%E4%BA%92%E9%80%9A4.png" alt="不同网段三层互通4"></li>
+<li>并将报文转发至leaf1，封装的VXLAN报文中会携带三层VNI信息，Leaf1接收到VXLAN报文后进行解封装，根据报文携带的三层VNI找到对应的VRF<br><img src="/EVPN-VXLAN/%E4%B8%8D%E5%90%8C%E7%BD%91%E6%AE%B5%E4%B8%89%E5%B1%82%E4%BA%92%E9%80%9A5.png" alt="不同网段三层互通5"></li>
+<li>在该VRF路由表中查找到至主机1的路由，最后将报文转发至主机1<br><img src="/EVPN-VXLAN/%E4%B8%8D%E5%90%8C%E7%BD%91%E6%AE%B5%E4%B8%89%E5%B1%82%E4%BA%92%E9%80%9A6.png" alt="不同网段三层互通6"></li>
+</ol>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2021/08/05/EVPN-VXLAN/" data-id="clg3uqoss000lp8mu92dtbb34" data-title="EVPN VXLAN" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/VPN/" rel="tag">VPN</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/VXLAN/" rel="tag">VXLAN</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%99%9A%E6%8B%9F%E5%8C%96/" rel="tag">虚拟化</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2021/08/05/VRF/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          VRF
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2021/08/04/%E6%8E%A7%E5%88%B6%E8%B7%AF%E7%94%B1%E6%9B%B4%E6%96%B0/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">控制路由更新</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Github/">Github</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/VPN/">VPN</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/openstack/">openstack</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E4%BA%A4%E6%8D%A2%E6%9C%BA/">交换机</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%8D%9A%E5%AE%A2/">博客</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%AE%89%E5%85%A8/">安全</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%B0%E6%8D%AE%E4%B8%AD%E5%BF%83/">数据中心</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">数据结构</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%B0%E6%8D%AE%E9%80%9A%E4%BF%A1/">数据通信</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%99%9A%E6%8B%9F%E5%8C%96/">虚拟化</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%B7%AF%E7%94%B1/">路由</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%BF%90%E7%BB%B4/">运维</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Apache/" rel="tag">Apache</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/BGP/" rel="tag">BGP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DHCP/" rel="tag">DHCP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Django/" rel="tag">Django</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Github/" rel="tag">Github</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/" rel="tag">Linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/OSI/" rel="tag">OSI</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/OSPF/" rel="tag">OSPF</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Python/" rel="tag">Python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SDN/" rel="tag">SDN</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/STP/" rel="tag">STP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/VLAN/" rel="tag">VLAN</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/VPN/" rel="tag">VPN</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/VXLAN/" rel="tag">VXLAN</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/" rel="tag">hexo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/openstack/" rel="tag">openstack</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/yilia/" rel="tag">yilia</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%91%E8%AE%A1%E7%AE%97/" rel="tag">云计算</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%A4%E6%8D%A2/" rel="tag">交换</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%A4%E6%8D%A2%E6%9C%BA/" rel="tag">交换机</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%8E%9F%E7%90%86/" rel="tag">交换机原理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BB%A5%E5%A4%AA%E7%BD%91%E5%B8%A7/" rel="tag">以太网帧</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8D%9A%E5%AE%A2/" rel="tag">博客</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8D%9A%E5%AE%A2%E8%87%AA%E5%AE%9A%E4%B9%89/" rel="tag">博客自定义</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%AE%89%E5%85%A8/" rel="tag">安全</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%8E%A5%E5%8F%A3/" rel="tag">接口</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%8E%A7%E5%88%B6%E5%99%A8/" rel="tag">控制器</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E4%B8%AD%E5%BF%83/" rel="tag">数据中心</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="tag">数据结构</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E9%80%9A%E4%BF%A1/" rel="tag">数据通信</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF%E5%B1%82/" rel="tag">数据链路层</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%AB%AF%E5%8F%A3%E9%95%9C%E5%83%8F/" rel="tag">端口镜像</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BB%8F%E9%AA%8C/" rel="tag">经验</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BC%96%E5%86%99%E6%8C%87%E5%8D%97/" rel="tag">编写指南</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BD%91%E7%BB%9C/" rel="tag">网络</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BD%91%E7%BB%9C%E5%9F%BA%E7%A1%80/" rel="tag">网络基础</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%84%9A%E6%9C%AC/" rel="tag">脚本</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%87%AA%E5%8A%A8%E5%8C%96%E8%BF%90%E7%BB%B4/" rel="tag">自动化运维</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%99%9A%E6%8B%9F%E5%8C%96/" rel="tag">虚拟化</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%99%9A%E6%8B%9F%E5%8C%96%E6%8A%80%E6%9C%AF/" rel="tag">虚拟化技术</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%B7%AF%E7%94%B1/" rel="tag">路由</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%BF%90%E7%BB%B4/" rel="tag">运维</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Apache/" style="font-size: 10px;">Apache</a> <a href="/tags/BGP/" style="font-size: 10px;">BGP</a> <a href="/tags/DHCP/" style="font-size: 10px;">DHCP</a> <a href="/tags/Django/" style="font-size: 10px;">Django</a> <a href="/tags/Github/" style="font-size: 10px;">Github</a> <a href="/tags/Linux/" style="font-size: 12.86px;">Linux</a> <a href="/tags/OSI/" style="font-size: 10px;">OSI</a> <a href="/tags/OSPF/" style="font-size: 14.29px;">OSPF</a> <a href="/tags/Python/" style="font-size: 17.14px;">Python</a> <a href="/tags/SDN/" style="font-size: 10px;">SDN</a> <a href="/tags/STP/" style="font-size: 10px;">STP</a> <a href="/tags/VLAN/" style="font-size: 10px;">VLAN</a> <a href="/tags/VPN/" style="font-size: 12.86px;">VPN</a> <a href="/tags/VXLAN/" style="font-size: 10px;">VXLAN</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/openstack/" style="font-size: 12.86px;">openstack</a> <a href="/tags/yilia/" style="font-size: 10px;">yilia</a> <a href="/tags/%E4%BA%91%E8%AE%A1%E7%AE%97/" style="font-size: 10px;">云计算</a> <a href="/tags/%E4%BA%A4%E6%8D%A2/" style="font-size: 10px;">交换</a> <a href="/tags/%E4%BA%A4%E6%8D%A2%E6%9C%BA/" style="font-size: 14.29px;">交换机</a> <a href="/tags/%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%8E%9F%E7%90%86/" style="font-size: 10px;">交换机原理</a> <a href="/tags/%E4%BB%A5%E5%A4%AA%E7%BD%91%E5%B8%A7/" style="font-size: 10px;">以太网帧</a> <a href="/tags/%E5%8D%9A%E5%AE%A2/" style="font-size: 10px;">博客</a> <a href="/tags/%E5%8D%9A%E5%AE%A2%E8%87%AA%E5%AE%9A%E4%B9%89/" style="font-size: 10px;">博客自定义</a> <a href="/tags/%E5%AE%89%E5%85%A8/" style="font-size: 10px;">安全</a> <a href="/tags/%E6%8E%A5%E5%8F%A3/" style="font-size: 10px;">接口</a> <a href="/tags/%E6%8E%A7%E5%88%B6%E5%99%A8/" style="font-size: 10px;">控制器</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E4%B8%AD%E5%BF%83/" style="font-size: 10px;">数据中心</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" style="font-size: 15.71px;">数据结构</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E9%80%9A%E4%BF%A1/" style="font-size: 20px;">数据通信</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF%E5%B1%82/" style="font-size: 12.86px;">数据链路层</a> <a href="/tags/%E7%AB%AF%E5%8F%A3%E9%95%9C%E5%83%8F/" style="font-size: 10px;">端口镜像</a> <a href="/tags/%E7%BB%8F%E9%AA%8C/" style="font-size: 10px;">经验</a> <a href="/tags/%E7%BC%96%E5%86%99%E6%8C%87%E5%8D%97/" style="font-size: 10px;">编写指南</a> <a href="/tags/%E7%BD%91%E7%BB%9C/" style="font-size: 18.57px;">网络</a> <a href="/tags/%E7%BD%91%E7%BB%9C%E5%9F%BA%E7%A1%80/" style="font-size: 11.43px;">网络基础</a> <a href="/tags/%E8%84%9A%E6%9C%AC/" style="font-size: 10px;">脚本</a> <a href="/tags/%E8%87%AA%E5%8A%A8%E5%8C%96%E8%BF%90%E7%BB%B4/" style="font-size: 10px;">自动化运维</a> <a href="/tags/%E8%99%9A%E6%8B%9F%E5%8C%96/" style="font-size: 11.43px;">虚拟化</a> <a href="/tags/%E8%99%9A%E6%8B%9F%E5%8C%96%E6%8A%80%E6%9C%AF/" style="font-size: 14.29px;">虚拟化技术</a> <a href="/tags/%E8%B7%AF%E7%94%B1/" style="font-size: 17.14px;">路由</a> <a href="/tags/%E8%BF%90%E7%BB%B4/" style="font-size: 10px;">运维</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/09/">September 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">August 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">July 2021</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2021/09/21/CDN/">CDN</a>
+          </li>
+        
+          <li>
+            <a href="/2021/09/20/%E7%AD%96%E7%95%A5%E8%B7%AF%E7%94%B1/">策略路由</a>
+          </li>
+        
+          <li>
+            <a href="/2021/09/18/switch%E7%9F%A5%E8%AF%86/">switch知识</a>
+          </li>
+        
+          <li>
+            <a href="/2021/09/18/switch%D6%AA%CA%B6/">switch知识</a>
+          </li>
+        
+          <li>
+            <a href="/2021/09/17/TCP%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3%E6%9C%BA%E5%88%B6/">TCP滑动窗口机制</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2023 John Doe<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

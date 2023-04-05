@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>DNS | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="DNS（Domain Name System，域名系统）是一个将域名转化为IP地址的网络协议，通过域名得到对应的IP地址的过程也叫做域名解析。使用DNS服务，用户访问互联网只需通过域名就行了，而不需要去记住ip地址，这样用户可以更方便的访问互联网。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="DNS">
+<meta property="og:url" content="http://example.com/2021/09/14/DNS/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="DNS（Domain Name System，域名系统）是一个将域名转化为IP地址的网络协议，通过域名得到对应的IP地址的过程也叫做域名解析。使用DNS服务，用户访问互联网只需通过域名就行了，而不需要去记住ip地址，这样用户可以更方便的访问互联网。">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/DNS/%E5%9F%9F%E5%90%8D%E7%BB%93%E6%9E%84.png">
+<meta property="og:image" content="http://example.com/DNS/%E5%9F%9F%E5%90%8D%E8%A7%A3%E6%9E%90%E8%BF%87%E7%A8%8B.png">
+<meta property="og:image" content="http://example.com/DNS/%E6%9F%A5%E8%AF%A2%E5%B7%AE%E5%88%AB.png">
+<meta property="og:image" content="http://example.com/DNS/%E6%9F%A5%E8%AF%A2%E8%BF%87%E7%A8%8B.png">
+<meta property="article:published_time" content="2021-09-13T16:31:45.000Z">
+<meta property="article:modified_time" content="2021-09-15T09:28:34.000Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="数据通信">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/DNS/%E5%9F%9F%E5%90%8D%E7%BB%93%E6%9E%84.png">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-DNS" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2021/09/14/DNS/" class="article-date">
+  <time class="dt-published" datetime="2021-09-13T16:31:45.000Z" itemprop="datePublished">2021-09-14</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E6%95%B0%E6%8D%AE%E9%80%9A%E4%BF%A1/">数据通信</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      DNS
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>DNS（Domain Name System，域名系统）是一个将域名转化为IP地址的网络协议，通过域名得到对应的IP地址的过程也叫做域名解析。<br>使用DNS服务，用户访问互联网只需通过域名就行了，而不需要去记住ip地址，这样用户可以更方便的访问互联网。</p>
+<span id="more"></span>
+
+<h1 id="域名结构"><a href="#域名结构" class="headerlink" title="域名结构"></a>域名结构</h1><p><img src="/DNS/%E5%9F%9F%E5%90%8D%E7%BB%93%E6%9E%84.png" alt="域名结构"><br>这是中央电视台用于收发电子邮件的计算机的域名，它由三个标号组成，其中标号com是顶级域名，标号cctv是二级域名，标号mail是三级域名。<br><strong>级别最低的域名写在最左边，而级别最高的字符写在最右边。</strong></p>
+<table>
+<thead>
+<tr>
+<th>编号</th>
+<th>类型</th>
+<th>详情</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>(1)</td>
+<td>国家顶级域名nTLD</td>
+<td>采用ISO3166的规定。如：cn代表中国，us代表美国，uk代表英国，等等。国家域名又常记为ccTLD(cc表示国家代码contry-code)。</td>
+</tr>
+<tr>
+<td>(2)</td>
+<td>通用顶级域名gTLD</td>
+<td>最常见的通用顶级域名有7个，即：com(公司企业)，net(网络服务机构)，org(非营利组织)，int(国际组织)，gov(美国的政府部门)，mil(美国的军事部门)。</td>
+</tr>
+<tr>
+<td>(3)</td>
+<td>基础结构域名(infrastructure domain)</td>
+<td>这种顶级域名只有一个，即arpa，用于反向域名解析，因此称为反向域名。</td>
+</tr>
+</tbody></table>
+<h1 id="域名服务器"><a href="#域名服务器" class="headerlink" title="域名服务器"></a>域名服务器</h1><p>根域名服务器：最高层次的域名服务器，也是最重要的域名服务器。所有的根域名服务器都知道所有的顶级域名服务器的域名和IP地址。不管是哪一个本地域名服务器，若要对因特网上任何一个域名进行解析，只要自己无法解析，就首先求助根域名服务器。所以根域名服务器是最重要的域名服务器。假定所有的根域名服务器都瘫痪了，那么整个DNS系统就无法工作。需要注意的是，在很多情况下，根域名服务器并不直接把待查询的域名直接解析出IP地址，而是告诉本地域名服务器下一步应当找哪一个顶级域名服务器进行查询。</p>
+<p>顶级域名服务器：负责管理在该顶级域名服务器注册的二级域名。</p>
+<p>权限域名服务器：负责一个“区”的域名服务器。</p>
+<p>本地域名服务器：本地服务器不属于下图的域名服务器的层次结构，但是它对域名系统非常重要。当一个主机发出DNS查询请求时，这个查询请求报文就发送给本地域名服务器。</p>
+<ul>
+<li>从”根域名服务器”查到”顶级域名服务器”的NS记录和A记录（IP地址）</li>
+<li>从”顶级域名服务器”查到”权限域名服务器”的NS记录和A记录（IP地址）</li>
+<li>从”权限域名服务器”查出”主机名”的IP地址</li>
+</ul>
+<h1 id="域名解析过程"><a href="#域名解析过程" class="headerlink" title="域名解析过程"></a>域名解析过程</h1><p><img src="/DNS/%E5%9F%9F%E5%90%8D%E8%A7%A3%E6%9E%90%E8%BF%87%E7%A8%8B.png" alt="域名解析过程"></p>
+<p>客户端首先会发送一个DNS请求到本地DNS服务器查询<a target="_blank" rel="noopener" href="http://www.baidu.com域名的ip地址,然后本地dns服务器会先从自己的缓存数据库中查找,如果有就直接返回,如果没有则向根服务器进行查询,如果根服务器也没有记录则会告诉本地dns服务器去域名服务器查询,本地dns服务器会重新发起请求向.com服务器查询,域名服务器收到dns请求后并不会直接返回www.baidu.com对应的ip地址,而是告诉本地dns服务器可以在baidu.com服务器上进行查询解析域名对应的ip地址.本地dns服务器会向baidu.com服务器发起dns请求,baidu.com服务器从自己的缓存数据库中查找到www.baidu.com域名对应的ip地址后则会把该记录返回给本地dns服务器.然后本地dns服务器会把该记录返回给客户端同时缓存到自己的数据库中./">www.baidu.com域名的ip地址，然后本地DNS服务器会先从自己的缓存数据库中查找，如果有就直接返回，如果没有则向根服务器进行查询，如果根服务器也没有记录则会告诉本地DNS服务器去域名服务器查询，本地DNS服务器会重新发起请求向.com服务器查询，域名服务器收到DNS请求后并不会直接返回www.baidu.com对应的ip地址，而是告诉本地DNS服务器可以在baidu.com服务器上进行查询解析域名对应的ip地址。本地DNS服务器会向baidu.com服务器发起DNS请求，baidu.com服务器从自己的缓存数据库中查找到www.baidu.com域名对应的ip地址后则会把该记录返回给本地DNS服务器。然后本地DNS服务器会把该记录返回给客户端同时缓存到自己的数据库中。</a></p>
+<h2 id="递归查询和迭代查询"><a href="#递归查询和迭代查询" class="headerlink" title="递归查询和迭代查询"></a>递归查询和迭代查询</h2><p>（1）递归查询：本机向本地域名服务器发出一次查询请求，就静待最终的结果。如果本地域名服务器无法解析，自己会以DNS客户机的身份向其它域名服务器查询，直到得到最终的IP地址告诉本机<br>（2）迭代查询：本地域名服务器向根域名服务器查询，根域名服务器告诉它下一步到哪里去查询，然后它再去查，每次它都是以客户机的身份去各个服务器查询。</p>
+<p><strong>补充</strong></p>
+<blockquote>
+<p>一、主机向本地域名服务器的查询一般都是采用递归查询。<br>所谓递归查询就是：如果主机所询问的本地域名服务器不知道被查询的域名的IP地址，那么本地域名服务器就以DNS客户的身份，向其它根域名服务器继续发出查询请求报文(即替主机继续查询)，而不是让主机自己进行下一步查询。因此，递归查询返回的查询结果或者是所要查询的IP地址，或者是报错，表示无法查询到所需的IP地址。</p>
+</blockquote>
+<blockquote>
+<p>二、本地域名服务器向根域名服务器的查询的迭代查询。<br>迭代查询的特点：当根域名服务器收到本地域名服务器发出的迭代查询请求报文时，要么给出所要查询的IP地址，要么告诉本地服务器：“你下一步应当向哪一个域名服务器进行查询”。然后让本地服务器进行后续的查询。根域名服务器通常是把自己知道的顶级域名服务器的IP地址告诉本地域名服务器，让本地域名服务器再向顶级域名服务器查询。顶级域名服务器在收到本地域名服务器的查询请求后，要么给出所要查询的IP地址，要么告诉本地服务器下一步应当向哪一个权限域名服务器进行查询。最后，知道了所要解析的IP地址或报错，然后把这个结果返回给发起查询的主机。</p>
+</blockquote>
+<p>两种查询方式的图<br><img src="/DNS/%E6%9F%A5%E8%AF%A2%E5%B7%AE%E5%88%AB.png" alt="查询差别"><br><img src="/DNS/%E6%9F%A5%E8%AF%A2%E8%BF%87%E7%A8%8B.png" alt="查询过程"></p>
+<h1 id="访问百度的流程"><a href="#访问百度的流程" class="headerlink" title="访问百度的流程"></a>访问百度的流程</h1><p>1.DNS域名解析<br><strong>DNS 域名解析可以简单概括为 ：</strong><br>浏览器缓存 -&gt; 系统 host 缓存 -&gt; 本地域名服务器 LDNS -&gt; Root Server -&gt; 主域名服务器 gTLD DNS -&gt; Name Server (BAIDU-DNS) -&gt; LDNS 缓存并返回 ip 地址</p>
+<p><strong>具体过程为：</strong><br>浏览器首先查询浏览器的缓存，因为浏览器会按照一定的频率缓存 DNS 记录。<br>若浏览器无缓存，那么查询操作系统的 HOST 文件，查询是否有 DNS 记录。<br>若还没有命中域名，就请求本地域名服务器（LDNS），这台服务器一般在城市的某个角落，距离客户端不会很远。该服务器一般都会缓存域名查询结果，因此大部分域名解析都能在这里解析完成。<br>若LDNS还没有命中，就LDNS请求根服务器（Root Server）请求帮助，根服务器返回 LDNS 一个所查询域的主域名服务器（gTLD DNS，国际顶尖域名服务器，如.com，.cn，.org等），这里访问的是 <a target="_blank" rel="noopener" href="http://www.baidu.com/">www.baidu.com</a> 百度，即返回 .com 的主域名服务器。<br>LDNS 继续访问 gTLD Server，查找这个域名对应的 Name Server 地址，即网站注册的域名服务器 BAIDU-DNS。<br>LDNS 继续访问 BAIDU-DNS Server，根据映射关系表找到目标 IP 地址，返回给 LDNS。<br>LDNS 拿到 IP 地址后，对这个域名和 IP 地址进行缓存，并将 IP 地址返回给请求客户端，即我们的浏览器，至此，DNS 域名解析过程结束，拿到域名对应的 IP 地址。</p>
+<p>2.请求数据<br>先建立TCP连接，发出HTTP请求，服务器返回数据给浏览器，TCP终止，页面渲染数据，展示页面</p>
+<h1 id="DNS名词介绍"><a href="#DNS名词介绍" class="headerlink" title="DNS名词介绍"></a>DNS名词介绍</h1><p>DNS A记录 NS记录 MX记录 CNAME记录 TXT记录 TTL值 PTR值<br>建站名词解释：DNS A记录 NS记录 MX记录 CNAME记录 TXT记录 TTL值 PTR值 泛域名 泛解析 域名绑定 域名转向 </p>
+<ol>
+<li><p>DNS：Domain Name System 域名管理系统 域名是由圆点分开一串单词或缩写组成的，每一个域名都对应一个惟一的IP地址，这一命名的方法或这样管理域名的系统叫做域名管理系统。<br>DNS：Domain Name Server 域名服务器 域名虽然便于人们记忆，但网络中的计算机之间只能互相认识IP地址，它们之间的转换工作称为域名解析，域名解析需要由专门的域名解析服务器来完成，DNS 就是进行域名解析的服务器。 查看DNS更详细的解释</p>
+</li>
+<li><p><font color=#E9764A><strong>A记录 A（Address）记录是用来指定主机名（或域名）对应的IP地址记录</strong></font>。用户可以将该域名下的网站服务器指向到自己的web server上。同时也可以设置域名的子域名。通俗来说A记录就是服务器的IP,域名绑定A记录就是告诉DNS,当你输入域名的时候给你引导向设置在DNS的A记录所对应的服务器。 简单的说，<font color = #FF0000><strong>A记录是指定域名对应的IP地址</strong></font>。 </p>
+</li>
+<li><p><font color=#E9764A><strong>NS记录 NS（Name Server）记录是域名服务器记录，用来指定该域名由哪个DNS服务器来进行解析</strong></font>。 您注册域名时，总有默认的DNS服务器，每个注册的域名都是由一个DNS域名服务器来进行解析的，DNS服务器NS记录地址一般以以下的形式出现： ns1.domain.com、ns2.domain.com等。 简单的说，<font color = #FF0000><strong>NS记录是指定由哪个DNS服务器解析你的域名</strong></font>。 </p>
+</li>
+<li><p>MX记录 MX（Mail Exchanger）记录是邮件交换记录，它指向一个邮件服务器，用于电子邮件系统发邮件时根据收信人的地址后缀来定位邮件服务器。例如，当Internet上的某用户要发一封信给 <a href="mailto:&#117;&#x73;&#x65;&#114;&#64;&#109;&#x79;&#100;&#111;&#x6d;&#x61;&#105;&#110;&#x2e;&#x63;&#x6f;&#x6d;">&#117;&#x73;&#x65;&#114;&#64;&#109;&#x79;&#100;&#111;&#x6d;&#x61;&#105;&#110;&#x2e;&#x63;&#x6f;&#x6d;</a> 时，该用户的邮件系统通过DNS查找mydomain.com这个域名的MX记录，如果MX记录存在， 用户计算机就将邮件发送到MX记录所指定的邮件服务器上。 </p>
+</li>
+<li><p>CNAME记录 CNAME（Canonical Name ）别名记录，允许您将多个名字映射到同一台计算机。通常用于同时提供WWW和MAIL服务的计算机。例如，有一台计算机名为 “host.mydomain.com”（A记录），它同时提供WWW和MAIL服务，为了便于用户访问服务。可以为该计算机设置两个别名（CNAME）：WWW和MAIL， 这两个别名的全称就“<a target="_blank" rel="noopener" href="http://www.mydomain.com”和“mail.mydomain.com”,实际上他们都指向/">www.mydomain.com”和“mail.mydomain.com”，实际上他们都指向</a> “host.mydomain.com”。 </p>
+</li>
+<li><p>TXT记录<br>TXT记录，一般指某个主机名或域名的说明，如：admin IN TXT “管理员, 电话：XXXXXXXXXXX”，mail IN TXT “邮件主机，存放在xxx , 管理人：AAA”，Jim IN TXT “contact: <a href="mailto:&#x61;&#x62;&#x63;&#64;&#109;&#x61;&#x69;&#108;&#x73;&#101;&#x72;&#x76;&#101;&#x72;&#x2e;&#x63;&#111;&#x6d;">&#x61;&#x62;&#x63;&#64;&#109;&#x61;&#x69;&#108;&#x73;&#101;&#x72;&#x76;&#101;&#x72;&#x2e;&#x63;&#111;&#x6d;</a>“，也就是您可以设置 TXT 内容以便使别人联系到您。 TXT的应用之一，SPF（Sender Policy Framework）反垃圾邮件。SPF是跟DNS相关的一项技术，它的内容写在DNS的TXT类型的记录里面。MX记录的作用是给寄信者指明某个域名的邮件服务器有哪些。SPF的作用跟MX相反，它向收信者表明，哪些邮件服务器是经过某个域名认可会发送邮件的。SPF的作用主要是反垃圾邮件，主要针对那些发信人伪造域名的垃圾邮件。例如：当邮件服务器收到自称发件人是<a href="mailto:&#115;&#112;&#97;&#x6d;&#x40;&#103;&#x6d;&#x61;&#x69;&#x6c;&#46;&#99;&#111;&#109;">&#115;&#112;&#97;&#x6d;&#x40;&#103;&#x6d;&#x61;&#x69;&#x6c;&#46;&#99;&#111;&#109;</a>的邮件，那么到底它是不是真的gmail.com的邮件服务器发过来的呢，我们可以查询gmail.com的SPF记录，以此防止别人伪造你来发邮件。</p>
+</li>
+<li><p>TTL值 TTL（Time-To-Live）原理：TTL是IP协议包中的一个值，它告诉网络路由器包在网络中的时间是否太长而应被丢弃。有很多原因使包在一定时间内不能被传递到目的地。例如，不正确的路由表可能导致包的无限循环。一个解决方法就是在一段时间后丢弃这个包，然后给发送者一个报文，由发送者决定是否要重发。TTL的初值通常是系统缺省值，是包头中的8位的域。TTL的最初设想是确定一个时间范围，超过此时间就把包丢弃。由于每个路由器都至少要把TTL域减一，TTL通常表示包在被丢弃前最多能经过的路由器个数。当记数到0时，路由器决定丢弃该包，并发送一个ICMP报文给最初的发送者。 简单的说，TTL就是一条域名解析记录在DNS服务器中的存留时间。当各地的DNS服务器接受到解析请求时，就会向域名指定的NS服务器发出解析请求从而获得解析记录；在获得这个记录之后，记录会在DNS服务器中保存一段时间，这段时间内如果再接到这个域名的解析请求，DNS服务器将不再向NS服务器发出请求，而是直接返回刚才获得的记录，而这个记录在DNS服务器上保留的时间，就是TTL值。<br>TTL值设置的应用：<br>一是增大TTL值，以节约域名解析时间，给网站访问加速。 一般情况下，域名的各种记录是极少更改的，很可能几个月、几年内都不会有什么变化。我们完全可以增大域名记录的TTL值让记录在各地DNS服务器中缓存的时间加长，这样在更长的一段时间内，我们访问这个网站时，本地ISP的DNS服务器就不需要向域名的NS服务器发出解析请求，而直接从缓存中返回域名解析记录。 二是减小TTL值，减少更换空间时的不可访问时间。 更换空间99.9%会有DNS记录更改的问题，因为缓存的问题，新的域名记录在有的地方可能生效了，但在有的地方可能等上一两天甚至更久才生效。结果就是有的人可能访问到了新服务器，有的人访问到了旧服务器。仅仅是访问的话，这也不是什么大问题，但如果涉及到了邮件发送，这个就有点麻烦了，说不定哪封重要信件就被发送到了那已经停掉的旧服务器上。<br>为了尽可能的减小这个各地的解析时间差，合理的做法是： 第一步，先查看域名当前的TTL值，我们假定是1天。 第二步，修改TTL值为可设定的最小值，可能的话，建议为1分钟，就是60。 第三步，等待一天，保证各地的DNS服务器缓存都过期并更新了记录。 第四步，设置修改新记录，这个时候各地的DNS就能以最快的速度更新到新的记录。 第五步，确认各地的DNS已经更新完成后，把TTL值设置成您想要的值。 一般操作系统的默认TTL值如下： TTL&#x3D;32 Windows 9x&#x2F;Me TTL&#x3D;64 LINUX TTL&#x3D;128 Windows 200x&#x2F;XP TTL&#x3D;255 Unix </p>
+</li>
+<li><p>PTR值 PTR是pointer的简写，用于将一个IP地址映射到对应的域名，也可以看成是A记录的反向，IP地址的反向解析。 PTR主要用于邮件服务器，比如邮箱<a href="mailto:&#65;&#65;&#65;&#64;&#88;&#x58;&#x58;&#46;&#99;&#x6f;&#109;">&#65;&#65;&#65;&#64;&#88;&#x58;&#x58;&#46;&#99;&#x6f;&#109;</a>给邮箱<a href="mailto:&#66;&#66;&#66;&#64;&#x79;&#x61;&#104;&#x6f;&#111;&#x2e;&#99;&#111;&#x6d;">&#66;&#66;&#66;&#64;&#x79;&#x61;&#104;&#x6f;&#111;&#x2e;&#99;&#111;&#x6d;</a>发了一封邮件，yahoo邮件服务器接到邮件时会查看这封邮件的头文件，并分析是由哪个IP地址发出来的，然后根据这个IP地址进行反向解析，如果解析结果对应XXX.com的IP地址就接受这封邮件，反之则拒绝接收这封邮件。 </p>
+</li>
+<li><p>泛域名与泛解析 泛域名是指在一个域名根下，以 *.Domain.com的形式表示这个域名根所有未建立的子域名。 泛解析是把*.Domain.com的A记录解析到某个IP 地址上，通过访问任意的前缀.domain.com都能访问到你解析的站点上。 </p>
+</li>
+<li><p>域名绑定 域名绑定是指将域名指向服务器IP的操作。 </p>
+</li>
+<li><p>域名转向 域名转向又称为域名指向或域名转发，当用户地址栏中输入您的域名时，将会自动跳转到您所指定的另一个域名。一般是使用短的好记的域名转向复杂难记的域名。</p>
+</li>
+</ol>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p><a target="_blank" rel="noopener" href="https://songly.blog.csdn.net/article/details/114363073">csdn——DNS协议</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2021/09/14/DNS/" data-id="clg3uqosr000ep8mu8if68zox" data-title="DNS" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E9%80%9A%E4%BF%A1/" rel="tag">数据通信</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2021/09/17/OSPF%E4%B9%8BLSA%E8%AF%A6%E8%A7%A3/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          OSPF之LSA详解
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2021/09/13/%E9%98%B2%E7%81%AB%E5%A2%99%E5%8E%9F%E7%90%86/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">防火墙原理</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Github/">Github</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/VPN/">VPN</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/openstack/">openstack</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E4%BA%A4%E6%8D%A2%E6%9C%BA/">交换机</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%8D%9A%E5%AE%A2/">博客</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%AE%89%E5%85%A8/">安全</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%B0%E6%8D%AE%E4%B8%AD%E5%BF%83/">数据中心</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">数据结构</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%B0%E6%8D%AE%E9%80%9A%E4%BF%A1/">数据通信</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%99%9A%E6%8B%9F%E5%8C%96/">虚拟化</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%B7%AF%E7%94%B1/">路由</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%BF%90%E7%BB%B4/">运维</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Apache/" rel="tag">Apache</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/BGP/" rel="tag">BGP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DHCP/" rel="tag">DHCP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Django/" rel="tag">Django</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Github/" rel="tag">Github</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/" rel="tag">Linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/OSI/" rel="tag">OSI</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/OSPF/" rel="tag">OSPF</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Python/" rel="tag">Python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SDN/" rel="tag">SDN</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/STP/" rel="tag">STP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/VLAN/" rel="tag">VLAN</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/VPN/" rel="tag">VPN</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/VXLAN/" rel="tag">VXLAN</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/" rel="tag">hexo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/openstack/" rel="tag">openstack</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/yilia/" rel="tag">yilia</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%91%E8%AE%A1%E7%AE%97/" rel="tag">云计算</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%A4%E6%8D%A2/" rel="tag">交换</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%A4%E6%8D%A2%E6%9C%BA/" rel="tag">交换机</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%8E%9F%E7%90%86/" rel="tag">交换机原理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BB%A5%E5%A4%AA%E7%BD%91%E5%B8%A7/" rel="tag">以太网帧</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8D%9A%E5%AE%A2/" rel="tag">博客</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8D%9A%E5%AE%A2%E8%87%AA%E5%AE%9A%E4%B9%89/" rel="tag">博客自定义</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%AE%89%E5%85%A8/" rel="tag">安全</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%8E%A5%E5%8F%A3/" rel="tag">接口</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%8E%A7%E5%88%B6%E5%99%A8/" rel="tag">控制器</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E4%B8%AD%E5%BF%83/" rel="tag">数据中心</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="tag">数据结构</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E9%80%9A%E4%BF%A1/" rel="tag">数据通信</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF%E5%B1%82/" rel="tag">数据链路层</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%AB%AF%E5%8F%A3%E9%95%9C%E5%83%8F/" rel="tag">端口镜像</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BB%8F%E9%AA%8C/" rel="tag">经验</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BC%96%E5%86%99%E6%8C%87%E5%8D%97/" rel="tag">编写指南</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BD%91%E7%BB%9C/" rel="tag">网络</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BD%91%E7%BB%9C%E5%9F%BA%E7%A1%80/" rel="tag">网络基础</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%84%9A%E6%9C%AC/" rel="tag">脚本</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%87%AA%E5%8A%A8%E5%8C%96%E8%BF%90%E7%BB%B4/" rel="tag">自动化运维</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%99%9A%E6%8B%9F%E5%8C%96/" rel="tag">虚拟化</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%99%9A%E6%8B%9F%E5%8C%96%E6%8A%80%E6%9C%AF/" rel="tag">虚拟化技术</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%B7%AF%E7%94%B1/" rel="tag">路由</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%BF%90%E7%BB%B4/" rel="tag">运维</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Apache/" style="font-size: 10px;">Apache</a> <a href="/tags/BGP/" style="font-size: 10px;">BGP</a> <a href="/tags/DHCP/" style="font-size: 10px;">DHCP</a> <a href="/tags/Django/" style="font-size: 10px;">Django</a> <a href="/tags/Github/" style="font-size: 10px;">Github</a> <a href="/tags/Linux/" style="font-size: 12.86px;">Linux</a> <a href="/tags/OSI/" style="font-size: 10px;">OSI</a> <a href="/tags/OSPF/" style="font-size: 14.29px;">OSPF</a> <a href="/tags/Python/" style="font-size: 17.14px;">Python</a> <a href="/tags/SDN/" style="font-size: 10px;">SDN</a> <a href="/tags/STP/" style="font-size: 10px;">STP</a> <a href="/tags/VLAN/" style="font-size: 10px;">VLAN</a> <a href="/tags/VPN/" style="font-size: 12.86px;">VPN</a> <a href="/tags/VXLAN/" style="font-size: 10px;">VXLAN</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/openstack/" style="font-size: 12.86px;">openstack</a> <a href="/tags/yilia/" style="font-size: 10px;">yilia</a> <a href="/tags/%E4%BA%91%E8%AE%A1%E7%AE%97/" style="font-size: 10px;">云计算</a> <a href="/tags/%E4%BA%A4%E6%8D%A2/" style="font-size: 10px;">交换</a> <a href="/tags/%E4%BA%A4%E6%8D%A2%E6%9C%BA/" style="font-size: 14.29px;">交换机</a> <a href="/tags/%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%8E%9F%E7%90%86/" style="font-size: 10px;">交换机原理</a> <a href="/tags/%E4%BB%A5%E5%A4%AA%E7%BD%91%E5%B8%A7/" style="font-size: 10px;">以太网帧</a> <a href="/tags/%E5%8D%9A%E5%AE%A2/" style="font-size: 10px;">博客</a> <a href="/tags/%E5%8D%9A%E5%AE%A2%E8%87%AA%E5%AE%9A%E4%B9%89/" style="font-size: 10px;">博客自定义</a> <a href="/tags/%E5%AE%89%E5%85%A8/" style="font-size: 10px;">安全</a> <a href="/tags/%E6%8E%A5%E5%8F%A3/" style="font-size: 10px;">接口</a> <a href="/tags/%E6%8E%A7%E5%88%B6%E5%99%A8/" style="font-size: 10px;">控制器</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E4%B8%AD%E5%BF%83/" style="font-size: 10px;">数据中心</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" style="font-size: 15.71px;">数据结构</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E9%80%9A%E4%BF%A1/" style="font-size: 20px;">数据通信</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF%E5%B1%82/" style="font-size: 12.86px;">数据链路层</a> <a href="/tags/%E7%AB%AF%E5%8F%A3%E9%95%9C%E5%83%8F/" style="font-size: 10px;">端口镜像</a> <a href="/tags/%E7%BB%8F%E9%AA%8C/" style="font-size: 10px;">经验</a> <a href="/tags/%E7%BC%96%E5%86%99%E6%8C%87%E5%8D%97/" style="font-size: 10px;">编写指南</a> <a href="/tags/%E7%BD%91%E7%BB%9C/" style="font-size: 18.57px;">网络</a> <a href="/tags/%E7%BD%91%E7%BB%9C%E5%9F%BA%E7%A1%80/" style="font-size: 11.43px;">网络基础</a> <a href="/tags/%E8%84%9A%E6%9C%AC/" style="font-size: 10px;">脚本</a> <a href="/tags/%E8%87%AA%E5%8A%A8%E5%8C%96%E8%BF%90%E7%BB%B4/" style="font-size: 10px;">自动化运维</a> <a href="/tags/%E8%99%9A%E6%8B%9F%E5%8C%96/" style="font-size: 11.43px;">虚拟化</a> <a href="/tags/%E8%99%9A%E6%8B%9F%E5%8C%96%E6%8A%80%E6%9C%AF/" style="font-size: 14.29px;">虚拟化技术</a> <a href="/tags/%E8%B7%AF%E7%94%B1/" style="font-size: 17.14px;">路由</a> <a href="/tags/%E8%BF%90%E7%BB%B4/" style="font-size: 10px;">运维</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/09/">September 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">August 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">July 2021</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2021/09/21/CDN/">CDN</a>
+          </li>
+        
+          <li>
+            <a href="/2021/09/20/%E7%AD%96%E7%95%A5%E8%B7%AF%E7%94%B1/">策略路由</a>
+          </li>
+        
+          <li>
+            <a href="/2021/09/18/switch%E7%9F%A5%E8%AF%86/">switch知识</a>
+          </li>
+        
+          <li>
+            <a href="/2021/09/18/switch%D6%AA%CA%B6/">switch知识</a>
+          </li>
+        
+          <li>
+            <a href="/2021/09/17/TCP%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3%E6%9C%BA%E5%88%B6/">TCP滑动窗口机制</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2023 John Doe<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

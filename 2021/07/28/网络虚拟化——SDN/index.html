@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>网络虚拟化 | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="软件定义网络（英语：software-defined networking，缩写作SDN）是一种新型网络构架。它利用OpenFlow协定将路由器的控制平面（control plane）从数据平面（data plane）中分离，改以软件方式实作，从而使得将分散在各个网络装置上的控制平面进行集中化管理成为可能，该构架可使网路管理员在不更动硬件装置的前提下，以中央控制方式用程序重新规划网络，为控制网络流">
+<meta property="og:type" content="article">
+<meta property="og:title" content="网络虚拟化">
+<meta property="og:url" content="http://example.com/2021/07/28/%E7%BD%91%E7%BB%9C%E8%99%9A%E6%8B%9F%E5%8C%96%E2%80%94%E2%80%94SDN/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="软件定义网络（英语：software-defined networking，缩写作SDN）是一种新型网络构架。它利用OpenFlow协定将路由器的控制平面（control plane）从数据平面（data plane）中分离，改以软件方式实作，从而使得将分散在各个网络装置上的控制平面进行集中化管理成为可能，该构架可使网路管理员在不更动硬件装置的前提下，以中央控制方式用程序重新规划网络，为控制网络流">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/%E7%BD%91%E7%BB%9C%E8%99%9A%E6%8B%9F%E5%8C%96%E2%80%94%E2%80%94SDN/%E4%BA%91%E8%AE%A1%E7%AE%97.png">
+<meta property="og:image" content="http://example.com/%E7%BD%91%E7%BB%9C%E8%99%9A%E6%8B%9F%E5%8C%96%E2%80%94%E2%80%94SDN/%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%9B%BE.png">
+<meta property="og:image" content="http://example.com/%E7%BD%91%E7%BB%9C%E8%99%9A%E6%8B%9F%E5%8C%96%E2%80%94%E2%80%94SDN/%E8%99%9A%E6%8B%9F%E5%8C%96.png">
+<meta property="og:image" content="http://example.com/%E7%BD%91%E7%BB%9C%E8%99%9A%E6%8B%9F%E5%8C%96%E2%80%94%E2%80%94SDN/%E6%9C%8D%E5%8A%A1%E5%99%A8%E8%99%9A%E6%8B%9F%E5%8C%96.png">
+<meta property="og:image" content="http://example.com/%E7%BD%91%E7%BB%9C%E8%99%9A%E6%8B%9F%E5%8C%96%E2%80%94%E2%80%94SDN/%E8%99%9A%E6%8B%9F%E5%8C%96%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87.png">
+<meta property="og:image" content="http://example.com/%E7%BD%91%E7%BB%9C%E8%99%9A%E6%8B%9F%E5%8C%96%E2%80%94%E2%80%94SDN/%E7%B1%BB%E5%9E%8B1.png">
+<meta property="og:image" content="http://example.com/%E7%BD%91%E7%BB%9C%E8%99%9A%E6%8B%9F%E5%8C%96%E2%80%94%E2%80%94SDN/SDN.png">
+<meta property="og:image" content="http://example.com/%E7%BD%91%E7%BB%9C%E8%99%9A%E6%8B%9F%E5%8C%96%E2%80%94%E2%80%94SDN/%E4%BC%A0%E7%BB%9F%E6%9E%B6%E6%9E%84%E4%B8%8ESDN.png">
+<meta property="og:image" content="http://example.com/%E7%BD%91%E7%BB%9C%E8%99%9A%E6%8B%9F%E5%8C%96%E2%80%94%E2%80%94SDN/%E5%8D%97%E5%8C%97%E5%90%91%E6%8E%A5%E5%8F%A3.png">
+<meta property="og:image" content="http://example.com/%E7%BD%91%E7%BB%9C%E8%99%9A%E6%8B%9F%E5%8C%96%E2%80%94%E2%80%94SDN/%E6%8E%A7%E5%88%B6%E5%99%A8.png">
+<meta property="og:image" content="http://example.com/%E7%BD%91%E7%BB%9C%E8%99%9A%E6%8B%9F%E5%8C%96%E2%80%94%E2%80%94SDN/%E6%B5%81%E8%A1%A8.png">
+<meta property="og:image" content="http://example.com/%E7%BD%91%E7%BB%9C%E8%99%9A%E6%8B%9F%E5%8C%96%E2%80%94%E2%80%94SDN/%E4%B8%89%E5%BC%A0%E8%A1%A8.png">
+<meta property="article:published_time" content="2021-07-28T08:27:41.000Z">
+<meta property="article:modified_time" content="2021-08-17T08:28:28.000Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="虚拟化">
+<meta property="article:tag" content="云计算">
+<meta property="article:tag" content="SDN">
+<meta property="article:tag" content="控制器">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/%E7%BD%91%E7%BB%9C%E8%99%9A%E6%8B%9F%E5%8C%96%E2%80%94%E2%80%94SDN/%E4%BA%91%E8%AE%A1%E7%AE%97.png">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-网络虚拟化——SDN" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2021/07/28/%E7%BD%91%E7%BB%9C%E8%99%9A%E6%8B%9F%E5%8C%96%E2%80%94%E2%80%94SDN/" class="article-date">
+  <time class="dt-published" datetime="2021-07-28T08:27:41.000Z" itemprop="datePublished">2021-07-28</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E8%99%9A%E6%8B%9F%E5%8C%96/">虚拟化</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      网络虚拟化
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>软件定义网络（英语：software-defined networking，缩写作SDN）是一种新型网络构架。它利用OpenFlow协定将路由器的控制平面（control plane）从数据平面（data plane）中分离，改以软件方式实作，从而使得将分散在各个网络装置上的控制平面进行集中化管理成为可能，该构架可使网路管理员在不更动硬件装置的前提下，以中央控制方式用程序重新规划网络，为控制网络流量提供了新方案，也为核心网络和应用创新提供了良好平台。SDN可以按使用领域分为：SD-WAN，SD-LAN，SD-DC，SDN将人工智慧引入到网络系统里来，将是未来几年最热门的网络前沿技术之一。</p>
+<span id="more"></span>
+
+<h1 id="网络虚拟化"><a href="#网络虚拟化" class="headerlink" title="网络虚拟化"></a>网络虚拟化</h1><p><img src="/%E7%BD%91%E7%BB%9C%E8%99%9A%E6%8B%9F%E5%8C%96%E2%80%94%E2%80%94SDN/%E4%BA%91%E8%AE%A1%E7%AE%97.png" alt="云计算"></p>
+<h2 id="云计算"><a href="#云计算" class="headerlink" title="云计算"></a>云计算</h2><p>云的概述：<br>云概念是基于“<font size=6 color=#F4A460> 云计算 </font>” 技术，实现各种终端设备之间的互联互通。</p>
+<p>云计算解决了各种数据管理问题：</p>
+<ul>
+<li>支持随时随地访问组织数据</li>
+<li>通过订购所需的服务来简化组织的IT运营</li>
+<li>消除或减少对现场IT设备，维护和管理的需求</li>
+<li>降低设备、能源、物理设施和人员培训的成本</li>
+<li>快速响应不断增长的数据量要求</li>
+</ul>
+<h3 id="云服务"><a href="#云服务" class="headerlink" title="云服务"></a>云服务</h3><p><img src="/%E7%BD%91%E7%BB%9C%E8%99%9A%E6%8B%9F%E5%8C%96%E2%80%94%E2%80%94SDN/%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%9B%BE.png" alt="云服务图"></p>
+<table>
+<thead>
+<tr>
+<th align="center">本地</th>
+<th align="center">laaS</th>
+<th align="center">PaaS</th>
+<th align="center">SaaS</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">应用</td>
+<td align="center">应用</td>
+<td align="center">应用</td>
+<td align="center">✅应用</td>
+</tr>
+<tr>
+<td align="center">数据</td>
+<td align="center">数据</td>
+<td align="center">数据</td>
+<td align="center">✅数据</td>
+</tr>
+<tr>
+<td align="center">运行时</td>
+<td align="center">运行时</td>
+<td align="center">✅运行时</td>
+<td align="center">✅运行时</td>
+</tr>
+<tr>
+<td align="center">中间件</td>
+<td align="center">中间件</td>
+<td align="center">✅中间件</td>
+<td align="center">✅中间件</td>
+</tr>
+<tr>
+<td align="center">操作系统</td>
+<td align="center">操作系统</td>
+<td align="center">✅操作系统</td>
+<td align="center">✅操作系统</td>
+</tr>
+<tr>
+<td align="center">虚拟化</td>
+<td align="center">✅虚拟化</td>
+<td align="center">✅虚拟化</td>
+<td align="center">✅虚拟化</td>
+</tr>
+<tr>
+<td align="center">网络</td>
+<td align="center">✅网络</td>
+<td align="center">✅网络</td>
+<td align="center">✅网络</td>
+</tr>
+<tr>
+<td align="center">存储</td>
+<td align="center">✅存储</td>
+<td align="center">✅存储</td>
+<td align="center">✅存储</td>
+</tr>
+<tr>
+<td align="center">服务器</td>
+<td align="center">✅服务器</td>
+<td align="center">✅服务器</td>
+<td align="center">✅服务器</td>
+</tr>
+</tbody></table>
+<p>可以理解为：</p>
+<blockquote>
+<p><strong>本地</strong>：需要有块地自己种“菜”，需要用自己的“厨房”烹饪，需要用自己的“桌子”吃饭</p>
+<p><strong>laaS</strong>：买来了“菜”，需要用自己的“厨房”烹饪，需要用自己的“桌子”吃饭</p>
+<p><strong>PaaS</strong>：叫了外卖（不需要田地和厨房），需要用自己的“桌子”吃饭</p>
+<p><strong>SaaS</strong>：直接去店里吃饭（不需要田地，厨房和桌子了）</p>
+</blockquote>
+<h3 id="云模型："><a href="#云模型：" class="headerlink" title="云模型："></a>云模型：</h3><p><font color=#E9967A size = 4><strong>公有云</strong></font> : 提供基于云的应用程序和服务可用于一般人群</p>
+<p><font color=#E9967A size = 4><strong>私有云</strong></font> : 特定组织或实体提供基于云的应用程序或服务</p>
+<p><font color=#E9967A size = 4><strong>社区云</strong></font> : 提供特定社区专用的服务</p>
+<h3 id="云计算与数据中心"><a href="#云计算与数据中心" class="headerlink" title="云计算与数据中心"></a>云计算与数据中心</h3><p><strong>数据中心</strong> ： 满足云计算服务的计算、网络和存储需求的物理设施</p>
+<p><strong>云计算</strong> ： 通常是一种服务，可按需求访问共享的可配置计算资源池</p>
+<p><img src="/%E7%BD%91%E7%BB%9C%E8%99%9A%E6%8B%9F%E5%8C%96%E2%80%94%E2%80%94SDN/%E8%99%9A%E6%8B%9F%E5%8C%96.png" alt="虚拟化"></p>
+<h2 id="虚拟化"><a href="#虚拟化" class="headerlink" title="虚拟化"></a>虚拟化</h2><h3 id="云计算和虚拟化"><a href="#云计算和虚拟化" class="headerlink" title="云计算和虚拟化"></a>云计算和虚拟化</h3><p><strong>虚拟化</strong>是支持云计算的基本技术：</p>
+<ul>
+<li>划分物理基础结构以创建多个专用资源的软件</li>
+<li>将操作系统和硬件分开</li>
+<li>虚拟云服务 ———— 根据需要动态配置服务器</li>
+</ul>
+<h3 id="专用服务器"><a href="#专用服务器" class="headerlink" title="专用服务器"></a>专用服务器</h3><h4 id="传统企业服务器："><a href="#传统企业服务器：" class="headerlink" title="传统企业服务器："></a>传统企业服务器：</h4><ul>
+<li>在硬件上安装服务器操作系统（Windows，Linux等）</li>
+<li>服务器的所有RAM，CPU和硬盘空间均专用于所提供的服务（电子邮件，Web等）</li>
+</ul>
+<h4 id="缺点："><a href="#缺点：" class="headerlink" title="缺点："></a>缺点：</h4><ul>
+<li>单点故障</li>
+<li>服务器通常会长时间闲置，浪费资源（内存，机房空间等）</li>
+</ul>
+<h3 id="服务器虚拟化"><a href="#服务器虚拟化" class="headerlink" title="服务器虚拟化"></a>服务器虚拟化</h3><p><img src="/%E7%BD%91%E7%BB%9C%E8%99%9A%E6%8B%9F%E5%8C%96%E2%80%94%E2%80%94SDN/%E6%9C%8D%E5%8A%A1%E5%99%A8%E8%99%9A%E6%8B%9F%E5%8C%96.png" alt="服务器虚拟化"></p>
+<ul>
+<li>服务器虚拟化利用<font  color=#F4A460>空间资源</font>并且<font color=#F4A460>整合</font>了所需服务器的数量</li>
+<li>允许在单个硬件平台上存在<font color=#F4A460>多个操作系统</font></li>
+<li>虚拟化的使用通常包括<font color=#F4A460>冗余</font>以防止单点故障</li>
+<li><font color=#F4A460>系统管理程序（hypervisor）</font>是在物理硬件之上添加抽象层的程序、固件或硬件</li>
+<li><font color=#F4A460>抽象层</font>用于创建虚拟机，这些虚拟机可以访问物理机的所有硬件，例如CPU，内存，磁盘控制器和NIC</li>
+</ul>
+<h3 id="虚拟化优势"><a href="#虚拟化优势" class="headerlink" title="虚拟化优势"></a>虚拟化优势</h3><p>通过提高服务器利用率降低成本：<br>    &amp;emsp;&amp;emsp;服务器虚拟化允许中小型企业整合其物理服务器并运行多个虚拟机（vm），每个虚拟机具有不同的工作负载。这可以提高他们的IT效率，并帮助他们获得灵活性，只需增加新硬件的一小部分成本。</p>
+<p>增加正常运行时间和可用性：<br>    &amp;emsp;&amp;emsp;硬件故障是业务中断的常见原因。通过故障转移群集和实时迁移，企业可以在物理服务器之间无缝地移动虚拟机，以最大限度地减少停机时间。</p>
+<p>提高安全性和数据保护：<br>    &amp;emsp;&amp;emsp;通过在单独的vm中隔离不同的工作负载，您的客户可以提高安全性并将恶意软件的影响降到最低。</p>
+<p>简化服务器和应用程序管理：<br>    &amp;emsp;&amp;emsp;员工可以在任何地方、任何时间、任何设备上自由开展业务，并使用单一视图仪表板管理用户、设备、存储、资源和虚拟机。</p>
+<p>实施灾难恢复和业务连续性：<br>    &amp;emsp;&amp;emsp;传统的灾难恢复解决方案可能要花费数万美元！与使用单独的物理服务器相比，客户可以更经济地备份其虚拟化环境。</p>
+<h3 id="类型2-Hypervisors"><a href="#类型2-Hypervisors" class="headerlink" title="类型2 Hypervisors"></a>类型2 Hypervisors</h3><ul>
+<li>类型2 Hypervisors在一台主机操作系统上运行，以提供虚拟化服务</li>
+<li>类型2 Hypervisors的一大优势是不需要管理控制台软件</li>
+<li>常见的类型2 hypervisors 包括：<br>  – Virtual PC（Win）<br>  – VMware Workstation（Win，Linux）<br>  –  Oracle VM VirtualBox（通用）<br>  – VMware Fusion（Mac）<br>  – Mac OS X Parallels（Mac）</li>
+</ul>
+<p><img src="/%E7%BD%91%E7%BB%9C%E8%99%9A%E6%8B%9F%E5%8C%96%E2%80%94%E2%80%94SDN/%E8%99%9A%E6%8B%9F%E5%8C%96%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87.png" alt="虚拟化网络设备"></p>
+<h2 id="虚拟化网络设备"><a href="#虚拟化网络设备" class="headerlink" title="虚拟化网络设备"></a>虚拟化网络设备</h2><h3 id="类型1-Hypervisors"><a href="#类型1-Hypervisors" class="headerlink" title="类型1 Hypervisors"></a>类型1 Hypervisors</h3><ul>
+<li>类型1 Hypervisors 也称为“裸机”方法，因为管理程序直接安装在硬件上。<br>  –   通常用于企业服务器和数据中心网络设备。<br>  –   可以直接访问硬件资源。<br>  –   加强了可伸缩性、性能和健壮性。<br>  –   类型1 Hypervisors 需要一个“management console”（管理控制台）来进行管理。<br>  –   管理控制台使用同一Hypervisors管理多个服务器。<br>  –   管理控制台可以自动整合服务器，并根据需要打开或关闭服务器电源。<br><img src="/%E7%BD%91%E7%BB%9C%E8%99%9A%E6%8B%9F%E5%8C%96%E2%80%94%E2%80%94SDN/%E7%B1%BB%E5%9E%8B1.png" alt="类型1"></li>
+</ul>
+<h3 id="网络虚拟化的复杂性"><a href="#网络虚拟化的复杂性" class="headerlink" title="网络虚拟化的复杂性"></a>网络虚拟化的复杂性</h3><p>在传统网络体系结构中部署服务器虚拟化会带来一些问题：</p>
+<pre><code>• 需要手工调整漂移VM的网络配置（VLAN）
+• 动态变化的流量需要灵活的网络资源管理方法
+• 扩展性问题（Qos配置）
+</code></pre>
+<p>解决方法： 网络虚拟化</p>
+<p><img src="/%E7%BD%91%E7%BB%9C%E8%99%9A%E6%8B%9F%E5%8C%96%E2%80%94%E2%80%94SDN/SDN.png" alt="SDN"></p>
+<h2 id="软件定义网络（SDN）"><a href="#软件定义网络（SDN）" class="headerlink" title="软件定义网络（SDN）"></a>软件定义网络（SDN）</h2><h3 id="控制平面和数据平面"><a href="#控制平面和数据平面" class="headerlink" title="控制平面和数据平面"></a>控制平面和数据平面</h3><p>网络设备包含以下平面：</p>
+<p>• <font color=#E9976A><strong>控制平面</strong></font> -被视为设备的大脑</p>
+<pre><code>– 用于制定转发决策
+– 包含第2、3层转发机制
+– 发送到控制平面的信息有CPU处理
+</code></pre>
+<p>• <font color=#E9976A><strong>数据平面</strong></font>-也称为转发平面</p>
+<pre><code>– 连接网络端口的交换结构
+– 用于转发流量
+– 由芯片处理，不涉及CPU
+</code></pre>
+<h4 id="SDN-软件定义网络"><a href="#SDN-软件定义网络" class="headerlink" title="SDN:软件定义网络"></a>SDN:软件定义网络</h4><p> <font color=#E9976A><strong>分离</strong></font>控制平面和数据平面。<br>• 控制平面由 <font color=#E9976A><strong>集中控制器</strong></font>执行，而从每个设备<br>中删除。<br>• 集中控制器将控制平面功能传达给每个设备。<br>• 网络设备可以专注于 <font color=#E9976A><strong>转发数据</strong></font>，<br>• 集中控制器可以 <font color=#E9976A><strong>管理数据流，提高安全性</strong></font>并<br>提供其他服务。</p>
+<h3 id="管理平面"><a href="#管理平面" class="headerlink" title="管理平面"></a>管理平面</h3><p>管理平面通过网络连接来管理设备。</p>
+<pre><code>• 用来访问和配置网络设备
+• TELNET、SSH
+• TFTP、FTP
+• HTTP、HTTPS
+• SNMP
+</code></pre>
+<h3 id="网络虚拟化技术"><a href="#网络虚拟化技术" class="headerlink" title="网络虚拟化技术"></a>网络虚拟化技术</h3><p>支持网络虚拟化的两种主要网络体系架构：</p>
+<p><font color=#87CEFA size=4>• 软件定义网络（ SDN ）</font><br>–虚拟化网络的网络体系结构，为网络管理和管理提供了一种新方法，旨<br>在简化管理过程。</p>
+<p><font color=#87CEFA size = 4>• 思科应用中心基础架构（ ACI ）</font><br>–用于集成云计算和数据中心管理的专用硬件解决方案。</p>
+<p>SDN的组件可能包括以下内容：<br><font color=#E9976A size=3.5>• OpenFlow</font></p>
+<pre><code>– 这种方法是由斯坦福大学开发，用于管理路由器、交换机、AP和控制器之间的流量。
+</code></pre>
+<p><font color=#E9976A size =3.5>• OpenStack</font></p>
+<pre><code>– 这是一种虚拟化编排平台，旨在构建可扩展的云环境并提供IaaS解决方案。
+– OpenStack通常与Cisco ACI一起使用。
+– 网络中的编排是指自动配置网络组件（例如服务器，存储设备，交换机，路由器和应用程序）的过程
+</code></pre>
+<p><font color=#E9976A size =3>• 其他组件</font></p>
+<pre><code>– 包括路由系统接口（I2RS），大量链接的透明互连（TRILL），Cisco FabricPath（FP）和IEEE 802.1aq最短路径桥接（SPB）。
+</code></pre>
+<h3 id="传统架构与SDN"><a href="#传统架构与SDN" class="headerlink" title="传统架构与SDN"></a>传统架构与SDN</h3><p><img src="/%E7%BD%91%E7%BB%9C%E8%99%9A%E6%8B%9F%E5%8C%96%E2%80%94%E2%80%94SDN/%E4%BC%A0%E7%BB%9F%E6%9E%B6%E6%9E%84%E4%B8%8ESDN.png" alt="传统架构与SDN"></p>
+<p><img src="/%E7%BD%91%E7%BB%9C%E8%99%9A%E6%8B%9F%E5%8C%96%E2%80%94%E2%80%94SDN/%E5%8D%97%E5%8C%97%E5%90%91%E6%8E%A5%E5%8F%A3.png" alt="南北向接口"></p>
+<p><img src="/%E7%BD%91%E7%BB%9C%E8%99%9A%E6%8B%9F%E5%8C%96%E2%80%94%E2%80%94SDN/%E6%8E%A7%E5%88%B6%E5%99%A8.png" alt="控制器"></p>
+<h2 id="控制器"><a href="#控制器" class="headerlink" title="控制器"></a>控制器</h2><h3 id="SDN控制器的运行"><a href="#SDN控制器的运行" class="headerlink" title="SDN控制器的运行"></a>SDN控制器的运行</h3><ul>
+<li>通过网络<font color=#E9976A>所有流</font>都必须首先获得SDN控制器的许可</li>
+<li>SDN控制器根据<font color=#E9976A>网络策略</font>验证是否允许通信</li>
+<li>如果控制器允许流，它将为该流计算一条<font color=#E9976A>路由</font>并下发交换机</li>
+<li>每个交换机中为该流<font color=#E9976A>添加</font>一个条目</li>
+</ul>
+<p><img src="/%E7%BD%91%E7%BB%9C%E8%99%9A%E6%8B%9F%E5%8C%96%E2%80%94%E2%80%94SDN/%E6%B5%81%E8%A1%A8.png" alt="流表"></p>
+<h4 id="三种表"><a href="#三种表" class="headerlink" title="三种表"></a>三种表</h4><p><font color=#E9976A size=3.5>• 流表</font></p>
+<pre><code>– 此表将传入的数据包与特定流进行匹配，并指定要在数据包上执行的功能
+</code></pre>
+<p><font color=#E9976A size=3.5>• 组表</font></p>
+<pre><code>– 流表可以将流定向到组表，这可能会触发影响一个或多个流的各种操作
+</code></pre>
+<p><font color=#E9976A size=3.5>• 计量表</font></p>
+<pre><code>– 该表在流上触发各种与性能相关的动作，包括对流量进行速率限制的能力。
+</code></pre>
+<p><img src="/%E7%BD%91%E7%BB%9C%E8%99%9A%E6%8B%9F%E5%8C%96%E2%80%94%E2%80%94SDN/%E4%B8%89%E5%BC%A0%E8%A1%A8.png" alt="三张表"></p>
+<h5 id="FLOW-TABLE定义路由"><a href="#FLOW-TABLE定义路由" class="headerlink" title="FLOW TABLE定义路由"></a>FLOW TABLE定义路由</h5><table>
+<thead>
+<tr>
+<th>MAC SRC</th>
+<th>MAC DST</th>
+<th>SRC IP</th>
+<th>DST IP</th>
+<th>TCP DPort</th>
+<th>TCP SPort</th>
+<th>Action</th>
+<th>Count</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>*</td>
+<td>*</td>
+<td>*</td>
+<td>192.168.1.0&#x2F;24</td>
+<td>*</td>
+<td>*</td>
+<td>Port1</td>
+<td>249</td>
+</tr>
+<tr>
+<td>*</td>
+<td>*</td>
+<td>*</td>
+<td>192.168.2.0&#x2F;24</td>
+<td>*</td>
+<td>*</td>
+<td>Port2</td>
+<td>229</td>
+</tr>
+<tr>
+<td>*</td>
+<td>*</td>
+<td>*</td>
+<td>*</td>
+<td>*</td>
+<td>*</td>
+<td>Port3</td>
+<td>898</td>
+</tr>
+</tbody></table>
+<h5 id="FLOW-TABLE定义防火墙规则"><a href="#FLOW-TABLE定义防火墙规则" class="headerlink" title="FLOW TABLE定义防火墙规则"></a>FLOW TABLE定义防火墙规则</h5><table>
+<thead>
+<tr>
+<th>MAC SRC</th>
+<th>MAC DST</th>
+<th>SRC IP</th>
+<th>DST IP</th>
+<th>TCP DPort</th>
+<th>TCP SPort</th>
+<th>Action</th>
+<th>Count</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>*</td>
+<td>*</td>
+<td>192.168.2.2</td>
+<td>192.168.3.5</td>
+<td>80</td>
+<td>*</td>
+<td>Drop</td>
+<td>250</td>
+</tr>
+<tr>
+<td>*</td>
+<td>*</td>
+<td>192.168.3.4</td>
+<td>192.168.5.4</td>
+<td>80</td>
+<td>*</td>
+<td>Port3</td>
+<td>300</td>
+</tr>
+<tr>
+<td>*</td>
+<td>*</td>
+<td>*</td>
+<td>*</td>
+<td>*</td>
+<td>*</td>
+<td>Controller</td>
+<td>9</td>
+</tr>
+</tbody></table>
+<h3 id="SDN类型"><a href="#SDN类型" class="headerlink" title="SDN类型"></a>SDN类型</h3><h5 id="基于设备的SDN"><a href="#基于设备的SDN" class="headerlink" title="基于设备的SDN"></a>基于设备的SDN</h5><p>– 在这种类型的SDN中，设备可由运行在设备本身或网络中的服务器上的应用程序编程。<br>– Cisco OnePK是基于设备的SDN的示例。它使程序员能够使用C和Java与Python来构建应用程序，以与Cisco设备集成并与之交互。</p>
+<h5 id="基于控制器的SDN"><a href="#基于控制器的SDN" class="headerlink" title="基于控制器的SDN"></a>基于控制器的SDN</h5><p>– 这种类型的SDN使用一个集中控制器，该控制器了解网络中的所有设备。<br>– 应用程序可以与负责管理设备并操纵整个网络流量的控制器进行交互。<br>– 思科Open SDN控制器是OpenDaylight的商业发行版。</p>
+<h5 id="基于策略的SDN"><a href="#基于策略的SDN" class="headerlink" title="基于策略的SDN"></a>基于策略的SDN</h5><p>– 这种SDN类似于基于控制器的SDN，在该控制器中，集中式控制器具有网络中所有设备的视图。<br>– 基于策略的SDN包括一个在更高抽象层运行的附加策略层。<br>– 使用内置的应用程序，这些应用程序通过工作流程和用户友好的GUI自动执行高级配置任务。不需要编程技能。<br>– Cisco APIC-EM是此类SDN的示例。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2021/07/28/%E7%BD%91%E7%BB%9C%E8%99%9A%E6%8B%9F%E5%8C%96%E2%80%94%E2%80%94SDN/" data-id="clg3uqotl0057p8muhnct2hcp" data-title="网络虚拟化" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SDN/" rel="tag">SDN</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E4%BA%91%E8%AE%A1%E7%AE%97/" rel="tag">云计算</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%8E%A7%E5%88%B6%E5%99%A8/" rel="tag">控制器</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%99%9A%E6%8B%9F%E5%8C%96/" rel="tag">虚拟化</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2021/07/29/OSPF%E7%AC%94%E8%AE%B0/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          OSPF笔记
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2021/07/27/MPLS-VPN/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">MPLS VPN</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Github/">Github</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/VPN/">VPN</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/openstack/">openstack</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E4%BA%A4%E6%8D%A2%E6%9C%BA/">交换机</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%8D%9A%E5%AE%A2/">博客</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%AE%89%E5%85%A8/">安全</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%B0%E6%8D%AE%E4%B8%AD%E5%BF%83/">数据中心</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">数据结构</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%B0%E6%8D%AE%E9%80%9A%E4%BF%A1/">数据通信</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%99%9A%E6%8B%9F%E5%8C%96/">虚拟化</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%B7%AF%E7%94%B1/">路由</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%BF%90%E7%BB%B4/">运维</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Apache/" rel="tag">Apache</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/BGP/" rel="tag">BGP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DHCP/" rel="tag">DHCP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Django/" rel="tag">Django</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Github/" rel="tag">Github</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/" rel="tag">Linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/OSI/" rel="tag">OSI</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/OSPF/" rel="tag">OSPF</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Python/" rel="tag">Python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SDN/" rel="tag">SDN</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/STP/" rel="tag">STP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/VLAN/" rel="tag">VLAN</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/VPN/" rel="tag">VPN</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/VXLAN/" rel="tag">VXLAN</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/" rel="tag">hexo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/openstack/" rel="tag">openstack</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/yilia/" rel="tag">yilia</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%91%E8%AE%A1%E7%AE%97/" rel="tag">云计算</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%A4%E6%8D%A2/" rel="tag">交换</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%A4%E6%8D%A2%E6%9C%BA/" rel="tag">交换机</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%8E%9F%E7%90%86/" rel="tag">交换机原理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BB%A5%E5%A4%AA%E7%BD%91%E5%B8%A7/" rel="tag">以太网帧</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8D%9A%E5%AE%A2/" rel="tag">博客</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8D%9A%E5%AE%A2%E8%87%AA%E5%AE%9A%E4%B9%89/" rel="tag">博客自定义</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%AE%89%E5%85%A8/" rel="tag">安全</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%8E%A5%E5%8F%A3/" rel="tag">接口</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%8E%A7%E5%88%B6%E5%99%A8/" rel="tag">控制器</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E4%B8%AD%E5%BF%83/" rel="tag">数据中心</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="tag">数据结构</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E9%80%9A%E4%BF%A1/" rel="tag">数据通信</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF%E5%B1%82/" rel="tag">数据链路层</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%AB%AF%E5%8F%A3%E9%95%9C%E5%83%8F/" rel="tag">端口镜像</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BB%8F%E9%AA%8C/" rel="tag">经验</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BC%96%E5%86%99%E6%8C%87%E5%8D%97/" rel="tag">编写指南</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BD%91%E7%BB%9C/" rel="tag">网络</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BD%91%E7%BB%9C%E5%9F%BA%E7%A1%80/" rel="tag">网络基础</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%84%9A%E6%9C%AC/" rel="tag">脚本</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%87%AA%E5%8A%A8%E5%8C%96%E8%BF%90%E7%BB%B4/" rel="tag">自动化运维</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%99%9A%E6%8B%9F%E5%8C%96/" rel="tag">虚拟化</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%99%9A%E6%8B%9F%E5%8C%96%E6%8A%80%E6%9C%AF/" rel="tag">虚拟化技术</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%B7%AF%E7%94%B1/" rel="tag">路由</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%BF%90%E7%BB%B4/" rel="tag">运维</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Apache/" style="font-size: 10px;">Apache</a> <a href="/tags/BGP/" style="font-size: 10px;">BGP</a> <a href="/tags/DHCP/" style="font-size: 10px;">DHCP</a> <a href="/tags/Django/" style="font-size: 10px;">Django</a> <a href="/tags/Github/" style="font-size: 10px;">Github</a> <a href="/tags/Linux/" style="font-size: 12.86px;">Linux</a> <a href="/tags/OSI/" style="font-size: 10px;">OSI</a> <a href="/tags/OSPF/" style="font-size: 14.29px;">OSPF</a> <a href="/tags/Python/" style="font-size: 17.14px;">Python</a> <a href="/tags/SDN/" style="font-size: 10px;">SDN</a> <a href="/tags/STP/" style="font-size: 10px;">STP</a> <a href="/tags/VLAN/" style="font-size: 10px;">VLAN</a> <a href="/tags/VPN/" style="font-size: 12.86px;">VPN</a> <a href="/tags/VXLAN/" style="font-size: 10px;">VXLAN</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/openstack/" style="font-size: 12.86px;">openstack</a> <a href="/tags/yilia/" style="font-size: 10px;">yilia</a> <a href="/tags/%E4%BA%91%E8%AE%A1%E7%AE%97/" style="font-size: 10px;">云计算</a> <a href="/tags/%E4%BA%A4%E6%8D%A2/" style="font-size: 10px;">交换</a> <a href="/tags/%E4%BA%A4%E6%8D%A2%E6%9C%BA/" style="font-size: 14.29px;">交换机</a> <a href="/tags/%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%8E%9F%E7%90%86/" style="font-size: 10px;">交换机原理</a> <a href="/tags/%E4%BB%A5%E5%A4%AA%E7%BD%91%E5%B8%A7/" style="font-size: 10px;">以太网帧</a> <a href="/tags/%E5%8D%9A%E5%AE%A2/" style="font-size: 10px;">博客</a> <a href="/tags/%E5%8D%9A%E5%AE%A2%E8%87%AA%E5%AE%9A%E4%B9%89/" style="font-size: 10px;">博客自定义</a> <a href="/tags/%E5%AE%89%E5%85%A8/" style="font-size: 10px;">安全</a> <a href="/tags/%E6%8E%A5%E5%8F%A3/" style="font-size: 10px;">接口</a> <a href="/tags/%E6%8E%A7%E5%88%B6%E5%99%A8/" style="font-size: 10px;">控制器</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E4%B8%AD%E5%BF%83/" style="font-size: 10px;">数据中心</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" style="font-size: 15.71px;">数据结构</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E9%80%9A%E4%BF%A1/" style="font-size: 20px;">数据通信</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF%E5%B1%82/" style="font-size: 12.86px;">数据链路层</a> <a href="/tags/%E7%AB%AF%E5%8F%A3%E9%95%9C%E5%83%8F/" style="font-size: 10px;">端口镜像</a> <a href="/tags/%E7%BB%8F%E9%AA%8C/" style="font-size: 10px;">经验</a> <a href="/tags/%E7%BC%96%E5%86%99%E6%8C%87%E5%8D%97/" style="font-size: 10px;">编写指南</a> <a href="/tags/%E7%BD%91%E7%BB%9C/" style="font-size: 18.57px;">网络</a> <a href="/tags/%E7%BD%91%E7%BB%9C%E5%9F%BA%E7%A1%80/" style="font-size: 11.43px;">网络基础</a> <a href="/tags/%E8%84%9A%E6%9C%AC/" style="font-size: 10px;">脚本</a> <a href="/tags/%E8%87%AA%E5%8A%A8%E5%8C%96%E8%BF%90%E7%BB%B4/" style="font-size: 10px;">自动化运维</a> <a href="/tags/%E8%99%9A%E6%8B%9F%E5%8C%96/" style="font-size: 11.43px;">虚拟化</a> <a href="/tags/%E8%99%9A%E6%8B%9F%E5%8C%96%E6%8A%80%E6%9C%AF/" style="font-size: 14.29px;">虚拟化技术</a> <a href="/tags/%E8%B7%AF%E7%94%B1/" style="font-size: 17.14px;">路由</a> <a href="/tags/%E8%BF%90%E7%BB%B4/" style="font-size: 10px;">运维</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/09/">September 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">August 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">July 2021</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2021/09/21/CDN/">CDN</a>
+          </li>
+        
+          <li>
+            <a href="/2021/09/20/%E7%AD%96%E7%95%A5%E8%B7%AF%E7%94%B1/">策略路由</a>
+          </li>
+        
+          <li>
+            <a href="/2021/09/18/switch%E7%9F%A5%E8%AF%86/">switch知识</a>
+          </li>
+        
+          <li>
+            <a href="/2021/09/18/switch%D6%AA%CA%B6/">switch知识</a>
+          </li>
+        
+          <li>
+            <a href="/2021/09/17/TCP%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3%E6%9C%BA%E5%88%B6/">TCP滑动窗口机制</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2023 John Doe<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>OSPF深度解析之邻居邻接 | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="路由器ID是OSPF路由器的唯一标识 选择loopback接口上数值最高的IP地址     比任何接口都稳定，路由器不换接口不倒     在预先分配和识别ID地址有更多回旋余地 选择物理接口上数值最高的IP地址 选择IP地址的接口不一定需要运行OSPF协议">
+<meta property="og:type" content="article">
+<meta property="og:title" content="OSPF深度解析之邻居邻接">
+<meta property="og:url" content="http://example.com/2021/07/30/OSPF%E6%B7%B1%E5%BA%A6%E8%A7%A3%E6%9E%90/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="路由器ID是OSPF路由器的唯一标识 选择loopback接口上数值最高的IP地址     比任何接口都稳定，路由器不换接口不倒     在预先分配和识别ID地址有更多回旋余地 选择物理接口上数值最高的IP地址 选择IP地址的接口不一定需要运行OSPF协议">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/OSPF%E6%B7%B1%E5%BA%A6%E8%A7%A3%E6%9E%90/%E6%8E%A5%E5%8F%A3%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84.png">
+<meta property="og:image" content="http://example.com/OSPF%E6%B7%B1%E5%BA%A6%E8%A7%A3%E6%9E%90/%E9%82%BB%E5%B1%85%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84.png">
+<meta property="article:published_time" content="2021-07-30T09:36:18.000Z">
+<meta property="article:modified_time" content="2021-08-17T08:41:34.000Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="路由">
+<meta property="article:tag" content="网络">
+<meta property="article:tag" content="OSPF">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/OSPF%E6%B7%B1%E5%BA%A6%E8%A7%A3%E6%9E%90/%E6%8E%A5%E5%8F%A3%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84.png">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-OSPF深度解析" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2021/07/30/OSPF%E6%B7%B1%E5%BA%A6%E8%A7%A3%E6%9E%90/" class="article-date">
+  <time class="dt-published" datetime="2021-07-30T09:36:18.000Z" itemprop="datePublished">2021-07-30</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E8%B7%AF%E7%94%B1/">路由</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      OSPF深度解析之邻居邻接
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>路由器ID是OSPF路由器的唯一标识</p>
+<pre><code>选择loopback接口上数值最高的IP地址
+    比任何接口都稳定，路由器不换接口不倒
+    在预先分配和识别ID地址有更多回旋余地
+选择物理接口上数值最高的IP地址
+选择IP地址的接口不一定需要运行OSPF协议
+</code></pre>
+<span id="more"></span>
+
+<h1 id="邻居和邻接"><a href="#邻居和邻接" class="headerlink" title="邻居和邻接"></a>邻居和邻接</h1><h2 id="Hello报文协议"><a href="#Hello报文协议" class="headerlink" title="Hello报文协议"></a>Hello报文协议</h2><p>协议服务于以下几个目的：</p>
+<pre><code>发现邻居路由器的方法
+成为邻居前，通过Hello报文协商参数，两台路由器必须相互认可的几个参数
+Hello报文在邻居路由器之间担当Keepalive角色
+确保了邻居路由器之间的双向通信
+用来在广播网络或非广播多址NBMA网络上选定DR和BDR
+</code></pre>
+<p>每一个Hello报文都包含以下信息：</p>
+<pre><code>    始发路由器的路由器ID RID
+    始发路由器接口的区域ID Area ID
+    始发路由器接口的地址掩码
+    始发路由器接口的认证类型和认证信息
+    始发路由器接口的Hello时间间隔
+    始发路由器接口的路由器无效时间间隔
+        Cisco 缺省Hello间隔10s 无效时间间隔是Hello间隔的4倍
+        NBMA 缺省Hello间隔30s
+    路由器的优先级
+    DR和BDR
+    标识可选的性能的5个标记位
+    始发路由器的所有有效邻居的路由器ID
+</code></pre>
+<p>路由器收到Hello报文，进行校验，所有参数匹配，认为报文有效。如果事发路由器的路由器ID在接受该Hello报文的接口的邻居表中列出了，那么路由器无效时间间隔计时器重置。如果始发路由器的路由器ID没有在邻居表中列出，那么就把这个路由器ID加入它的邻居表中。</p>
+<p>无论何时，路由器发送一个Hello报文，都会在这个报文中列出传送该报文的链路上所出现的所有邻居的路由器ID。如果一台路由器收到了一个有效Hello报文，并在这个Hello报文中发现了它自己的路由器ID，那么这台路由器就认为双向通信（2-way communication）建立成功。</p>
+<p>一旦双向通信成功建立，邻接关系就有了建立的基础。但并不是所有邻居路由器都会成为邻接对象，还取决于它们两所连网络的类型</p>
+<h2 id="网络类型"><a href="#网络类型" class="headerlink" title="网络类型"></a>网络类型</h2><p>OSPF协议定义了5种网络类型</p>
+<pre><code>点到点 PTP
+广播型 Broadcast
+非广播多址 NBMA
+点到多点 PTMP
+虚链路 Virtual Links
+</code></pre>
+<p>1.点到点 PTP</p>
+<p>总是能形成邻接。在这些网络上的OSPF报文的目的地址总是保留的<font color=#E9967A>D类地址224.0.0.5</font>，这个组播地址称为<font color=#FF0000 size =4> AllSPFRouters</font></p>
+<p>2.广播型 broadcast</p>
+<p>以太网，令牌环网和FDDI（“光纤分布式数据接口”），更确切的定义是广播型多址网络。它们可以连接多于两台的设别，而且由于它们是广播型，因而连接在这种网络上的所有设备都可以接收到个别传送的报文。</p>
+<p>在广播型网络上的OSPF路由器会选举一个DR和BDR。Hello报文像<font color=#E9967A>所有始发于DR和BDR的OSPF报文一样，是以组播方式发送到<font color=#FF0000 size = 4> AllSPFRouters</font>的。</font>携带这些报文的数据帧的目的MAC地址是 <strong>0100.5E00.0005</strong>。<font color=#E9967A>其他所有路由器都将以组播方式发送LSU和LSAck到保留的D类地址 224.0.0.6，这个组播地址称为<font color=#FF0000 size = 4> AllDRouters</font>。</font>携带这些报文的数据帧的目的MAC地址是 <strong>0100.5E00.0006</strong></p>
+<p>3.非广播多址 NBMA 网络</p>
+<p>X.25，帧中继和ATM等，可以连接两台以上的路由器，但没有广播数据包的能力。一个在NBMA网络上的路由器发送的报文将不能倍其他与之相连的路由器收到。导致，在这些网络上的路由器有必要增加另外的配置来获取它们的邻居。NBMA网络上的OSPF路由器需要选举DR和BDR，并且所有的OSPF报文都是单播的。</p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/LiMubai_CN/article/details/89044384?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522162762837516780261963103%2522%252C%2522scm%2522%253A%252220140713.130102334..%2522%257D&request_id=162762837516780261963103&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~all~baidu_landing_v2~default-2-89044384.first_rank_v2_pc_rank_v29&utm_term=ATM%E5%92%8C%E5%B8%A7%E4%B8%AD%E7%BB%A7&spm=1018.2226.3001.4187">X.25，帧中继，ATM详解</a> </p>
+<p>4.点到多点 PTMP</p>
+<p>是NBMA网络的一个特殊配置，可以看作一群点到点链路的集合，不需要选举DR和BDR，因为这些网络可以被看作点到点链路，而且OSPF报文组播</p>
+<p>5.虚链路</p>
+<p>后面补充，可以看作是 没有编号的点到点网络的一种特殊配置。单播发送</p>
+<h2 id="指定路由器和备份指定路由器"><a href="#指定路由器和备份指定路由器" class="headerlink" title="指定路由器和备份指定路由器"></a>指定路由器和备份指定路由器</h2><p>存在意义：<br>减少不必要的LSA通告。比如5台路由器会形成10个邻接关系，产生25条LSA通告，每台路由器都会收到重复的LSA通告。</p>
+<p>在多址网络上选举一个指定路由器，它将完成以下工作：<br>描述这个多址网络和该网络上其他的路由器,<br>管理这个多址网络的泛洪过程</p>
+<p>网络本身也将指定路由器看作是网络上的一个伪节点，或者一个虚拟路由器。网络上的每一台路由器都会和DR构成一个邻接关系。只有DR才发送LSA到网络中其他的路由器。<font color=#E9967A size = 4>指定路由器是一个路由器接口的特性，而不是整个路由器的特性。</font></p>
+<p>BDR是DR的冗余，网络上的所有路由器也将和BDR形成邻接关系，DR和BDR也将形成邻接关系。</p>
+<p>DR和BDR的选举是通过一个接口状态机的方式触发的，为了能够使选取的处理过程可以进行，需要满足以下一些前提条件：</p>
+<pre><code>1)每台路由器的每一个多点访问的接口都有一个路由器的优先级Router Priority，用一个8位的无符号整数表示，范围0-255。Cisco缺省优先级为1，通过ip ospf priority修改。具有0优先级的路由器不能成为DR或BDR
+2)Hello报文包含了表示始发路由器指定的路由器优先级的字段，也包含了表示路由器认为可能是DR和BDR的相关接口的IP地址的字段
+3)当一个接口在一个多址网络上开始有效时，它将把它的DR和BDR的地址设置为0.0.0.0。同时它也设置等待计时器Wait Timer 的值等于路由器无效时间间隔
+4)在多址网络上已经存在的接口将把DR和BDR的地址记录进一个接口数据结构表中
+</code></pre>
+<h3 id="选举过程"><a href="#选举过程" class="headerlink" title="选举过程"></a>选举过程</h3><p>1.路由器和它的邻居路由器之间首先建立成功2-way，接着检查每台邻居路由器发送的Hello报文的优先级、DR和BDR等字段。列出所有具有DR和BDR选取资格的路由器列表（优先级大于0，邻居状态2-way）；接着，所有路由器将宣称自己是DR路由器（Hello报文的DR字段是它们自身接口的地址）；所有路由器也将宣称自己是BDR路由器（Hello报文的BDR字段是它们自身接口的地址）</p>
+<p>2.从具有选取资格的路由器列表中，创建一个还没有宣告为DR路由器的所有路由器的子集（宣告自己为DR路由器的路由器不能被选取为BDR路由器）</p>
+<p>3.子集中多个邻居路由器，它们在Hello报文中的BDR字段包含了自己接口地址，那么具有最高优先级的邻居路由器将被宣告为BDR路由器</p>
+<p>4.在优先级相同的条件下，具有最高路由器ID的邻居路由器将被选为BDR路由器</p>
+<p>5.如果多个具有选取资格的路由器在Hello报文的DR字段包含它们自己的接口地址，那么具有最高优先级的邻居路由器将被宣告为DR路由器。优先级相同的情况下，具有最高的路由器ID的里邻居路由器被选作DR路由器</p>
+<p>6.如果没有路由器宣称自己是DR路由器，那么新选举的BDR路由器将成为DR路由器</p>
+<p>7.如果正在执行计算的路由器是新选取的DR或BDR路由器，或者它不再是DR或BDR路由器了，那么重复以上2-6步骤</p>
+<blockquote>
+<p>  <strong>简单来说，当一台OSPF路由器有效active启动并去发现它的邻居路由器时，它将去检查有效的DR和BDR路由器。如果DR和BDR路由器存在的话，这台路由器将接受已经存在的DR和BDR路由器。如果BDR路由器不存在，将执行一个选取过程，选出具有最高优先级的路由器作为BDR路由器。如果存在多个路由器存在相同的优先级，那么在数值上具有最高的路由器ID的路由器将被选中。如果没有有效的DR路由器存在，那么BDR路由器将被推举为DR路由器，然后再执行一个选取过程选取BDR路由器。</strong></p>
+</blockquote>
+<p>注意的是，路由器的优先级可以影响一个选取过程，但它不能强制更换已经有效的DR或者BDR路由器。就是说在一个多址网络上，最先初始化启动的两台具有DR选取资格的路由器将成为DR和BDR<font color=#FF0000 >（不能抢占）</font></p>
+<p>一旦DR和BDR路由器选举成功，其他路由器DRothers将只和DR和BDR路由器之间形成邻接关系。所有路由器将继续以组播方式发送Hello报文到AllSPFRouters(224.0.0.5)，因此它们能跟踪它们的邻居路由器，但是<font color=#E9967A><strong>DRothers路由器只能以组播方式发送更新报文到AllDRouters（224.0.0.6）</strong></font>。只有DR和BDR路由器去侦听这个地址，反过来，<font color=#E9967A><strong>DR路由器将使用组播地址224.0.0.5泛洪更新报文到DRothers</strong></font></p>
+<p>如果只有一台具有选取资格的路由器相连，那么这台路由器成为DR路由器，而且这个网络上没有BDR路由器。其他所有路由器都将只和这个DR路由器建立邻接关系。如果没有具有选取资格的路由器和一个多址网络相连，那么这个网络上将没有DR或者BDR路由器，而且也不建立任何邻接关系。在这种情况下，网络上所有路由器的邻居状态都将停留在“2-way”状态 （后面的“邻居状态机”细讲）</p>
+<h2 id="OSPF接口"><a href="#OSPF接口" class="headerlink" title="OSPF接口"></a>OSPF接口</h2><h3 id="接口数据结构："><a href="#接口数据结构：" class="headerlink" title="接口数据结构："></a>接口数据结构：</h3><p>Show ip ospf interface</p>
+<p><img src="/OSPF%E6%B7%B1%E5%BA%A6%E8%A7%A3%E6%9E%90/%E6%8E%A5%E5%8F%A3%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84.png" alt="接口数据结构"></p>
+<p>1.IP Address and Mask<br>2.Area ID<br>3.Process ID ： 思科特有，区分不同OSPF进程<br>4.Router ID<br>5.Network Type<br>6.Cost<br>7.InfTransDelay （图中是Transmit Delay）：LSA通告从路由器接口发送后经历的时间，以秒数计算，当LSA通告从接口发出后参数值将不断增大<br>8.State （OSPF接口状态机中讲）<br>9.Router Priority ： 选举DR和BDR 0-255 ，思科缺省为1<br>10.Designed Router + Interface Address<br>11.Backup Designed Router + Interface Address<br>12.HelloInterval，RouterDeadInterval，Wait Time，RxmtInterval（图中是retransmit） ： </p>
+<pre><code>--Hello报文间隔，      
+--宣告邻居无效时间，
+--开始选取DR和BDR之前路由器等待邻居路由器的Hello报文通告DR和BDR的时长，
+--在没有得到确认的情况下，路由器重传OSPF报文要等待的时间长度。
+</code></pre>
+<p>13.Hello Timer ： 当它超时后，路由器将从接口上发送一个Hello报文<br>14.Neighboring Routers ： 在RouterDeadInterval的时间内可以收到来自于它们的Hello报文的那些邻居路由器<br>15.AuType ： 认证类型。可以是NULL，简单口令或MD认证方式，图中是MD认证<br>16.Authentication Key ： 简单认证——64位口令；加密认证——消息摘要密钥</p>
+<h3 id="OSPF接口状态机"><a href="#OSPF接口状态机" class="headerlink" title="OSPF接口状态机"></a>OSPF接口状态机</h3><p>一个启用OSPF协议的接口在它变成完全有效之前，将会在几种接口状态中间发生转换。这些接口状态是失效、点到点、等待、DR、备份、DRother和Loopback等<br>1.失效：初始化的接口状态。啥都没有<br>2.点到点：仅适用于和点到点、点到多点、虚电路等网络类型相连的接口。当切换到这个状态将开始每隔HelloInterval的时间发送一次Hello报文，并尝试建立邻接关系<br>3.等待：仅适用于和广播型、NBMA等网络类型相连的接口。当切换到这个状态将开始发送和接受Hello报文，并设置等待计时器的值。接口在这个状态，试图去识别DR和BDR<br>4.DR：在这种状态下，该路由器是所连网络的DR，并将和所有多址网络上的路由器建立邻接关系<br>5.BDR：在这种接口状态下，该路由器是所连网络的BDR，并将和所有多址网络上的路由器建立邻接关系<br>6.DRother：在这种接口状态下，该路由器将跟踪网络上所有的路由器，但仅仅和DR，BDR建立邻接关系<br>7.Loopback：在这种接口状态下，路由器的接口通过软件或硬件的方式成为环回端口。接口在这种状态不能发送报文，但接口的地址还是可以通过LSA通告出去</p>
+<h2 id="OSPF邻居"><a href="#OSPF邻居" class="headerlink" title="OSPF邻居"></a>OSPF邻居</h2><p>成功建立邻接四阶段</p>
+<ul>
+<li>邻居路由器发现阶段</li>
+<li>双向通信阶段</li>
+<li>数据库同步阶段</li>
+<li>完全邻接阶段</li>
+</ul>
+<p>邻居关系的建立和维持都是通过交换Hello报文实现的。在广播和点到点网络里，Hello报文以组播方式发送给组播地址AllSPFRouters（224.0.0.5）。在NBMA类型、点到多点和虚链路类型的网络里，Hello报文是以单播方式发送给每个单独的邻居路由器。<br>在NBMA类型的网络中，路由器每经PollInterval（Cisco缺省60s）的时间给它邻居状态为Down的邻居发送一次Hello报文。在其他的网络类型中，路由器每经过HelloInterval的时间给它的邻居路由器发送一次Hello报文。</p>
+<h3 id="邻居数据结构"><a href="#邻居数据结构" class="headerlink" title="邻居数据结构"></a>邻居数据结构</h3><p>Show ip ospf neighbor</p>
+<p><img src="/OSPF%E6%B7%B1%E5%BA%A6%E8%A7%A3%E6%9E%90/%E9%82%BB%E5%B1%85%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84.png" alt="邻居数据结构"></p>
+<p>1.Neighbor ID ： 此处为192.168.30.105<br>2.Neighbor IP Address ： OSPF报文以单播方式发送给邻居路由器时，这个地址就是目的地址，此处为192.168.16.41<br>3.Area ID ： 收到的报文区域ID必须和接受接口配置的区域ID匹配，此处为0<br>4.Interface ： 与邻居路由器所在的网络相连的接口，此处邻居路由器通过s0接口到达的<br>5.Neighbor Priority ： 选举DR和BDR过程中使用，此处为缺省值1<br>6.State ： 邻居路由器的状态，此处为FULL 完全建立邻接关系<br>7.PollInterval ： 只用于NBMA网络上的相关路由器。因为在NBMA上，邻居路由器可能无法自动地被本地路由器发现，因此，如果邻居状态是失效Down 的，每经过一个PollInterval时间就会发送一个Hello报文给它的邻居路由器，此处为60s<br>8.Neighbor Options ： 这是邻居路由器支持的一些可选的OSPF性能<br>9.Inactivity Timer ： 这是一个时长RouterDeadInterval（在接口数据结构中定义）的计时器。从邻居那收到Hello报文，计时器重制；超时了还没从邻居收到Hello报文，那么邻居路由器将被宣告为失效Down。此处用Dead Timer表示，将在100s后超时</p>
+<h3 id="邻居状态机"><a href="#邻居状态机" class="headerlink" title="邻居状态机"></a>邻居状态机</h3><blockquote>
+<p><font color=#E9976A size =4><strong>失效状态 Down</strong></font><br>&amp;emsp;&amp;emsp;邻居会话的初始状态，指明在最近一个RouterDeadInterval时间内还没收到来自于邻居路由器的Hello报文。除非在NBMA网络，否则Hello报文是不会发送给失效的邻居路由器的。当邻居路由器转换到了失效状态，路由器将清空链路状态重传列表，数据库摘要列表和链路状态请求列表<br><font color=#E9976A size =4><strong>尝试状态 Attempt</strong></font><br>&amp;emsp;&amp;emsp;仅适用于NBMA网络上的邻居，在NBMA网络上邻居路由器是手工配置的。当NBMA网络上具有DR选取资格的路由器和邻居路由器相连的接口开始变为有效Active时，或者当这台路由器成为DR或BDR时，这台DR会把邻居路由器的状态转换到Attempt状态。在此状态，路由器将用HelloInterval的时间代替PollInterval的时间来作为向邻居发送Hello报文的时间间隔<br><font color=#E9976A size =4><strong>初始状态 Init</strong></font><br>&amp;emsp;&amp;emsp;表明在最近的RouterDeadInterval时间内路由器收到了来自邻居路由器的Hello报文，但双向通信还没建立起来。路由器将会在Hello报文的邻居字段中包含这种状态下或更高状态的所有邻居路由器的路由器ID<br><font color=#E9976A size =4><strong>双向通信状态 2-Way</strong></font><br>&amp;emsp;&amp;emsp;表明本地路由器已经在来自于邻居路由器的Hello报文的邻居字段中看到了它自己的路由器ID，成为了2-Way状态。在多址网络中，此状态进行DR和BDR选举。如果在Init状态下从邻居路由器收到一个DBD报文，也可以引起邻居状态直接转换到2-Way状态<br><font color=#E9976A size =4><strong>信息交换初始状态 ExStart</strong></font><br>&amp;emsp;&amp;emsp;在这一状态，本地路由器和邻居将建立主&#x2F;从关系，并确定数据库描述报文DBD的序列号，为DBD的信息交换做好准。在这里具有最高的接口地址的邻居路由器将成为主路由器<br><font color=#E9976A size =4><strong>信息交换状态 Exchange</strong></font><br>&amp;emsp;&amp;emsp;在这一状态，本地路由器将向邻居路由器发送可以描述它整个链路状态数据库信息的DBD报文。同时在这个状态下，本地路由器会通过对方发来的DBD，发现最新的LSA通告<br><font color=#E9976A size =4><strong>信息加载状态 Loading</strong></font><br>&amp;emsp;&amp;emsp;在这一状态下，本地路由器会向邻居路由器发送LSR报文，来请求最新的LSA通告。虽然在Exchange状态下发现了这些最新的LSA通告，但本地路由器还没收到这些LSA通告<br><font color=#E9976A size =4><strong>完全邻接状态 Full</strong></font><br>&amp;emsp;&amp;emsp;在这一状态，邻居路由器之间建立完全邻接关系，这种邻接关系出现在路由器LSA和网络LSA中</p>
+</blockquote>
+<p>在数据库描述报文（DBD）里有3个标记位用来管理邻接关系的建立过程：</p>
+<blockquote>
+<p><strong>I位，初始位</strong>，当需要指明所发送的是第一个DBD报文时，该位设置为1<br><strong>M位，后继位</strong>，当需要指明所发送的还不是最后一个DBD时，该位设置为1<br><strong>MS位，主&#x2F;从位</strong>，当DBD报文始发于一个主路由器时，该位设置为1</p>
+</blockquote>
+<p>同步OSPF数据库过程：</p>
+<p>&amp;emsp;&amp;emsp;当两台邻居路由器在ExStart状态开始主&#x2F;从关系协商时，它们都将通过发送一个MS位为1的空的DBD报文来宣称自己是主路由器。具有较低路由器ID的邻居路由器成为从路由器，并恢复一个MS位为0的DBD报文——这个DBD报文的序列号设置为主路由器的序列号。同时，这个DBD报文也将是第一个携带LSA摘要信息的报文。协商完主&#x2F;从关系后转换到Exchange状态<br>&amp;emsp;&amp;emsp;在Exchange状态，开始同步它们的LSDB，同步LSDB的操作是通过描述它们各自的LSDB的所有条目来实现的。数据库摘要列表由路由器的LSDB中所有的LSA通告头部组成，而本地路由器将向它的邻居路由器发送包含这些LSA头部列表的DBD报文</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2021/07/30/OSPF%E6%B7%B1%E5%BA%A6%E8%A7%A3%E6%9E%90/" data-id="clg3uqosx0019p8mu9tqn4gnh" data-title="OSPF深度解析之邻居邻接" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/OSPF/" rel="tag">OSPF</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E7%BD%91%E7%BB%9C/" rel="tag">网络</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%B7%AF%E7%94%B1/" rel="tag">路由</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2021/08/02/STP%E8%A7%A3%E6%9E%90/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          STP解析
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2021/07/29/BGP%E7%AC%94%E8%AE%B0/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">BGP笔记</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Github/">Github</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/VPN/">VPN</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/openstack/">openstack</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E4%BA%A4%E6%8D%A2%E6%9C%BA/">交换机</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%8D%9A%E5%AE%A2/">博客</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%AE%89%E5%85%A8/">安全</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%B0%E6%8D%AE%E4%B8%AD%E5%BF%83/">数据中心</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">数据结构</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%B0%E6%8D%AE%E9%80%9A%E4%BF%A1/">数据通信</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%99%9A%E6%8B%9F%E5%8C%96/">虚拟化</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%B7%AF%E7%94%B1/">路由</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%BF%90%E7%BB%B4/">运维</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Apache/" rel="tag">Apache</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/BGP/" rel="tag">BGP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DHCP/" rel="tag">DHCP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Django/" rel="tag">Django</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Github/" rel="tag">Github</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/" rel="tag">Linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/OSI/" rel="tag">OSI</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/OSPF/" rel="tag">OSPF</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Python/" rel="tag">Python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SDN/" rel="tag">SDN</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/STP/" rel="tag">STP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/VLAN/" rel="tag">VLAN</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/VPN/" rel="tag">VPN</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/VXLAN/" rel="tag">VXLAN</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/" rel="tag">hexo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/openstack/" rel="tag">openstack</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/yilia/" rel="tag">yilia</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%91%E8%AE%A1%E7%AE%97/" rel="tag">云计算</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%A4%E6%8D%A2/" rel="tag">交换</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%A4%E6%8D%A2%E6%9C%BA/" rel="tag">交换机</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%8E%9F%E7%90%86/" rel="tag">交换机原理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BB%A5%E5%A4%AA%E7%BD%91%E5%B8%A7/" rel="tag">以太网帧</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8D%9A%E5%AE%A2/" rel="tag">博客</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8D%9A%E5%AE%A2%E8%87%AA%E5%AE%9A%E4%B9%89/" rel="tag">博客自定义</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%AE%89%E5%85%A8/" rel="tag">安全</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%8E%A5%E5%8F%A3/" rel="tag">接口</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%8E%A7%E5%88%B6%E5%99%A8/" rel="tag">控制器</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E4%B8%AD%E5%BF%83/" rel="tag">数据中心</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="tag">数据结构</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E9%80%9A%E4%BF%A1/" rel="tag">数据通信</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF%E5%B1%82/" rel="tag">数据链路层</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%AB%AF%E5%8F%A3%E9%95%9C%E5%83%8F/" rel="tag">端口镜像</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BB%8F%E9%AA%8C/" rel="tag">经验</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BC%96%E5%86%99%E6%8C%87%E5%8D%97/" rel="tag">编写指南</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BD%91%E7%BB%9C/" rel="tag">网络</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BD%91%E7%BB%9C%E5%9F%BA%E7%A1%80/" rel="tag">网络基础</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%84%9A%E6%9C%AC/" rel="tag">脚本</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%87%AA%E5%8A%A8%E5%8C%96%E8%BF%90%E7%BB%B4/" rel="tag">自动化运维</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%99%9A%E6%8B%9F%E5%8C%96/" rel="tag">虚拟化</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%99%9A%E6%8B%9F%E5%8C%96%E6%8A%80%E6%9C%AF/" rel="tag">虚拟化技术</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%B7%AF%E7%94%B1/" rel="tag">路由</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%BF%90%E7%BB%B4/" rel="tag">运维</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Apache/" style="font-size: 10px;">Apache</a> <a href="/tags/BGP/" style="font-size: 10px;">BGP</a> <a href="/tags/DHCP/" style="font-size: 10px;">DHCP</a> <a href="/tags/Django/" style="font-size: 10px;">Django</a> <a href="/tags/Github/" style="font-size: 10px;">Github</a> <a href="/tags/Linux/" style="font-size: 12.86px;">Linux</a> <a href="/tags/OSI/" style="font-size: 10px;">OSI</a> <a href="/tags/OSPF/" style="font-size: 14.29px;">OSPF</a> <a href="/tags/Python/" style="font-size: 17.14px;">Python</a> <a href="/tags/SDN/" style="font-size: 10px;">SDN</a> <a href="/tags/STP/" style="font-size: 10px;">STP</a> <a href="/tags/VLAN/" style="font-size: 10px;">VLAN</a> <a href="/tags/VPN/" style="font-size: 12.86px;">VPN</a> <a href="/tags/VXLAN/" style="font-size: 10px;">VXLAN</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/openstack/" style="font-size: 12.86px;">openstack</a> <a href="/tags/yilia/" style="font-size: 10px;">yilia</a> <a href="/tags/%E4%BA%91%E8%AE%A1%E7%AE%97/" style="font-size: 10px;">云计算</a> <a href="/tags/%E4%BA%A4%E6%8D%A2/" style="font-size: 10px;">交换</a> <a href="/tags/%E4%BA%A4%E6%8D%A2%E6%9C%BA/" style="font-size: 14.29px;">交换机</a> <a href="/tags/%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%8E%9F%E7%90%86/" style="font-size: 10px;">交换机原理</a> <a href="/tags/%E4%BB%A5%E5%A4%AA%E7%BD%91%E5%B8%A7/" style="font-size: 10px;">以太网帧</a> <a href="/tags/%E5%8D%9A%E5%AE%A2/" style="font-size: 10px;">博客</a> <a href="/tags/%E5%8D%9A%E5%AE%A2%E8%87%AA%E5%AE%9A%E4%B9%89/" style="font-size: 10px;">博客自定义</a> <a href="/tags/%E5%AE%89%E5%85%A8/" style="font-size: 10px;">安全</a> <a href="/tags/%E6%8E%A5%E5%8F%A3/" style="font-size: 10px;">接口</a> <a href="/tags/%E6%8E%A7%E5%88%B6%E5%99%A8/" style="font-size: 10px;">控制器</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E4%B8%AD%E5%BF%83/" style="font-size: 10px;">数据中心</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" style="font-size: 15.71px;">数据结构</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E9%80%9A%E4%BF%A1/" style="font-size: 20px;">数据通信</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF%E5%B1%82/" style="font-size: 12.86px;">数据链路层</a> <a href="/tags/%E7%AB%AF%E5%8F%A3%E9%95%9C%E5%83%8F/" style="font-size: 10px;">端口镜像</a> <a href="/tags/%E7%BB%8F%E9%AA%8C/" style="font-size: 10px;">经验</a> <a href="/tags/%E7%BC%96%E5%86%99%E6%8C%87%E5%8D%97/" style="font-size: 10px;">编写指南</a> <a href="/tags/%E7%BD%91%E7%BB%9C/" style="font-size: 18.57px;">网络</a> <a href="/tags/%E7%BD%91%E7%BB%9C%E5%9F%BA%E7%A1%80/" style="font-size: 11.43px;">网络基础</a> <a href="/tags/%E8%84%9A%E6%9C%AC/" style="font-size: 10px;">脚本</a> <a href="/tags/%E8%87%AA%E5%8A%A8%E5%8C%96%E8%BF%90%E7%BB%B4/" style="font-size: 10px;">自动化运维</a> <a href="/tags/%E8%99%9A%E6%8B%9F%E5%8C%96/" style="font-size: 11.43px;">虚拟化</a> <a href="/tags/%E8%99%9A%E6%8B%9F%E5%8C%96%E6%8A%80%E6%9C%AF/" style="font-size: 14.29px;">虚拟化技术</a> <a href="/tags/%E8%B7%AF%E7%94%B1/" style="font-size: 17.14px;">路由</a> <a href="/tags/%E8%BF%90%E7%BB%B4/" style="font-size: 10px;">运维</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/09/">September 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">August 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">July 2021</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2021/09/21/CDN/">CDN</a>
+          </li>
+        
+          <li>
+            <a href="/2021/09/20/%E7%AD%96%E7%95%A5%E8%B7%AF%E7%94%B1/">策略路由</a>
+          </li>
+        
+          <li>
+            <a href="/2021/09/18/switch%E7%9F%A5%E8%AF%86/">switch知识</a>
+          </li>
+        
+          <li>
+            <a href="/2021/09/18/switch%D6%AA%CA%B6/">switch知识</a>
+          </li>
+        
+          <li>
+            <a href="/2021/09/17/TCP%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3%E6%9C%BA%E5%88%B6/">TCP滑动窗口机制</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2023 John Doe<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

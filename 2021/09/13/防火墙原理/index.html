@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>防火墙原理 | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="防火墙（Firewall）是一种隔离技术，使内网和外网分开，可以防止外部网络用户以非法手段通过外部网络进入内部网络，保护内网免受外部非法用户的侵入。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="防火墙原理">
+<meta property="og:url" content="http://example.com/2021/09/13/%E9%98%B2%E7%81%AB%E5%A2%99%E5%8E%9F%E7%90%86/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="防火墙（Firewall）是一种隔离技术，使内网和外网分开，可以防止外部网络用户以非法手段通过外部网络进入内部网络，保护内网免受外部非法用户的侵入。">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/%E9%98%B2%E7%81%AB%E5%A2%99%E5%8E%9F%E7%90%86/%E8%B7%AF%E7%94%B1%E6%A8%A1%E5%BC%8F%E7%BB%84%E7%BD%91%E5%9B%BE.png">
+<meta property="og:image" content="http://example.com/%E9%98%B2%E7%81%AB%E5%A2%99%E5%8E%9F%E7%90%86/%E5%8C%85%E8%BF%87%E6%BB%A4%E9%98%B2%E7%81%AB%E5%A2%99.png">
+<meta property="og:image" content="http://example.com/%E9%98%B2%E7%81%AB%E5%A2%99%E5%8E%9F%E7%90%86/%E5%BA%94%E7%94%A8%E5%B1%82%E5%8D%8F%E8%AE%AE%E6%A3%80%E6%B5%8B%E5%9F%BA%E6%9C%AC%E5%8E%9F%E7%90%86%E7%A4%BA%E6%84%8F%E5%9B%BE.png">
+<meta property="og:image" content="http://example.com/%E9%98%B2%E7%81%AB%E5%A2%99%E5%8E%9F%E7%90%86/FTP%E6%A3%80%E6%B5%8B%E8%BF%87%E7%A8%8B%E7%A4%BA%E6%84%8F%E5%9B%BE.png">
+<meta property="og:image" content="http://example.com/%E9%98%B2%E7%81%AB%E5%A2%99%E5%8E%9F%E7%90%86/%E9%BB%91%E5%90%8D%E5%8D%95.png">
+<meta property="og:image" content="http://example.com/%E9%98%B2%E7%81%AB%E5%A2%99%E5%8E%9F%E7%90%86/%E7%AB%AF%E5%8F%A3%E6%98%A0%E5%B0%84%E7%A4%BA%E6%84%8F%E5%9B%BE.png">
+<meta property="og:image" content="http://example.com/%E9%98%B2%E7%81%AB%E5%A2%99%E5%8E%9F%E7%90%86/Land%E6%94%BB%E5%87%BB%E7%A4%BA%E6%84%8F%E5%9B%BE.png">
+<meta property="og:image" content="http://example.com/%E9%98%B2%E7%81%AB%E5%A2%99%E5%8E%9F%E7%90%86/%E7%AE%80%E5%8D%95Smurf%E6%94%BB%E5%87%BB%E7%A4%BA%E6%84%8F%E5%9B%BE.png">
+<meta property="og:image" content="http://example.com/%E9%98%B2%E7%81%AB%E5%A2%99%E5%8E%9F%E7%90%86/%E9%AB%98%E7%BA%A7Smurf%E6%94%BB%E5%87%BB%E7%A4%BA%E6%84%8F%E5%9B%BE.png">
+<meta property="og:image" content="http://example.com/%E9%98%B2%E7%81%AB%E5%A2%99%E5%8E%9F%E7%90%86/%E5%8D%8A%E8%BF%9E%E6%8E%A5%E7%A4%BA%E6%84%8F%E5%9B%BE.png">
+<meta property="og:image" content="http://example.com/%E9%98%B2%E7%81%AB%E5%A2%99%E5%8E%9F%E7%90%86/ICMP-Flood%E6%94%BB%E5%87%BB%E7%A4%BA%E6%84%8F%E5%9B%BE.png">
+<meta property="og:image" content="http://example.com/%E9%98%B2%E7%81%AB%E5%A2%99%E5%8E%9F%E7%90%86/ICMP%E8%B6%85%E5%A4%A7%E6%8A%A5%E6%96%87%E7%A4%BA%E6%84%8F%E5%9B%BE.png">
+<meta property="og:image" content="http://example.com/%E9%98%B2%E7%81%AB%E5%A2%99%E5%8E%9F%E7%90%86/ICMP-Unreachable%E6%94%BB%E5%87%BB%E7%A4%BA%E6%84%8F%E5%9B%BE.png">
+<meta property="og:image" content="http://example.com/%E9%98%B2%E7%81%AB%E5%A2%99%E5%8E%9F%E7%90%86/ICMP-Redirect%E6%94%BB%E5%87%BB%E7%A4%BA%E6%84%8F%E5%9B%BE.png">
+<meta property="og:image" content="http://example.com/%E9%98%B2%E7%81%AB%E5%A2%99%E5%8E%9F%E7%90%86/%E6%AD%A3%E5%B8%B8%E7%9A%84%E5%88%86%E7%89%87%E7%BB%84%E8%A3%85%E7%A4%BA%E6%84%8F%E5%9B%BE.png">
+<meta property="og:image" content="http://example.com/%E9%98%B2%E7%81%AB%E5%A2%99%E5%8E%9F%E7%90%86/Teardrop%E6%94%BB%E5%87%BB%E7%A4%BA%E6%84%8F%E5%9B%BE.png">
+<meta property="article:published_time" content="2021-09-13T11:36:35.000Z">
+<meta property="article:modified_time" content="2021-09-17T07:16:14.000Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="安全">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/%E9%98%B2%E7%81%AB%E5%A2%99%E5%8E%9F%E7%90%86/%E8%B7%AF%E7%94%B1%E6%A8%A1%E5%BC%8F%E7%BB%84%E7%BD%91%E5%9B%BE.png">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-防火墙原理" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2021/09/13/%E9%98%B2%E7%81%AB%E5%A2%99%E5%8E%9F%E7%90%86/" class="article-date">
+  <time class="dt-published" datetime="2021-09-13T11:36:35.000Z" itemprop="datePublished">2021-09-13</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E5%AE%89%E5%85%A8/">安全</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      防火墙原理
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>防火墙（Firewall）是一种隔离技术，使内网和外网分开，可以防止外部网络用户以非法手段通过外部网络进入内部网络，保护内网免受外部非法用户的侵入。</p>
+<span id="more"></span>
+
+<h1 id="防火墙"><a href="#防火墙" class="headerlink" title="防火墙"></a>防火墙</h1><h2 id="安全域"><a href="#安全域" class="headerlink" title="安全域"></a>安全域</h2><h3 id="安全区域"><a href="#安全区域" class="headerlink" title="安全区域"></a>安全区域</h3><p>安全域是防火墙功能实现的基础，防火墙的安全域包括安全区域和安全域间。<br>在防火墙中，<font color=#FF0000>安全区域（Security Zone），简称为<strong>区域（zone），是一个或多个接口的组合</strong></font>，这些接口所包含的用户具有相同的安全属性。每个安全区域具有全局唯一的安全优先级。<br><font color=#E9764A>设备认为在同一安全区域内部发生的数据流动是可信的，不需要实施任何安全策略。只有当不同安全区域之间发生数据流动时，才会触发防火墙的安全检查，并实施相应的安全策略。</font></p>
+<h3 id="安全域间"><a href="#安全域间" class="headerlink" title="安全域间"></a>安全域间</h3><p>任何两个安全区域都构成一个安全域间（Interzone），并具有单独的安全域间视图，大部分的防火墙配置都在安全域间视图下配置。<br>例如：配置了安全区域zone1和zone2，则在zone1和zone2的安全域间视图中，可以<font color=#E9764A>配置ACL包过滤</font>功能，表示对zone1和zone2之间发生的数据流动实施ACL包过滤。<br>在安全域间使能防火墙功能后，当高优先级的用户访问低优先级区域时，防火墙会记录报文的IP、VPN等信息，生成一个流表。当报文返回时，设备会查看报文的IP、VPN等信息，因为流表里记录有发出报文的信息，所以有对应的表项，返回的报文能通过。低优先级的用户访问高优先级用户时，默认是不允许访问的。因此，把内网设置为高优先级区域，外网设置为低优先级区域，内网用户可以主动访问外网，外网用户则不能主动访问内网。</p>
+<h3 id="基于安全域的防火墙的优点"><a href="#基于安全域的防火墙的优点" class="headerlink" title="基于安全域的防火墙的优点"></a>基于安全域的防火墙的优点</h3><p>传统的交换机&#x2F;路由器的策略配置通常都是围绕报文入接口、出接口展开的，随着防火墙的不断发展，已经逐渐摆脱了只连接外网和内网的角色，出现了内网&#x2F;外网&#x2F;DMZ（Demilitarized Zone）的模式。在这种组网环境中，传统基于接口的策略配置方式给网络管理员带来了极大的负担，安全策略的维护工作量成倍增加，从而也增加了因为配置引入安全风险的概率。<br>除了复杂的基于接口的安全策略配置，某些防火墙支持全局的策略配置，全局策略配置的缺点是配置粒度过粗，一台设备只能配置同样的安全策略，满足不了用户在不同安全区域或者不同接口上实施不同安全策略的要求，使用上具有明显的局限性。<br>与基于接口和基于全局的配置相比，<font color=#E9764A>基于安全域的防火墙支持基于安全区域的配置方式，通过<strong>将接口加入安全区域并在安全区域域间配置安全策略</strong></font>，既降低了网络管理员配置负担，又能满足复杂组网情况下针对安全区域实施不同攻击防范策略的要求。</p>
+<h2 id="防火墙工作模式"><a href="#防火墙工作模式" class="headerlink" title="防火墙工作模式"></a>防火墙工作模式</h2><h3 id="路由模式"><a href="#路由模式" class="headerlink" title="路由模式"></a>路由模式</h3><p>当设备位于内部网络和外部网络之间，同时为设备与内部网络、外部网络相连的接口分别配置不同网段的IP地址，并重新规划原有的网络拓扑结构。<br>如图1所示，规划了2个安全区域：Trust区域和Untrust区域，设备的Trust区域接口与公司内部网络相连，Untrust区域接口与外部网络相连。<br>需要注意的是，Trust区域接口和Untrust区域接口分别处于两个不同的子网中。</p>
+<p>图1 路由模式组网图<br><img src="/%E9%98%B2%E7%81%AB%E5%A2%99%E5%8E%9F%E7%90%86/%E8%B7%AF%E7%94%B1%E6%A8%A1%E5%BC%8F%E7%BB%84%E7%BD%91%E5%9B%BE.png" alt="路由模式组网图"></p>
+<p>当报文在三层区域的接口间进行转发时，根据报文的IP地址来查找路由表。此时设备表现为一个路由器。但是，与路由器不同的是，设备转发的IP报文还需要进行过滤等相关处理，通过检查会话表或ACL规则以确定是否允许该报文通过。除此之外，防火墙还需要完成其它攻击防范检查。</p>
+<h2 id="包过滤防火墙"><a href="#包过滤防火墙" class="headerlink" title="包过滤防火墙"></a>包过滤防火墙</h2><p><font color=#FF0000>包过滤防火墙的基本原理是：<strong>通过配置ACL实施数据包的过滤</strong></font>。实施过滤主要是<font color=#E9764A>基于数据包中的IP层所承载的上层协议的协议号、源&#x2F;目的IP地址、源&#x2F;目的端口号和报文传递的方向等</font>信息。</p>
+<p>包过滤应用在防火墙中，对需要转发的数据包，先获取数据包的包头信息，然后和设定的ACL规则进行比较，根据比较的结果决定对数据包进行转发或者丢弃。如图1所示。</p>
+<p>图1 包过滤防火墙<br><img src="/%E9%98%B2%E7%81%AB%E5%A2%99%E5%8E%9F%E7%90%86/%E5%8C%85%E8%BF%87%E6%BB%A4%E9%98%B2%E7%81%AB%E5%A2%99.png" alt="包过滤防火墙"></p>
+<h3 id="设备对包过滤防火墙的支持"><a href="#设备对包过滤防火墙的支持" class="headerlink" title="设备对包过滤防火墙的支持"></a>设备对包过滤防火墙的支持</h3><ul>
+<li><p>普通IP报文过滤：防火墙基于访问控制列表ACL对报文进行检查和过滤。防火墙检查报文的源&#x2F;目的IP地址、源&#x2F;目的端口号、协议类型号，根据访问控制列表允许符合条件的报文通过，拒绝不符合匹配条件的报文。<font color=#E9764A>防火墙所检查的信息来源于IP、TCP或UDP包头</font>。</p>
+</li>
+<li><p>分片报文过滤：包过滤提供了对分片报文进行检测过滤的支持。包过滤防火墙将识别报文类型，如：非分片报文、首片分片报文、后续分片报文，对所有类型的报文都做过滤。对于首片分片报文，设备根据报文的三层信息及四层信息，与ACL规则进行匹配，如果允许通过，则记录首片分片报文的状态信息，建立后续分片的匹配信息表。当后续分片报文到达时，防火墙不再进行ACL规则的匹配，而是根据首片分片报文的ACL匹配结果进行转发。另外，对于不匹配ACL规则的报文，防火墙还可以配置缺省处理方式。</p>
+</li>
+</ul>
+<h2 id="★状态检测防火墙"><a href="#★状态检测防火墙" class="headerlink" title="★状态检测防火墙"></a>★状态检测防火墙</h2><p>包过滤防火墙属于静态防火墙，目前存在的问题如下：</p>
+<ul>
+<li>对于多通道的应用层协议（如FTP、SIP等），部分安全策略配置无法预知。</li>
+<li>无法检测某些来自传输层和应用层的攻击行为（如TCP SYN、Java Applets等）。</li>
+<li>无法识别来自网络中伪造的ICMP差错报文，从而无法避免ICMP的恶意攻击。</li>
+<li>对于TCP连接均要求其首报文为SYN报文，非SYN报文的TCP首包将被丢弃。在这种处理方式下，当设备首次加入网络时，网络中原有TCP连接的非首包在经过新加入的防火墙设备时均被丢弃，这会中断已有的连接。</li>
+</ul>
+<p>因此，提出了<font color=#E9764A><strong>状态检测防火墙——ASPF（Application Specific Packet Filter）</strong></font>的概念。ASPF能够实现的检测有：</p>
+<ul>
+<li>应用层协议检测，包括FTP、HTTP、SIP和RTSP检测；</li>
+<li>传输层协议检测，包括TCP和UDP检测。</li>
+</ul>
+<h3 id="ASPF的功能"><a href="#ASPF的功能" class="headerlink" title="ASPF的功能"></a>ASPF的功能</h3><p>ASPF的主要功能如下：</p>
+<ul>
+<li>能够检查应用层协议信息，如报文的协议类型和端口号等信息，并且监控基于连接的应用层协议状态。对于所有连接，每一个连接状态信息都将被ASPF维护，并用于动态地决定数据包是否被允许通过防火墙进入内部网络，以阻止恶意的入侵。</li>
+<li>能够检测传输层协议信息（即通用TCP&#x2F;UDP检测），能够根据源、目的地址及端口号决定TCP或UDP报文是否可以通过防火墙进入内部网络。</li>
+</ul>
+<p>ASPF的其它功能有：</p>
+<ul>
+<li>ASPF不仅能够根据连接的状态对报文进行过滤，还能够对应用层报文的内容加以检测。</li>
+<li>支持TCP连接首包检测。</li>
+<li>支持ICMP差错报文检测。正常ICMP差错报文中均携带有本报文对应连接的相关信息，根据这些信息可以匹配到相应的连接。如果匹配失败，则根据当前配置决定是否丢弃该ICMP报文。</li>
+</ul>
+<p>在网络边界，ASPF和包过滤防火墙协同工作，能够为企业内部网络提供更全面的、更符合实际需求的安全策略。</p>
+<h3 id="ASPF基本概念"><a href="#ASPF基本概念" class="headerlink" title="ASPF基本概念"></a>ASPF基本概念</h3><ul>
+<li><p>单通道协议<br>单通道协议：从会话建立到删除的全过程中，只有一个通道参与数据交互，如HTTP。</p>
+</li>
+<li><p>多通道协议<br>多通道协议：包含一个控制通道和若干其它控制或数据通道，即控制信息的交互和数据的传送是在不同的通道上完成的，如FTP、RTSP。</p>
+</li>
+</ul>
+<h3 id="★★★应用层协议检测基本原理"><a href="#★★★应用层协议检测基本原理" class="headerlink" title="★★★应用层协议检测基本原理"></a>★★★应用层协议检测基本原理</h3><p>图1 应用层协议检测基本原理示意图<br><img src="/%E9%98%B2%E7%81%AB%E5%A2%99%E5%8E%9F%E7%90%86/%E5%BA%94%E7%94%A8%E5%B1%82%E5%8D%8F%E8%AE%AE%E6%A3%80%E6%B5%8B%E5%9F%BA%E6%9C%AC%E5%8E%9F%E7%90%86%E7%A4%BA%E6%84%8F%E5%9B%BE.png" alt="应用层协议检测基本原理示意图"></p>
+<p>如图1所示，为了保护内部网络，一般情况下需要在设备上配置访问控制列表，以允许内部网的主机访问外部网络，同时拒绝外部网络的主机访问内部网络。但访问控制列表会将用户发起连接后返回的报文过滤掉，导致连接无法正常建立。</p>
+<p>当在设备上配置了应用层协议检测后，ASPF可以检测每一个应用层的会话，并创建一个<font color=#87CEFA><strong>状态表项</strong></font>和一个<font color=#F4A460><strong>临时访问控制列表</strong></font>（Temporary Access Control List，TACL）：</p>
+<blockquote>
+<p><font color=#87CEFA>1. 状态表项在ASPF检测到第一个向外发送的报文时创建，用于维护一次会话中某一时刻会话所处的状态，并检测会话状态的转换是否正确。</font><br><font color=#F4A460>2. 临时访问控制列表的表项在创建状态表项的同时创建，会话结束后删除，它相当于一个扩展ACL的permit项。TACL主要用于匹配一个会话中的所有返回的报文，可以为某一应用返回的报文在防火墙的外部接口上建立一个临时的返回通道。</font></p>
+</blockquote>
+<p>下面以FTP检测为例说明多通道应用层协议检测的过程。</p>
+<p>图2 FTP检测过程示意图<br><img src="/%E9%98%B2%E7%81%AB%E5%A2%99%E5%8E%9F%E7%90%86/FTP%E6%A3%80%E6%B5%8B%E8%BF%87%E7%A8%8B%E7%A4%BA%E6%84%8F%E5%9B%BE.png" alt="FTP检测过程示意图"><br>如图2所示，FTP连接的建立过程如下：假设FTP client以1333端口向FTP server的21端口发起FTP控制通道的连接，通过协商决定由FTP server的20端口向FTP Client的1600端口发起数据通道的连接，数据传输超时或结束后连接删除。</p>
+<p>FTP检测在FTP连接建立到拆除过程中的处理如下：</p>
+<ol>
+<li>检查从出接口上向外发送的IP报文，确认为基于TCP的FTP报文。</li>
+<li>检查端口号确认连接为控制连接，建立返回报文的TACL和状态表项。</li>
+<li>检查FTP控制连接报文，解析FTP指令，根据指令更新状态表项。如果包含数据通道建立指令，则创建数据连接的TACL；对于数据连接，不进行状态检测。</li>
+<li>对于返回报文，根据协议类型做相应匹配检查，检查将根据相应协议的状态表项和TACL决定报文是否允许通过。</li>
+<li>FTP连接删除时，状态表及TACL随之删除。<br>单通道应用层协议（如HTTP）的检测过程比较简单，当发起连接时建立TACL，连接删除时随之删除TACL即可。</li>
+</ol>
+<h3 id="传输层协议检测基本原理"><a href="#传输层协议检测基本原理" class="headerlink" title="传输层协议检测基本原理"></a>传输层协议检测基本原理</h3><p>这里的传输层协议检测是指通用TCP&#x2F;UDP检测。通用TCP&#x2F;UDP检测与应用层协议检测不同，是对报文的传输层信息进行的检测，如源、目的地址及端口号等。<font color=#E9764A>通用TCP&#x2F;UDP检测要求返回到ASPF外部接口的报文要与前面从ASPF外部接口发出去的报文完全匹配，<strong>即源、目的地址及端口号恰好对应，否则返回的报文将被阻塞</strong></font>。因此对于FTP这样的多通道应用层协议，在不配置应用层检测而直接配置TCP检测的情况下会导致数据连接无法建立。</p>
+<h2 id="黑名单"><a href="#黑名单" class="headerlink" title="黑名单"></a>黑名单</h2><p>黑名单，指根据报文的源VPN和源IP地址进行过滤的一种方式。同ACL相比，由于进行匹配的域非常简单，可以以很高的速度实现报文的过滤，从而有效地将特定IP地址发送来的报文屏蔽，同时支持用户静态配置黑名单和防火墙动态生成黑名单。<br>如图1所示，用户B的IP地址已经在黑名单中，从用户B发出的所有报文都会被防火墙丢弃。</p>
+<p>图1 黑名单<br><img src="/%E9%98%B2%E7%81%AB%E5%A2%99%E5%8E%9F%E7%90%86/%E9%BB%91%E5%90%8D%E5%8D%95.png" alt="黑名单"></p>
+<h3 id="设备对黑名单的支持"><a href="#设备对黑名单的支持" class="headerlink" title="设备对黑名单的支持"></a>设备对黑名单的支持</h3><p>除了用户可以静态配置黑名单外，当设备发现特定IP地址在进行IP扫描攻击或端口扫描攻击时，会将发起攻击的IP主动插入到黑名单中。如果黑名单已使能的话，在此后的一定时间内，来自这个IP地址的任何报文，都可以被黑名单过滤掉。<br>用户可以配置静态和动态黑名单的老化时间。<br>无论命中了黑名单的数据包是否为ACL规则允许的访问，防火墙对此类数据包予以丢弃。<br>用户可以将黑名单配置信息导出到文件中，也可以通过文件导入黑名单配置。</p>
+<h2 id="白名单"><a href="#白名单" class="headerlink" title="白名单"></a>白名单</h2><p>在防火墙上加入白名单的主机不会再被加入动态和静态黑名单，使用<font color=FF0000>源VPN和IP地址</font>来表示一个白名单项。<br>白名单主要用在网络上的特定设备发出的合法业务报文具备IP扫描攻击和端口扫描攻击特性的场合，防止该特定设备被防火墙加入黑名单。<br>白名单只有静态的。</p>
+<h3 id="白名单的特点"><a href="#白名单的特点" class="headerlink" title="白名单的特点"></a>白名单的特点</h3><p>如果用户将某个主机的VPN和IP地址加入防火墙白名单，防火墙就不会对该主机发出的报文进行IP扫描攻击和端口扫描攻击检查，也不会将其IP地址生成动态黑名单，也不允许用户将白名单主机添加到静态黑名单中。</p>
+<h3 id="设备对白名单的支持"><a href="#设备对白名单的支持" class="headerlink" title="设备对白名单的支持"></a>设备对白名单的支持</h3><p>当设备收到一个报文后，就会检查是否是来自于白名单项的报文。如果是，设备对该报文就不会进行IP扫描攻击和端口扫描攻击检查，也不会将源IP生成动态黑名单，但是其他安全过滤功能，比如ACL包过滤、ASPF、流量统计和监控等，还是要进行，以达到防火墙的最大安全过滤效果。<br>用户可以配置白名单的老化时间。<br>用户可以将白名单配置信息导出到文件中，也可以通过文件导入白名单配置。</p>
+<h2 id="端口映射"><a href="#端口映射" class="headerlink" title="端口映射"></a>端口映射</h2><p>应用层协议通常使用知名端口号进行通信。端口映射允许用户对不同的应用层协议定义一组新的端口号，还可以指定使用非知名端口的主机范围。<br>端口映射只有和ASPF、NAT等针对业务敏感的特性联合使用的时候才具有实际意义。例如在一个企业私网中，内部FTP服务器10.10.10.10通过2121端口提供FTP服务。用户通过NAT服务器访问FTP服务器时，只能使用2121做为端口号。由于默认情况下FTP报文的端口号是21，这时FTP服务器无法将21端口的报文识别为FTP应用。在这样的场合则需要使用端口映射功能把2121端口映射成FTP协议，则NAT服务器就把2121端口的报文识别为FTP协议报文转发给FTP服务器，实现用户对FTP服务器的访问。</p>
+<p>设备对端口映射的支持都是通过ACL来实现的，只有匹配某条ACL的报文，才会实施端口映射。端口映射使用基本ACL（编号2000～2999）。端口映射在使用ACL过滤报文时，使用报文的目的IP地址去匹配基本ACL规则中配置的IP地址。<br>如图1所示，外部PC通过Router访问内部WWW服务器（端口号为8080），在外部PC的报文通过设备时，命中ACL的报文会进行端口映射，只有目的地址是10.38.2.4的报文才可以通过设备进行端口映射访问WWW服务器。</p>
+<p>图1 端口映射示意图<br><img src="/%E9%98%B2%E7%81%AB%E5%A2%99%E5%8E%9F%E7%90%86/%E7%AB%AF%E5%8F%A3%E6%98%A0%E5%B0%84%E7%A4%BA%E6%84%8F%E5%9B%BE.png" alt="端口映射示意图"></p>
+<h1 id="攻击防范"><a href="#攻击防范" class="headerlink" title="攻击防范"></a>攻击防范</h1><p>攻击防范是防火墙中一种重要的网络安全功能。它可以检测出多种类型的网络攻击行为，并能够采取相应的措施保护内部网络免受恶意攻击，以保证内部网络及系统的正常运行。</p>
+<h2 id="网络攻击的种类"><a href="#网络攻击的种类" class="headerlink" title="网络攻击的种类"></a>网络攻击的种类</h2><p>网络攻击一般分为拒绝服务型攻击、扫描窥探攻击和畸形报文攻击三大类：</p>
+<ul>
+<li><p>拒绝服务型攻击<br>拒绝服务型DoS（Denial of Service）攻击是使用大量的数据包攻击系统，使系统无法接受正常用户的请求，或者主机挂起不能正常的工作。主要DoS攻击有SYN Flood、Fraggle等。<br>拒绝服务攻击和其他类型的攻击不同之处在于：攻击者并不是去寻找进入内部网络的入口，而是阻止合法用户访问资源或防火墙。</p>
+</li>
+<li><p>扫描窥探攻击<br>扫描窥探攻击是利用ping扫描（包括ICMP和TCP）来标识网络上存活着的系统，从而准确地指出潜在的目标。利用TCP和UDP等进行端口扫描，就能检测出操作系统的种类和潜在的服务种类。<br>攻击者通过扫描窥探就能大致了解目标系统提供的服务种类，为进一步侵入系统做好准备。</p>
+</li>
+<li><p>畸形报文攻击<br>畸形报文攻击是通过向目标系统发送有缺陷的IP报文，使得目标系统在处理这样的IP包时会出现崩溃，给目标系统带来损失。主要的畸形报文攻击有Ping of Death、Teardrop等。</p>
+</li>
+</ul>
+<p>设备对攻击防范的支持：</p>
+<h2 id="Land攻击"><a href="#Land攻击" class="headerlink" title="Land攻击"></a>Land攻击</h2><p>Land攻击，就是把TCP的SYN包的源地址和目的地址都设置为目标计算机的IP地址。这将导致目标计算机向它自己发送SYN-ACK报文，目标计算机又向自己发回ACK报文并创建一个空连接，每一个这样的连接都将保留直到超时。如图1所示。</p>
+<p>图1 Land攻击示意图<br><img src="/%E9%98%B2%E7%81%AB%E5%A2%99%E5%8E%9F%E7%90%86/Land%E6%94%BB%E5%87%BB%E7%A4%BA%E6%84%8F%E5%9B%BE.png" alt="Land攻击示意图"></p>
+<p>各种类型的主机对Land攻击反应不同，许多UNIX主机将崩溃，Windows NT主机会变得极其缓慢。</p>
+<h2 id="Smurf攻击"><a href="#Smurf攻击" class="headerlink" title="Smurf攻击"></a>Smurf攻击</h2><p>简单的Smurf攻击，用来攻击一个网络。攻击者向目标网络发送ICMP应答请求报文，该报文的目标地址设置为目标网络的广播地址，这样，目标网络的所有主机都对此ICMP应答请求作出答复，导致网络阻塞。如图2所示。</p>
+<p>图2 简单Smurf攻击示意图<br><img src="/%E9%98%B2%E7%81%AB%E5%A2%99%E5%8E%9F%E7%90%86/%E7%AE%80%E5%8D%95Smurf%E6%94%BB%E5%87%BB%E7%A4%BA%E6%84%8F%E5%9B%BE.png" alt="简单Smurf攻击示意图"><br>高级的Smurf攻击，主要用来攻击目标主机。攻击者向目标主机所在的网络发送ICMP应答请求报文，该报文的源地址设置为目标主机的地址，这样，所有的应答报文都将发送给目标主机。最终导致目标主机处理速度缓慢，甚至崩溃。如图3所示。</p>
+<p>图3 高级Smurf攻击示意图<br><img src="/%E9%98%B2%E7%81%AB%E5%A2%99%E5%8E%9F%E7%90%86/%E9%AB%98%E7%BA%A7Smurf%E6%94%BB%E5%87%BB%E7%A4%BA%E6%84%8F%E5%9B%BE.png" alt="高级Smurf攻击示意图"><br>Smurf攻击报文的发送需要一定的流量和持续时间，才能真正构成攻击。理论上讲，目标网络的主机越多，攻击的效果越明显。</p>
+<h2 id="WinNuke攻击"><a href="#WinNuke攻击" class="headerlink" title="WinNuke攻击"></a>WinNuke攻击</h2><p>NetBIOS作为一种基本的网络资源访问接口，广泛的应用于文件共享，打印共享，以及不同操作系统之间的数据交换。一般情况下，NetBIOS是运行在LLC2链路协议之上的，是一种基于组播的网络访问接口。为了在TCP&#x2F;IP协议栈上实现NetBIOS，RFC规定了一系列交互标准，以及几个常用的TCP&#x2F;UDP端口，如下。</p>
+<ul>
+<li>139：NetBIOS会话服务的TCP端口。</li>
+<li>137：NetBIOS名字服务的UDP端口。</li>
+<li>136：NetBIOS数据报服务的UDP端口。<br>Windows操作系统实现了NetBIOS over TCP&#x2F;IP功能，并开放了139端口。<br>WinNuke攻击就是利用了Windows操作系统的一个漏洞，向这个139端口发送一些携带TCP带外（OOB）数据报文，但这些攻击报文与正常携带OOB数据报文不同的是，其指针字段与数据的实际位置不符，即存在重叠，Windows操作系统在处理这些数据的时候，就会崩溃。</li>
+</ul>
+<h2 id="SYN-Flood攻击"><a href="#SYN-Flood攻击" class="headerlink" title="SYN Flood攻击"></a>SYN Flood攻击</h2><p>SYN Flood攻击利用TCP三次握手的一个漏洞向目标计算机发动攻击。攻击者向目标计算机发送TCP连接请求（SYN报文），然后对于目标返回的SYN-ACK报文不作回应。目标计算机如果没有收到攻击者的ACK回应，就会一直等待，形成半连接，直到连接超时才释放。如图4所示。</p>
+<p>图4 半连接示意图<br><img src="/%E9%98%B2%E7%81%AB%E5%A2%99%E5%8E%9F%E7%90%86/%E5%8D%8A%E8%BF%9E%E6%8E%A5%E7%A4%BA%E6%84%8F%E5%9B%BE.png" alt="半连接示意图"><br>攻击者利用这种方式发送大量TCP SYN报文，让目标计算机上生成大量的半连接，迫使其大量资源浪费在这些半连接上。目标计算机一旦资源耗尽，就会出现速度极慢、正常的用户不能接入等情况。</p>
+<p>攻击者还可以伪造SYN报文，其源地址是伪造的或者不存在的地址，向目标计算机发起攻击。</p>
+<h2 id="ICMP-Flood攻击"><a href="#ICMP-Flood攻击" class="headerlink" title="ICMP Flood攻击"></a>ICMP Flood攻击</h2><p>通常情况下，网络管理员会用PING程序对网络进行监控和故障排除，大概过程如下：</p>
+<ol>
+<li>源计算机向接收计算机发出ICMP响应请求报文（ICMP ECHO）。</li>
+<li>接收计算机接收到ICMP响应请求报文后，会向源计算机回应一个ICMP应答报文（ECHO Reply）。<br>这个过程是需要CPU处理的，在有些情况下还可能消耗掉大量的资源。</li>
+</ol>
+<p>如果攻击者向目标计算机发送大量的ICMP ECHO报文（产生ICMP洪水），则目标计算机会忙于处理这些ECHO报文，而无法继续处理其它的数据报文。如图5所示。</p>
+<p>图5 ICMP Flood攻击示意图<br><img src="/%E9%98%B2%E7%81%AB%E5%A2%99%E5%8E%9F%E7%90%86/ICMP-Flood%E6%94%BB%E5%87%BB%E7%A4%BA%E6%84%8F%E5%9B%BE.png" alt="ICMP Flood攻击示意图"></p>
+<h2 id="UDP-Flood攻击"><a href="#UDP-Flood攻击" class="headerlink" title="UDP Flood攻击"></a>UDP Flood攻击</h2><p>UDP Flood攻击的原理与ICMP Flood攻击类似，攻击者通过发送大量的UDP报文给目标计算机，导致目标计算机忙于处理这些UDP报文而无法继续处理正常的报文。</p>
+<h2 id="地址扫描与端口扫描攻击"><a href="#地址扫描与端口扫描攻击" class="headerlink" title="地址扫描与端口扫描攻击"></a>地址扫描与端口扫描攻击</h2><p>攻击者运用扫描工具探测目标地址和端口，目标地址会对这些探测作出响应，攻击者根据这些响应用来确定哪些目标系统是存活着并且连接在网络上、目标主机开放或者关闭了哪些端口。</p>
+<h2 id="Ping-of-Death攻击"><a href="#Ping-of-Death攻击" class="headerlink" title="Ping of Death攻击"></a>Ping of Death攻击</h2><p>所谓Ping of Death，就是利用一些尺寸超大的ICMP报文对系统进行的一种攻击。</p>
+<p>IP报文的长度字段为16位，这表明一个IP报文的最大长度为65535。对于ICMP回应请求报文，如果数据长度大于65507，就会使ICMP数据＋IP头长度（20）＋ICMP头长度（8）&gt; 65535。对于有些防火墙或系统，在接收到一个这样的报文后，由于处理不当，会造成系统崩溃、死机或重启。如图6所示。</p>
+<p>图6 ICMP超大报文示意图<br><img src="/%E9%98%B2%E7%81%AB%E5%A2%99%E5%8E%9F%E7%90%86/ICMP%E8%B6%85%E5%A4%A7%E6%8A%A5%E6%96%87%E7%A4%BA%E6%84%8F%E5%9B%BE.png" alt="ICMP超大报文示意图"></p>
+<h2 id="Large-ICMP攻击"><a href="#Large-ICMP攻击" class="headerlink" title="Large-ICMP攻击"></a>Large-ICMP攻击</h2><p>同ping of death类似，Large-ICMP也是利用一些大尺寸的ICMP报文对系统进行的一种攻击，与ping of death不同的是，Large-ICMP报文的长度不会超过IP报文的最大长度65535，但是对一些操作系统也会造成破环。<br>需要在防火墙上配置允许通过的ICMP报文的最大长度。</p>
+<h2 id="ICMP-Unreachable攻击"><a href="#ICMP-Unreachable攻击" class="headerlink" title="ICMP-Unreachable攻击"></a>ICMP-Unreachable攻击</h2><p>某些系统在收到网络（报文类型字段为3，代码字段为0）或主机（报文类型字段为3，代码字段为1）不可达的ICMP报文后，对于后续发往此目的地的报文直接认为不可达。如图7所示。</p>
+<p>图7 ICMP-Unreachable攻击示意图<br><img src="/%E9%98%B2%E7%81%AB%E5%A2%99%E5%8E%9F%E7%90%86/ICMP-Unreachable%E6%94%BB%E5%87%BB%E7%A4%BA%E6%84%8F%E5%9B%BE.png" alt="ICMP-Unreachable攻击示意图"><br>攻击者利用这种机制，向目标主机发送虚假的ICMP-Unreachable报文，干扰了目标主机的路由信息，影响了报文发送。</p>
+<h2 id="ICMP-Redirect攻击"><a href="#ICMP-Redirect攻击" class="headerlink" title="ICMP-Redirect攻击"></a>ICMP-Redirect攻击</h2><p>ICMP-Redirect攻击和ICMP-Unreachable攻击类似。<br>网络设备可以向同一个子网的主机发送ICMP重定向报文，请求主机修改路由。<br>攻击者利用这个原理，跨越网段向另外一个网络的目标主机发送虚假的重定向报文，以改变目标主机的路由表。这种攻击干扰了目标主机的路由信息，影响了报文发送。如图8所示。</p>
+<p>图8 ICMP-Redirect攻击示意图<br><img src="/%E9%98%B2%E7%81%AB%E5%A2%99%E5%8E%9F%E7%90%86/ICMP-Redirect%E6%94%BB%E5%87%BB%E7%A4%BA%E6%84%8F%E5%9B%BE.png" alt="ICMP-Redirect攻击示意图"></p>
+<h2 id="IP-fragment攻击"><a href="#IP-fragment攻击" class="headerlink" title="IP-fragment攻击"></a>IP-fragment攻击</h2><p>IP报文中有几个字段与分片有关：DF（Don’t Fragmentate）位、MF位、Fragment Offset、Length。<br>如果上述字段的值出现矛盾，而设备处理不当，会对设备造成一定的影响，甚至瘫痪。矛盾的情况有：</p>
+<ul>
+<li>DF位被置位，而MF位同时被置位或Fragment Offset不为0。</li>
+<li>DF位为0，而Fragment Offset + Length &gt; 65535。<br>另外，由于分片报文可以增加目的设备缓冲和重组的负担，应直接丢弃目的地址为设备本身的分片报文。</li>
+</ul>
+<h2 id="Teardrop攻击"><a href="#Teardrop攻击" class="headerlink" title="Teardrop攻击"></a>Teardrop攻击</h2><p>在网络传输的过程中，如果IP报文的长度超过链路层的MTU（最大传输单元），就会进行分片。在IP报头中有一个偏移字段（OFFSET）和一个分片标志（MF），如果MF标志设置为1，则表明这个IP报文是一个大IP包的分片，其中偏移字段指出了这个片断在整个IP包中的位置。接收端可以根据报文头中的这些信息还原该IP包。<br>比如，一个较大的报文在MTU较小的链路上传输的时候，被分成了两个IP报文，这两个IP报文将在目的端进行组装，还原为原始的IP报文。如图9所示。</p>
+<p>图9 正常的分片组装示意图<br><img src="/%E9%98%B2%E7%81%AB%E5%A2%99%E5%8E%9F%E7%90%86/%E6%AD%A3%E5%B8%B8%E7%9A%84%E5%88%86%E7%89%87%E7%BB%84%E8%A3%85%E7%A4%BA%E6%84%8F%E5%9B%BE.png" alt="正常的分片组装示意图"><br>如果一个攻击者打破这种正常情况，把偏移字段设置成不正确的值，即可能出现重合或断开的情况。某些TCP&#x2F;IP协议栈在收到类似这种含有重叠偏移的伪造分段时会崩溃，这就是所谓的Teardrop攻击。如图10所示。</p>
+<p>图10 Teardrop攻击示意图<br><img src="/%E9%98%B2%E7%81%AB%E5%A2%99%E5%8E%9F%E7%90%86/Teardrop%E6%94%BB%E5%87%BB%E7%A4%BA%E6%84%8F%E5%9B%BE.png" alt="Teardrop攻击示意图"></p>
+<h2 id="Fraggle攻击"><a href="#Fraggle攻击" class="headerlink" title="Fraggle攻击"></a>Fraggle攻击</h2><p>Fraggle攻击的原理与Smurf攻击的原理类似，不过，Fraggle攻击发送的是UDP报文而非ICMP报文。因为发送的是UDP报文，Fraggle攻击可以穿过一些阻止ICMP报文进入的防火墙。<br>Fraggle攻击利用的原理是：UDP端口7（ECHO）和端口19（Chargen）在收到UDP报文后，都会产生回应。如下：</p>
+<ul>
+<li>UDP的7号端口收到报文后，会象ICMP Echo Reply一样回应收到的内容。</li>
+<li>UDP的19号端口在收到报文后，会产生一串字符流。<br>这两个UDP端口都会产生大量应答报文，挤占网络带宽。<br>攻击者可以向目标主机所在的网络发送源地址为被攻击主机、而目的地址为其所在子网的广播地址或子网网络地址的UDP报文，目的端口号为7（ECHO）或19（Chargen）。子网中启用了此功能的每个系统都会向受害主机发送回应报文，从而产生大量的流量，导致受害网络的阻塞或受害主机崩溃。<br>如果目标主机所在网络上的主机没有启动这些功能，这些主机将产生一个ICMP不可达消息，仍然消耗带宽。也可将源端口改为端口19（Chargen），目的端口为7（ECHO），这样会自动不停地产生回应报文，其危害性更大。</li>
+</ul>
+<h2 id="Tracert攻击"><a href="#Tracert攻击" class="headerlink" title="Tracert攻击"></a>Tracert攻击</h2><p>Tracert是利用TTL（Time To Live）为0时返回的ICMP超时报文，和达到目的地时返回的ICMP端口不可达报文来发现报文到达目的地所经过的路径。<br>攻击者可以利用Tracert窥探网络的结构。对网络造成潜在的危险。</p>
+<h2 id="畸形TCP报文攻击"><a href="#畸形TCP报文攻击" class="headerlink" title="畸形TCP报文攻击"></a>畸形TCP报文攻击</h2><p>畸形TCP报文是通过故意错误设置TCP头中的6个标记位，造成接收方TCP协议栈的处理错误，达到攻击的目的。</p>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><blockquote>
+<p>华为HedEx文档</p>
+</blockquote>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2021/09/13/%E9%98%B2%E7%81%AB%E5%A2%99%E5%8E%9F%E7%90%86/" data-id="clg3uqoto005op8mu4cok6psi" data-title="防火墙原理" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%AE%89%E5%85%A8/" rel="tag">安全</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2021/09/14/DNS/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          DNS
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2021/09/13/ICMP%E6%8A%A5%E6%96%87/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">ICMP报文</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Github/">Github</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/VPN/">VPN</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/openstack/">openstack</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E4%BA%A4%E6%8D%A2%E6%9C%BA/">交换机</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%8D%9A%E5%AE%A2/">博客</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%AE%89%E5%85%A8/">安全</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%B0%E6%8D%AE%E4%B8%AD%E5%BF%83/">数据中心</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">数据结构</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%B0%E6%8D%AE%E9%80%9A%E4%BF%A1/">数据通信</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%99%9A%E6%8B%9F%E5%8C%96/">虚拟化</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%B7%AF%E7%94%B1/">路由</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%BF%90%E7%BB%B4/">运维</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Apache/" rel="tag">Apache</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/BGP/" rel="tag">BGP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DHCP/" rel="tag">DHCP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Django/" rel="tag">Django</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Github/" rel="tag">Github</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/" rel="tag">Linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/OSI/" rel="tag">OSI</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/OSPF/" rel="tag">OSPF</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Python/" rel="tag">Python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SDN/" rel="tag">SDN</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/STP/" rel="tag">STP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/VLAN/" rel="tag">VLAN</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/VPN/" rel="tag">VPN</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/VXLAN/" rel="tag">VXLAN</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/" rel="tag">hexo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/openstack/" rel="tag">openstack</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/yilia/" rel="tag">yilia</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%91%E8%AE%A1%E7%AE%97/" rel="tag">云计算</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%A4%E6%8D%A2/" rel="tag">交换</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%A4%E6%8D%A2%E6%9C%BA/" rel="tag">交换机</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%8E%9F%E7%90%86/" rel="tag">交换机原理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BB%A5%E5%A4%AA%E7%BD%91%E5%B8%A7/" rel="tag">以太网帧</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8D%9A%E5%AE%A2/" rel="tag">博客</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8D%9A%E5%AE%A2%E8%87%AA%E5%AE%9A%E4%B9%89/" rel="tag">博客自定义</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%AE%89%E5%85%A8/" rel="tag">安全</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%8E%A5%E5%8F%A3/" rel="tag">接口</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%8E%A7%E5%88%B6%E5%99%A8/" rel="tag">控制器</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E4%B8%AD%E5%BF%83/" rel="tag">数据中心</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="tag">数据结构</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E9%80%9A%E4%BF%A1/" rel="tag">数据通信</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF%E5%B1%82/" rel="tag">数据链路层</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%AB%AF%E5%8F%A3%E9%95%9C%E5%83%8F/" rel="tag">端口镜像</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BB%8F%E9%AA%8C/" rel="tag">经验</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BC%96%E5%86%99%E6%8C%87%E5%8D%97/" rel="tag">编写指南</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BD%91%E7%BB%9C/" rel="tag">网络</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BD%91%E7%BB%9C%E5%9F%BA%E7%A1%80/" rel="tag">网络基础</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%84%9A%E6%9C%AC/" rel="tag">脚本</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%87%AA%E5%8A%A8%E5%8C%96%E8%BF%90%E7%BB%B4/" rel="tag">自动化运维</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%99%9A%E6%8B%9F%E5%8C%96/" rel="tag">虚拟化</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%99%9A%E6%8B%9F%E5%8C%96%E6%8A%80%E6%9C%AF/" rel="tag">虚拟化技术</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%B7%AF%E7%94%B1/" rel="tag">路由</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%BF%90%E7%BB%B4/" rel="tag">运维</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Apache/" style="font-size: 10px;">Apache</a> <a href="/tags/BGP/" style="font-size: 10px;">BGP</a> <a href="/tags/DHCP/" style="font-size: 10px;">DHCP</a> <a href="/tags/Django/" style="font-size: 10px;">Django</a> <a href="/tags/Github/" style="font-size: 10px;">Github</a> <a href="/tags/Linux/" style="font-size: 12.86px;">Linux</a> <a href="/tags/OSI/" style="font-size: 10px;">OSI</a> <a href="/tags/OSPF/" style="font-size: 14.29px;">OSPF</a> <a href="/tags/Python/" style="font-size: 17.14px;">Python</a> <a href="/tags/SDN/" style="font-size: 10px;">SDN</a> <a href="/tags/STP/" style="font-size: 10px;">STP</a> <a href="/tags/VLAN/" style="font-size: 10px;">VLAN</a> <a href="/tags/VPN/" style="font-size: 12.86px;">VPN</a> <a href="/tags/VXLAN/" style="font-size: 10px;">VXLAN</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/openstack/" style="font-size: 12.86px;">openstack</a> <a href="/tags/yilia/" style="font-size: 10px;">yilia</a> <a href="/tags/%E4%BA%91%E8%AE%A1%E7%AE%97/" style="font-size: 10px;">云计算</a> <a href="/tags/%E4%BA%A4%E6%8D%A2/" style="font-size: 10px;">交换</a> <a href="/tags/%E4%BA%A4%E6%8D%A2%E6%9C%BA/" style="font-size: 14.29px;">交换机</a> <a href="/tags/%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%8E%9F%E7%90%86/" style="font-size: 10px;">交换机原理</a> <a href="/tags/%E4%BB%A5%E5%A4%AA%E7%BD%91%E5%B8%A7/" style="font-size: 10px;">以太网帧</a> <a href="/tags/%E5%8D%9A%E5%AE%A2/" style="font-size: 10px;">博客</a> <a href="/tags/%E5%8D%9A%E5%AE%A2%E8%87%AA%E5%AE%9A%E4%B9%89/" style="font-size: 10px;">博客自定义</a> <a href="/tags/%E5%AE%89%E5%85%A8/" style="font-size: 10px;">安全</a> <a href="/tags/%E6%8E%A5%E5%8F%A3/" style="font-size: 10px;">接口</a> <a href="/tags/%E6%8E%A7%E5%88%B6%E5%99%A8/" style="font-size: 10px;">控制器</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E4%B8%AD%E5%BF%83/" style="font-size: 10px;">数据中心</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" style="font-size: 15.71px;">数据结构</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E9%80%9A%E4%BF%A1/" style="font-size: 20px;">数据通信</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF%E5%B1%82/" style="font-size: 12.86px;">数据链路层</a> <a href="/tags/%E7%AB%AF%E5%8F%A3%E9%95%9C%E5%83%8F/" style="font-size: 10px;">端口镜像</a> <a href="/tags/%E7%BB%8F%E9%AA%8C/" style="font-size: 10px;">经验</a> <a href="/tags/%E7%BC%96%E5%86%99%E6%8C%87%E5%8D%97/" style="font-size: 10px;">编写指南</a> <a href="/tags/%E7%BD%91%E7%BB%9C/" style="font-size: 18.57px;">网络</a> <a href="/tags/%E7%BD%91%E7%BB%9C%E5%9F%BA%E7%A1%80/" style="font-size: 11.43px;">网络基础</a> <a href="/tags/%E8%84%9A%E6%9C%AC/" style="font-size: 10px;">脚本</a> <a href="/tags/%E8%87%AA%E5%8A%A8%E5%8C%96%E8%BF%90%E7%BB%B4/" style="font-size: 10px;">自动化运维</a> <a href="/tags/%E8%99%9A%E6%8B%9F%E5%8C%96/" style="font-size: 11.43px;">虚拟化</a> <a href="/tags/%E8%99%9A%E6%8B%9F%E5%8C%96%E6%8A%80%E6%9C%AF/" style="font-size: 14.29px;">虚拟化技术</a> <a href="/tags/%E8%B7%AF%E7%94%B1/" style="font-size: 17.14px;">路由</a> <a href="/tags/%E8%BF%90%E7%BB%B4/" style="font-size: 10px;">运维</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/09/">September 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">August 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">July 2021</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2021/09/21/CDN/">CDN</a>
+          </li>
+        
+          <li>
+            <a href="/2021/09/20/%E7%AD%96%E7%95%A5%E8%B7%AF%E7%94%B1/">策略路由</a>
+          </li>
+        
+          <li>
+            <a href="/2021/09/18/switch%E7%9F%A5%E8%AF%86/">switch知识</a>
+          </li>
+        
+          <li>
+            <a href="/2021/09/18/switch%D6%AA%CA%B6/">switch知识</a>
+          </li>
+        
+          <li>
+            <a href="/2021/09/17/TCP%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3%E6%9C%BA%E5%88%B6/">TCP滑动窗口机制</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2023 John Doe<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

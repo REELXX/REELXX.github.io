@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>VXLAN | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="VXLANVXLAN（Virtual eXtensible Local Area Network，虚拟扩展局域网），是由IETF定义的NVO3（Network Virtualization over Layer 3）标准技术之一，是对传统VLAN协议的一种扩展。VXLAN的特点是将L2的以太帧封装到UDP报文（即L2 over L4）中，并在L3网络中传输。VXLAN本质上是一种隧道技术，在源网络">
+<meta property="og:type" content="article">
+<meta property="og:title" content="VXLAN">
+<meta property="og:url" content="http://example.com/2021/08/03/VXLAN/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="VXLANVXLAN（Virtual eXtensible Local Area Network，虚拟扩展局域网），是由IETF定义的NVO3（Network Virtualization over Layer 3）标准技术之一，是对传统VLAN协议的一种扩展。VXLAN的特点是将L2的以太帧封装到UDP报文（即L2 over L4）中，并在L3网络中传输。VXLAN本质上是一种隧道技术，在源网络">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/VXLAN/VXLAN%E5%9B%BE%E7%A4%BA.png">
+<meta property="og:image" content="http://example.com/VXLAN/%E6%9C%8D%E5%8A%A1%E5%99%A8%E8%99%9A%E6%8B%9F%E5%8C%96%E6%8A%80%E6%9C%AF.png">
+<meta property="og:image" content="http://example.com/VXLAN/%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%8A%A8%E6%80%81%E8%BF%81%E7%A7%BB.png">
+<meta property="og:image" content="http://example.com/VXLAN/Vxlan%E5%A6%82%E4%BD%95%E6%BB%A1%E8%B6%B3%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%8A%A8%E6%80%81%E8%BF%81%E7%A7%BB%E6%97%B6%E5%AF%B9%E7%BD%91%E7%BB%9C%E7%9A%84%E8%A6%81%E6%B1%82.png">
+<meta property="og:image" content="http://example.com/VXLAN/VXLAN%E6%8A%A5%E6%96%87%E6%A0%BC%E5%BC%8F.png">
+<meta property="og:image" content="http://example.com/VXLAN/VXLAN%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%9E%8B%E7%A4%BA%E6%84%8F%E5%9B%BE.png">
+<meta property="og:image" content="http://example.com/VXLAN/%E5%BB%BA%E7%AB%8BVXLAN%E9%9A%A7%E9%81%93%E7%A4%BA%E6%84%8F%E5%9B%BE.png">
+<meta property="og:image" content="http://example.com/VXLAN/%E5%9B%BE1-8.png">
+<meta property="og:image" content="http://example.com/VXLAN/%E5%9B%BE%E7%89%871-9.png">
+<meta property="og:image" content="http://example.com/VXLAN/VXLAN%E9%9B%86%E4%B8%AD%E5%BC%8F%E7%BD%91%E5%85%B3.png">
+<meta property="og:image" content="http://example.com/VXLAN/VXLAN%E5%88%86%E5%B8%83%E5%BC%8F%E7%BD%91%E5%85%B3.png">
+<meta property="og:image" content="http://example.com/VXLAN/VXLAN%E5%90%8C%E5%AD%90%E7%BD%91%E4%BA%92%E9%80%9A.png">
+<meta property="og:image" content="http://example.com/VXLAN/ARP%E8%AF%B7%E6%B1%82%E6%8A%A5%E6%96%87%E8%BD%AC%E5%8F%91.png">
+<meta property="og:image" content="http://example.com/VXLAN/ARP%E5%BA%94%E7%AD%94%E6%8A%A5%E6%96%87%E8%BD%AC%E5%8F%91.png">
+<meta property="og:image" content="http://example.com/VXLAN/VXLAN%E4%B8%8D%E5%90%8C%E5%AD%90%E7%BD%91%E4%BA%92%E9%80%9A.png">
+<meta property="og:image" content="http://example.com/VXLAN/VXLAN%E4%B8%8D%E5%90%8C%E5%AD%90%E7%BD%91%E4%BA%92%E9%80%9A2.png">
+<meta property="article:published_time" content="2021-08-03T09:54:45.000Z">
+<meta property="article:modified_time" content="2021-08-17T08:41:52.000Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="虚拟化技术">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/VXLAN/VXLAN%E5%9B%BE%E7%A4%BA.png">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-VXLAN" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2021/08/03/VXLAN/" class="article-date">
+  <time class="dt-published" datetime="2021-08-03T09:54:45.000Z" itemprop="datePublished">2021-08-03</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E8%99%9A%E6%8B%9F%E5%8C%96/">虚拟化</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      VXLAN
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h1 id="VXLAN"><a href="#VXLAN" class="headerlink" title="VXLAN"></a>VXLAN</h1><p>VXLAN（Virtual eXtensible Local Area Network，虚拟扩展局域网），是由IETF定义的NVO3（Network Virtualization over Layer 3）标准技术之一，是对传统VLAN协议的一种扩展。VXLAN的<font color=#87CEFA ><strong>特点是将L2的以太帧封装到UDP报文（即L2 over L4）中，并在L3网络中传输</strong></font>。VXLAN本质上是一种隧道技术，在源网络设备与目的网络设备之间的IP网络上，建立一条逻辑隧道，将用户侧报文经过特定的封装后通过这条隧道转发。<font color=#87CEFA ><strong>从用户的角度来看，接入网络的服务器就像是连接到了一个虚拟的二层交换机的不同端口上</strong></font>（可把蓝色虚框表示的数据中心VXLAN网络看成一个二层虚拟交换机），可以方便地通信。</p>
+<span id="more"></span>
+
+<p><img src="/VXLAN/VXLAN%E5%9B%BE%E7%A4%BA.png" alt="VXLAN图示"></p>
+<h2 id="为什么需要Vxlan"><a href="#为什么需要Vxlan" class="headerlink" title="为什么需要Vxlan"></a>为什么需要Vxlan</h2><p>1.服务器虚拟化出现了虚拟化动态迁移，这个要求提供一个无障碍接入的网络<br>2.数据中心规模庞大，租户数量激增，需要网络提供隔离海量租户的能力</p>
+<h3 id="虚拟化动态迁移，这个要求提供一个无障碍接入的网络"><a href="#虚拟化动态迁移，这个要求提供一个无障碍接入的网络" class="headerlink" title="虚拟化动态迁移，这个要求提供一个无障碍接入的网络"></a>虚拟化动态迁移，这个要求提供一个无障碍接入的网络</h3><h4 id="什么是服务器虚拟化技术"><a href="#什么是服务器虚拟化技术" class="headerlink" title="什么是服务器虚拟化技术"></a>什么是服务器虚拟化技术</h4><p>服务器虚拟化技术是把一台物理服务器虚拟化成多台逻辑服务器，这种逻辑服务器被称为虚拟机（VM）。每个VM都可以独立运行，有自己的操作系统、APP，当然也有自己独立的MAC地址和IP地址，它们通过服务器内部的虚拟交换机（vSwitch）与外部实体网络连接。</p>
+<p><img src="/VXLAN/%E6%9C%8D%E5%8A%A1%E5%99%A8%E8%99%9A%E6%8B%9F%E5%8C%96%E6%8A%80%E6%9C%AF.png" alt="服务器虚拟化技术"></p>
+<h4 id="什么是虚拟机动态迁移"><a href="#什么是虚拟机动态迁移" class="headerlink" title="什么是虚拟机动态迁移"></a>什么是虚拟机动态迁移</h4><p>所谓虚拟机动态迁移，就是在保证虚拟机上服务正常运行的同时，将一个虚拟机系统从一个物理服务器移动到另一个物理服务器的过程。<br>为了保证迁移时业务不中断，要求在虚拟机迁移时，不仅虚拟机IP地址不变，而且虚拟机的运行状态也必须保持原状——动态迁移只能在同一个二层域中，不能跨二层域<br>传统的二三层网络限制了虚拟机的动态迁移范围，让应用收到了极大限制</p>
+<p><img src="/VXLAN/%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%8A%A8%E6%80%81%E8%BF%81%E7%A7%BB.png" alt="虚拟机动态迁移"></p>
+<h4 id="Vxlan如何满足虚拟机动态迁移时对网络的要求"><a href="#Vxlan如何满足虚拟机动态迁移时对网络的要求" class="headerlink" title="Vxlan如何满足虚拟机动态迁移时对网络的要求"></a>Vxlan如何满足虚拟机动态迁移时对网络的要求</h4><p>众所周知，同一台二层交换机可以实现下挂服务器之间的二层通信，而且服务器从该二层交换机的一个端口迁移到另一个端口时，IP地址是可以保持不变的。这样就可以满足虚拟机动态迁移的需求了。VXLAN的设计理念和目标正是由此而来的。<br>通过建立全互联的Vxlan隧道，保证任意两点之间都能通过隧道来通信，并忽略底侧网络和细节。<font color=#FF0000 ><strong>从服务器角度来看，Vxlan将整个数据中心基础网络虚拟成了一台巨大的二层交换机。</strong></font></p>
+<p><img src="/VXLAN/Vxlan%E5%A6%82%E4%BD%95%E6%BB%A1%E8%B6%B3%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%8A%A8%E6%80%81%E8%BF%81%E7%A7%BB%E6%97%B6%E5%AF%B9%E7%BD%91%E7%BB%9C%E7%9A%84%E8%A6%81%E6%B1%82.png" alt="Vxlan如何满足虚拟机动态迁移时对网络的要求"></p>
+<p>基于这种“二层交换机”模型，就很容易理解Vxlan可以实现VM动态迁移了：将虚拟机从“二层交换机”的一个端口换到另一个端口，完全无需变更IP地址</p>
+<h3 id="数据中心租户数量激增，要求提供一个可隔离海量租户的网络"><a href="#数据中心租户数量激增，要求提供一个可隔离海量租户的网络" class="headerlink" title="数据中心租户数量激增，要求提供一个可隔离海量租户的网络"></a>数据中心租户数量激增，要求提供一个可隔离海量租户的网络</h3><p>传统的VLAN网络中，所支持的VLAN数量只有4000个左右，当服务器虚拟化后，一台物理服务器中承载了多台虚拟机，相当于接入数据中心的服务器成倍增长。另外，公有云或其它大型虚拟化云数据中心动辄需容纳上万甚至更多租户，VLAN的能力显然已经力不从心。<br>VXLAN如何来解决上述问题呢？VXLAN在VXLAN帧头中引入了类似VLAN ID的网络标识，称为VXLAN网络标识VNI（VXLAN Network ID），由24比特组成，理论上可支持多达16M的VXLAN段，从而满足了大规模不同网络之间的标识、隔离需求。</p>
+<h2 id="Vxlan和VLAN之间的不同"><a href="#Vxlan和VLAN之间的不同" class="headerlink" title="Vxlan和VLAN之间的不同"></a>Vxlan和VLAN之间的不同</h2><p>VLAN作为传统的网络隔离技术，在标准定义中VLAN的数量只有4000个左右，无法满足大型数据中心的租户间隔离需求。另外，VLAN的二层范围一般较小且固定，无法支持虚拟机大范围的动态迁移。<br>VXLAN完美地弥补了VLAN的上述不足，一方面通过VXLAN中的24比特VNI字段，提供多达16M租户的标识能力，远大于VLAN的4000；另一方面，VXLAN本质上在两台交换机之间构建了一条穿越数据中心基础IP网络的虚拟隧道，将数据中心网络虚拟成一个巨型“二层交换机”，满足虚拟机大范围动态迁移的需求。</p>
+<p><img src="/VXLAN/VXLAN%E6%8A%A5%E6%96%87%E6%A0%BC%E5%BC%8F.png" alt="VXLAN报文格式"></p>
+<p>如上图所示，VTEP对VM发送的原始以太帧（Original L2 Frame）进行了以下“包装”：<br>VXLAN Header<br>增加VXLAN头（8字节），其中<font color=#FF0000 ><strong>包含24比特的VNI字段</strong></font>，用来定义VXLAN网络中不同的租户。此外，还包含VXLAN Flags（8比特，取值为00001000）和两个保留字段（分别为24比特和8比特）。</p>
+<p>UDP Header<br>VXLAN头和原始以太帧一起作为UDP的数据。UDP头中，目的端口号（VXLAN Port）固定为4789，源端口号（UDP Src. Port）是原始以太帧通过哈希算法计算后的值。</p>
+<p>Outer IP Header<br>封装外层IP头。其中，<font color=#FF0000 ><strong>源IP地址（Outer Src. IP）为<font color=#87CEFA>源VM所属VTEP的IP地址，</FONT>目的IP地址（Outer Dst. IP）为<font color=#87CEFA>目的VM所属VTEP的IP地址。</strong></FONT></FONT><br>Outer MAC Header<br>封装外层以太头。其中，<font color=#FF0000 ><strong>源MAC地址（Src. MAC Addr.）为<font color=#87CEFA>源VM所属VTEP的MAC地址，</FONT>目的MAC地址（Dst. MAC Addr.）为到达<font color=#87CEFA>目的VTEP的路径中下一跳设备的MAC地址<br>（一般就叫做下一跳MAC，具体数据中心的转发路径不用知道）。</strong></FONT></FONT> </p>
+<p>具体案例：转发过程</p>
+<h2 id="VXLAN隧道是如何建立的"><a href="#VXLAN隧道是如何建立的" class="headerlink" title="VXLAN隧道是如何建立的"></a>VXLAN隧道是如何建立的</h2><h3 id="VTEP和VNI"><a href="#VTEP和VNI" class="headerlink" title="VTEP和VNI"></a>VTEP和VNI</h3><p><img src="/VXLAN/VXLAN%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%9E%8B%E7%A4%BA%E6%84%8F%E5%9B%BE.png" alt="VXLAN网络模型示意图"></p>
+<p>从上图中可以发现，VXLAN在两台TOR交换机之间建立了一条隧道，将服务器发出的原始数据帧加以“包装”，好让原始报文可以在承载网络（比如IP网络）上传输。当到达目的服务器所连接的TOR交换机后，离开VXLAN隧道，并将原始数据帧恢复出来，继续转发给目的服务器。</p>
+<h4 id="什么是VTEP"><a href="#什么是VTEP" class="headerlink" title="什么是VTEP"></a>什么是VTEP</h4><p>VXLAN Tunnel Endpoints，VXLAN 隧道端点。<font color=#FF0000 ><strong>是VXLAN隧道的起点和终点，VXLAN对用户原始数据帧的封装和解封装均在VTEP上进行</strong></FONT></p>
+<p>VTEP可以是一台独立的网络设备，也可以是服务器中的虚拟交换机。源服务器发出的原始数据帧，在VTEP上被封装成VXLAN格式的报文，并在IP网络中传递到另外一个VTEP上，并经过解封转还原出原始的数据帧，最后转发给目的服务器。</p>
+<h4 id="什么是VNI"><a href="#什么是VNI" class="headerlink" title="什么是VNI"></a>什么是VNI</h4><p>VXLAN Network Identifier，VXLAN网络标识符。VNI是一种类似于VLAN ID的用户标识，<font color=#FF0000 ><strong>一个VNI代表一个租户，属于不同VNI的虚拟机之间不能直接进行二层通信</strong></FONT></p>
+<p>另外，在<font color=#FF0000 ><strong>分布式网关</strong></font>部署场景下，VNI还可分为二层VNI和三层VNI，它们的作用不同：</p>
+<pre><code>二层VNI是普通的VNI，以1：1方式映射到广播域BD，实现VXLAN报文同子网的转发（详情可参见下文的什么是“同一大二层域”）。
+三层VNI和VPN实例进行关联，用于VXLAN报文跨子网的转发（三层VNI的工作详情将在另外一篇EVPN相关的文档中展开描述）。
+</code></pre>
+<h3 id="哪些VTEP之间需要建立VXLAN隧道"><a href="#哪些VTEP之间需要建立VXLAN隧道" class="headerlink" title="哪些VTEP之间需要建立VXLAN隧道"></a>哪些VTEP之间需要建立VXLAN隧道</h3><h4 id="哪些VTEP之间需要建立VXLAN隧道-1"><a href="#哪些VTEP之间需要建立VXLAN隧道-1" class="headerlink" title="哪些VTEP之间需要建立VXLAN隧道"></a>哪些VTEP之间需要建立VXLAN隧道</h4><p><img src="/VXLAN/%E5%BB%BA%E7%AB%8BVXLAN%E9%9A%A7%E9%81%93%E7%A4%BA%E6%84%8F%E5%9B%BE.png" alt="建立VXLAN隧道示意图"></p>
+<p>如前所述，通过VXLAN隧道，“二层域”可以突破物理上的界限，实现大二层网络中VM之间的通信。所以，连接在不同VTEP上的VM之间如果有“大二层”互通的需求，这两个VTEP之间就需要建立VXLAN隧道。换言之，<font color=#FF0000 ><strong>同一大二层域内的VTEP之间都需要建立VXLAN隧道</strong></font>。</p>
+<p>例如，假设图1-7中VTEP_1连接的VM、VTEP_2连接的VM以及VTEP_3连接的VM之间需要“大二层”互通，那VTEP_1、VTEP_2和VTEP_3之间就需要两两建立VXLAN隧道，如图1-8所示。</p>
+<p><img src="/VXLAN/%E5%9B%BE1-8.png" alt="图1-8"></p>
+<h4 id="什么是-同一大二层域"><a href="#什么是-同一大二层域" class="headerlink" title="什么是 同一大二层域"></a>什么是 同一大二层域</h4><p>“同一大二层域”，就类似于传统网络中VLAN（虚拟局域网）的概念，只不过在VXLAN网络中，它有另外一个名字，<font color=#FF0000 ><strong>叫做Bridge-Domain，简称BD</strong></font>。<br>我们知道，不同的VLAN是通过VLAN ID来进行区分的，那不同的BD是如何进行区分的呢？其实前面已经提到了，就是通过VNI来区分的。<font color=#FF0000 ><strong>BD与VNI是1：1的映射关系，这种映射关系是通过在VTEP设备上配置命令行建立起来</strong></font>的</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">bridge-domain 10   //表示创建一个“大二层广播域”BD，其编号为10</span><br><span class="line"> vxlan vni 5000  //表示在BD 10下，指定与之关联的VNI为5000</span><br><span class="line">#</span><br></pre></td></tr></table></figure>
+<p>VTEP设备会根据以上配置生成BD与VNI的映射关系表，该映射表可以通过命令行查看，如下所示：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;HUAWEI&gt; display vxlan vni</span><br><span class="line">Number of vxlan vni : 1 </span><br><span class="line">VNI            BD-ID            State  </span><br><span class="line">--------------------------------------- </span><br><span class="line">5000           10               up  </span><br></pre></td></tr></table></figure>
+
+<p>建立起来BD与VNI的映射表后，进入VTEP的报文就可以根据自己所属的BD来确定报文进行VXLAN封装时，添加哪个VNI标识</p>
+<p><font color=#87CEFA>!  !  根据BD ———— 添加对应VNI 标识 !  ! </font></p>
+<h4 id="如何确定报文属于哪个BD"><a href="#如何确定报文属于哪个BD" class="headerlink" title="如何确定报文属于哪个BD"></a>如何确定报文属于哪个BD</h4><p>这里要先澄清下，VTEP只是交换机承担的一个角色而已，只是交换机功能的一部分。也就是说，并非所有进入到交换机的报文都会走VXLAN隧道（也可能报文就是走普通的二三层转发流程）。所以，我们在回答“如何确定报文属于哪个BD”之前，必须先要回答“哪些报文要进入VXLAN隧道”。</p>
+<h4 id="哪些报文要进入VXLAN隧道"><a href="#哪些报文要进入VXLAN隧道" class="headerlink" title="哪些报文要进入VXLAN隧道"></a>哪些报文要进入VXLAN隧道</h4><p>让我们回想一下VLAN技术中，交换机对于接收和发送的报文是如何进行处理的。报文要进入交换机进行下一步处理，首先得先过接口这一关，可以说接口掌控着对报文的“生杀大权”。传统网络中定义了三种不同类型的接口：Access、Trunk、Hybrid。这三种类型的接口虽然应用场景不同，但它们的最终目的是一样的：一是根据配置来检查哪些报文是允许通过的；二是判断对检查通过的报文做怎样的处理。<br>其实在VXLAN网络中，VTEP上的接口也承担着类似的任务，<font color=#87CEFA>只不过这里的接口不是物理接口，而是一个叫做“二层子接口”的逻辑接口。类似的，二层子接口主要做两件事：<font color=#FF000>一是根据配置来检查哪些报文需要进入VXLAN隧道；二是判断对检查通过的报文做怎样的处理。</font></font></p>
+<p><font color=#FF000 size=5 >总结：在VTEP上创建二层子接口，配置限制条件，符合的报文进入通往到 BD ??（根据配置） 的VXLAN隧道：<br>比如携带vlan10的报文进入通往BD 20的VXLAN隧道，然后根据BD获取对应的VNI值</font></p>
+<p>在二层子接口上，可以根据需要定义不同的流封装类型（类似于传统网络中不同的接口类型）。流封装类型有dot1q、untag、qinq和default四种类型：</p>
+<p>dot1q：<br>对于带有一层VLAN Tag的报文，该类型接口只接收与指定VLAN Tag匹配的报文；	对于带有两层VLAN Tag的报文，该类型接口只接收外层VLAN Tag与指定VLAN 	Tag匹配的报文。<br>untag：<br>该类型接口只接收不带VLAN Tag的报文。<br>qinq：<br>该类型接口只接收带有指定两层VLAN Tag的报文。<br>default：<br>允许接口接收所有报文，不区分报文中是否带VLAN Tag。不论是对原始报文进行	VXLAN封装，还是解封装VXLAN报文，该类型接口都不会对原始报文进行任何	VLAN Tag处理，包括添加、替换或剥离。</p>
+<p>除二层子接口外，还可以将VLAN作为业务接入点。将VLAN绑定到广播域BD后，加入该VLAN的接口即为VXLAN业务接入点，进入接口的报文由VXLAN隧道处理。</p>
+<h4 id="确定报文属于哪个BD"><a href="#确定报文属于哪个BD" class="headerlink" title="确定报文属于哪个BD"></a>确定报文属于哪个BD</h4><p>现在“如何确定报文属于哪个BD”就非常简单了。其实，只要将二层子接口加入指定的BD，然后根据二层子接口上的配置，设备就可以确定报文属于哪个BD啦！</p>
+<p>比如图1-9所示的组网，一台虚拟化服务器中有两个不同VLAN的虚拟机VM1（VLAN 10）和VM2（VLAN 20），它们与其他虚拟机通信时需要接入VXLAN网络。此时我们可以分别在VTEP的物理接口10GE 1&#x2F;0&#x2F;1上，分别针对VM1和VM2封装不同的二层子接口，并将其分别加入不同的BD。这样后续VM1和VM2的流量将会进入不同的VXLAN隧道继续转发。<br>在这个举例中，<font color=#87CEFA>vSwitch的上行口配置成Trunk模式</font>，且PVID为20。这样vSwitch发给VTEP的报文中，既有带tag的VM1流量，又有untag的VM2流量，此时在VTEP的接入口上创建两个二层子接口，分别配置为dot1q和untag的封装类型。</p>
+<p><img src="/VXLAN/%E5%9B%BE%E7%89%871-9.png" alt="图片1-9"></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">interface 10GE1/0/1.1 mode l2   //创建二层子接口10GE1/0/1.1</span><br><span class="line"> encapsulation dot1q vid 10   //只允许携带VLAN Tag 10的报文进入VXLAN隧道</span><br><span class="line"> bridge-domain 10   //指定报文进入的是BD 10</span><br><span class="line">#</span><br><span class="line">interface 10GE1/0/1.2 mode l2   //创建二层子接口10GE1/0/1.2</span><br><span class="line"> encapsulation untag   //只允许不携带VLAN Tag的报文进入VXLAN隧道</span><br><span class="line"> bridge-domain 20   //指定报文进入的是BD 20</span><br><span class="line">#</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="vxlan隧道如何建立"><a href="#vxlan隧道如何建立" class="headerlink" title="vxlan隧道如何建立"></a>vxlan隧道如何建立</h3><p>手工建立和自动建立</p>
+<h4 id="手工建立"><a href="#手工建立" class="headerlink" title="手工建立"></a>手工建立</h4><p>这种方式需要用户手动指定VXLAN隧道的源IP为本端VTEP的IP、目的IP为对端VTEP的IP，也就是人为地在本端VTEP和对端VTEP之间建立静态VXLAN隧道。<br>对于CloudEngine系列交换机，以上配置是在NVE（Network Virtualization Edge）接口下完成的，配置举例如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">interface Nve1   //创建逻辑接口NVE 1</span><br><span class="line"> source 1.1.1.1   //配置源VTEP的IP地址（推荐使用Loopback接口的IP地址）</span><br><span class="line"> vni 5000 head-end peer-list 2.2.2.2   </span><br><span class="line"> vni 5000 head-end peer-list 2.2.2.3   </span><br><span class="line">#</span><br></pre></td></tr></table></figure>
+<p>其中，vni 5000 head-end peer-list 2.2.2.2和vni 5000 head-end peer-list 2.2.2.3的配置，表示属于VNI 5000的对端VTEP有两个，IP地址分别为2.2.2.2和2.2.2.3。根据这两条配置，VTEP上会生成如下所示的一张表：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&lt;HUAWEI&gt; display vxlan vni 5000 verbose</span><br><span class="line">    BD ID                 : 10 </span><br><span class="line">    State                  : up </span><br><span class="line">    NVE                    : 288</span><br><span class="line">    Source Address      : 1.1.1.1</span><br><span class="line">    Source IPv6 Address    : -</span><br><span class="line">    UDP Port               : 4789 </span><br><span class="line">    BUM Mode               : head-end</span><br><span class="line">    Group Address          : -  </span><br><span class="line">    Peer List            : 2.2.2.2    2.2.2.3  </span><br><span class="line">    IPv6 Peer List         : -</span><br></pre></td></tr></table></figure>
+<p>根据上表中的Peer List，本端VTEP就可以知道属于同一BD（或同一VNI）的对端VTEP都有哪些，这也就决定了同一大二层广播域的范围。当VTEP收到BUM（Broadcast&amp;Unknown-unicast&amp;Multicast，广播&amp;未知单播&amp;组播）报文时，会将报文复制并发送给Peer List中所列的所有对端VTEP（这就好比广播报文在VLAN内广播）。因此，这张表也被称为“头端复制列表”。当VTEP收到已知单播报文时，会根据VTEP上的MAC表来确定报文要从哪条VXLAN隧道走。而此时Peer List中所列的对端，则充当了MAC表中“出接口”的角色。<br>在后面的报文转发流程中，你将会看到头端复制列表是如何在VXLAN网络中指导报文进行转发的。</p>
+<h4 id="自动建立"><a href="#自动建立" class="headerlink" title="自动建立"></a>自动建立</h4><p>自动建立VXLAN隧道需要借助EVPN（Ethernet VPN）协议，跳转EVPN</p>
+<h4 id="如何确定报文进哪条隧道"><a href="#如何确定报文进哪条隧道" class="headerlink" title="如何确定报文进哪条隧道"></a>如何确定报文进哪条隧道</h4><p>属于同一BD的VXLAN隧道可能不止一条，比如上文的头端复制列表中，同一个源端VTEP（1.1.1.1）对应了两个对端VTEP（2.2.2.2和2.2.2.3）。那就带来了另一个问题，报文到底应该走哪一条隧道呢？<br>我们知道，基本的二三层转发中，二层转发依赖的是MAC表，如果没有对应的MAC条目，则主机发送ARP广播报文请求对端的MAC地址；三层转发依赖的是FIB表。在VXLAN中，其实也是同样的道理。在下一小节中，将介绍VXLAN网络中报文的转发流程，相信看完下面的内容，关于“如何确定报文要进哪条隧道”的疑惑也就迎刃而解了。</p>
+<h2 id="VXLAN网关有哪些种类"><a href="#VXLAN网关有哪些种类" class="headerlink" title="VXLAN网关有哪些种类"></a>VXLAN网关有哪些种类</h2><h3 id="VXLAN二层网关和三层网关"><a href="#VXLAN二层网关和三层网关" class="headerlink" title="VXLAN二层网关和三层网关"></a>VXLAN二层网关和三层网关</h3><p>和VLAN类似，不同VNI之间的主机，以及VXLAN网络和非VXLAN网络中的主机不能直接相互通信。为了满足这些通信需求，VXLAN引入了VXLAN网关的概念。VXLAN网关分为二层网关和三层网关：</p>
+<pre><code>VXLAN二层网关：用于终端接入VXLAN网络，也可用于同一VXLAN网络的子网通信。
+VXLAN三层网关：用于VXLAN网络中跨子网通信以及访问外部网络。
+</code></pre>
+<h3 id="VXLAN集中式网关和分布式网关"><a href="#VXLAN集中式网关和分布式网关" class="headerlink" title="VXLAN集中式网关和分布式网关"></a>VXLAN集中式网关和分布式网关</h3><h4 id="集中式网关"><a href="#集中式网关" class="headerlink" title="集中式网关"></a>集中式网关</h4><p>集中式网关是指将三层网关集中部署在一台设备上，如下图所示，所有跨子网的流量都经过这个三层网关转发，实现流量的集中管理。</p>
+<p><img src="/VXLAN/VXLAN%E9%9B%86%E4%B8%AD%E5%BC%8F%E7%BD%91%E5%85%B3.png" alt="VXLAN集中式网关"></p>
+<p>部署集中式网关的优点和缺点如下：<br>优点：</p>
+<pre><code>对跨子网流量进行集中管理，网关的部署和管理比较简单。
+</code></pre>
+<p>缺点：</p>
+<pre><code>转发路径不是最优：同一二层网关下跨子网的数据中心三层流量都需要经过集中三层网关绕行转发（如图中蓝色虚线所示）。
+ARP表项规格瓶颈：由于采用集中三层网关，通过三层网关转发的终端的ARP表项都需要在三层网关上生成，而三层网关上的ARP表项规格有限，这不利于数据中心网络的	扩展。
+</code></pre>
+<h4 id="分布式网关"><a href="#分布式网关" class="headerlink" title="分布式网关"></a>分布式网关</h4><p>通过部署分布式网关可以解决集中式网关部署的缺点。VXLAN分布式网关是指在典型的“Spine-Leaf”组网结构下，将Leaf节点作为VXLAN隧道端点VTEP，每个Leaf节点都可作为VXLAN三层网关（同时也是VXLAN二层网关），Spine节点不感知VXLAN隧道，只作为VXLAN报文的转发节点。如下图所示，Server1和Server2不在同一个网段，但是都连接到同一个Leaf节点。Server1和Server2通信时，流量只需要在该Leaf节点上转发，不再需要经过Spine节点。</p>
+<p>部署分布式网关时：</p>
+<pre><code>Spine节点：
+    关注于高速IP转发，强调的是设备的高速转发能力。
+Leaf节点：
+    作为VXLAN网络中的二层网关设备，与物理服务器或VM对接，用于解决终端租户接入VXLAN虚拟网络的问题。
+    作为VXLAN网络中的三层网关设备，进行VXLAN报文封装/解封装，实现跨子网的终端租户通信，以及外部网络的访问。
+</code></pre>
+<p><img src="/VXLAN/VXLAN%E5%88%86%E5%B8%83%E5%BC%8F%E7%BD%91%E5%85%B3.png" alt="VXLAN分布式网关"></p>
+<p>VXLAN分布式网关具有如下特点：</p>
+<pre><code>同一个Leaf节点既可以做VXLAN二层网关，也可以做VXLAN三层网关，部署灵活。
+Leaf节点只需要学习自身连接服务器的ARP表项，而不必像集中三层网关一样，需要学习所有服务器的ARP表项，解决了集中式三层网关带来的ARP表项瓶颈问题，网络规模扩展能力强。
+</code></pre>
+<h2 id="VXLAN报文是如何转发的"><a href="#VXLAN报文是如何转发的" class="headerlink" title="VXLAN报文是如何转发的"></a>VXLAN报文是如何转发的</h2><p>以集中式VXLAN网络为例，分布式看EVPN去（EVPN）</p>
+<h3 id="集中式VXLAN内同子网互通流程"><a href="#集中式VXLAN内同子网互通流程" class="headerlink" title="集中式VXLAN内同子网互通流程"></a>集中式VXLAN内同子网互通流程</h3><p><img src="/VXLAN/VXLAN%E5%90%8C%E5%AD%90%E7%BD%91%E4%BA%92%E9%80%9A.png" alt="VXLAN同子网互通"></p>
+<h4 id="ARP请求报文转发流程"><a href="#ARP请求报文转发流程" class="headerlink" title="ARP请求报文转发流程"></a>ARP请求报文转发流程</h4><p><img src="/VXLAN/ARP%E8%AF%B7%E6%B1%82%E6%8A%A5%E6%96%87%E8%BD%AC%E5%8F%91.png" alt="ARP请求报文转发"></p>
+<h4 id="ARP应答报文转发流程"><a href="#ARP应答报文转发流程" class="headerlink" title="ARP应答报文转发流程"></a>ARP应答报文转发流程</h4><p><img src="/VXLAN/ARP%E5%BA%94%E7%AD%94%E6%8A%A5%E6%96%87%E8%BD%AC%E5%8F%91.png" alt="ARP应答报文转发"></p>
+<p>1.由于此时VM_C上已经学习到了VM_A的MAC地址，所以ARP应答报文为单播报文。报文源MAC为MAC_C，目的MAC为MAC_A，源IP为IP_C、目的IP为IP_A。<br>2.VTEP_3接收到VM_C发送的ARP应答报文后，识别报文所属的VNI（识别过程与步骤②类似）。同时，VTEP_3学习MAC_C、VNI和报文入接口（Port_3）的对应关系，并记录在本地MAC表中。之后，VTEP_3对报文进行封装。<br>3.可以看到，这里封装的外层源IP地址为本地VTEP（VTEP_3）的IP地址，外层目的IP地址为对端VTEP（VTEP_1）的IP地址；外层源MAC地址为本地VTEP的MAC地址，而外层目的MAC地址为去往目的IP的网络中下一跳设备的MAC地址。<br>4.封装后的报文，根据外层MAC和IP信息，在IP网络中进行传输，直至到达对端VTEP。<br>5.报文到达VTEP_1后，VTEP_1对报文进行解封装，得到VM_C发送的原始报文。同时，VTEP_1学习VM_C的MAC地址、VNI和远端VTEP的IP地址（IP_3）的对应关系，并记录在本地MAC表中。之后，VTEP_1将解封装后的报文发送给VM_A。<br>6.至此，VM_A和VM_C均已学习到了对方的MAC地址。之后，VM_A和VM_C将采用单播方式进行通信。</p>
+<h3 id="集中式VXLAN中不同子网互通流程"><a href="#集中式VXLAN中不同子网互通流程" class="headerlink" title="集中式VXLAN中不同子网互通流程"></a>集中式VXLAN中不同子网互通流程</h3><p><img src="/VXLAN/VXLAN%E4%B8%8D%E5%90%8C%E5%AD%90%E7%BD%91%E4%BA%92%E9%80%9A.png" alt="VXLAN不同子网互通"></p>
+<p>在经过ARP请求后，流程</p>
+<p><img src="/VXLAN/VXLAN%E4%B8%8D%E5%90%8C%E5%AD%90%E7%BD%91%E4%BA%92%E9%80%9A2.png" alt="VXLAN不同子网互通2"></p>
+<p>1.VM_A先将数据报文发送给网关。报文的源MAC为MAC_A，目的MAC为网关BDIF 10的MAC_10，源IP地址为IP_A，目的IP为IP_B。<br>2.VTEP_1收到数据报文后，识别此报文所属的VNI（VNI 5000），并根据MAC表项对报文进行封装。可以看到，这里封装的外层源IP地址为本地VTEP的IP地址（IP_1），外层目的IP地址为对端VTEP的IP地址（IP_3）；外层源MAC地址为本地VTEP的MAC地址（MAC_1），而外层目的MAC地址为去往目的IP的网络中下一跳设备的MAC地址。<br>3.封装后的报文，根据外层MAC和IP信息，在IP网络中进行传输，直至到达对端VTEP。<br>4.报文进入VTEP_3，VTEP_3对报文进行解封装，得到VM_A发送的原始报文。然后，VTEP_3会对报文做如下处理：</p>
+<pre><code>1. VTEP_3发现该报文的目的MAC为本机BDIF 10接口的MAC，而目的IP地址为IP_B（10.1.20.1），所以会根据路由表查找到IP_B的下一跳。
+2. 发现下一跳为10.1.20.10，出接口为BDIF 20。此时VTEP_3查询ARP表项，并将原始报文的源MAC修改为BDIF 20接口的MAC（MAC_20），将目的MAC修改为VM_B的MAC（MAC_B）。
+3. 报文到BDIF 20接口时，识别到需要进入VXLAN隧道（VNI 6000），所以根据MAC表对报文进行封装。这里封装的外层源IP地址为本地VTEP的IP地址（IP_3），外层目的IP地址为对端VTEP的IP地址（IP_2）；外层源MAC地址为本地VTEP的MAC地址（MAC_3），而外层目的MAC地址为去往目的IP的网络中下一跳设备的MAC地址。
+</code></pre>
+<p>5.封装后的报文，根据外层MAC和IP信息，在IP网络中进行传输，直至到达对端VTEP。<br>6.报文到达VTEP_2后，VTEP_2对报文进行解封装，得到内层的数据报文，并将其发送给VM_B。</p>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p>华为技术指导 ———— 《什么是VXLAN》</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2021/08/03/VXLAN/" data-id="clg3uqot30029p8mubf7s88c7" data-title="VXLAN" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%99%9A%E6%8B%9F%E5%8C%96%E6%8A%80%E6%9C%AF/" rel="tag">虚拟化技术</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2021/08/04/%E6%8E%A7%E5%88%B6%E8%B7%AF%E7%94%B1%E6%9B%B4%E6%96%B0/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          控制路由更新
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2021/08/02/STP%E8%A7%A3%E6%9E%90/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">STP解析</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Github/">Github</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/VPN/">VPN</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/openstack/">openstack</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E4%BA%A4%E6%8D%A2%E6%9C%BA/">交换机</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%8D%9A%E5%AE%A2/">博客</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%AE%89%E5%85%A8/">安全</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%B0%E6%8D%AE%E4%B8%AD%E5%BF%83/">数据中心</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">数据结构</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%B0%E6%8D%AE%E9%80%9A%E4%BF%A1/">数据通信</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%99%9A%E6%8B%9F%E5%8C%96/">虚拟化</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%B7%AF%E7%94%B1/">路由</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%BF%90%E7%BB%B4/">运维</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Apache/" rel="tag">Apache</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/BGP/" rel="tag">BGP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DHCP/" rel="tag">DHCP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Django/" rel="tag">Django</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Github/" rel="tag">Github</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/" rel="tag">Linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/OSI/" rel="tag">OSI</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/OSPF/" rel="tag">OSPF</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Python/" rel="tag">Python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SDN/" rel="tag">SDN</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/STP/" rel="tag">STP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/VLAN/" rel="tag">VLAN</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/VPN/" rel="tag">VPN</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/VXLAN/" rel="tag">VXLAN</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/" rel="tag">hexo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/openstack/" rel="tag">openstack</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/yilia/" rel="tag">yilia</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%91%E8%AE%A1%E7%AE%97/" rel="tag">云计算</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%A4%E6%8D%A2/" rel="tag">交换</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%A4%E6%8D%A2%E6%9C%BA/" rel="tag">交换机</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%8E%9F%E7%90%86/" rel="tag">交换机原理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BB%A5%E5%A4%AA%E7%BD%91%E5%B8%A7/" rel="tag">以太网帧</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8D%9A%E5%AE%A2/" rel="tag">博客</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8D%9A%E5%AE%A2%E8%87%AA%E5%AE%9A%E4%B9%89/" rel="tag">博客自定义</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%AE%89%E5%85%A8/" rel="tag">安全</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%8E%A5%E5%8F%A3/" rel="tag">接口</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%8E%A7%E5%88%B6%E5%99%A8/" rel="tag">控制器</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E4%B8%AD%E5%BF%83/" rel="tag">数据中心</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="tag">数据结构</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E9%80%9A%E4%BF%A1/" rel="tag">数据通信</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF%E5%B1%82/" rel="tag">数据链路层</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%AB%AF%E5%8F%A3%E9%95%9C%E5%83%8F/" rel="tag">端口镜像</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BB%8F%E9%AA%8C/" rel="tag">经验</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BC%96%E5%86%99%E6%8C%87%E5%8D%97/" rel="tag">编写指南</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BD%91%E7%BB%9C/" rel="tag">网络</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BD%91%E7%BB%9C%E5%9F%BA%E7%A1%80/" rel="tag">网络基础</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%84%9A%E6%9C%AC/" rel="tag">脚本</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%87%AA%E5%8A%A8%E5%8C%96%E8%BF%90%E7%BB%B4/" rel="tag">自动化运维</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%99%9A%E6%8B%9F%E5%8C%96/" rel="tag">虚拟化</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%99%9A%E6%8B%9F%E5%8C%96%E6%8A%80%E6%9C%AF/" rel="tag">虚拟化技术</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%B7%AF%E7%94%B1/" rel="tag">路由</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%BF%90%E7%BB%B4/" rel="tag">运维</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Apache/" style="font-size: 10px;">Apache</a> <a href="/tags/BGP/" style="font-size: 10px;">BGP</a> <a href="/tags/DHCP/" style="font-size: 10px;">DHCP</a> <a href="/tags/Django/" style="font-size: 10px;">Django</a> <a href="/tags/Github/" style="font-size: 10px;">Github</a> <a href="/tags/Linux/" style="font-size: 12.86px;">Linux</a> <a href="/tags/OSI/" style="font-size: 10px;">OSI</a> <a href="/tags/OSPF/" style="font-size: 14.29px;">OSPF</a> <a href="/tags/Python/" style="font-size: 17.14px;">Python</a> <a href="/tags/SDN/" style="font-size: 10px;">SDN</a> <a href="/tags/STP/" style="font-size: 10px;">STP</a> <a href="/tags/VLAN/" style="font-size: 10px;">VLAN</a> <a href="/tags/VPN/" style="font-size: 12.86px;">VPN</a> <a href="/tags/VXLAN/" style="font-size: 10px;">VXLAN</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/openstack/" style="font-size: 12.86px;">openstack</a> <a href="/tags/yilia/" style="font-size: 10px;">yilia</a> <a href="/tags/%E4%BA%91%E8%AE%A1%E7%AE%97/" style="font-size: 10px;">云计算</a> <a href="/tags/%E4%BA%A4%E6%8D%A2/" style="font-size: 10px;">交换</a> <a href="/tags/%E4%BA%A4%E6%8D%A2%E6%9C%BA/" style="font-size: 14.29px;">交换机</a> <a href="/tags/%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%8E%9F%E7%90%86/" style="font-size: 10px;">交换机原理</a> <a href="/tags/%E4%BB%A5%E5%A4%AA%E7%BD%91%E5%B8%A7/" style="font-size: 10px;">以太网帧</a> <a href="/tags/%E5%8D%9A%E5%AE%A2/" style="font-size: 10px;">博客</a> <a href="/tags/%E5%8D%9A%E5%AE%A2%E8%87%AA%E5%AE%9A%E4%B9%89/" style="font-size: 10px;">博客自定义</a> <a href="/tags/%E5%AE%89%E5%85%A8/" style="font-size: 10px;">安全</a> <a href="/tags/%E6%8E%A5%E5%8F%A3/" style="font-size: 10px;">接口</a> <a href="/tags/%E6%8E%A7%E5%88%B6%E5%99%A8/" style="font-size: 10px;">控制器</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E4%B8%AD%E5%BF%83/" style="font-size: 10px;">数据中心</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" style="font-size: 15.71px;">数据结构</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E9%80%9A%E4%BF%A1/" style="font-size: 20px;">数据通信</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF%E5%B1%82/" style="font-size: 12.86px;">数据链路层</a> <a href="/tags/%E7%AB%AF%E5%8F%A3%E9%95%9C%E5%83%8F/" style="font-size: 10px;">端口镜像</a> <a href="/tags/%E7%BB%8F%E9%AA%8C/" style="font-size: 10px;">经验</a> <a href="/tags/%E7%BC%96%E5%86%99%E6%8C%87%E5%8D%97/" style="font-size: 10px;">编写指南</a> <a href="/tags/%E7%BD%91%E7%BB%9C/" style="font-size: 18.57px;">网络</a> <a href="/tags/%E7%BD%91%E7%BB%9C%E5%9F%BA%E7%A1%80/" style="font-size: 11.43px;">网络基础</a> <a href="/tags/%E8%84%9A%E6%9C%AC/" style="font-size: 10px;">脚本</a> <a href="/tags/%E8%87%AA%E5%8A%A8%E5%8C%96%E8%BF%90%E7%BB%B4/" style="font-size: 10px;">自动化运维</a> <a href="/tags/%E8%99%9A%E6%8B%9F%E5%8C%96/" style="font-size: 11.43px;">虚拟化</a> <a href="/tags/%E8%99%9A%E6%8B%9F%E5%8C%96%E6%8A%80%E6%9C%AF/" style="font-size: 14.29px;">虚拟化技术</a> <a href="/tags/%E8%B7%AF%E7%94%B1/" style="font-size: 17.14px;">路由</a> <a href="/tags/%E8%BF%90%E7%BB%B4/" style="font-size: 10px;">运维</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/09/">September 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">August 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">July 2021</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2021/09/21/CDN/">CDN</a>
+          </li>
+        
+          <li>
+            <a href="/2021/09/20/%E7%AD%96%E7%95%A5%E8%B7%AF%E7%94%B1/">策略路由</a>
+          </li>
+        
+          <li>
+            <a href="/2021/09/18/switch%E7%9F%A5%E8%AF%86/">switch知识</a>
+          </li>
+        
+          <li>
+            <a href="/2021/09/18/switch%D6%AA%CA%B6/">switch知识</a>
+          </li>
+        
+          <li>
+            <a href="/2021/09/17/TCP%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3%E6%9C%BA%E5%88%B6/">TCP滑动窗口机制</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2023 John Doe<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>
